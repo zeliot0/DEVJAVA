@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jalons - NEXA{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="h2 fw-bold mb-0">Jalons</h1>
+            <p class="text-muted mb-0">Gérez les jalons de vos objectifs</p>
+        </div>
+        <div class="col-auto">
+            <a href="{{ path('app_milestones_new') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>Nouveau Jalon
+            </a>
+        </div>
+    </div>
+
+    <!-- Jalons List -->
+    <div class="row">
+        {% for milestone in milestones %}
+        <div class="col-12">
+            <div class="goal-card">
+                <div class="goal-header">
+                    <div>
+                        <h2 class="goal-title">{{ milestone.titleMilestone }}</h2>
+                        <div class="goal-meta">
+                            <span class="goal-meta-item">
+                                <i class="bi bi-bullseye"></i>
+                                {{ milestone.goal.titleGoa }}
+                            </span>
+                            <span class="goal-meta-item">
+                                <i class="bi bi-calendar"></i>
+                                Créé le: {{ milestone.createdAt|date('d/m/Y') }}
+                            </span>
+                            <span class="goal-meta-item">
+                                <i class="bi bi-clock"></i>
+                                Échéance: {{ milestone.dueDate|date('d/m/Y') }}
+                            </span>
+                            {% if milestone.completedDate %}
+                            <span class="goal-meta-item text-success">
+                                <i class="bi bi-check-circle"></i>
+                                Terminé le: {{ milestone.completedDate|date('d/m/Y') }}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <span class="badge {% if milestone.completedDate %}bg-success{% else %}bg-warning{% endif %}">
+                        {% if milestone.completedDate %}TERMINÉ{% else %}EN COURS{% endif %}
+                    </span>
+                </div>
+                
+                <div class="goal-content">
+                    <p class="mb-3">{{ milestone.descriptionMilestone }}</p>
+                    
+                    <!-- Actions -->
+                    <div class="d-flex gap-2">
+                        <a href="{{ path('app_milestones_show', {'id': milestone.id}) }}" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-eye me-1"></i>Voir
+                        </a>
+                        <a href="{{ path('app_milestones_edit', {'id': milestone.id}) }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-pencil me-1"></i>Éditer
+                        </a>
+                        {% if not milestone.completedDate %}
+                        <form method="post" action="{{ path('app_milestones_complete', {'id': milestone.id}) }}" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('complete' ~ milestone.id) }}">
+                            <button type="submit" class="btn btn-outline-success btn-sm">
+                                <i class="bi bi-check-circle me-1"></i>Terminer
+                            </button>
+                        </form>
+                        {% endif %}
+                        <form method="post" action="{{ path('app_milestones_delete', {'id': milestone.id}) }}" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ milestone.id) }}">
+                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce jalon ?')">
+                                <i class="bi bi-trash me-1"></i>Supprimer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="text-center py-5">
+                <i class="bi bi-flag display-1 text-muted"></i>
+                <h3 class="mt-3">Aucun jalon trouvé</h3>
+                <p class="text-muted">Commencez par créer votre premier jalon</p>
+                <a href="{{ path('app_milestones_new') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>Créer un jalon
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

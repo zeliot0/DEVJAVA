@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvel Objectif - NEXA{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="goal-card">
+                <div class="goal-header">
+                    <h1 class="goal-title mb-0">Créer un nouvel objectif</h1>
+                </div>
+                
+                <div class="goal-content">
+                    {{ include('goal/_form.html.twig') }}
+                    
+                    <div class="mt-4">
+                        <a href="{{ path('app_goal_index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Retour à la liste
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Jalon - NEXA{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="goal-card">
+                <div class="goal-header">
+                    <h1 class="goal-title mb-0">Modifier le jalon</h1>
+                </div>
+                
+                <div class="goal-content">
+                    {{ include('milestones/_form.html.twig') }}
+                    
+                    <div class="mt-4 d-flex justify-content-between">
+                        <a href="{{ path('app_milestones_index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Retour à la liste
+                        </a>
+                        
+                        {{ include('milestones/_delete_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

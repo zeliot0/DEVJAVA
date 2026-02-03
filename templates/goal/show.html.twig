@@ -1,0 +1,158 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails Objectif - NEXA{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="goal-card" style="border-left-color: {{ goal.colorGoa ?? '#7c3aed' }};">
+                <div class="goal-header">
+                    <div class="flex-grow-1">
+                        <h1 class="goal-title mb-2">{{ goal.titleGoa }}</h1>
+                        <div class="goal-meta">
+                            <span class="goal-meta-item">
+                                <i class="bi bi-calendar"></i>
+                                Du {{ goal.dateDebutGoa|date('d/m/Y') }} au {{ goal.dateFinalGoa|date('d/m/Y') }}
+                            </span>
+                            <span class="goal-meta-item">
+                                <i class="bi bi-tag"></i>
+                                {{ goal.categoryGoa }}
+                            </span>
+                        </div>
+                    </div>
+                    <span class="goal-badge badge-{{ goal.priorityGoa|lower }}">
+                        {{ goal.priorityGoa }}
+                    </span>
+                </div>
+                
+                <div class="goal-content">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <!-- Description -->
+                            <h5 class="fw-semibold mb-3">Description</h5>
+                            <p class="goal-description mb-4">{{ goal.descriptionGoa }}</p>
+                            
+                            <!-- Progress -->
+                            <div class="progress-container mb-4">
+                                <div class="progress-label">
+                                    <span>Progression</span>
+                                    <span>{{ goal.progressGoa ?? 0 }}%</span>
+                                </div>
+                                <div class="progress-bar-custom">
+                                    <div class="progress-fill" 
+                                         style="width: {{ goal.progressGoa ?? 0 }}%; background-color: {{ goal.colorGoa ?? '#7c3aed' }};">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Status -->
+                            <div class="mb-4">
+                                <h6 class="fw-semibold mb-2">Statut</h6>
+                                <span class="status-badge status-{{ goal.statusGoa|lower|replace({' ': '-', 'à': 'todo', 'é': 'e'}) }}">
+                                    {{ goal.statusGoa }}
+                                </span>
+                            </div>
+                            
+                            <!-- Notes -->
+                            {% if goal.notesGoa %}
+                            <div class="mb-4">
+                                <h6 class="fw-semibold mb-2">Notes</h6>
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <p class="card-text">{{ goal.notesGoa }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <!-- Details Card -->
+                            <div class="card">
+                                <div class="card-header bg-transparent">
+                                    <h6 class="mb-0 fw-semibold">Détails</h6>
+                                </div>
+                                <div class="card-body">
+                                    <dl class="row mb-0">
+                                        <dt class="col-sm-5">ID</dt>
+                                        <dd class="col-sm-7">{{ goal.id }}</dd>
+                                        
+                                        <dt class="col-sm-5">Catégorie</dt>
+                                        <dd class="col-sm-7">{{ goal.categoryGoa }}</dd>
+                                        
+                                        <dt class="col-sm-5">Priorité</dt>
+                                        <dd class="col-sm-7">
+                                            <span class="badge bg-{{ goal.priorityGoa == 'HAUTE' ? 'danger' : (goal.priorityGoa == 'MEDIUM' ? 'warning' : 'success') }}">
+                                                {{ goal.priorityGoa }}
+                                            </span>
+                                        </dd>
+                                        
+                                        <dt class="col-sm-5">Date début</dt>
+                                        <dd class="col-sm-7">{{ goal.dateDebutGoa|date('d/m/Y') }}</dd>
+                                        
+                                        <dt class="col-sm-5">Date fin</dt>
+                                        <dd class="col-sm-7">{{ goal.dateFinalGoa|date('d/m/Y') }}</dd>
+                                        
+                                        <dt class="col-sm-5">Couleur</dt>
+                                        <dd class="col-sm-7">
+                                            <span class="d-inline-block rounded-circle" style="width: 20px; height: 20px; background-color: {{ goal.colorGoa ?? '#7c3aed' }};"></span>
+                                            <span class="ms-2">{{ goal.colorGoa ?? '#7c3aed' }}</span>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                            
+                            <!-- Milestones -->
+                            {% if goal.milestones|length > 0 %}
+                            <div class="card mt-3">
+                                <div class="card-header bg-transparent">
+                                    <h6 class="mb-0 fw-semibold">Jalons ({{ goal.milestones|length }})</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="list-group list-group-flush">
+                                        {% for milestone in goal.milestones %}
+                                        <div class="list-group-item px-0 py-2 border-0">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>{{ milestone.titleGoa }}</span>
+                                                <small class="text-muted">{{ milestone.completedatGoa|date('d/m/Y') }}</small>
+                                            </div>
+                                            {% if milestone.descriptionGoa %}
+                                            <small class="text-muted">{{ milestone.descriptionGoa|slice(0, 50) }}{% if milestone.descriptionGoa|length > 50 %}...{% endif %}</small>
+                                            {% endif %}
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Actions -->
+                    <div class="action-buttons mt-4">
+                        <a href="{{ path('app_goal_edit', {'id_g': goal.id}) }}" class="btn btn-primary">
+                            <i class="bi bi-pencil me-2"></i>Modifier
+                        </a>
+                        <a href="{{ path('app_goal_index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Retour à la liste
+                        </a>
+                        <form method="post" action="{{ path('app_goal_delete', {'id_g': goal.id}) }}" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ goal.id) }}">
+                            <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet objectif ?')">
+                                <i class="bi bi-trash me-2"></i>Supprimer
+                            </button>
+                        </form>
+                        <form method="post" action="{{ path('app_goal_archive', {'id_g': goal.id}) }}" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('archive' ~ goal.id) }}">
+                            <button type="submit" class="btn btn-outline-warning">
+                                <i class="bi bi-archive me-2"></i>Archiver
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

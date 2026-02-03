@@ -1,0 +1,35 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate', 'data-validation': 'true'}}) }}
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            {{ form_label(form.titleMilestone) }}
+            {{ form_widget(form.titleMilestone, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+            <div class="invalid-feedback">
+                Veuillez saisir un titre.
+            </div>
+        </div>
+        
+        <div class="col-md-12 mb-3">
+            {{ form_label(form.descriptionMilestone) }}
+            {{ form_widget(form.descriptionMilestone, {'attr': {'class': 'form-control', 'rows': 3, 'required': 'required'}}) }}
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            {{ form_label(form.dueDate) }}
+            {{ form_widget(form.dueDate, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            {{ form_label(form.goal) }}
+            {{ form_widget(form.goal, {'attr': {'class': 'form-select', 'required': 'required'}}) }}
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-circle me-2"></i>{{ button_label|default('Enregistrer') }}
+        </button>
+        <a href="{{ path('app_milestones_index') }}" class="btn btn-outline-secondary ms-2">
+            <i class="bi bi-x-circle me-2"></i>Annuler
+        </a>
+    </div>
+{{ form_end(form) }}

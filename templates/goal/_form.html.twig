@@ -1,0 +1,152 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form_label(form.titleGoa, 'Titre *') }}
+            {{ form_widget(form.titleGoa, {'attr': {
+                'class': 'form-control' ~ (form.titleGoa.vars.errors|length > 0 ? ' is-invalid' : ''),
+                'required': 'required',
+                'minlength': 3,
+                'maxlength': 100
+            }}) }}
+            {% if form.titleGoa.vars.errors|length > 0 %}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.titleGoa) }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            {{ form_label(form.priorityGoa, 'Priorité *') }}
+            {{ form_widget(form.priorityGoa, {'attr': {
+                'class': 'form-select' ~ (form.priorityGoa.vars.errors|length > 0 ? ' is-invalid' : ''),
+                'required': 'required'
+            }}) }}
+            {% if form.priorityGoa.vars.errors|length > 0 %}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.priorityGoa) }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-12 mb-3">
+            {{ form_label(form.descriptionGoa, 'Description *') }}
+            {{ form_widget(form.descriptionGoa, {'attr': {
+                'class': 'form-control' ~ (form.descriptionGoa.vars.errors|length > 0 ? ' is-invalid' : ''),
+                'required': 'required',
+                'minlength': 10,
+                'maxlength': 255,
+                'rows': 3
+            }}) }}
+            {% if form.descriptionGoa.vars.errors|length > 0 %}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.descriptionGoa) }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            {{ form_label(form.dateDebutGoa, 'Date de début *') }}
+            {{ form_widget(form.dateDebutGoa, {'attr': {
+                'class': 'form-control' ~ (form.dateDebutGoa.vars.errors|length > 0 ? ' is-invalid' : ''),
+                'required': 'required'
+            }}) }}
+            {% if form.dateDebutGoa.vars.errors|length > 0 %}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.dateDebutGoa) }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            {{ form_label(form.dateFinalGoa, 'Date de fin *') }}
+            {{ form_widget(form.dateFinalGoa, {'attr': {
+                'class': 'form-control' ~ (form.dateFinalGoa.vars.errors|length > 0 ? ' is-invalid' : ''),
+                'required': 'required'
+            }}) }}
+            {% if form.dateFinalGoa.vars.errors|length > 0 %}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.dateFinalGoa) }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            {{ form_label(form.categoryGoa, 'Catégorie *') }}
+            {{ form_widget(form.categoryGoa, {'attr': {
+                'class': 'form-control' ~ (form.categoryGoa.vars.errors|length > 0 ? ' is-invalid' : ''),
+                'required': 'required',
+                'minlength': 2,
+                'maxlength': 50
+            }}) }}
+            {% if form.categoryGoa.vars.errors|length > 0 %}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.categoryGoa) }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            {{ form_label(form.statusGoa, 'Statut *') }}
+            {{ form_widget(form.statusGoa, {'attr': {
+                'class': 'form-select' ~ (form.statusGoa.vars.errors|length > 0 ? ' is-invalid' : ''),
+                'required': 'required'
+            }}) }}
+            {% if form.statusGoa.vars.errors|length > 0 %}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.statusGoa) }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            {{ form_label(form.progressGoa, 'Progression (%)') }}
+            {{ form_widget(form.progressGoa, {'attr': {
+                'class': 'form-control' ~ (form.progressGoa.vars.errors|length > 0 ? ' is-invalid' : ''),
+                'min': 0,
+                'max': 100,
+                'step': 0.1
+            }}) }}
+            {% if form.progressGoa.vars.errors|length > 0 %}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.progressGoa) }}
+                </div>
+            {% endif %}
+            <small class="form-text text-muted">Entre 0 et 100%</small>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            {{ form_label(form.colorGoa, 'Couleur') }}
+            {{ form_widget(form.colorGoa, {'attr': {
+                'class': 'form-control form-control-color' ~ (form.colorGoa.vars.errors|length > 0 ? ' is-invalid' : '')
+            }}) }}
+            {% if form.colorGoa.vars.errors|length > 0 %}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.colorGoa) }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-12 mb-3">
+            {{ form_label(form.notesGoa, 'Notes') }}
+            {{ form_widget(form.notesGoa, {'attr': {
+                'class': 'form-control' ~ (form.notesGoa.vars.errors|length > 0 ? ' is-invalid' : ''),
+                'rows': 4,
+                'maxlength': 1000
+            }}) }}
+            {% if form.notesGoa.vars.errors|length > 0 %}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.notesGoa) }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-circle me-2"></i>{{ button_label|default('Enregistrer') }}
+        </button>
+        <a href="{{ path('app_goal_index') }}" class="btn btn-outline-secondary ms-2">
+            <i class="bi bi-x-circle me-2"></i>Annuler
+        </a>
+    </div>
+{{ form_end(form) }}
