@@ -1,0 +1,558 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}NEXA – Task Hub{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/nexa-nav.css">
+
+<div class="layout layout-pro" id="appLayout">
+ 
+  <!-- 🚀 Premium Navigation System -->
+  <div class="backdrop-new" id="backdropNav" aria-hidden="true"></div>
+ 
+  <header class="navbar-custom" id="topbarNav">
+    <div class="logo-new">NEXA</div>
+ 
+    <nav class="desktop-nav" aria-label="Main Navigation">
+      <div class="nav-pill-new">
+        <a href="#" class="active" id="nav_1">Tasks</a>
+        <a href="#" id="nav_2">Planning</a>
+        <a href="#" id="nav_3">Analytics</a>
+        <a href="#" id="nav_4">Community</a>
+        <a href="#" id="nav_5">Settings</a>
+      </div>
+    </nav>
+ 
+    <div class="header-actions-new">
+      <form class="search-new" id="searchFormNav" autocomplete="off">
+        <i class="fa-solid fa-magnifying-glass" style="opacity:0.6"></i>
+        <input id="searchInputNav" type="search" placeholder="Search..." />
+        <button class="search-btn-new" type="submit"><i class="fa-solid fa-arrow-right"></i></button>
+      </form>
+ 
+      <div class="lang-switch-new">
+        <button class="lang-btn-new" id="langBtnNav">
+          <i class="fa-solid fa-globe"></i>
+          <span id="currentLangNav">FR</span>
+        </button>
+        <div class="lang-menu-new" id="langMenuNav">
+          <div data-lang="fr">🇫🇷 Français</div>
+          <div data-lang="en">🇬🇧 English</div>
+          <div data-lang="ar">🇸🇦 العربية</div>
+        </div>
+      </div>
+ 
+      <button class="icon-btn" id="themeToggleNav"><i class="fa-solid fa-moon"></i></button>
+      <button class="icon-btn burger-new" id="menuBtnNav"><i class="fa-solid fa-bars"></i></button>
+      <button class="cta-new">Go Pro</button>
+    </div>
+  </header>
+ 
+  <!-- 🕊️ Solidarity Banner -->
+  <div class="solidarity-banner" id="bannerNav">
+    <div class="solidarity-track" id="bannerTrackNav">
+      <div class="solidarity-item">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg" alt="Palestine">
+        <span id="bannerTextNav"><strong>Stand for Freedom</strong> • Justice • Dignity • Humanity</span>
+      </div>
+      <div class="solidarity-item" aria-hidden="true">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg" alt="">
+        <span id="bannerTextCloneNav"><strong>Stand for Freedom</strong> • Justice • Dignity • Humanity</span>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- 📱 Mobile Navigation Drawer -->
+  <aside class="drawer-new" id="drawerNav">
+    <div class="drawer-top-new">
+      <div class="drawer-title-new" id="drawerTitleNav">NEXA</div>
+      <button class="icon-btn" id="closeDrawerNav"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <form class="search-new" id="searchFormMobileNav" style="display:flex; min-width:unset">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input id="searchInputMobileNav" type="search" placeholder="Search..." />
+    </form>
+    <nav class="drawer-nav-new">
+      <a href="#" id="mnav_1">Tasks</a>
+      <a href="#" id="mnav_2">Planning</a>
+      <a href="#" id="mnav_3">Analytics</a>
+      <a href="#" id="mnav_4">Community</a>
+      <a href="#" id="mnav_5">Settings</a>
+    </nav>
+    <button class="cta-new" style="margin-top:auto">Go Pro</button>
+  </aside>
+ 
+  <div class="toast-new" id="toastNav"></div>
+
+
+
+  <main class="main main-pro">
+
+    <div class="topbar topbar-pro">
+      <div class="top-left">
+        <button class="btn icon-only" id="topSidebarBtn" title="Afficher/Masquer la taskbar">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <div class="brand-pro">
+          <div class="brand-name">NEXA</div>
+          <div class="brand-sub">Task Hub</div>
+        </div>
+      </div>
+
+      <div class="top-right">
+        <button class="btn subtle" type="button">
+          <i class="fa-regular fa-calendar"></i> Today
+        </button>
+
+        <div class="seg">
+          <button class="seg-btn is-active" type="button">
+            <i class="fa-solid fa-table-columns"></i> Board
+          </button>
+        </div>
+
+        <button class="btn primary" id="newBtn">
+          <i class="fa-solid fa-plus"></i> Nouvelle tâche
+        </button>
+
+        <button class="btn primary ghost" id="newCatBtn" type="button">
+          <i class="fa-solid fa-folder-plus"></i> Nouvelle catégorie
+        </button>
+
+        <button class="toggle" id="themeToggle" title="Changer de thème">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <section class="center">
+
+        <div class="toolbar toolbar-pro">
+          <div class="field field-pro">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="searchInput" placeholder="Rechercher (titre, description)..." />
+            <button id="voiceBtn" class="icon-btn icon-btn-pro" type="button" title="Recherche vocale">
+              <i class="fa-solid fa-microphone"></i>
+            </button>
+          </div>
+
+          <div class="field field-pro">
+            <i class="fa-solid fa-flag"></i>
+            <select id="prioFilter">
+              <option value="all">Toutes priorités</option>
+              <option value="low">Basse</option>
+              <option value="med">Moyenne</option>
+              <option value="high">Haute</option>
+            </select>
+          </div>
+
+          <div class="field field-pro">
+            <i class="fa-solid fa-layer-group"></i>
+            <select id="statusFilter">
+              <option value="all">Tous statuts</option>
+              <option value="todo">À faire</option>
+              <option value="doing">En cours</option>
+              <option value="done">Terminé</option>
+            </select>
+          </div>
+
+          <button class="btn subtle" id="clearBtn">
+            <i class="fa-solid fa-broom"></i> Reset filtres
+          </button>
+        </div>
+
+        <div class="kpis kpis-pro">
+          <div class="kpi kpi-pro">
+            <div class="kpi-title">Total</div>
+            <div class="kpi-value" id="kpiTotal">0</div>
+          </div>
+
+          <div class="kpi kpi-pro">
+            <div class="kpi-title">En cours</div>
+            <div class="kpi-value" id="kpiDoing">0</div>
+          </div>
+
+          <div class="kpi kpi-pro">
+            <div class="kpi-title">Priorité haute</div>
+            <div class="kpi-value" id="kpiHigh">0</div>
+          </div>
+        </div>
+
+        <div class="board board-pro">
+          <div class="col col-pro" data-col="todo">
+            <div class="col-header col-header-pro">
+              <div class="col-title"><span class="dot todo"></span> À faire</div>
+              <div class="col-count" id="countTodo">0</div>
+            </div>
+            <div class="dropzone" id="zone-todo"></div>
+          </div>
+
+          <div class="col col-pro" data-col="doing">
+            <div class="col-header col-header-pro">
+              <div class="col-title"><span class="dot doing"></span> En cours</div>
+              <div class="col-count" id="countDoing">0</div>
+            </div>
+            <div class="dropzone" id="zone-doing"></div>
+          </div>
+
+          <div class="col col-pro" data-col="done">
+            <div class="col-header col-header-pro">
+              <div class="col-title"><span class="dot done"></span> Terminé</div>
+              <div class="col-count" id="countDone">0</div>
+            </div>
+            <div class="dropzone" id="zone-done"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- DRAWER TASK -->
+    <div class="overlay" id="overlay"></div>
+    <aside class="drawer" id="drawer">
+      <div class="drawer-head">
+        <div>
+          <h3 class="drawer-title" id="drawerTitle">Nouvelle tâche</h3>
+          <div class="drawer-sub" id="drawerSub">Champs liés à la base de données</div>
+        </div>
+        <button class="icon-btn" id="closeDrawer" title="Fermer"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="drawer-body">
+        <div class="field"><i class="fa-solid fa-heading"></i><input id="fTitle" placeholder="Titre" /></div>
+        <div class="field"><i class="fa-solid fa-align-left"></i><textarea id="fDesc" placeholder="Description"></textarea></div>
+
+        <div class="grid2">
+          <div class="field"><i class="fa-solid fa-flag"></i>
+            <select id="fPrio">
+              <option value="low">Basse</option>
+              <option value="med" selected>Moyenne</option>
+              <option value="high">Haute</option>
+            </select>
+          </div>
+
+          <div class="field"><i class="fa-solid fa-layer-group"></i>
+            <select id="fStatus">
+              <option value="todo">À faire</option>
+              <option value="doing">En cours</option>
+              <option value="done">Terminé</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="field"><i class="fa-regular fa-calendar"></i><input id="fDue" type="date" /></div>
+
+          <div class="field"><i class="fa-solid fa-folder"></i>
+            <select id="fCategory">
+              <option value="">Aucune catégorie</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-foot">
+        <button class="btn" id="deleteBtn" style="display:none;">
+          <i class="fa-solid fa-trash"></i> Supprimer
+        </button>
+
+        <button class="btn" id="editBtn" style="display:none;">
+          <i class="fa-regular fa-pen-to-square"></i> Modifier
+        </button>
+
+        <button class="btn" id="cancelBtn">
+          <i class="fa-regular fa-circle-xmark"></i> Annuler
+        </button>
+
+        <button class="btn primary" id="saveBtn">
+          <i class="fa-solid fa-check"></i> Enregistrer
+        </button>
+      </div>
+    </aside>
+
+    <!-- DRAWER CATEGORY -->
+    <div class="overlay" id="catOverlay"></div>
+    <aside class="drawer" id="catDrawer">
+      <div class="drawer-head">
+        <div>
+          <h3 class="drawer-title">Nouvelle catégorie</h3>
+          <div class="drawer-sub">Champs liés à la base de données</div>
+        </div>
+        <button class="icon-btn" id="closeCatDrawer" title="Fermer" type="button">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="drawer-body">
+        <div class="field">
+          <i class="fa-solid fa-heading"></i>
+          <input id="cat_name" placeholder="Nom (name) *" />
+        </div>
+
+        <div class="field">
+          <i class="fa-solid fa-align-left"></i>
+          <textarea id="cat_description" placeholder="Description (optionnel)"></textarea>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <i class="fa-solid fa-palette"></i>
+            <input id="cat_color" type="color" value="#7c3aed" />
+          </div>
+
+          <div class="field">
+            <i class="fa-solid fa-icons"></i>
+            <input id="cat_icon" placeholder="Icône (ex: fa-solid fa-folder)" />
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <i class="fa-solid fa-toggle-on"></i>
+            <select id="cat_isActive">
+              <option value="1" selected>Active</option>
+              <option value="0">Inactive</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <i class="fa-solid fa-eye"></i>
+            <select id="cat_visibility">
+              <option value="">(null)</option>
+              <option value="public">public</option>
+              <option value="private">private</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <i class="fa-solid fa-arrow-up-1-9"></i>
+            <input id="cat_position" type="number" placeholder="Position" />
+          </div>
+
+          <div class="field">
+            <i class="fa-solid fa-list-check"></i>
+            <input id="cat_taskLimit" type="number" placeholder="Task limit" />
+          </div>
+        </div>
+
+        <div class="field">
+          <i class="fa-solid fa-hashtag"></i>
+          <input id="cat_no" placeholder="No (ex: CAT-0001) (optionnel)" />
+        </div>
+      </div>
+
+      <div class="drawer-foot">
+        <button class="btn" id="cancelCatBtn" type="button">
+          <i class="fa-regular fa-circle-xmark"></i> Annuler
+        </button>
+
+        <button class="btn primary" id="saveCatBtn" type="button">
+          <i class="fa-solid fa-check"></i> Enregistrer
+        </button>
+      </div>
+    </aside>
+
+    {# =======================
+       DRAWER EXECUTIONS
+       ======================= #}
+    <div class="overlay" id="exeOverlay"></div>
+
+    <aside class="drawer" id="exeDrawer" aria-hidden="true">
+      <div class="drawer-head">
+        <div>
+          <h3 class="drawer-title">
+            <i class="fa-solid fa-scroll"></i> Journal d’exécution
+          </h3>
+          <div class="drawer-sub">
+            Task: <b id="exeTaskTitle">—</b>
+          </div>
+        </div>
+
+        <button class="icon-btn" id="closeExeDrawer" title="Fermer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="drawer-body">
+
+        <div class="kpis kpis-pro" style="margin:0 0 12px;">
+          <div class="kpi kpi-pro">
+            <div class="kpi-title">Total</div>
+            <div class="kpi-value" id="exeKpiTotal">0</div>
+          </div>
+          <div class="kpi kpi-pro">
+            <div class="kpi-title">Doing</div>
+            <div class="kpi-value" id="exeKpiDoing">0</div>
+          </div>
+          <div class="kpi kpi-pro">
+            <div class="kpi-title">Done</div>
+            <div class="kpi-value" id="exeKpiDone">0</div>
+          </div>
+        </div>
+
+        <div class="toolbar toolbar-pro" style="margin:0 0 10px;">
+          <div class="field field-pro">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="exeSearch" placeholder="Rechercher une exécution..." />
+          </div>
+
+          <div class="field field-pro">
+            <i class="fa-solid fa-layer-group"></i>
+            <select id="exeStatusFilter">
+              <option value="all">Tous</option>
+              <option value="todo">À faire</option>
+              <option value="doing">En cours</option>
+              <option value="done">Terminé</option>
+            </select>
+          </div>
+        </div>
+
+        {# ✅ give ID so we can hide it in consult mode #}
+        <div id="exeCreateCard" class="card" style="padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.08); margin-bottom:12px;">
+          <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;">
+            <div style="font-weight:700;">➕ Nouvelle exécution</div>
+            <div style="opacity:.7;font-size:.9rem;">(liée à cette task)</div>
+          </div>
+
+          <div class="field"><i class="fa-solid fa-heading"></i>
+            <input id="exeTitle" placeholder="Titre de l’exécution" />
+          </div>
+
+          <div class="field"><i class="fa-solid fa-align-left"></i>
+            <textarea id="exeDesc" placeholder="Description"></textarea>
+          </div>
+
+          <div class="grid2">
+            <div class="field"><i class="fa-solid fa-layer-group"></i>
+              <select id="exeStatus">
+                <option value="todo">À faire</option>
+                <option value="doing">En cours</option>
+                <option value="done">Terminé</option>
+              </select>
+            </div>
+
+            <button class="btn primary" id="exeSaveBtn" type="button">
+              <i class="fa-solid fa-check"></i> Ajouter
+            </button>
+          </div>
+
+          <input type="hidden" id="exeEditId" value="">
+        </div>
+
+        <div id="exeList" style="display:flex;flex-direction:column;gap:10px;"></div>
+      </div>
+
+      <div class="drawer-foot">
+        <button class="btn" id="exeCloseBtn" type="button">
+          <i class="fa-regular fa-circle-xmark"></i> Fermer
+        </button>
+      </div>
+    </aside>
+
+    <style>
+      .exe-item{
+        padding:12px;
+        border-radius:16px;
+        border:1px solid rgba(255,255,255,.08);
+        background: rgba(255,255,255,.03);
+        display:flex;
+        gap:10px;
+        align-items:flex-start;
+        justify-content:space-between;
+      }
+      .exe-left{ display:flex; gap:10px; align-items:flex-start; }
+      .exe-badge{
+        font-size:.75rem;
+        padding:4px 8px;
+        border-radius:999px;
+        border:1px solid rgba(255,255,255,.14);
+        opacity:.9;
+        white-space:nowrap;
+      }
+      .exe-actions{ display:flex; gap:8px; }
+      .mini-btn{
+        border-radius:12px;
+        padding:8px 10px;
+        border:1px solid rgba(255,255,255,.12);
+        background: rgba(255,255,255,.04);
+        cursor:pointer;
+      }
+      .mini-btn:hover{ transform: translateY(-1px); }
+
+      /* ✅ VIEW ONLY MODE */
+      #exeDrawer.view-only #exeCreateCard{ display:none !important; }
+      #exeDrawer.view-only .exe-actions{ display:none !important; }
+    </style>
+
+    <div id="toastHost" class="toast-host" aria-live="polite" aria-atomic="true"></div>
+
+    <style>
+      #voiceBtn.listening{
+        background: rgba(255,0,0,.08);
+        border: 1px solid rgba(255,0,0,.35);
+      }
+      .toast-host{
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        z-index: 999999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        pointer-events: none;
+      }
+      .toast{
+        pointer-events: auto;
+        min-width: 280px;
+        max-width: 460px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: rgba(20, 20, 24, .92);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,.10);
+        box-shadow: 0 18px 45px rgba(0,0,0,.35);
+        backdrop-filter: blur(10px);
+        display: grid;
+        grid-template-columns: 18px 1fr 24px;
+        gap: 10px;
+        align-items: start;
+      }
+    </style>
+
+    <script>
+      window.NEXA_API = {
+        list: "{{ path('api_tasks_list') }}",
+        create: "{{ path('api_tasks_create') }}",
+        updateBase: "/api/tasks",
+        deleteBase: "/api/tasks",
+
+        /* ✅ FIX route problem: hardcode endpoints */
+        categories: "/api/categories",
+        categoriesCreate: "/api/categories",
+
+        /* ✅ EXECUTIONS */
+        exeList: "/api/executions",
+        exeCreate: "/api/executions",
+        exeUpdateBase: "/api/executions",
+        exeDeleteBase: "/api/executions"
+      };
+    </script>
+
+    <script src="/assets/board.js"></script>
+
+    {# ✅ Vue for the eye button #}
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+    {# ✅ executions drawer logic (no injection) #}
+    <script src="/assets/executions.js"></script>
+
+    <script src="/assets/nexa-nav.js"></script>
+    <script src="/assets/executions-consult-vue.js"></script>
+
+  </main>
+</div>
+{% endblock %}
