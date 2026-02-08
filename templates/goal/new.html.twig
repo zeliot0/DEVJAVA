@@ -1,27 +1,107 @@
+{# templates/goal/new.html.twig - FIXED #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Nouvel Objectif - NEXA{% endblock %}
+{% block title %}Nouvel Objectif{% endblock %}
 
 {% block body %}
-<div class="container-fluid">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="goal-card">
-                <div class="goal-header">
-                    <h1 class="goal-title mb-0">Créer un nouvel objectif</h1>
-                </div>
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2 mb-1"><i class="fas fa-plus-circle me-2"></i>Créer un nouvel objectif</h1>
+            <p class="text-muted mb-0">Remplissez les détails de votre nouvel objectif</p>
+        </div>
+        <a href="{{ path('app_goal_index') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Retour
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                {{ form_errors(form) }}
                 
-                <div class="goal-content">
-                    {{ include('goal/_form.html.twig') }}
-                    
-                    <div class="mt-4">
-                        <a href="{{ path('app_goal_index') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left me-2"></i>Retour à la liste
-                        </a>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        {{ form_label(form.titleGoa, 'Titre*', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                        {{ form_widget(form.titleGoa, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Apprendre Symfony', 'required': 'required'}}) }}
+                        <div class="form-text">Donnez un titre clair à votre objectif</div>
+                        {{ form_errors(form.titleGoa) }}
                     </div>
                 </div>
-            </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form_label(form.dateDebutGoa, 'Date de début*', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                        {{ form_widget(form.dateDebutGoa, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                        {{ form_errors(form.dateDebutGoa) }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form_label(form.dateFinalGoa, 'Date de fin*', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                        {{ form_widget(form.dateFinalGoa, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                        {{ form_errors(form.dateFinalGoa) }}
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    {{ form_label(form.descriptionGoa, 'Description', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                    {{ form_widget(form.descriptionGoa, {'attr': {'class': 'form-control', 'rows': 3, 'placeholder': 'Décrivez votre objectif en détail...'}}) }}
+                    <div class="form-text">Décrivez ce que vous souhaitez accomplir</div>
+                    {{ form_errors(form.descriptionGoa) }}
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        {{ form_label(form.categoryGoa, 'Catégorie*', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                        {{ form_widget(form.categoryGoa, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                        {{ form_errors(form.categoryGoa) }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        {{ form_label(form.priorityGoa, 'Priorité*', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                        {{ form_widget(form.priorityGoa, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                        {{ form_errors(form.priorityGoa) }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        {{ form_label(form.statusGoa, 'Statut*', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                        {{ form_widget(form.statusGoa, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                        {{ form_errors(form.statusGoa) }}
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form_label(form.progressGoa, 'Progression (%)', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                        {{ form_widget(form.progressGoa, {'attr': {'class': 'form-control', 'min': '0', 'max': '100', 'type': 'number'}}) }}
+                        <div class="form-text">Progression actuelle de 0 à 100%</div>
+                        {{ form_errors(form.progressGoa) }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form_label(form.colorGoa, 'Couleur', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                        <div class="d-flex align-items-center gap-3">
+                            {{ form_widget(form.colorGoa, {'attr': {'class': 'form-control form-control-color w-auto', 'type': 'color', 'title': 'Choisissez une couleur'}}) }}
+                            <div class="form-text">Couleur d'identification</div>
+                        </div>
+                        {{ form_errors(form.colorGoa) }}
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    {{ form_label(form.notesGoa, 'Notes', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                    {{ form_widget(form.notesGoa, {'attr': {'class': 'form-control', 'rows': 2, 'placeholder': 'Notes additionnelles...'}}) }}
+                    <div class="form-text">Informations complémentaires optionnelles</div>
+                    {{ form_errors(form.notesGoa) }}
+                </div>
+                
+                <div class="d-flex gap-2 justify-content-end mt-4 pt-3 border-top">
+                    <a href="{{ path('app_goal_index') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-times me-1"></i> Annuler
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-check me-1"></i> Créer l'objectif
+                    </button>
+                </div>
+            {{ form_end(form) }}
         </div>
     </div>
 </div>
+
 {% endblock %}

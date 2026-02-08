@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ motivation.id ? 'Modifier' : 'Nouvelle' }} Motivation - GOALS{% endblock %}
+
+{% block body %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="nexa-card p-4">
+            <h1 class="fw-bold mb-4">
+                <i class="bi bi-emoji-smile"></i> 
+                {{ motivation.id ? 'Modifier la motivation' : 'Créer une nouvelle motivation' }}
+            </h1>
+            
+            {{ form_start(form) }}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form_label(form.title) }}
+                        {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form_label(form.mood) }}
+                        {{ form_widget(form.mood, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 4}}) }}
+                    <div class="form-text">Écrivez un message encourageant et motivant</div>
+                </div>
+                
+                <div class="mb-3">
+                    {{ form_label(form.image) }}
+                    {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
+                    <div class="form-text">URL d'une image inspirante (optionnel)</div>
+                </div>
+                
+                
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('app_motivation_index') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Annuler
+                    </a>
+                    <button type="submit" class="btn nexa-btn-primary">
+                        <i class="bi bi-save"></i> {{ motivation.id ? 'Mettre à jour' : 'Créer' }}
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,63 +1,69 @@
+{# templates/goal/show.html.twig - Version corrigée #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Détails Objectif - NEXA{% endblock %}
+{% block title %}Détails de l'objectif - {{ goal.titleGoa }}{% endblock %}
 
 {% block body %}
-<div class="container-fluid">
+<div class="container-fluid py-4">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="goal-card" style="border-left-color: {{ goal.colorGoa ?? '#7c3aed' }};">
-                <div class="goal-header">
-                    <div class="flex-grow-1">
-                        <h1 class="goal-title mb-2">{{ goal.titleGoa }}</h1>
-                        <div class="goal-meta">
-                            <span class="goal-meta-item">
-                                <i class="bi bi-calendar"></i>
-                                Du {{ goal.dateDebutGoa|date('d/m/Y') }} au {{ goal.dateFinalGoa|date('d/m/Y') }}
-                            </span>
-                            <span class="goal-meta-item">
-                                <i class="bi bi-tag"></i>
-                                {{ goal.categoryGoa }}
-                            </span>
+        <div class="col-md-10">
+            <!-- En-tête avec boutons d'action -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <a href="{{ path('app_goal_index') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+                    </a>
+                </div>
+                <div class="btn-group">
+                    <a href="{{ path('app_goal_edit', {'id_g': goal.getIdGoa()}) }}" 
+                       class="btn btn-warning">
+                        <i class="fas fa-edit me-1"></i> Modifier
+                    </a>
+                    {{ include('goal/_delete_form.html.twig') }}
+                </div>
+            </div>
+
+            <!-- Carte principale de l'objectif -->
+            <div class="card shadow-lg border-0">
+                <!-- En-tête coloré -->
+                <div class="card-header py-3" style="border-left: 5px solid {{ goal.colorGoa ?? '#7c3aed' }}; background-color: rgba(124, 58, 237, 0.1);">
+                    <div class="d-flex align-items-center">
+                        {% if goal.colorGoa %}
+                        <div class="color-indicator me-3" 
+                             style="background-color: {{ goal.colorGoa }};"></div>
+                        {% endif %}
+                        <div class="flex-grow-1">
+                            <h1 class="h3 mb-1">{{ goal.titleGoa }}</h1>
+                            <div class="text-muted">
+                                <i class="fas fa-tag me-1"></i>
+                                <span class="badge bg-light text-dark">{{ goal.categoryGoa }}</span>
+                            </div>
                         </div>
                     </div>
-                    <span class="goal-badge badge-{{ goal.priorityGoa|lower }}">
-                        {{ goal.priorityGoa }}
-                    </span>
                 </div>
-                
-                <div class="goal-content">
+
+                <div class="card-body">
                     <div class="row">
+                        <!-- Colonne de gauche : Informations principales -->
                         <div class="col-md-8">
                             <!-- Description -->
-                            <h5 class="fw-semibold mb-3">Description</h5>
-                            <p class="goal-description mb-4">{{ goal.descriptionGoa }}</p>
-                            
-                            <!-- Progress -->
-                            <div class="progress-container mb-4">
-                                <div class="progress-label">
-                                    <span>Progression</span>
-                                    <span>{{ goal.progressGoa ?? 0 }}%</span>
-                                </div>
-                                <div class="progress-bar-custom">
-                                    <div class="progress-fill" 
-                                         style="width: {{ goal.progressGoa ?? 0 }}%; background-color: {{ goal.colorGoa ?? '#7c3aed' }};">
+                            <div class="mb-5">
+                                <h4 class="mb-3"><i class="fas fa-align-left text-primary me-2"></i>Description</h4>
+                                {% if goal.descriptionGoa %}
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <p class="card-text">{{ goal.descriptionGoa }}</p>
+                                        </div>
                                     </div>
-                                </div>
+                                {% else %}
+                                    <p class="text-muted fst-italic">Aucune description fournie</p>
+                                {% endif %}
                             </div>
-                            
-                            <!-- Status -->
-                            <div class="mb-4">
-                                <h6 class="fw-semibold mb-2">Statut</h6>
-                                <span class="status-badge status-{{ goal.statusGoa|lower|replace({' ': '-', 'à': 'todo', 'é': 'e'}) }}">
-                                    {{ goal.statusGoa }}
-                                </span>
-                            </div>
-                            
+
                             <!-- Notes -->
                             {% if goal.notesGoa %}
-                            <div class="mb-4">
-                                <h6 class="fw-semibold mb-2">Notes</h6>
+                            <div class="mb-5">
+                                <h4 class="mb-3"><i class="fas fa-sticky-note text-warning me-2"></i>Notes</h4>
                                 <div class="card bg-light">
                                     <div class="card-body">
                                         <p class="card-text">{{ goal.notesGoa }}</p>
@@ -66,93 +72,162 @@
                             </div>
                             {% endif %}
                         </div>
-                        
+
+                        <!-- Colonne de droite : Métadonnées -->
                         <div class="col-md-4">
-                            <!-- Details Card -->
-                            <div class="card">
-                                <div class="card-header bg-transparent">
-                                    <h6 class="mb-0 fw-semibold">Détails</h6>
+                            <!-- Carte de statut -->
+                            <div class="card mb-4">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Informations</h5>
                                 </div>
                                 <div class="card-body">
-                                    <dl class="row mb-0">
-                                        <dt class="col-sm-5">ID</dt>
-                                        <dd class="col-sm-7">{{ goal.id }}</dd>
-                                        
-                                        <dt class="col-sm-5">Catégorie</dt>
-                                        <dd class="col-sm-7">{{ goal.categoryGoa }}</dd>
-                                        
-                                        <dt class="col-sm-5">Priorité</dt>
-                                        <dd class="col-sm-7">
-                                            <span class="badge bg-{{ goal.priorityGoa == 'HAUTE' ? 'danger' : (goal.priorityGoa == 'MEDIUM' ? 'warning' : 'success') }}">
-                                                {{ goal.priorityGoa }}
-                                            </span>
-                                        </dd>
-                                        
-                                        <dt class="col-sm-5">Date début</dt>
-                                        <dd class="col-sm-7">{{ goal.dateDebutGoa|date('d/m/Y') }}</dd>
-                                        
-                                        <dt class="col-sm-5">Date fin</dt>
-                                        <dd class="col-sm-7">{{ goal.dateFinalGoa|date('d/m/Y') }}</dd>
-                                        
-                                        <dt class="col-sm-5">Couleur</dt>
-                                        <dd class="col-sm-7">
-                                            <span class="d-inline-block rounded-circle" style="width: 20px; height: 20px; background-color: {{ goal.colorGoa ?? '#7c3aed' }};"></span>
-                                            <span class="ms-2">{{ goal.colorGoa ?? '#7c3aed' }}</span>
-                                        </dd>
-                                    </dl>
-                                </div>
-                            </div>
-                            
-                            <!-- Milestones -->
-                            {% if goal.milestones|length > 0 %}
-                            <div class="card mt-3">
-                                <div class="card-header bg-transparent">
-                                    <h6 class="mb-0 fw-semibold">Jalons ({{ goal.milestones|length }})</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="list-group list-group-flush">
-                                        {% for milestone in goal.milestones %}
-                                        <div class="list-group-item px-0 py-2 border-0">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <span>{{ milestone.titleGoa }}</span>
-                                                <small class="text-muted">{{ milestone.completedatGoa|date('d/m/Y') }}</small>
+                                    <!-- Progression -->
+                                    <div class="mb-3">
+                                        <label class="form-label d-block">Progression</label>
+                                        <div class="progress mb-2" style="height: 20px;">
+                                            <div class="progress-bar 
+                                                {% if goal.progressGoa == 100 %}bg-success
+                                                {% elseif goal.progressGoa >= 70 %}bg-info
+                                                {% elseif goal.progressGoa >= 40 %}bg-primary
+                                                {% else %}bg-warning{% endif %}" 
+                                                style="width: {{ goal.progressGoa }}%">
+                                                {{ goal.progressGoa }}%
                                             </div>
-                                            {% if milestone.descriptionGoa %}
-                                            <small class="text-muted">{{ milestone.descriptionGoa|slice(0, 50) }}{% if milestone.descriptionGoa|length > 50 %}...{% endif %}</small>
+                                        </div>
+                                        <small class="text-muted">{{ goal.progressGoa }}% complété</small>
+                                    </div>
+
+                                    <!-- Statut -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Statut</label>
+                                        <div>
+                                            {% if goal.statusGoa == 'DRAFT' %}
+                                                <span class="badge bg-secondary rounded-pill py-2 px-3">
+                                                    <i class="fas fa-file-alt me-1"></i> Brouillon
+                                                </span>
+                                            {% elseif goal.statusGoa == 'IN_PROGRESS' %}
+                                                <span class="badge bg-primary rounded-pill py-2 px-3">
+                                                    <i class="fas fa-spinner me-1"></i> En cours
+                                                </span>
+                                            {% elseif goal.statusGoa == 'COMPLETED' %}
+                                                <span class="badge bg-success rounded-pill py-2 px-3">
+                                                    <i class="fas fa-check-circle me-1"></i> Terminé
+                                                </span>
+                                            {% elseif goal.statusGoa == 'ARCHIVED' %}
+                                                <span class="badge bg-dark rounded-pill py-2 px-3">
+                                                    <i class="fas fa-archive me-1"></i> Archivé
+                                                </span>
                                             {% endif %}
                                         </div>
-                                        {% endfor %}
+                                    </div>
+
+                                    <!-- Priorité -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Priorité</label>
+                                        <div>
+                                            {% if goal.priorityGoa == 'LOW' %}
+                                                <span class="badge bg-light text-dark border rounded-pill py-2 px-3">
+                                                    <i class="fas fa-arrow-down me-1"></i> Basse
+                                                </span>
+                                            {% elseif goal.priorityGoa == 'MEDIUM' %}
+                                                <span class="badge bg-warning text-dark rounded-pill py-2 px-3">
+                                                    <i class="fas fa-minus me-1"></i> Moyenne
+                                                </span>
+                                            {% elseif goal.priorityGoa == 'HIGH' %}
+                                                <span class="badge bg-danger rounded-pill py-2 px-3">
+                                                    <i class="fas fa-arrow-up me-1"></i> Haute
+                                                </span>
+                                            {% elseif goal.priorityGoa == 'URGENT' %}
+                                                <span class="badge bg-dark rounded-pill py-2 px-3">
+                                                    <i class="fas fa-exclamation-triangle me-1"></i> Urgente
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <!-- Dates -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Dates</label>
+                                        <div class="list-group list-group-flush">
+                                            <div class="list-group-item px-0">
+                                                <small class="text-muted">Date de début</small>
+                                                <div>
+                                                    <i class="far fa-calendar-plus text-primary me-1"></i>
+                                                    {% if goal.dateDebutGoa %}
+                                                        {{ goal.dateDebutGoa|date('d/m/Y') }}
+                                                    {% else %}
+                                                        <span class="text-muted">Non définie</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="list-group-item px-0">
+                                                <small class="text-muted">Date de fin</small>
+                                                <div>
+                                                    <i class="far fa-calendar-check text-success me-1"></i>
+                                                    {% if goal.dateFinalGoa %}
+                                                        {{ goal.dateFinalGoa|date('d/m/Y') }}
+                                                        {% if goal.dateFinalGoa < date() and goal.statusGoa != 'COMPLETED' %}
+                                                            <br><small class="text-danger"><i class="fas fa-exclamation-triangle"></i> En retard</small>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <span class="text-muted">Non définie</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- ID seulement -->
+                                    <div class="mt-4 pt-3 border-top">
+                                        <small class="text-muted d-block">
+                                            <i class="fas fa-hashtag me-1"></i> ID: {{ goal.getIdGoa() }}
+                                        </small>
                                     </div>
                                 </div>
                             </div>
-                            {% endif %}
                         </div>
-                    </div>
-                    
-                    <!-- Actions -->
-                    <div class="action-buttons mt-4">
-                        <a href="{{ path('app_goal_edit', {'id_g': goal.id}) }}" class="btn btn-primary">
-                            <i class="bi bi-pencil me-2"></i>Modifier
-                        </a>
-                        <a href="{{ path('app_goal_index') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left me-2"></i>Retour à la liste
-                        </a>
-                        <form method="post" action="{{ path('app_goal_delete', {'id_g': goal.id}) }}" class="d-inline">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ goal.id) }}">
-                            <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet objectif ?')">
-                                <i class="bi bi-trash me-2"></i>Supprimer
-                            </button>
-                        </form>
-                        <form method="post" action="{{ path('app_goal_archive', {'id_g': goal.id}) }}" class="d-inline">
-                            <input type="hidden" name="_token" value="{{ csrf_token('archive' ~ goal.id) }}">
-                            <button type="submit" class="btn btn-outline-warning">
-                                <i class="bi bi-archive me-2"></i>Archiver
-                            </button>
-                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+.color-indicator {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    border-radius: 0.5rem 0.5rem 0 0 !important;
+}
+
+.progress {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.badge {
+    font-weight: 500;
+}
+
+.list-group-item {
+    border: none;
+    padding: 0.5rem 0;
+}
+
+.list-group-item:first-child {
+    padding-top: 0;
+}
+
+.list-group-item:last-child {
+    padding-bottom: 0;
+}
+</style>
 {% endblock %}

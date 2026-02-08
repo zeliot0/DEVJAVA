@@ -61,33 +61,34 @@ class GoalType extends AbstractType
             ->add('dateDebutGoa', DateType::class, [
                 'label' => 'Date de début *',
                 'widget' => 'single_text',
-                'attr' => [
-                    'class' => 'form-control',
-                    'min' => date('Y-m-d') // Today's date
-                ],
-                'constraints' => [
-                    new NotBlank(['message' => 'La date de début est obligatoire.'])
-                ]
-            ])
-            ->add('dateFinalGoa', DateType::class, [
-                'label' => 'Date de fin *',
-                'widget' => 'single_text',
+                'required' => false, // Changed to false since property is nullable
                 'attr' => [
                     'class' => 'form-control',
                     'min' => date('Y-m-d')
                 ],
                 'constraints' => [
-                    new NotBlank(['message' => 'La date de fin est obligatoire.'])
+                    // Removed NotBlank constraint since field is optional
+                ]
+            ])
+            ->add('dateFinalGoa', DateType::class, [
+                'label' => 'Date de fin *',
+                'widget' => 'single_text',
+                'required' => false, // Changed to false since property is nullable
+                'attr' => [
+                    'class' => 'form-control',
+                    'min' => date('Y-m-d')
+                ],
+                'constraints' => [
+                    // Removed NotBlank constraint since field is optional
                 ]
             ])
             ->add('statusGoa', ChoiceType::class, [
-                'label' => 'Statut *',
+                   'label' => 'Statut',
                 'choices' => [
-                    'DRAFT' => 'DRAFT',
-                    'À FAIRE' => 'A FAIRE',
-                    'EN COURS' => 'EN COURS',
-                    'TERMINÉ' => 'TERMINÉ',
-                    'ARCHIVÉ' => 'ARCHIVÉ'
+        'Brouillon' => 'BROUILLON',
+        'En cours' => 'EN_COURS',
+        'Terminé' => 'TERMINÉ',
+        'Archivé' => 'ARCHIVÉ'
                 ],
                 'attr' => ['class' => 'form-select']
             ])
@@ -127,12 +128,13 @@ class GoalType extends AbstractType
                 ]
             ])
             ->add('priorityGoa', ChoiceType::class, [
-                'label' => 'Priorité *',
-                'choices' => [
-                    'HAUTE' => 'HAUTE',
-                    'MOYENNE' => 'MEDIUM',
-                    'BASSE' => 'BASSE'
-                ],
+    'label' => 'Priorité',
+    'choices' => [
+        'Basse' => 'BASSE',
+        'Moyenne' => 'MOYENNE',
+        'Haute' => 'HAUTE',
+        'Urgente' => 'URGENTE'
+    ],
                 'attr' => ['class' => 'form-select']
             ])
             ->add('notesGoa', TextareaType::class, [

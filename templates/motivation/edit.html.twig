@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Motivation{% endblock %}
+
+{% block body %}
+    <h1>Edit Motivation</h1>
+
+    {{ include('motivation/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_motivation_index') }}">back to list</a>
+
+    {{ include('motivation/_delete_form.html.twig') }}
+{% endblock %}

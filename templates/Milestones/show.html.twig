@@ -1,97 +1,141 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Détails Jalon - NEXA{% endblock %}
+{% block title %}Détails du Jalon{% endblock %}
 
 {% block body %}
-<div class="container-fluid">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="goal-card">
-                <div class="goal-header">
+<div class="nexa-container">
+    <div class="nexa-page-header">
+        <div>
+            <h1 class="nexa-page-title"><i class="bi bi-flag"></i> {{ milestone.title }}</h1>
+            <p class="text-muted">Détails du jalon</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ path('app_milestones_edit', {'id': milestone.id}) }}" class="nexa-btn-action nexa-btn-edit">
+                <i class="bi bi-pencil"></i> Modifier
+            </a>
+            <form method="post" action="{{ path('app_milestones_delete', {'id': milestone.id}) }}" class="d-inline" 
+                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce jalon ?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ milestone.id) }}">
+                <button type="submit" class="nexa-btn-action nexa-btn-archive">
+                    <i class="bi bi-trash"></i> Supprimer
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="nexa-goal-card">
+                <div class="nexa-badge-container mb-3">
+                    <span class="nexa-badge nexa-badge-status 
+                        {% if milestone.completedDate %}terminé
+                        {% elseif milestone.dueDate < date() %}en-retard
+                        {% else %}en-cours{% endif %}">
+                        {% if milestone.completedDate %}Terminé
+                        {% elseif milestone.dueDate < date() %}En retard
+                        {% else %}En cours{% endif %}
+                    </span>
+                    {% if milestone.goalGoa %}
+                        <span class="nexa-badge" style="background: {{ milestone.goalGoa.colorGoa }}20; color: {{ milestone.goalGoa.colorGoa }};">
+                            <i class="bi bi-bullseye"></i> {{ milestone.goalGoa.titleGoa }}
+                        </span>
+                    {% endif %}
+                </div>
+
+                <div class="mb-4">
+                    <h4>Description</h4>
+                    <p class="nexa-goal-description">{{ milestone.description }}</p>
+                </div>
+
+                <div class="nexa-goal-meta mb-4">
+                    <div class="nexa-goal-meta-item">
+                        <i class="bi bi-calendar-check"></i>
+                        <strong>Échéance :</strong> {{ milestone.dueDate|date('d/m/Y') }}
+                    </div>
+                    {% if milestone.completedDate %}
+                    <div class="nexa-goal-meta-item">
+                        <i class="bi bi-calendar-event"></i>
+                        <strong>Terminé le :</strong> {{ milestone.completedDate|date('d/m/Y') }}
+                    </div>
+                    {% endif %}
+                    <div class="nexa-goal-meta-item">
+                        <i class="bi bi-clock-history"></i>
+                        <strong>Créé le :</strong> {{ milestone.createdAt|date('d/m/Y à H:i') }}
+                    </div>
+                </div>
+
+                {% if not milestone.completedDate %}
+                    {% set daysRemaining = milestone.dueDate.diff(date()).days %}
+                    <div class="alert 
+                        {% if daysRemaining <= 0 %}alert-danger
+                        {% elseif daysRemaining <= 7 %}alert-warning
+                        {% else %}alert-info{% endif %}">
+                        <i class="bi bi-{% if daysRemaining <= 0 %}exclamation-triangle
+                        {% elseif daysRemaining <= 7 %}exclamation-circle
+                        {% else %}info-circle{% endif %}"></i>
+                        {% if daysRemaining <= 0 %}
+                            Ce jalon est en retard de {{ -daysRemaining }} jour{{ -daysRemaining > 1 ? 's' : '' }}
+                        {% elseif daysRemaining <= 7 %}
+                            Il reste {{ daysRemaining }} jour{{ daysRemaining > 1 ? 's' : '' }} avant l'échéance
+                        {% else %}
+                            Il reste {{ daysRemaining }} jours avant l'échéance
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-success">
+                        <i class="bi bi-check-circle"></i>
+                        Ce jalon a été terminé avec succès
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            {% if milestone.goalGoa %}
+            <div class="nexa-stats-card mb-4">
+                <h3 class="nexa-stats-title"><i class="bi bi-bullseye"></i> Objectif associé</h3>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="me-3" style="width: 40px; height: 40px; background: {{ milestone.goalGoa.colorGoa }}; border-radius: 8px;"></div>
                     <div>
-                        <h1 class="goal-title mb-2">{{ milestone.titleMilestone }}</h1>
-                        <div class="goal-meta">
-                            <span class="goal-meta-item">
-                                <i class="bi bi-bullseye"></i>
-                                Objectif: {{ milestone.goal.titleGoa }}
-                            </span>
-                            <span class="goal-meta-item">
-                                <i class="bi bi-calendar"></i>
-                                Créé le: {{ milestone.createdAt|date('d/m/Y') }}
-                            </span>
-                            <span class="goal-meta-item">
-                                <i class="bi bi-clock"></i>
-                                Échéance: {{ milestone.dueDate|date('d/m/Y') }}
-                            </span>
-                            {% if milestone.completedDate %}
-                            <span class="goal-meta-item text-success">
-                                <i class="bi bi-check-circle"></i>
-                                Terminé le: {{ milestone.completedDate|date('d/m/Y') }}
-                            </span>
-                            {% endif %}
+                        <h5 class="mb-1">{{ milestone.goalGoa.titleGoa }}</h5>
+                        <p class="text-muted mb-0">{{ milestone.goalGoa.descriptionGoa|slice(0, 100) }}...</p>
+                    </div>
+                </div>
+                <div class="progress mb-2">
+                    <div class="progress-bar" role="progressbar" 
+                         style="width: {{ milestone.goalGoa.progressGoa }}%; background: {{ milestone.goalGoa.colorGoa }};">
+                        {{ milestone.goalGoa.progressGoa }}%
+                    </div>
+                </div>
+                <a href="{{ path('app_goal_show', {'id_g': milestone.goalGoa.idGoa}) }}" 
+                   class="btn btn-outline-primary btn-sm w-100">
+                    <i class="bi bi-arrow-right"></i> Voir l'objectif
+                </a>
+            </div>
+            {% endif %}
+
+            <div class="nexa-stats-card">
+                <h3 class="nexa-stats-title"><i class="bi bi-info-circle"></i> Informations</h3>
+                <div class="nexa-goal-meta">
+                    <div class="nexa-goal-meta-item">
+                        <i class="bi bi-calendar"></i>
+                        <div>
+                            <small class="text-muted">Date de création</small>
+                            <div>{{ milestone.createdAt|date('d/m/Y') }}</div>
                         </div>
                     </div>
-                    <span class="badge {% if milestone.completedDate %}bg-success{% else %}bg-warning{% endif %}">
-                        {% if milestone.completedDate %}TERMINÉ{% else %}EN COURS{% endif %}
-                    </span>
-                </div>
-                
-                <div class="goal-content">
-                    <h5 class="fw-semibold mb-3">Description</h5>
-                    <p class="mb-4">{{ milestone.descriptionMilestone }}</p>
-                    
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <h6 class="fw-semibold">Objectif parent</h6>
-                            <div class="card bg-light">
-                                <div class="card-body">
-                                    <h6 class="card-title">{{ milestone.goal.titleGoa }}</h6>
-                                    <p class="card-text text-muted small mb-2">{{ milestone.goal.descriptionGoa|slice(0, 100) }}...</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="badge bg-primary">{{ milestone.goal.statusGoa }}</span>
-                                        <small class="text-muted">{{ milestone.goal.progressGoa }}%</small>
-                                    </div>
-                                </div>
+                    <div class="nexa-goal-meta-item">
+                        <i class="bi bi-{% if milestone.completedDate %}check-circle text-success{% else %}clock text-warning{% endif %}"></i>
+                        <div>
+                            <small class="text-muted">Statut</small>
+                            <div>
+                                {% if milestone.completedDate %}
+                                    Terminé
+                                {% else %}
+                                    En attente
+                                {% endif %}
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <h6 class="fw-semibold">Dates importantes</h6>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item d-flex justify-content-between">
-                                    <span>Date de création</span>
-                                    <span>{{ milestone.createdAt|date('d/m/Y') }}</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between">
-                                    <span>Date d'échéance</span>
-                                    <span>{{ milestone.dueDate|date('d/m/Y') }}</span>
-                                </li>
-                                {% if milestone.completedDate %}
-                                <li class="list-group-item d-flex justify-content-between">
-                                    <span>Date de complétion</span>
-                                    <span class="text-success">{{ milestone.completedDate|date('d/m/Y') }}</span>
-                                </li>
-                                {% endif %}
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <!-- Actions -->
-                    <div class="d-flex gap-2">
-                        <a href="{{ path('app_milestones_edit', {'id': milestone.id}) }}" class="btn btn-primary">
-                            <i class="bi bi-pencil me-2"></i>Modifier
-                        </a>
-                        <a href="{{ path('app_milestones_index') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left me-2"></i>Retour
-                        </a>
-                        {% if not milestone.completedDate %}
-                        <form method="post" action="{{ path('app_milestones_complete', {'id': milestone.id}) }}" class="d-inline">
-                            <input type="hidden" name="_token" value="{{ csrf_token('complete' ~ milestone.id) }}">
-                            <button type="submit" class="btn btn-success">
-                                <i class="bi bi-check-circle me-2"></i>Marquer comme terminé
-                            </button>
-                        </form>
-                        {% endif %}
-                        {{ include('milestones/_delete_form.html.twig') }}
                     </div>
                 </div>
             </div>

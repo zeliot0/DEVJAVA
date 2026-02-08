@@ -1,0 +1,372 @@
+# config/packages/motivation_data.yaml
+motivation_messages:
+  # Humeur : Motivé (10 versets)
+  motivated:
+    - 
+      arabic: "وَلَا تَهِنُوا وَلَا تَحْزَنُوا وَأَنتُمُ الْأَعْلَوْنَ إِن كُنتُم مُّؤْمِنِينَ"
+      french: "Ne faiblissez pas et ne vous affligez pas, alors que vous êtes les plus hauts, si vous êtes croyants."
+      english: "So do not weaken and do not grieve, and you will be superior if you are [true] believers."
+      source: "Al-Imran 3:139"
+    -
+      arabic: "إِنَّ مَعَ الْعُسْرِ يُسْرًا"
+      french: "En vérité, avec la difficulté vient la facilité."
+      english: "Indeed, with hardship comes ease."
+      source: "Ash-Sharh 94:6"
+    -
+      arabic: "وَقُلِ اعْمَلُوا فَسَيَرَى اللَّهُ عَمَلَكُمْ وَرَسُولُهُ وَالْمُؤْمِنُونَ"
+      french: "Et dis : 'Œuvrez, car Allah va voir votre œuvre, de même que Son Messager et les croyants.'"
+      english: "And say, 'Do [as you will], for Allah will see your deeds, and [so will] His Messenger and the believers.'"
+      source: "At-Tawbah 9:105"
+    -
+      arabic: "وَإِن تَصْبِرُوا وَتَتَّقُوا فَإِنَّ ذَٰلِكَ مِنْ عَزْمِ الْأُمُورِ"
+      french: "Et si vous êtes endurants et pieux... voilà bien la meilleure résolution à prendre."
+      english: "And if you are patient and fear Allah... indeed, that is of the matters [worthy] of determination."
+      source: "Al-Imran 3:186"
+    -
+      arabic: "وَلَنَبْلُوَنَّكُمْ حَتَّىٰ نَعْلَمَ الْمُجَاهِدِينَ مِنكُمْ وَالصَّابِرِينَ"
+      french: "Nous vous éprouverons jusqu'à ce que Nous connaissions ceux d'entre vous qui luttent et qui endurent."
+      english: "And We will surely test you until We make evident those who strive among you and the patient."
+      source: "Muhammad 47:31"
+    -
+      arabic: "وَالَّذِينَ جَاهَدُوا فِينَا لَنَهْدِيَنَّهُمْ سُبُلَنَا"
+      french: "Et ceux qui luttent pour Notre cause, Nous les guiderons certes sur Nos sentiers."
+      english: "And those who strive for Us - We will surely guide them to Our ways."
+      source: "Al-Ankabut 29:69"
+    -
+      arabic: "وَكَأَيِّن مِّن نَّبِيٍّ قَاتَلَ مَعَهُ رِبِّيُّونَ كَثِيرٌ"
+      french: "Et combien de prophètes ont combattu, avec eux un grand nombre de disciples."
+      english: "And how many a prophet fought, with whom fought many religious scholars."
+      source: "Al-Imran 3:146"
+    -
+      arabic: "وَأْمُرْ أَهْلَكَ بِالصَّلَاةِ وَاصْطَبِرْ عَلَيْهَا"
+      french: "Et commande à ta famille la prière, et fais-la avec persévérance."
+      english: "And enjoin prayer upon your family and be steadfast therein."
+      source: "Taha 20:132"
+    -
+      arabic: "وَاصْبِرْ لِحُكْمِ رَبِّكَ فَإِنَّكَ بِأَعْيُنِنَا"
+      french: "Et endure patiemment la décision de ton Seigneur. Car en vérité, tu es sous Nos yeux."
+      english: "And be patient for the decision of your Lord, for indeed, you are in Our eyes."
+      source: "At-Tur 52:48"
+    -
+      arabic: "يَا أَيُّهَا الَّذِينَ آمَنُوا اصْبِرُوا وَصَابِرُوا وَرَابِطُوا"
+      french: "Ô vous qui avez cru ! Soyez endurants. Incitez-vous à l'endurance."
+      english: "O you who have believed, persevere and endure and remain stationed."
+      source: "Al-Imran 3:200"
+
+  # Humeur : Content/Happy (10 versets)
+  happy:
+    -
+      arabic: "قُلْ بِفَضْلِ اللَّهِ وَبِرَحْمَتِهِ فَبِذَٰلِكَ فَلْيَفْرَحُوا هُوَ خَيْرٌ مِّمَّا يَجْمَعُونَ"
+      french: "Dis : 'C'est par la grâce d'Allah et par Sa miséricorde ; qu'ils s'en réjouissent donc. C'est mieux que ce qu'ils amassent.'"
+      english: "Say, 'In the bounty of Allah and in His mercy - in that let them rejoice; it is better than what they accumulate.'"
+      source: "Yunus 10:58"
+    -
+      arabic: "فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ"
+      french: "Souvenez-vous de Moi donc, Je Me souviendrai de vous. Remerciez-Moi et ne soyez pas ingrats envers Moi."
+      english: "So remember Me; I will remember you. And be grateful to Me and do not deny Me."
+      source: "Al-Baqarah 2:152"
+    -
+      arabic: "وَمَن يَعْمَلْ مِنَ الصَّالِحَاتِ وَهُوَ مُؤْمِنٌ فَلَا يَخَافُ ظُلْمًا وَلَا هَضْمًا"
+      french: "Et quiconque fait de bonnes actions tout en étant croyant, alors il ne craindra ni injustice ni oppression."
+      english: "And whoever does righteous deeds, whether male or female, while being a believer - those will enter Paradise."
+      source: "An-Nisa 4:124"
+    -
+      arabic: "وَأَمَّا بِنِعْمَةِ رَبِّكَ فَحَدِّثْ"
+      french: "Et quant aux bienfaits de ton Seigneur, proclame-les."
+      english: "And as for the favor of your Lord, report [it]."
+      source: "Ad-Duha 93:11"
+    -
+      arabic: "وَأَن لَّيْسَ لِلْإِنسَانِ إِلَّا مَا سَعَىٰ وَأَنَّ سَعْيَهُ سَوْفَ يُرَىٰ"
+      french: "Et que l'homme n'obtient que [le fruit] de ses efforts ; et que son effort, en vérité, lui sera présenté."
+      english: "And that there is not for man except that [good] for which he strives, and that his effort is going to be seen."
+      source: "An-Najm 53:39-40"
+    -
+      arabic: "وَنُرِيدُ أَن نَّمُنَّ عَلَى الَّذِينَ اسْتُضْعِفُوا فِي الْأَرْضِ"
+      french: "Et Nous voulions faire faveur à ceux qui avaient été opprimés sur Terre."
+      english: "And We wanted to confer favor upon those who were oppressed in the land."
+      source: "Al-Qasas 28:5"
+    -
+      arabic: "لِّلَّذِينَ أَحْسَنُوا الْحُسْنَىٰ وَزِيَادَةٌ"
+      french: "À ceux qui font le bien, la meilleure récompense et un surplus."
+      english: "For those who have done good is the best reward and extra."
+      source: "Yunus 10:26"
+    -
+      arabic: "وَبَشِّرِ الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ أَنَّ لَهُمْ جَنَّاتٍ تَجْرِي مِن تَحْتِهَا الْأَنْهَارُ"
+      french: "Et fais la bonne annonce à ceux qui croient et accomplissent les bonnes œuvres qu'ils auront des Jardins sous lesquels coulent les ruisseaux."
+      english: "And give good tidings to those who believe and do righteous deeds that they will have gardens beneath which rivers flow."
+      source: "Al-Baqarah 2:25"
+    -
+      arabic: "إِنَّ اللَّهَ مَعَ الَّذِينَ اتَّقَوا وَّالَّذِينَ هُم مُّحْسِنُونَ"
+      french: "Certes, Allah est avec ceux qui Le craignent et ceux qui sont bienfaisants."
+      english: "Indeed, Allah is with those who fear Him and those who are doers of good."
+      source: "An-Nahl 16:128"
+    -
+      arabic: "فَاللَّهُ خَيْرٌ حَافِظًا ۖ وَهُوَ أَرْحَمُ الرَّاحِمِينَ"
+      french: "Allah est le meilleur gardien, et Il est le plus miséricordieux des miséricordieux."
+      english: "And Allah is the best guardian, and He is the most merciful of the merciful."
+      source: "Yusuf 12:64"
+
+  # Humeur : Triste/Sad (10 versets)
+  sad:
+    -
+      arabic: "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا"
+      french: "Allah n'impose à aucune âme une charge supérieure à sa capacité."
+      english: "Allah does not charge a soul except [with that within] its capacity."
+      source: "Al-Baqarah 2:286"
+    -
+      arabic: "وَلَنَبْلُوَنَّكُمْ بِشَيْءٍ مِّنَ الْخَوْفِ وَالْجُوعِ وَنَقْصٍ مِّنَ الْأَمْوَالِ وَالْأَنفُسِ وَالثَّمَرَاتِ ۗ وَبَشِّرِ الصَّابِرِينَ"
+      french: "Nous vous éprouverons certes par un peu de peur, de faim et de diminution de biens, de personnes et de fruits. Et fais la bonne annonce aux endurants."
+      english: "And We will surely test you with something of fear and hunger and a loss of wealth and lives and fruits, but give good tidings to the patient."
+      source: "Al-Baqarah 2:155"
+    -
+      arabic: "عَسَىٰ رَبُّكُمْ أَن يَرْحَمَكُمْ"
+      french: "Il se peut que votre Seigneur vous fasse miséricorde."
+      english: "Perhaps your Lord will have mercy upon you."
+      source: "Al-Isra 17:8"
+    -
+      arabic: "وَلَا تَيْأَسُوا مِن رَّوْحِ اللَّهِ ۖ إِنَّهُ لَا يَيْأَسُ مِن رَّوْحِ اللَّهِ إِلَّا الْقَوْمُ الْكَافِرُونَ"
+      french: "Et ne désespérez pas de la miséricorde d'Allah. Ce sont seulement les gens mécréants qui désespèrent de la miséricorde d'Allah."
+      english: "And do not despair of relief from Allah. Indeed, no one despairs of relief from Allah except the disbelieving people."
+      source: "Yusuf 12:87"
+    -
+      arabic: "وَلَا تَقُولُوا لِمَن يُقْتَلُ فِي سَبِيلِ اللَّهِ أَمْوَاتٌ ۚ بَلْ أَحْيَاءٌ وَلَٰكِن لَّا تَشْعُرُونَ"
+      french: "Et ne dites pas de ceux qui sont tués dans le sentier d'Allah qu'ils sont morts. Au contraire, ils sont vivants, mais vous en êtes inconscients."
+      english: "And do not say about those who are killed in the way of Allah, 'They are dead.' Rather, they are alive, but you perceive [it] not."
+      source: "Al-Baqarah 2:154"
+    -
+      arabic: "إِنَّهُ لَا يَيْأَسُ مِن رَّوْحِ اللَّهِ إِلَّا الْقَوْمُ الْكَافِرُونَ"
+      french: "Seuls les gens mécréants désespèrent de la miséricorde d'Allah."
+      english: "No one despairs of relief from Allah except the disbelieving people."
+      source: "Yusuf 12:87"
+    -
+      arabic: "قَالَ لَا تَثْرِيبَ عَلَيْكُمُ الْيَوْمَ ۖ يَغْفِرُ اللَّهُ لَكُمْ ۖ وَهُوَ أَرْحَمُ الرَّاحِمِينَ"
+      french: "Il dit : 'Pas de réprobation sur vous aujourd'hui ! Qu'Allah vous pardonne. C'est Lui le plus miséricordieux des miséricordieux.'"
+      english: "He said, 'No blame will there be upon you today. May Allah forgive you; and He is the most merciful of the merciful.'"
+      source: "Yusuf 12:92"
+    -
+      arabic: "وَإِنَّ رَبَّكَ لَذُو مَغْفِرَةٍ لِّلنَّاسِ عَلَىٰ ظُلْمِهِمْ"
+      french: "Et ton Seigneur est certes plein de pardon à l'égard des gens, malgré leurs méfaits."
+      english: "And indeed, your Lord is full of forgiveness for the people despite their wrongdoing."
+      source: "Ar-Ra'd 13:6"
+    -
+      arabic: "إِنَّ رَبَّكَ وَاسِعُ الْمَغْفِرَةِ"
+      french: "Certes, ton Seigneur est d'un pardon immense."
+      english: "Indeed, your Lord is vast in forgiveness."
+      source: "An-Najm 53:32"
+    -
+      arabic: "وَهُوَ الَّذِي يَقْبَلُ التَّوْبَةَ عَنْ عِبَادِهِ وَيَعْفُو عَنِ السَّيِّئَاتِ"
+      french: "Et c'est Lui qui agrée le repentir de Ses serviteurs, et pardonne les méfaits."
+      english: "And it is He who accepts repentance from His servants and pardons misdeeds."
+      source: "Ash-Shura 42:25"
+
+  # Humeur : Stressé/Stressed (10 versets)
+  stressed:
+    -
+      arabic: "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ"
+      french: "En vérité, c'est dans le rappel d'Allah que les cœurs trouvent la paix."
+      english: "Unquestionably, by the remembrance of Allah hearts are assured."
+      source: "Ar-Ra'd 13:28"
+    -
+      arabic: "وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا"
+      french: "Et quiconque craint Allah, Il lui donnera une issue favorable."
+      english: "And whoever fears Allah - He will make for him a way out."
+      source: "At-Talaq 65:2"
+    -
+      arabic: "وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مِنْ أَمْرِهِ يُسْرًا"
+      french: "Et quiconque craint Allah, Il lui facilite les choses."
+      english: "And whoever fears Allah - He will make for him of his matter ease."
+      source: "At-Talaq 65:4"
+    -
+      arabic: "إِنَّ اللَّهَ لَا يُغَيِّرُ مَا بِقَوْمٍ حَتَّىٰ يُغَيِّرُوا مَا بِأَنفُسِهِمْ"
+      french: "En vérité, Allah ne modifie point l'état d'un peuple, tant que les [individus qui le composent] ne modifient pas ce qui est en eux-mêmes."
+      english: "Indeed, Allah will not change the condition of a people until they change what is in themselves."
+      source: "Ar-Ra'd 13:11"
+    -
+      arabic: "وَعَسَىٰ أَن تَكْرَهُوا شَيْئًا وَهُوَ خَيْرٌ لَّكُمْ"
+      french: "Il se peut que vous détestiez une chose alors qu'elle est un bien pour vous."
+      english: "But perhaps you hate a thing and it is good for you."
+      source: "Al-Baqarah 2:216"
+    -
+      arabic: "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا"
+      french: "Car, vraiment, avec la difficulté, vient la facilité."
+      english: "For indeed, with hardship comes ease."
+      source: "Ash-Sharh 94:5"
+    -
+      arabic: "لِّلَّهِ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ وَإِن تُبْدُوا مَا فِي أَنفُسِكُمْ أَوْ تُخْفُوهُ يُحَاسِبْكُم بِهِ اللَّهُ"
+      french: "À Allah appartient tout ce qui est dans les cieux et sur la terre. Que vous manifestiez ce qui est en vous ou que vous le cachiez, Allah vous en demandera compte."
+      english: "To Allah belongs whatever is in the heavens and whatever is on the earth. Whether you show what is within yourselves or conceal it, Allah will bring you to account for it."
+      source: "Al-Baqarah 2:284"
+    -
+      arabic: "وَلَا تُسْرِفُوا ۚ إِنَّهُ لَا يُحِبُّ الْمُسْرِفِينَ"
+      french: "Et ne commettez pas d'excès, car Il n'aime pas ceux qui commettent des excès."
+      english: "And do not commit excess. Indeed, He does not like those who commit excess."
+      source: "Al-An'am 6:141"
+    -
+      arabic: "وَأَنِيبُوا إِلَىٰ رَبِّكُمْ وَأَسْلِمُوا لَهُ"
+      french: "Et revenez à votre Seigneur, et soumettez-vous à Lui."
+      english: "And turn in repentance to your Lord and submit to Him."
+      source: "Az-Zumar 39:54"
+    -
+      arabic: "وَمَا مِن دَابَّةٍ فِي الْأَرْضِ إِلَّا عَلَى اللَّهِ رِزْقُهَا"
+      french: "Il n'y a point de bête sur terre dont la subsistance n'incombe à Allah."
+      english: "And there is no creature on earth but that upon Allah is its provision."
+      source: "Hud 11:6"
+
+  # Humeur : Fatigué/Tired (10 versets)
+  tired:
+    -
+      arabic: "يَا أَيُّهَا الَّذِينَ آمَنُوا اسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ ۚ إِنَّ اللَّهَ مَعَ الصَّابِرِينَ"
+      french: "Ô vous qui avez cru ! Cherchez secours dans l'endurance et la prière. Car Allah est avec les endurants."
+      english: "O you who have believed, seek help through patience and prayer. Indeed, Allah is with the patient."
+      source: "Al-Baqarah 2:153"
+    -
+      arabic: "إِنَّ اللَّهَ لَا يُغَيِّرُ مَا بِقَوْمٍ حَتَّىٰ يُغَيِّرُوا مَا بِأَنفُسِهِمْ"
+      french: "En vérité, Allah ne modifie point l'état d'un peuple, tant que les [individus qui le composent] ne modifient pas ce qui est en eux-mêmes."
+      english: "Indeed, Allah will not change the condition of a people until they change what is in themselves."
+      source: "Ar-Ra'd 13:11"
+    -
+      arabic: "وَلَا تَهِنُوا وَلَا تَحْزَنُوا وَأَنتُمُ الْأَعْلَوْنَ إِن كُنتُم مُّؤْمِنِينَ"
+      french: "Ne faiblissez pas et ne vous affligez pas, alors que vous êtes les plus hauts, si vous êtes croyants."
+      english: "So do not weaken and do not grieve, and you will be superior if you are [true] believers."
+      source: "Al-Imran 3:139"
+    -
+      arabic: "وَاسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ ۚ وَإِنَّهَا لَكَبِيرَةٌ إِلَّا عَلَى الْخَاشِعِينَ"
+      french: "Et cherchez assistance dans l'endurance et la prière ; certes, la prière est une lourde obligation, sauf pour les humbles."
+      english: "And seek help through patience and prayer, and indeed, it is difficult except for the humbly submissive [to Allah]."
+      source: "Al-Baqarah 2:45"
+    -
+      arabic: "وَلَا تَسْتَوِي الْحَسَنَةُ وَلَا السَّيِّئَةُ ۚ ادْفَعْ بِالَّتِي هِيَ أَحْسَنُ"
+      french: "La bonne action et la mauvaise ne sont pas égales. Repousse le mal par ce qui est meilleur."
+      english: "And not equal are the good deed and the bad. Repel [evil] by that [deed] which is better."
+      source: "Fussilat 41:34"
+    -
+      arabic: "وَلَا تَقُولَنَّ لِشَيْءٍ إِنِّي فَاعِلٌ ذَٰلِكَ غَدًا إِلَّا أَن يَشَاءَ اللَّهُ"
+      french: "Et ne dis jamais : 'Je ferai cela demain', sans ajouter : 'Si Allah le veut'."
+      english: "And never say of anything, 'Indeed, I will do that tomorrow,' except [when adding], 'If Allah wills.'"
+      source: "Al-Kahf 18:23-24"
+    -
+      arabic: "فَإِذَا فَرَغْتَ فَانصَبْ وَإِلَىٰ رَبِّكَ فَارْغَب"
+      french: "Lorsque tu te libères, alors lève-toi, et à ton Seigneur, aspire."
+      english: "So when you have finished [your duties], then stand up [for worship]. And to your Lord direct [your] longing."
+      source: "Ash-Sharh 94:7-8"
+    -
+      arabic: "وَلَا تَمُدَّنَّ عَيْنَيْكَ إِلَىٰ مَا مَتَّعْنَا بِهِ أَزْوَاجًا مِّنْهُمْ"
+      french: "Et ne porte pas tes yeux vers ce dont Nous avons donné jouissance temporaire à certains couples d'entre eux."
+      english: "And do not extend your eyes toward that by which We have given enjoyment to [some] categories of them."
+      source: "Al-Hijr 15:88"
+    -
+      arabic: "وَكُلُوا وَاشْرَبُوا وَلَا تُسْرِفُوا ۚ إِنَّهُ لَا يُحِبُّ الْمُسْرِفِينَ"
+      french: "Et mangez et buvez; et ne commettez pas d'excès, car Il n'aime pas ceux qui commettent des excès."
+      english: "And eat and drink, but be not excessive. Indeed, He likes not those who commit excess."
+      source: "Al-A'raf 7:31"
+    -
+      arabic: "يُرِيدُ اللَّهُ بِكُمُ الْيُسْرَ وَلَا يُرِيدُ بِكُمُ الْعُسْرَ"
+      french: "Allah veut pour vous la facilité, et Il ne veut pas la difficulté pour vous."
+      english: "Allah intends for you ease and does not intend for you hardship."
+      source: "Al-Baqarah 2:185"
+
+  # Humeur : Déterminé/Determined (10 versets)
+  determined:
+    -
+      arabic: "وَأَنْ لَيْسَ لِلْإِنْسَانِ إِلَّا مَا سَعَىٰ"
+      french: "Et qu'il n'est pour l'homme que ce qu'il a accompli par ses efforts."
+      english: "And that there is not for man except that [good] for which he strives."
+      source: "An-Najm 53:39"
+    -
+      arabic: "وَالَّذِينَ جَاهَدُوا فِينَا لَنَهْدِيَنَّهُمْ سُبُلَنَا"
+      french: "Et ceux qui luttent pour Notre cause, Nous les guiderons certes sur Nos sentiers."
+      english: "And those who strive for Us - We will surely guide them to Our ways."
+      source: "Al-Ankabut 29:69"
+    -
+      arabic: "وَإِن تَصْبِرُوا وَتَتَّقُوا لَا يَضُرُّكُمْ كَيْدُهُمْ شَيْئًا"
+      french: "Et si vous êtes endurants et pieux, leur stratagème ne vous causera aucun mal."
+      english: "But if you are patient and fear Allah, their plot will not harm you at all."
+      source: "Al-Imran 3:120"
+    -
+      arabic: "وَجَاهِدُوا فِي اللَّهِ حَقَّ جِهَادِهِ"
+      french: "Et luttez pour Allah avec tout l'effort qu'Il mérite."
+      english: "And strive for Allah with the striving due to Him."
+      source: "Al-Hajj 22:78"
+    -
+      arabic: "يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا لَقِيتُمْ فِئَةً فَاثْبُتُوا وَاذْكُرُوا اللَّهَ كَثِيرًا لَّعَلَّكُمْ تُفْلِحُونَ"
+      french: "Ô vous qui avez cru ! Quand vous rencontrez une troupe [ennemie], soyez fermes, et invoquez beaucoup Allah afin de réussir."
+      english: "O you who have believed, when you encounter a company [from the enemy forces], stand firm and remember Allah much that you may be successful."
+      source: "Al-Anfal 8:45"
+    -
+      arabic: "وَلَا تَهِنُوا وَلَا تَحْزَنُوا وَأَنتُمُ الْأَعْلَوْنَ إِن كُنتُم مُّؤْمِنِينَ"
+      french: "Ne faiblissez pas et ne vous affligez pas, alors que vous êtes les plus hauts, si vous êtes croyants."
+      english: "So do not weaken and do not grieve, and you will be superior if you are [true] believers."
+      source: "Al-Imran 3:139"
+    -
+      arabic: "وَأَعِدُّوا لَهُم مَّا اسْتَطَعْتُم مِّن قُوَّةٍ"
+      french: "Et préparez [pour lutter] contre eux tout ce que vous pouvez comme force."
+      english: "And prepare against them whatever you are able of power."
+      source: "Al-Anfal 8:60"
+    -
+      arabic: "وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ"
+      french: "Et quiconque place sa confiance en Allah, Il [Allah] lui suffit."
+      english: "And whoever relies upon Allah - then He is sufficient for him."
+      source: "At-Talaq 65:3"
+    -
+      arabic: "وَلَا تَسْتَوِي الْحَسَنَةُ وَلَا السَّيِّئَةُ"
+      french: "La bonne action et la mauvaise ne sont pas égales."
+      english: "And not equal are the good deed and the bad."
+      source: "Fussilat 41:34"
+    -
+      arabic: "إِنَّ اللَّهَ لَا يُضِيعُ أَجْرَ الْمُحْسِنِينَ"
+      french: "En vérité, Allah ne laisse pas perdre la récompense des bienfaiteurs."
+      english: "Indeed, Allah does not allow to be lost the reward of those who do good."
+      source: "At-Tawbah 9:120"
+
+  # Humeur : Optimiste/Optimistic (10 versets)
+  optimistic:
+    -
+      arabic: "وَعَسَىٰ أَن تَكْرَهُوا شَيْئًا وَهُوَ خَيْرٌ لَّكُمْ ۖ وَعَسَىٰ أَن تُحِبُّوا شَيْئًا وَهُوَ شَرٌّ لَّكُمْ ۗ وَاللَّهُ يَعْلَمُ وَأَنتُمْ لَا تَعْلَمُونَ"
+      french: "Il se peut que vous détestiez une chose alors qu'elle est un bien pour vous. Et il se peut que vous aimiez une chose alors qu'elle est un mal pour vous. Allah sait, tandis que vous ne savez pas."
+      english: "But perhaps you hate a thing and it is good for you; and perhaps you love a thing and it is bad for you. And Allah knows, while you know not."
+      source: "Al-Baqarah 2:216"
+    -
+      arabic: "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا، إِنَّ مَعَ الْعُسْرِ يُسْرًا"
+      french: "Alors, certes, avec la difficulté vient la facilité, avec la difficulté vient la facilité."
+      english: "For indeed, with hardship comes ease. Indeed, with hardship comes ease."
+      source: "Ash-Sharh 94:5-6"
+    -
+      arabic: "وَالْعَاقِبَةُ لِلْمُتَّقِينَ"
+      french: "Et la fin heureuse est aux pieux."
+      english: "And the [best] outcome is for the righteous."
+      source: "Al-A'raf 7:128"
+    -
+      arabic: "إِن تَنصُرُوا اللَّهَ يَنصُرْكُمْ وَيُثَبِّتْ أَقْدَامَكُمْ"
+      french: "Si vous aidez Allah, Il vous aidera et affermira vos pas."
+      english: "If you aid Allah, He will aid you and plant firmly your feet."
+      source: "Muhammad 47:7"
+    -
+      arabic: "وَلَا تَحْزَنْ عَلَيْهِمْ وَلَا تَكُن فِي ضَيْقٍ مِّمَّا يَمْكُرُونَ"
+      french: "Et ne t'afflige pas sur eux et ne sois pas angoissé à cause de leurs complots."
+      english: "And grieve not over them and be not in distress from what they conspire."
+      source: "An-Naml 27:70"
+    -
+      arabic: "وَلَا تَقُولُوا لِمَن يُقْتَلُ فِي سَبِيلِ اللَّهِ أَمْوَاتٌ ۚ بَلْ أَحْيَاءٌ"
+      french: "Et ne dites pas de ceux qui sont tués dans le sentier d'Allah qu'ils sont morts. Au contraire, ils sont vivants."
+      english: "And do not say about those who are killed in the way of Allah, 'They are dead.' Rather, they are alive."
+      source: "Al-Baqarah 2:154"
+    -
+      arabic: "إِنَّا لَنَنصُرُ رُسُلَنَا وَالَّذِينَ آمَنُوا فِي الْحَيَاةِ الدُّنْيَا"
+      french: "Nous secourrons Nos Messagers, et ceux qui croient, dans la vie présente."
+      english: "We will surely support Our messengers and those who believe during the life of this world."
+      source: "Ghafir 40:51"
+    -
+      arabic: "وَكَانَ أَمْرُ اللَّهِ قَدَرًا مَّقْدُورًا"
+      french: "Et l'ordre d'Allah est un décret déjà établi."
+      english: "And the command of Allah is a destiny decreed."
+      source: "Al-Ahzab 33:38"
+    -
+      arabic: "وَمَا النَّصْرُ إِلَّا مِنْ عِندِ اللَّهِ ۚ إِنَّ اللَّهَ عَزِيزٌ حَكِيمٌ"
+      french: "La victoire ne vient que d'Allah. Car Allah est Puissant et Sage."
+      english: "And victory is not except from Allah. Indeed, Allah is Exalted in Might and Wise."
+      source: "Al-Anfal 8:10"
+    -
+      arabic: "إِن يَنصُرْكُمُ اللَّهُ فَلَا غَالِبَ لَكُمْ"
+      french: "Si Allah vous donne Son secours, nul ne pourra vous vaincre."
+      english: "If Allah should aid you, no one can overcome you."
+      source: "Al-Imran 3:160"

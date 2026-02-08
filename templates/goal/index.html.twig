@@ -1,443 +1,124 @@
+{# templates/goal/index.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}NEXA - Mes Objectifs{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        /* Styles pour les citations */
-        .quotes-container {
-            margin-bottom: 2rem;
-        }
-        
-        .quote-card {
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: transform 0.2s;
-            border-left: 4px solid transparent;
-        }
-        
-        .quote-card:hover {
-            transform: translateY(-2px);
-        }
-        
-        .quote-card.french {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(245, 158, 11, 0.1) 100%);
-            border-left-color: #f59e0b;
-        }
-        
-        .quote-card.quran {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.1) 100%);
-            border-left-color: #10b981;
-        }
-        
-        .quote-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-        
-        .quote-icon {
-            font-size: 1.2rem;
-            width: 32px;
-            height: 32px;
-            background: white;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .quote-type {
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            padding: 4px 8px;
-            border-radius: 6px;
-            letter-spacing: 0.5px;
-        }
-        
-        .french .quote-type {
-            background: rgba(245, 158, 11, 0.15);
-            color: #f59e0b;
-        }
-        
-        .quran .quote-type {
-            background: rgba(16, 185, 129, 0.15);
-            color: #10b981;
-        }
-        
-        .quote-text {
-            font-style: italic;
-            color: var(--bs-body-color);
-            line-height: 1.6;
-            margin-bottom: 8px;
-            font-size: 1rem;
-            position: relative;
-            padding-left: 15px;
-        }
-        
-        .quote-text::before {
-            content: '"';
-            position: absolute;
-            left: 0;
-            top: -5px;
-            font-size: 2rem;
-            color: rgba(0,0,0,0.2);
-            font-family: serif;
-        }
-        
-        .quran-arabic {
-            font-size: 1.4rem;
-            font-weight: 500;
-            font-family: 'Traditional Arabic', 'Amiri', serif;
-            text-align: right;
-            direction: rtl;
-            margin-bottom: 10px;
-            color: var(--bs-body-color);
-        }
-        
-        .quote-translation {
-            color: var(--bs-secondary);
-            font-size: 0.9rem;
-            line-height: 1.5;
-            margin-bottom: 8px;
-            padding-left: 15px;
-            border-left: 2px solid #10b981;
-        }
-        
-        .quote-author,
-        .quote-reference {
-            font-size: 0.85rem;
-            color: var(--bs-secondary);
-            text-align: right;
-            margin-top: 8px;
-        }
-        
-        .quote-reference {
-            font-style: italic;
-        }
-        
-        /* Layout */
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--bs-border-color);
-        }
-        
-        .page-title {
-            font-size: 1.75rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            margin: 0;
-        }
-        
-        .content-grid {
-            display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 2rem;
-        }
-        
-        @media (max-width: 992px) {
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        /* Bouton refresh */
-        .btn-refresh-quotes {
-            background: transparent;
-            border: 1px solid var(--bs-border-color);
-            color: var(--bs-secondary);
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-        
-        .btn-refresh-quotes:hover {
-            background: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-        
-        /* Stats Cards */
-        .stats-card {
-            border-radius: 12px;
-            padding: 1.5rem;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            text-align: center;
-        }
-        
-        .stats-number {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0;
-            color: var(--primary-color);
-        }
-        
-        .stats-label {
-            color: var(--bs-secondary);
-            font-size: 0.875rem;
-            margin: 0;
-        }
-        
-        [data-bs-theme="dark"] .stats-card {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border: 1px solid #334155;
-        }
-        
-        /* Goals column styling */
-        .goals-column {
-            grid-column: 1;
-        }
-        
-        .quotes-column {
-            grid-column: 2;
-        }
-        
-        @media (max-width: 992px) {
-            .goals-column,
-            .quotes-column {
-                grid-column: 1;
-            }
-        }
-    </style>
-{% endblock %}
+{% block title %}Objectifs - NEXA{% endblock %}
 
 {% block body %}
-<div class="container-fluid py-4">
-    <!-- Header -->
-    <div class="page-header">
-        <h1 class="page-title">Objectifs</h1>
+<div class="container mt-4">
+    <div class="dashboard-header">
+        <div>
+            <h1><i class="fas fa-bullseye me-2"></i>NEXA Goals</h1>
+            <p class="subtitle">Gestion intelligente de vos objectifs</p>
+        </div>
         <a href="{{ path('app_goal_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-2"></i>Nouvel Objectif
+            <i class="fas fa-plus me-1"></i> Nouvel objectif
         </a>
     </div>
-    
-    <!-- Grid Principal -->
-    <div class="content-grid">
-        <!-- Colonne des Objectifs -->
-        <div class="goals-column">
-            {% if goals is empty %}
-                <div class="text-center py-5">
-                    <i class="bi bi-inbox display-1 text-muted mb-3"></i>
-                    <h3 class="text-muted">Aucun objectif trouvé</h3>
-                    <p class="text-muted">Commencez par créer votre premier objectif</p>
-                    <a href="{{ path('app_goal_new') }}" class="btn btn-primary">
-                        <i class="bi bi-plus-circle me-2"></i>Créer un objectif
-                    </a>
-                </div>
-            {% else %}
-                <!-- Vos objectifs ici -->
-                {% for goal in goals %}
-                <div class="goal-card priority-{{ goal.priorityGoa|lower }} mb-4">
-                    <div class="goal-header">
-                        <div>
-                            <h3 class="goal-title mb-1">{{ goal.titleGoa }}</h3>
-                            <div class="d-flex align-items-center gap-2 mb-2">
-                                <span class="badge-{{ goal.priorityGoa|lower }}">{{ goal.priorityGoa }}</span>
-                                <span class="status-badge status-{{ goal.statusGoa|lower|replace({' ': '-', 'é': 'e', 'à': 'a'}) }}">
-                                    {{ goal.statusGoa }}
-                                </span>
-                            </div>
-                            <div class="goal-meta">
-                                <div class="goal-meta-item">
-                                    <i class="bi bi-calendar3"></i>
-                                    <span>{{ goal.dateFinalGoa ? goal.dateFinalGoa|date('d/m/Y') : 'Pas de date' }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="goal-content">
-                        <p class="goal-description">{{ goal.descriptionGoa }}</p>
-                        
-                        <!-- Progression -->
-                        <div class="progress-container">
-                            <div class="progress-label">
-                                <span>Progression</span>
-                                <span>{{ goal.progressGoa ? goal.progressGoa|round(2) ~ '%' : '0%' }}</span>
-                            </div>
-                            <div class="progress-bar-custom">
-                                <div class="progress-fill" style="width: {{ goal.progressGoa ? goal.progressGoa : 0 }}%;" 
-                                     data-width="{{ goal.progressGoa ? goal.progressGoa : 0 }}%"></div>
-                            </div>
-                        </div>
-                        
-                        <!-- Jalons -->
-                        {% if goal.milestones is defined and goal.milestones|length > 0 %}
-                        <div class="milestones-section">
-                            <h6 class="mb-2">Jalons ({{ goal.milestones|length }})</h6>
-                            {% for milestone in goal.milestones %}
-                            <div class="milestone-item">
-                                <div>
-                                    {% if milestone.titleMil is defined %}
-                                        <strong>{{ milestone.titleMil }}</strong>
-                                    {% else %}
-                                        <strong>Jalon {{ loop.index }}</strong>
-                                    {% endif %}
-                                    <div class="text-muted small">
-                                        {% if milestone.dueDateMil is defined and milestone.dueDateMil %}
-                                            {{ milestone.dueDateMil|date('d/m/Y') }}
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                <span class="badge bg-secondary">
-                                    Jalon
-                                </span>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                        
-                        <!-- Actions -->
-                        <div class="action-buttons">
-                            <a href="{{ path('app_goal_show', {'id_g': goal.id}) }}" class="btn-action btn-view">
-                                <i class="bi bi-eye"></i> Voir
-                            </a>
-                            <a href="{{ path('app_goal_edit', {'id_g': goal.id}) }}" class="btn-action btn-edit">
-                                <i class="bi bi-pencil"></i> Éditer
-                            </a>
-                            <form action="{{ path('app_goal_archive', {'id_g': goal.id}) }}" method="post" class="d-inline">
-                                <input type="hidden" name="_token" value="{{ csrf_token('archive' ~ goal.id) }}">
-                                <button type="submit" class="btn-action btn-archive" onclick="return confirm('Archiver cet objectif ?')">
-                                    <i class="bi bi-archive"></i> Archiver
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            {% endif %}
+
+    {% if goals is empty %}
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-bullseye"></i>
+            </div>
+            <h3>Aucun objectif trouvé</h3>
+            <p>Vous n'avez pas encore créé d'objectifs. Commencez par en créer un pour suivre votre progression.</p>
+            <a href="{{ path('app_goal_new') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i> Créer votre premier objectif
+            </a>
         </div>
-        
-        <!-- Colonne des Citations (Droite) -->
-        <div class="quotes-column">
-            <div class="quotes-container">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="mb-0"><i class="bi bi-chat-quote me-2"></i>Inspiration du Jour</h5>
-                    <button class="btn-refresh-quotes" id="refreshQuotes" title="Nouvelle inspiration">
-                        <i class="bi bi-arrow-clockwise"></i>
-                    </button>
-                </div>
-                
-                <!-- Citation Française -->
-                {% if frenchQuote is defined and frenchQuote %}
-                <div class="quote-card french">
-                    <div class="quote-header">
-                        <div class="quote-icon">🇫🇷</div>
-                        <span class="quote-type">Motivation</span>
-                    </div>
-                    <p class="quote-text">{{ frenchQuote.text }}</p>
-                    {% if frenchQuote.author %}
-                    <div class="quote-author">— {{ frenchQuote.author }}</div>
-                    {% endif %}
-                </div>
-                {% endif %}
-                
-                <!-- Citation Coranique -->
-                {% if quranQuote is defined and quranQuote %}
-                <div class="quote-card quran">
-                    <div class="quote-header">
-                        <div class="quote-icon">🕌</div>
-                        <span class="quote-type">Coranique</span>
-                    </div>
-                    {% if quranQuote.arabicText %}
-                    <div class="quran-arabic">{{ quranQuote.arabicText }}</div>
-                    {% endif %}
-                    <p class="quote-text">{{ quranQuote.text }}</p>
-                    {% if quranQuote.translation %}
-                    <p class="quote-translation">{{ quranQuote.translation }}</p>
-                    {% endif %}
-                    {% if quranQuote.reference %}
-                    <div class="quote-reference">{{ quranQuote.reference }}</div>
-                    {% endif %}
-                </div>
-                {% endif %}
-            </div>
-            
-            <!-- Statistiques -->
-            <div class="stats-card mt-4">
-                <h6 class="mb-3"><i class="bi bi-bar-chart me-2"></i>Statistiques</h6>
-                <div class="row text-center">
-                    <div class="col-6 mb-3">
-                        <div class="stats-number">{{ goals|length }}</div>
-                        <div class="stats-label">Objectifs</div>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <div class="stats-number">
-                            {{ goals|filter(g => g.statusGoa == 'TERMINÉ')|length }}
-                        </div>
-                        <div class="stats-label">Terminés</div>
-                    </div>
-                    <div class="col-6">
-                        <div class="stats-number">
-                            {{ goals|filter(g => g.statusGoa == 'EN COURS')|length }}
-                        </div>
-                        <div class="stats-label">En cours</div>
-                    </div>
-                    <div class="col-6">
-                        <div class="stats-number">
-                            {{ goals|filter(g => g.statusGoa == 'À FAIRE')|length }}
-                        </div>
-                        <div class="stats-label">À faire</div>
-                    </div>
-                </div>
-            </div>
+  {% else %}
+    <div class="nexa-table-wrapper">
+        <table class="nexa-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Titre</th>
+                    <th>Statut</th>
+                    <th>Priorité</th>
+                    <th>Progression</th>
+                    <th>Dates</th>
+                    <th class="actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for goal in goals %}
+                <tr>
+                    <td>{{ goal.idGoa }}</td>
+
+                    <td>
+                        <strong>{{ goal.titleGoa }}</strong><br>
+                        <small>
+                            {{ goal.descriptionGoa|default('Aucune description')|slice(0, 50) }}
+                            {% if goal.descriptionGoa|length > 50 %}...{% endif %}
+                        </small>
+                    </td>
+
+                    <td>
+                        <span class="badge">
+                            {{ goal.statusGoa|default('N/A') }}
+                        </span>
+                    </td>
+
+                    <td>{{ goal.priorityGoa|default('Moyenne') }}</td>
+
+                    <td>
+                        {% set p = goal.progressGoa|default(0) %}
+                        
+{% set p = goal.progressGoa|default(0) %}
+
+<div class="nexa-progress-control">
+    
+    <!-- DOWN -->
+    <form method="post" action="{{ path('app_goal_progress_down', {'id': goal.idGoa}) }}">
+        <button class="progress-btn down">⬇</button>
+    </form>
+
+    <!-- BAR -->
+    <div class="nexa-progress-wrapper">
+        <div class="nexa-progress-fill
+            {% if p == 100 %}progress-done
+            {% elseif p > 70 %}progress-high
+            {% elseif p > 30 %}progress-mid
+            {% else %}progress-low{% endif %}"
+            style="width: {{ p }}%">
         </div>
     </div>
-</div>
-{% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Rafraîchir les citations
-            const refreshBtn = document.getElementById('refreshQuotes');
-            if (refreshBtn) {
-                refreshBtn.addEventListener('click', function() {
-                    // Animation de rotation
-                    const icon = this.querySelector('i');
-                    icon.style.transition = 'transform 0.5s';
-                    icon.style.transform = 'rotate(360deg)';
-                    
-                    // Simuler un rafraîchissement (pour l'instant, on recharge la page)
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 500);
-                    
-                    setTimeout(() => {
-                        icon.style.transform = 'rotate(0deg)';
-                    }, 600);
-                });
-            }
-            
-            // Animation des barres de progression
-            const progressBars = document.querySelectorAll('.progress-fill');
-            progressBars.forEach(bar => {
-                const width = bar.style.width || bar.getAttribute('data-width');
-                if (width) {
-                    bar.style.width = '0';
-                    setTimeout(() => {
-                        bar.style.width = width;
-                    }, 300);
-                }
-            });
-        });
-    </script>
+    <!-- NUMBER -->
+    <span class="nexa-progress-text">{{ p }}%</span>
+
+    <!-- UP -->
+    <form method="post" action="{{ path('app_goal_progress_up', {'id': goal.idGoa}) }}">
+        <button class="progress-btn up">⬆</button>
+    </form>
+
+</div>
+
+                    </td>
+
+                    <td>
+                        {{ goal.dateDebutGoa ? goal.dateDebutGoa|date('d/m/Y') : 'N/A' }}
+                        →
+                        {{ goal.dateFinalGoa ? goal.dateFinalGoa|date('d/m/Y') : 'N/A' }}
+                    </td>
+
+                    <td class="actions">
+                        <a href="{{ path('app_goal_show', {'id_g': goal.idGoa}) }}" class="btn-action view" title="Voir">👁</a>
+                        <a href="{{ path('app_goal_edit', {'id_g': goal.idGoa}) }}" class="btn-action edit" title="Modifier">✏️</a>
+
+                        <form action="{{ path('app_goal_delete', {'id_g': goal.idGoa}) }}"
+                              method="post"
+                              style="display:inline;"
+                              onsubmit="return confirm('Supprimer cet objectif ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ goal.idGoa) }}">
+                            <button class="btn-action delete" title="Supprimer">🗑</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}
+</div>
 {% endblock %}

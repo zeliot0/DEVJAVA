@@ -1,95 +1,131 @@
+{# templates/Milestones/index.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Jalons - NEXA{% endblock %}
+{% block title %}Jalons{% endblock %}
 
 {% block body %}
-<div class="container-fluid">
-    <!-- Header -->
-    <div class="row mb-4">
-        <div class="col">
-            <h1 class="h2 fw-bold mb-0">Jalons</h1>
-            <p class="text-muted mb-0">Gérez les jalons de vos objectifs</p>
+<div class="nexa-milestones-container">
+    <div class="nexa-milestones-header">
+        <div>
+            <h2><i class="bi bi-flag"></i> Jalons</h2>
+            <p class="nexa-form-subtitle">Suivez vos jalons et étapes importantes</p>
         </div>
-        <div class="col-auto">
-            <a href="{{ path('app_milestones_new') }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle me-2"></i>Nouveau Jalon
-            </a>
+        <a href="{{ path('app_milestones_new') }}" class="nexa-add-milestone-btn">
+            <i class="bi bi-plus-circle"></i> Ajouter un jalon
+        </a>
+    </div>
+
+    <div class="nexa-milestone-progress">
+        <div class="nexa-milestone-progress-header">
+            <h4 class="nexa-milestone-progress-title">Vos jalons</h4>
+            <span class="nexa-milestone-progress-count">{{ milestones|length }} jalon(s)</span>
         </div>
     </div>
 
-    <!-- Jalons List -->
-    <div class="row">
+    <div class="nexa-milestones-list">
         {% for milestone in milestones %}
-        <div class="col-12">
-            <div class="goal-card">
-                <div class="goal-header">
-                    <div>
-                        <h2 class="goal-title">{{ milestone.titleMilestone }}</h2>
-                        <div class="goal-meta">
-                            <span class="goal-meta-item">
-                                <i class="bi bi-bullseye"></i>
-                                {{ milestone.goal.titleGoa }}
-                            </span>
-                            <span class="goal-meta-item">
-                                <i class="bi bi-calendar"></i>
-                                Créé le: {{ milestone.createdAt|date('d/m/Y') }}
-                            </span>
-                            <span class="goal-meta-item">
-                                <i class="bi bi-clock"></i>
-                                Échéance: {{ milestone.dueDate|date('d/m/Y') }}
-                            </span>
-                            {% if milestone.completedDate %}
-                            <span class="goal-meta-item text-success">
-                                <i class="bi bi-check-circle"></i>
-                                Terminé le: {{ milestone.completedDate|date('d/m/Y') }}
-                            </span>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <span class="badge {% if milestone.completedDate %}bg-success{% else %}bg-warning{% endif %}">
-                        {% if milestone.completedDate %}TERMINÉ{% else %}EN COURS{% endif %}
-                    </span>
+        <div class="nexa-milestone-card 
+            {% if milestone.getStatus() == 'overdue' %}delayed
+            {% elseif milestone.getStatus() == 'completed' %}completed
+            {% else %}pending{% endif %}">
+            
+            <div class="nexa-milestone-content">
+                <div class="nexa-milestone-icon 
+                    {% if milestone.getStatus() == 'completed' %}completed
+                    {% elseif milestone.getStatus() == 'overdue' %}delayed{% endif %}">
+                    <i class="bi bi-flag"></i>
                 </div>
                 
-                <div class="goal-content">
-                    <p class="mb-3">{{ milestone.descriptionMilestone }}</p>
+                <div class="nexa-milestone-details">
+                    <div class="nexa-milestone-header">
+                        <h3 class="nexa-milestone-title">{{ milestone.title }}</h3>
+                        <span class="nexa-milestone-status 
+                            {% if milestone.getStatus() == 'completed' %}nexa-status-on-time
+                            {% elseif milestone.getStatus() == 'overdue' %}nexa-status-delayed
+                            {% else %}nexa-status-upcoming{% endif %}">
+                            {% if milestone.getStatus() == 'completed' %}Terminé
+                            {% elseif milestone.getStatus() == 'overdue' %}EN RETARD
+                            {% elseif milestone.getStatus() == 'upcoming' %}À venir
+                            {% else %}En attente{% endif %}
+                        </span>
+                    </div>
                     
-                    <!-- Actions -->
-                    <div class="d-flex gap-2">
-                        <a href="{{ path('app_milestones_show', {'id': milestone.id}) }}" class="btn btn-outline-primary btn-sm">
-                            <i class="bi bi-eye me-1"></i>Voir
-                        </a>
-                        <a href="{{ path('app_milestones_edit', {'id': milestone.id}) }}" class="btn btn-outline-secondary btn-sm">
-                            <i class="bi bi-pencil me-1"></i>Éditer
-                        </a>
-                        {% if not milestone.completedDate %}
-                        <form method="post" action="{{ path('app_milestones_complete', {'id': milestone.id}) }}" class="d-inline">
-                            <input type="hidden" name="_token" value="{{ csrf_token('complete' ~ milestone.id) }}">
-                            <button type="submit" class="btn btn-outline-success btn-sm">
-                                <i class="bi bi-check-circle me-1"></i>Terminer
-                            </button>
-                        </form>
+                    <p class="nexa-milestone-description">{{ milestone.description }}</p>
+                    
+                    <div class="nexa-milestone-meta">
+                        {% if milestone.dueDate %}
+                        <div class="nexa-meta-item">
+                            <i class="bi bi-calendar"></i>
+                            <span>Échéance :</span>
+                            <span class="nexa-meta-date {% if milestone.getStatus() == 'overdue' %}overdue{% endif %}">
+                                {{ milestone.dueDate|date('d/m/Y') }}
+                            </span>
+                        </div>
                         {% endif %}
-                        <form method="post" action="{{ path('app_milestones_delete', {'id': milestone.id}) }}" class="d-inline">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ milestone.id) }}">
-                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce jalon ?')">
-                                <i class="bi bi-trash me-1"></i>Supprimer
+                        
+                        {% if milestone.completedDate %}
+                        <div class="nexa-meta-item">
+                            <i class="bi bi-check-circle"></i>
+                            <span>Terminé le :</span>
+                            <span class="nexa-meta-date">{{ milestone.completedDate|date('d/m/Y') }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        {% if milestone.goalGoa %}
+                        <div class="nexa-meta-item">
+                            <i class="bi bi-bullseye"></i>
+                            <span>Objectif :</span>
+                            <span class="nexa-meta-date">{{ milestone.goalGoa.titleGoa }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="nexa-milestone-checkbox">
+                    {% if milestone.completedDate %}
+                    <div class="nexa-checkbox-custom checked">
+                        <i class="bi bi-check"></i>
+                    </div>
+                    {% else %}
+                    <div class="nexa-checkbox-custom">
+                        <form method="post" action="{{ path('app_milestones_complete', {'id': milestone.id}) }}" 
+                              class="d-inline" onsubmit="return confirm('Marquer ce jalon comme terminé ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('complete' ~ milestone.id) }}">
+                            <button type="submit" class="nexa-checkbox-custom" style="border: none; background: none; cursor: pointer;">
+                                <i class="bi bi-check"></i>
                             </button>
                         </form>
                     </div>
+                    {% endif %}
                 </div>
+            </div>
+            
+            <div class="nexa-table-actions">
+                <a href="{{ path('app_milestones_show', {'id': milestone.id}) }}" 
+                   class="nexa-btn-action nexa-btn-view" title="Voir">
+                    <i class="bi bi-eye"></i>
+                </a>
+                <a href="{{ path('app_milestones_edit', {'id': milestone.id}) }}" 
+                   class="nexa-btn-action nexa-btn-edit" title="Modifier">
+                    <i class="bi bi-pencil"></i>
+                </a>
+                <form method="post" action="{{ path('app_milestones_delete', {'id': milestone.id}) }}" 
+                      class="d-inline" onsubmit="return confirm('Supprimer ce jalon ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ milestone.id) }}">
+                    <button type="submit" class="nexa-btn-action nexa-btn-delete" title="Supprimer">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
             </div>
         </div>
         {% else %}
-        <div class="col-12">
-            <div class="text-center py-5">
-                <i class="bi bi-flag display-1 text-muted"></i>
-                <h3 class="mt-3">Aucun jalon trouvé</h3>
-                <p class="text-muted">Commencez par créer votre premier jalon</p>
-                <a href="{{ path('app_milestones_new') }}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle me-2"></i>Créer un jalon
-                </a>
-            </div>
+        <div class="nexa-milestones-empty">
+            <i class="bi bi-flag"></i>
+            <h3>Aucun jalon trouvé</h3>
+            <p>Créez votre premier jalon pour suivre les étapes importantes de vos objectifs.</p>
+            <a href="{{ path('app_milestones_new') }}" class="nexa-add-milestone-btn">
+                <i class="bi bi-plus-circle"></i> Créer votre premier jalon
+            </a>
         </div>
         {% endfor %}
     </div>

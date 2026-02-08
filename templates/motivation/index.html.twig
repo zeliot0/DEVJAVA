@@ -1,0 +1,281 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="motivation-container">
+    <!-- Éléments décoratifs -->
+    <div class="decorative-element decorative-1">✨</div>
+    <div class="decorative-element decorative-2">🌟</div>
+    <div class="decorative-element decorative-3">💫</div>
+    
+    <!-- En-tête -->
+    <div class="motivation-header">
+        <h1 class="motivation-title">Mes Motivations</h1>
+        <p class="motivation-subtitle">
+            <i class="bi bi-heart-fill text-danger"></i> Messages inspirants pour chaque humeur
+        </p>
+        <a href="{{ path('app_motivation_new') }}" class="motivation-primary-btn">
+            <i class="bi bi-plus-circle"></i> Créer une motivation
+        </a>
+    </div>
+    
+    <!-- Section : Messages inspirants du Coran -->
+    {% if inspirational_message %}
+    <div class="inspirational-message-container">
+        <div class="card motivation-verse-card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-book text-primary"></i>
+                    Verset du Coran pour votre humeur
+                    {% if current_mood %}
+                    <span class="badge bg-primary">{{ current_mood|capitalize }}</span>
+                    {% endif %}
+                </h5>
+                
+                <!-- Texte arabe -->
+                <div class="arabic-text text-end fs-4 mb-3" dir="rtl" style="font-family: 'Traditional Arabic', 'Arial', sans-serif;">
+                    {{ inspirational_message.arabic }}
+                </div>
+                
+                <!-- Traduction française -->
+                <div class="translation mb-2">
+                    <strong>Français :</strong> 
+                    <p class="mb-1">{{ inspirational_message.french }}</p>
+                </div>
+                
+                <!-- Traduction anglaise -->
+                <div class="translation mb-3">
+                    <strong>English :</strong> 
+                    <p class="mb-1">{{ inspirational_message.english }}</p>
+                </div>
+                
+                <!-- Source -->
+                <div class="source text-muted">
+                    <i class="bi bi-info-circle"></i> {{ inspirational_message.source }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Filtres d'humeur -->
+    <div class="mood-filters-container hover-glow">
+        <h2 class="mood-filters-title">
+            <i class="bi bi-funnel"></i> Filtrer par humeur
+        </h2>
+        <div class="mood-badges-container">
+            <a href="{{ path('app_motivation_index') }}" 
+               class="mood-badge {{ not app.request.get('mood') ? 'active' : '' }}">
+                <i class="bi bi-star-fill"></i> Toutes
+            </a>
+
+{% set emoji_map = {
+    'motivated': ['rocket', 'fire', 'trophy'],
+    'happy': ['smile', 'sun', 'sparkles'],
+    'sad': ['frown', 'cloud-rain', 'heart'],
+    'stressed': ['dizzy', 'lightning', 'exclamation'],
+    'tired': ['sleep', 'moon', 'battery-half'],
+    'determined': ['sunglasses', 'bullseye', 'star'],
+    'optimistic': ['emoji-smile', 'rainbow', 'balloon']
+} %}
+
+
+{% for mood in moods %}
+<a href="{{ path('app_motivation_by_mood', {'mood': mood}) }}" 
+   class="mood-badge mood-{{ mood }} {{ current_mood == mood ? 'active' : '' }}">
+    {% for icon in emoji_map[mood] ?? ['emoji-smile'] %}
+    <i class="bi bi-{{ icon }}"></i>
+{% endfor %}
+
+    {{ mood|capitalize }}
+</a>
+{% endfor %}
+        </div>
+    </div>
+    
+    <!-- Grille des motivations -->
+    {% if motivations is empty %}
+        <div class="motivation-empty-state">
+            <div class="empty-state-icon">😊</div>
+            <h2 class="empty-state-title">Pas de motivations pour le moment</h2>
+            <p class="empty-state-text">
+                Créez des messages motivationnels pour inspirer vos journées 
+                et atteindre vos objectifs avec le sourire !
+            </p>
+            <a href="{{ path('app_motivation_new') }}" class="empty-state-btn pulse-on-hover">
+                <i class="bi bi-plus-circle"></i> Créer ma première motivation
+            </a>
+        </div>
+    {% else %}
+        <div class="motivation-grid">
+            {% for motivation in motivations %}
+            <div class="motivation-card hover-glow">
+                <div class="motivation-card-header">
+                   <span class="motivation-mood mood-{{ motivation.mood }}">
+    {% for icon in emoji_map[motivation.mood] ?? ['emoji-smile'] %}
+    <i class="bi bi-{{ icon }}"></i>
+{% endfor %}
+
+    {{ motivation.mood|capitalize }}
+</span>
+                    <div class="motivation-dropdown dropdown">
+                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ path('app_motivation_show', {'id': motivation.id}) }}">
+                                <i class="bi bi-eye"></i> Voir
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_motivation_edit', {'id': motivation.id}) }}">
+                                <i class="bi bi-pencil"></i> Modifier
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="post" action="{{ path('app_motivation_delete', {'id': motivation.id}) }}" 
+                                      onsubmit="return confirm('Supprimer cette motivation?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ motivation.id) }}">
+                                    <button class="dropdown-item text-danger">
+                                        <i class="bi bi-trash"></i> Supprimer
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                {% if motivation.image %}
+                <div class="motivation-image-container">
+                    <img src="{{ asset('uploads/motivation/' ~ motivation.image) }}" 
+                         alt="{{ motivation.title }}" class="motivation-image">
+                </div>
+                {% else %}
+                <div class="motivation-image-container">
+                    <div class="motivation-image-placeholder">
+                        <i class="bi bi-chat-heart"></i>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="motivation-card-content">
+                    <h3 class="motivation-card-title">
+                        <i class="bi bi-quote"></i> {{ motivation.title }}
+                    </h3>
+                    <p class="motivation-card-description">{{ motivation.description }}</p>
+                    
+                    <div class="motivation-actions">
+                        <a href="{{ path('app_motivation_show', {'id': motivation.id}) }}" 
+                           class="motivation-action-btn primary">
+                            <i class="bi bi-eye"></i> Lire
+                        </a>
+                        <a href="{{ path('app_motivation_edit', {'id': motivation.id}) }}" 
+                           class="motivation-action-btn warning">
+                            <i class="bi bi-pencil"></i> Éditer
+                        </a>
+                        <a href="{{ path('app_motivation_by_mood', {'mood': motivation.mood}) }}" 
+                           class="motivation-action-btn info">
+                            <i class="bi bi-filter"></i> Similaire
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="motivation-card-footer">
+                    <span class="motivation-status active">
+    <i class="bi bi-circle-fill"></i>
+    Actif
+</span>
+                   <span class="motivation-date">
+    <i class="bi bi-calendar"></i>
+    Aujourd'hui
+</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if current_mood and all_messages[current_mood] and all_messages[current_mood]|length > 1 %}
+    <div class="more-verses-container mt-5">
+        <h3 class="section-title">
+            <i class="bi bi-collection"></i> Plus de versets pour l'humeur "{{ current_mood|capitalize }}"
+        </h3>
+        <div class="row">
+            {% for message in all_messages[current_mood]|slice(0, 5) %}
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card h-100 motivation-verse-card">
+                    <div class="card-body">
+                        <div class="arabic-text text-end mb-2" dir="rtl" style="font-family: 'Traditional Arabic', 'Arial', sans-serif;">
+                            {{ message.arabic }}
+                        </div>
+                        <p class="card-text">
+                            <small>{{ message.french }}</small>
+                        </p>
+                        <div class="source text-muted">
+                            <small><i class="bi bi-book"></i> {{ message.source }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    
+    <!-- Statistiques -->
+    <div class="motivation-stats-container">
+        <h2 class="motivation-stats-title">
+            <i class="bi bi-bar-chart"></i> Statistiques des motivations
+        </h2>
+        <div class="stats-grid">
+            {% for mood in moods %}
+            <div class="stat-item {{ mood }}">
+                <span class="stat-value">
+                    {{ motivations|filter(m => m.mood == mood)|length }}
+                </span>
+                <span class="stat-label">{{ mood|capitalize }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div> {# Close the motivation-container div #}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Animation au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            // Effet de vague sur les cartes
+            const cards = document.querySelectorAll('.motivation-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = (index * 0.1) + 's';
+            });
+            
+            // Effet de brillance sur les boutons
+            const buttons = document.querySelectorAll('.motivation-primary-btn, .empty-state-btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    this.style.animation = 'pulse 0.5s';
+                });
+                btn.addEventListener('animationend', function() {
+                    this.style.animation = '';
+                });
+            });
+            
+            // Effet de survol sur les badges d'humeur
+            const moodBadges = document.querySelectorAll('.mood-badge');
+            moodBadges.forEach(badge => {
+                badge.addEventListener('mouseenter', function() {
+                    const mood = this.classList[1];
+                    document.querySelectorAll('.mood-badge').forEach(b => {
+                        if (b !== this) b.style.opacity = '0.7';
+                    });
+                });
+                badge.addEventListener('mouseleave', function() {
+                    document.querySelectorAll('.mood-badge').forEach(b => {
+                        b.style.opacity = '1';
+                    });
+                });
+            });
+        });
+    </script>
+{% endblock %}
