@@ -1,0 +1,655 @@
+/* =========================
+   THEME TOKENS
+   ========================= */
+:root {
+  --t: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html[data-theme="dark"] {
+  --bg: #0f172a;
+  --surface: #111a2f;
+  --surface-rgb: 17, 26, 47;
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+  --border: rgba(159, 122, 234, 0.18);
+  --gradient: linear-gradient(135deg, #5b5cf0, #9f7aea);
+  --shadow: 0 16px 46px rgba(0, 0, 0, 0.28);
+}
+
+html[data-theme="light"] {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-rgb: 255, 255, 255;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: rgba(91, 92, 240, 0.16);
+  --gradient: linear-gradient(135deg, #4f46e5, #7c3aed);
+  --shadow: 0 16px 46px rgba(0, 0, 0, 0.12);
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: background .35s ease, color .35s ease;
+  overflow-x: hidden;
+}
+
+/* ✅ main offset so content isn't hidden behind fixed navbar+banner */
+.nx-main-offset {
+  padding-top: 124px;
+  /* 80 navbar + 44 banner */
+}
+
+/* =========================
+   NAVBAR
+   ========================= */
+.nx-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6%;
+  background: rgba(var(--surface-rgb), 0.86);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  transition: var(--t);
+}
+
+.nx-topbar::before {
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 999px;
+  pointer-events: none;
+  background: linear-gradient(90deg,
+      rgba(91, 92, 240, 0),
+      rgba(91, 92, 240, .9),
+      rgba(159, 122, 234, .9),
+      rgba(16, 185, 129, .6),
+      rgba(91, 92, 240, 0));
+  opacity: .85;
+  animation: nx-bar-scan 6s ease-in-out infinite;
+}
+
+@keyframes nx-bar-scan {
+  0% {
+    transform: translateX(-6%) scaleX(.92);
+    opacity: .55;
+  }
+
+  50% {
+    transform: translateX(6%) scaleX(1);
+    opacity: .95;
+  }
+
+  100% {
+    transform: translateX(-6%) scaleX(.92);
+    opacity: .55;
+  }
+}
+
+.nx-logo {
+  font-size: 2.1rem;
+  font-weight: 900;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: .5px;
+  white-space: nowrap;
+}
+
+.nx-nav-pill {
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 999px;
+  background: rgba(var(--surface-rgb), 0.35);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
+}
+
+.nx-nav-pill::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(120deg,
+      rgba(91, 92, 240, 0) 0%,
+      rgba(91, 92, 240, 0.10) 20%,
+      rgba(159, 122, 234, 0.12) 40%,
+      rgba(16, 185, 129, 0.07) 60%,
+      rgba(91, 92, 240, 0) 80%,
+      rgba(91, 92, 240, 0) 100%);
+  transform: translateX(-45%);
+  animation: nx-nav-shine 7s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes nx-nav-shine {
+  0% {
+    transform: translateX(-45%);
+    opacity: .35;
+  }
+
+  50% {
+    transform: translateX(25%);
+    opacity: .65;
+  }
+
+  100% {
+    transform: translateX(-45%);
+    opacity: .35;
+  }
+}
+
+.nx-nav-pill a {
+  position: relative;
+  z-index: 1;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 800;
+  color: var(--muted);
+  text-decoration: none;
+  transition: var(--t);
+  border: 1px solid transparent;
+  user-select: none;
+}
+
+.nx-nav-pill a:hover {
+  background: rgba(159, 122, 234, 0.14);
+  color: var(--text);
+  transform: translateY(-2px);
+  border-color: rgba(159, 122, 234, 0.22);
+}
+
+.nx-nav-pill a.active {
+  background: var(--gradient);
+  color: white;
+  box-shadow: 0 14px 34px rgba(91, 92, 240, 0.22);
+}
+
+.nx-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nx-icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(var(--surface-rgb), 0.35);
+  color: var(--text);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: var(--t);
+}
+
+.nx-icon-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+  border-color: rgba(159, 122, 234, 0.35);
+}
+
+.nx-cta {
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: 900;
+  background: var(--gradient);
+  color: white;
+  box-shadow: 0 12px 30px rgba(91, 92, 240, 0.22);
+  transition: var(--t);
+  white-space: nowrap;
+}
+
+.nx-cta:hover {
+  transform: translateY(-2px) scale(1.03);
+}
+
+/* =========================
+   SEARCH
+   ========================= */
+.nx-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(var(--surface-rgb), 0.35);
+  backdrop-filter: blur(12px);
+  transition: var(--t);
+  min-width: 260px;
+}
+
+.nx-search:focus-within {
+  border-color: rgba(159, 122, 234, 0.40);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
+  transform: translateY(-1px);
+}
+
+.nx-search input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-weight: 800;
+}
+
+.nx-search input::placeholder {
+  color: rgba(148, 163, 184, 0.9);
+  font-weight: 700;
+}
+
+.nx-search-btn {
+  border: none;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 6px 8px;
+  border-radius: 10px;
+  transition: var(--t);
+}
+
+.nx-search-btn:hover {
+  background: rgba(159, 122, 234, 0.14);
+  transform: translateY(-1px);
+}
+
+/* =========================
+   LANGUAGE
+   ========================= */
+.nx-lang-switch {
+  position: relative;
+}
+
+.nx-lang-btn {
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(var(--surface-rgb), 0.35);
+  color: var(--text);
+  font-weight: 900;
+  cursor: pointer;
+  transition: var(--t);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nx-lang-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+  border-color: rgba(159, 122, 234, 0.35);
+}
+
+.nx-lang-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 220px;
+  background: rgba(var(--surface-rgb), 0.92);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: perspective(900px) rotateX(-14deg) scale(.95);
+  transition: var(--t);
+  z-index: 1200;
+}
+
+.nx-lang-menu.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: perspective(900px) rotateX(0deg) scale(1);
+}
+
+.nx-lang-menu div {
+  padding: 14px 18px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: background .25s ease, transform .25s ease;
+}
+
+.nx-lang-menu div:hover {
+  background: rgba(159, 122, 234, 0.14);
+  transform: translateX(4px);
+}
+
+/* =========================
+   BANNER
+   ========================= */
+.nx-banner {
+  position: fixed;
+  top: 80px;
+  left: 0;
+  right: 0;
+  height: 44px;
+  z-index: 999;
+  background: rgba(var(--surface-rgb), 0.90);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.nx-track {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  gap: 40px;
+  width: max-content;
+  animation: nx-ticker 18s linear infinite;
+  will-change: transform;
+  padding-left: 20px;
+}
+
+.nx-banner:hover .nx-track {
+  animation-play-state: paused;
+}
+
+.nx-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+  color: var(--text);
+  opacity: .95;
+}
+
+.nx-item img {
+  width: 28px;
+  height: 18px;
+  border-radius: 4px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
+  flex-shrink: 0;
+}
+
+.nx-item strong {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes nx-ticker {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* =========================
+   MOBILE DRAWER
+   ========================= */
+.nx-burger {
+  display: none;
+}
+
+.nx-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+  z-index: 5500 !important;
+}
+
+body.nx-menu-open .nx-backdrop {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nx-drawer {
+  position: fixed;
+  top: 130px !important;
+  inset-inline-end: 0;
+  width: min(360px, 92vw);
+  height: calc(100vh - 130px) !important;
+  background: rgba(var(--surface-rgb), 0.92);
+  backdrop-filter: blur(18px);
+  border-inline-start: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+  border-top-left-radius: 20px;
+  box-shadow: var(--shadow);
+  transform: translateX(110%);
+  transition: transform .3s ease;
+  z-index: 6800 !important;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+html[dir="rtl"] .nx-drawer {
+  transform: translateX(-110%);
+}
+
+body.nx-menu-open .nx-drawer {
+  transform: translateX(0);
+}
+
+.nx-drawer-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.nx-drawer-title {
+  font-weight: 900;
+  letter-spacing: .3px;
+}
+
+.nx-drawer-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 10px;
+}
+
+.nx-drawer-nav a {
+  padding: 14px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: rgba(var(--surface-rgb), 0.35);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 900;
+  transition: var(--t);
+}
+
+.nx-drawer-nav a:hover {
+  transform: translateY(-2px);
+  border-color: rgba(159, 122, 234, 0.35);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.14);
+}
+
+.nx-drawer-actions {
+  margin-top: auto;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.nx-drawer-actions .nx-cta {
+  width: 100%;
+}
+
+/* =========================
+   TOAST
+   ========================= */
+.nx-toast {
+  position: fixed;
+  top: 140px;
+  right: 16px;
+  z-index: 2000;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: rgba(var(--surface-rgb), 0.92);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  font-weight: 800;
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: var(--t);
+  max-width: 320px;
+}
+
+.nx-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+@media (max-width: 1100px) {
+  .nx-search {
+    min-width: 210px;
+  }
+}
+
+@media (max-width: 920px) {
+  .nx-search {
+    display: none;
+  }
+
+  .nx-cta {
+    display: none;
+  }
+
+  .nx-burger {
+    display: grid;
+    place-items: center;
+  }
+}
+
+@media (max-width: 520px) {
+  .nx-nav-pill {
+    display: none;
+  }
+
+  .nx-lang-btn span {
+    display: none;
+  }
+
+  .nx-topbar {
+    padding: 0 4%;
+  }
+}
+
+/* =========================================================
+   ✅ APP TOPBAR ABOVE MODERN NAVBAR (added)
+   Put this at END of file
+   ========================================================= */
+
+/* 1) App topbar (the one from the screenshot) */
+.app-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1200;
+
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 18px;
+  background: rgba(var(--surface-rgb), .92);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+
+[data-theme="dark"] .app-topbar {
+  background: rgba(11, 18, 36, .92);
+  border-bottom: 1px solid rgba(231, 238, 252, .10);
+}
+
+.app-left .app-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-title .app-name {
+  font-weight: 900;
+  font-size: 1.1rem;
+  line-height: 1.1;
+}
+
+.app-title .app-sub {
+  font-size: .8rem;
+  color: var(--muted);
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.app-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* 2) Move the modern navbar UNDER the app-topbar */
+.nx-topbar {
+  top: 64px !important;
+  /* navbar sticks under app-topbar */
+  z-index: 1100 !important;
+}
+
+/* 3) Move the moving banner under the navbar */
+.nx-banner {
+  top: 144px !important;
+  /* 64 (app-topbar) + 80 (nx-topbar) */
+  z-index: 1090 !important;
+}
+
+/* 4) Push the content below both bars */
+.nx-main-offset {
+  padding-top: 188px !important;
+  /* 64 + 80 + 44 */
+}
+
+/* Small screens: hide some buttons to fit */
+@media (max-width: 680px) {
+  .app-right .seg {
+    display: none;
+  }
+
+  .app-right #newCatBtn {
+    display: none;
+  }
+}
