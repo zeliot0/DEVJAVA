@@ -1,0 +1,33 @@
+{{ form_start(form, { attr: { class: 'drawer-body' } }) }}
+
+<div class="field">
+    {{ form_widget(form.nom) }}
+</div>
+
+<div class="field">
+    {{ form_widget(form.description) }}
+</div>
+
+<div class="grid2">
+    <div class="field">
+        {{ form_widget(form.icone) }}
+    </div>
+    <div class="field">
+        {{ form_widget(form.couleur) }}
+    </div>
+</div>
+
+<div class="grid2">
+    <div class="field">
+        {{ form_widget(form.priorite) }}
+    </div>
+    <div class="field">
+        {{ form_widget(form.actif) }}
+    </div>
+</div>
+
+<button class="btn primary">
+    Enregistrer le thème
+</button>
+
+{{ form_end(form) }}

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+
+    <title>{% block title %}NEXA{% endblock %}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {# Fonts & Icons #}
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+    {# ✅ CSS GLOBAL #}
+    <link rel="stylesheet" href="{{ asset('css/base.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/nexaa.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/ui-refine.css') }}">
+    {% block stylesheets %}{% endblock %}
+</head>
+
+<body>
+
+{# ===== BACKDROP ===== #}
+<div class="backdrop" id="backdrop" aria-hidden="true"></div>
+
+{# =========================
+   NAVBAR
+   ========================= #}
+<header class="topbar" id="topbar">
+    <div class="logo">NEXA</div>
+
+    <nav aria-label="Primary">
+        <div class="nav-pill">
+            <a href="#" class="active">Fonctionnalités</a>
+            <a href="#">Taches</a>
+            <a href="#">Goal</a>
+            <a href="#">Conscience</a>
+            <a href="#">Produits</a>
+        </div>
+    </nav>
+
+    <div class="header-actions">
+
+        <form class="search" id="searchForm" autocomplete="off">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="searchInput" type="search" placeholder="Rechercher...">
+            <button class="search-btn" type="submit">
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </form>
+
+        <div class="lang-switch">
+            <button class="lang-btn" id="langBtn">
+                <i class="fa-solid fa-globe"></i>
+                <span id="currentLang">FR</span>
+            </button>
+            <div class="lang-menu" id="langMenu">
+                <div data-lang="fr">🇫🇷 Français</div>
+                <div data-lang="en">🇬🇧 English</div>
+                <div data-lang="ar">🇸🇦 العربية</div>
+            </div>
+        </div>
+
+        <button class="icon-btn" id="themeToggle">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <button class="icon-btn burger" id="menuBtn">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <button class="cta" id="headerCTA">Commencer gratuitement</button>
+    </div>
+</header>
+
+{# =========================
+   BANNER
+   ========================= #}
+<!-- ===== SCROLLING BANNER ===== -->
+<!-- ===== SCROLLING BANNER ===== -->
+<div class="scroll-banner">
+  <div class="scroll-track">
+
+    <!-- LOOP 1 -->
+    <span>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg" alt="Palestine">
+      <strong>Stand for Freedom</strong> • Justice • Dignity • Humanity
+    </span>
+    <span>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg" alt="Palestine">
+      <strong>Stand for Freedom</strong> • Justice • Dignity • Humanity
+    </span>
+    <span>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg" alt="Palestine">
+      <strong>Stand for Freedom</strong> • Justice • Dignity • Humanity
+    </span>
+
+    <!-- LOOP 2 (نفس الشيء بالضبط) -->
+    <span>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg" alt="Palestine">
+      <strong>Stand for Freedom</strong> • Justice • Dignity • Humanity
+    </span>
+    <span>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg" alt="Palestine">
+      <strong>Stand for Freedom</strong> • Justice • Dignity • Humanity
+    </span>
+    <span>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg" alt="Palestine">
+      <strong>Stand for Freedom</strong> • Justice • Dignity • Humanity
+    </span>
+
+  </div>
+</div>
+
+
+{# =========================
+   PAGE CONTENT
+   ========================= #}
+<main style="padding-top:140px">
+    {% block body %}{% endblock %}
+</main>
+
+{# =========================
+   JS GLOBAL
+   ========================= #}
+<script src="{{ asset('js/board.js') }}"></script>
+
+{% block javascripts %}{% endblock %}
+
+</body>
+</html>

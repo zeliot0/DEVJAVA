@@ -1,0 +1,45 @@
+{% extends 'admin/theme/base.html.twig' %}
+
+{% block title %}{{ theme.nom }}{% endblock %}
+
+{% block body %}
+<div class="wrap">
+
+    <a href="{{ path('app_theme_index') }}" class="btn">← Retour</a>
+
+    <div class="kpis">
+        <div class="kpi">
+            <div class="kpi-title">Thème</div>
+            <div class="kpi-value">{{ theme.nom }}</div>
+        </div>
+
+        <div class="kpi">
+            <div class="kpi-title">Priorité</div>
+            <div class="kpi-value">
+                <span class="priority-chip">
+                    <i class="fa-solid fa-flag"></i>
+                    <em>P{{ theme.priorite ?? 2 }}</em>
+                    <small class="priority-stars" aria-label="Priorite {{ theme.priorite ?? 2 }} sur 3">
+                        {% for i in 1..3 %}
+                            <i class="fa-star {{ i <= (theme.priorite ?? 2) ? 'fa-solid' : 'fa-regular' }}"></i>
+                        {% endfor %}
+                    </small>
+                </span>
+            </div>
+        </div>
+
+        <div class="kpi">
+            <div class="kpi-title">Statut</div>
+            <div class="kpi-value">
+                {{ theme.actif ? 'Actif' : 'Inactif' }}
+            </div>
+        </div>
+    </div>
+
+    <div class="task" style="margin-top:20px">
+        <h3>description_q</h3>
+        <p class="task-desc">{{ theme.description_q }}</p>
+    </div>
+
+</div>
+{% endblock %}

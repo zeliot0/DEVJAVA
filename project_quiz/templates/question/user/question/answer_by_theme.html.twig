@@ -1,0 +1,192 @@
+{% extends 'admin/theme/base.html.twig' %}
+
+{% block title %}Repondre - {{ theme.nom }}{% endblock %}
+
+{% block body %}
+<div class="wrap stepper-wrap modern-answer-wrap">
+
+  <section class="page-header center answer-hero">
+    <div class="header-actions">
+      <a href="{{ path('user_theme_index') }}" class="btn ghost">
+        Retour aux themes
+      </a>
+
+      <a href="{{ path('app_theme_rapport', { id: theme.idT }) }}" class="btn primary">
+        Voir mon rapport
+      </a>
+    </div>
+
+    <h1><i class="fa-solid fa-clipboard-check"></i> {{ theme.nom }}</h1>
+    <p class="muted">Merci de repondre aux questions ci-dessous.</p>
+  </section>
+
+  <div class="stepper-progress modern-progress">
+    <div class="bar">
+      <div class="bar-fill" id="progressBar"></div>
+    </div>
+    <span id="progressText"></span>
+  </div>
+
+  <form method="post"
+        action="{{ path('app_theme_answer', { id: theme.idT }) }}"
+        class="answers-form modern-answers-form"
+        id="stepperForm"
+        novalidate>
+
+    {% for question in questions %}
+      {% set answered = answers[question.id] is defined %}
+      {% set response = answered ? answers[question.id].valeur : null %}
+
+      <article class="question-step modern-question-step {{ answered ? 'answered' : '' }}"
+               data-step="{{ loop.index0 }}">
+
+        <div class="question-head">
+          <h3 class="question-title">{{ question.texte }}</h3>
+          {% if answered %}
+            <span class="badge-done">Deja repondu</span>
+          {% endif %}
+        </div>
+
+        {% if question.typeReponse == 'boolean' %}
+          <div class="choices modern-choices">
+            <label class="choice modern-choice">
+              <input type="radio"
+                     name="q{{ question.id }}"
+                     value="1"
+                     {{ answered ? 'disabled' : '' }}
+                     {{ response == '1' ? 'checked' : '' }}>
+              <span class="choice-label">
+                <i class="fa-solid fa-circle-check"></i>
+                Oui
+              </span>
+            </label>
+
+            <label class="choice modern-choice">
+              <input type="radio"
+                     name="q{{ question.id }}"
+                     value="0"
+                     {{ answered ? 'disabled' : '' }}
+                     {{ response == '0' ? 'checked' : '' }}>
+              <span class="choice-label">
+                <i class="fa-solid fa-circle-xmark"></i>
+                Non
+              </span>
+            </label>
+          </div>
+
+        {% elseif question.typeReponse == 'number' %}
+          <input type="number"
+                 name="q{{ question.id }}"
+                 class="field"
+                 value="{{ response }}"
+                 placeholder="Valeur {{ question.unite ? '(' ~ question.unite ~ ')' : '' }}"
+                 {{ answered ? 'readonly' : '' }}>
+
+        {% elseif question.typeReponse == 'text' %}
+          <textarea name="q{{ question.id }}"
+                    class="text-answer"
+                    rows="5"
+                    placeholder="Ecris ta reponse ici..."
+                    {{ answered ? 'readonly' : '' }}>{{ response }}</textarea>
+        {% endif %}
+      </article>
+    {% endfor %}
+
+    <p id="stepError" class="step-error" role="alert" aria-live="polite"></p>
+
+    <div class="stepper-actions modern-stepper-actions">
+      <button type="button" class="btn ghost" id="prevBtn">Precedent</button>
+      <button type="button" class="btn primary" id="nextBtn">Suivant</button>
+      <button type="submit" class="btn primary" id="submitBtn">Enregistrer mes reponses</button>
+    </div>
+
+  </form>
+</div>
+
+<div id="bravoBox" class="bravo-box">
+  <div class="bravo-content">
+    <h2>Bravo</h2>
+    <p>Vous avez complete toutes les questions.</p>
+    <a href="{{ path('app_theme_rapport', { id: theme.idT }) }}" class="btn primary">Voir mon rapport</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    const steps = document.querySelectorAll('.question-step');
+    const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const bravoBox = document.getElementById('bravoBox');
+    const form = document.getElementById('stepperForm');
+    const stepError = document.getElementById('stepError');
+
+    let current = 0;
+    const total = steps.length || 1;
+
+    function validateCurrentStep() {
+      const activeStep = steps[current];
+      if (!activeStep) return true;
+      const radios = activeStep.querySelectorAll('input[type="radio"]');
+      if (radios.length > 0) {
+        const checked = activeStep.querySelector('input[type="radio"]:checked');
+        return Boolean(checked);
+      }
+      const field = activeStep.querySelector('input[type="number"], textarea');
+      if (!field || field.readOnly || field.disabled) return true;
+      return (field.value || '').toString().trim() !== '';
+    }
+
+    function updateStep() {
+      steps.forEach((step, index) => {
+        const active = index === current;
+        step.classList.toggle('active', active);
+      });
+
+      const percent = ((current + 1) / total) * 100;
+      progressBar.style.width = percent + '%';
+      progressText.textContent = `Question ${current + 1} / ${total}`;
+
+      prevBtn.style.display = current === 0 ? 'none' : 'inline-flex';
+      nextBtn.style.display = current === total - 1 ? 'none' : 'inline-flex';
+      submitBtn.style.display = current === total - 1 ? 'inline-flex' : 'none';
+      stepError.textContent = '';
+    }
+
+    nextBtn.onclick = () => {
+      if (!validateCurrentStep()) {
+        stepError.textContent = 'Veuillez repondre a cette question avant de continuer.';
+        return;
+      }
+      if (current < total - 1) {
+        current++;
+        updateStep();
+      }
+    };
+
+    prevBtn.onclick = () => {
+      if (current > 0) {
+        current--;
+        updateStep();
+      }
+    };
+
+    form.addEventListener('submit', function (e) {
+      if (!validateCurrentStep()) {
+        e.preventDefault();
+        stepError.textContent = 'Veuillez repondre a cette question avant de valider.';
+        return;
+      }
+
+      e.preventDefault();
+      bravoBox.classList.add('show');
+      setTimeout(() => form.submit(), 1200);
+    });
+
+    updateStep();
+  </script>
+{% endblock %}

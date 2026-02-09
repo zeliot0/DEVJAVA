@@ -1,0 +1,136 @@
+{% extends 'admin/theme/base.html.twig' %}
+
+{% block title %}Rapport - {{ theme.nom }}{% endblock %}
+
+{% block body %}
+<div class="wrap report-wrap">
+
+  <section class="page-header report-hero">
+    <div class="page-header-top">
+      <div class="page-title">
+        <h1><i class="fa-solid fa-chart-column"></i> Rapport - {{ theme.nom }}</h1>
+        <p>Synthese de vos reponses et recommandations.</p>
+      </div>
+
+      <div class="page-actions">
+        <a href="{{ path('app_theme_answer', { id: theme.idT }) }}" class="btn ghost">
+          Retour aux questions
+        </a>
+        <a href="{{ path('app_theme_rapport_pdf', { id: theme.idT }) }}" class="btn primary">
+          <i class="fa-solid fa-file-pdf"></i> Exporter en PDF
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {% if details is empty %}
+    <div class="report-empty">
+      <i class="fa-regular fa-folder-open"></i>
+      <h3>Aucune reponse enregistree</h3>
+      <p>Commencez par repondre aux questions pour generer le rapport.</p>
+    </div>
+  {% else %}
+    {% set total = details|length %}
+    {% set good = 0 %}
+    {% set warn = 0 %}
+    {% set neutral = 0 %}
+    {% for item in details %}
+      {% if item.ok is same as(true) %}
+        {% set good = good + 1 %}
+      {% elseif item.ok is same as(false) %}
+        {% set warn = warn + 1 %}
+      {% else %}
+        {% set neutral = neutral + 1 %}
+      {% endif %}
+    {% endfor %}
+    {% set score = total > 0 ? ((good / total) * 100)|round : 0 %}
+
+    <section class="report-kpi-strip">
+      <article class="report-kpi">
+        <span>Total</span>
+        <strong>{{ total }}</strong>
+      </article>
+      <article class="report-kpi good">
+        <span>Bonnes habitudes</span>
+        <strong>{{ good }}</strong>
+      </article>
+      <article class="report-kpi warn">
+        <span>A ameliorer</span>
+        <strong>{{ warn }}</strong>
+      </article>
+      <article class="report-kpi score">
+        <span>Score global</span>
+        <strong>{{ score }}%</strong>
+      </article>
+    </section>
+
+    <section class="report-scorebar">
+      <div class="report-scorebar-track">
+        <div class="report-scorebar-fill" style="width: {{ score }}%"></div>
+      </div>
+      <small>Progression globale sur ce theme</small>
+    </section>
+
+    <section class="report-grid">
+      {% for item in details %}
+        {% set badgeText = item.ok is same as(true) ? 'Bonne habitude' : (item.ok is same as(false) ? 'A ameliorer' : 'Information utile') %}
+        {% set adviceText = (item.advice ?? '')|trim %}
+        {% set adviceLower = adviceText|lower %}
+        {% set hideAdvice = false %}
+        {% if item.ok is same as(true) and ('bonne habitude' in adviceLower) %}
+          {% set hideAdvice = true %}
+        {% elseif item.ok is same as(false) and ('amelior' in adviceLower) %}
+          {% set hideAdvice = true %}
+        {% elseif item.ok is null and ('information' in adviceLower) %}
+          {% set hideAdvice = true %}
+        {% endif %}
+
+        <article class="report-card {{ item.ok is same as(true) ? 'is-good' : (item.ok is same as(false) ? 'is-warn' : 'is-neutral') }}">
+          <div class="report-card-top">
+            <h3>
+              <i class="fa-solid {{ item.type == 'boolean' ? 'fa-toggle-on' : (item.type == 'number' ? 'fa-hashtag' : 'fa-message') }}"></i>
+              {{ item.question }}
+            </h3>
+            <span class="report-badge {{ item.ok is same as(true) ? 'good' : (item.ok is same as(false) ? 'warn' : 'neutral') }}">
+              {{ badgeText }}
+            </span>
+          </div>
+
+          <div class="report-line">
+            <span class="report-label">Votre reponse</span>
+            <strong class="report-value">
+              {% if item.type == 'boolean' %}
+                {{ item.value == '1' ? 'Oui' : 'Non' }}
+              {% else %}
+                {{ item.value }}
+                {% if item.unite %} {{ item.unite }}{% endif %}
+              {% endif %}
+            </strong>
+          </div>
+
+          {% if item.type == 'number' and item.ideal is not null %}
+            <div class="report-line report-target">
+              <span class="report-label">Objectif</span>
+              <strong class="report-value">
+                {{ item.ideal }}{% if item.unite %} {{ item.unite }}{% endif %}
+              </strong>
+            </div>
+          {% endif %}
+
+          {% if adviceText is not empty and not hideAdvice %}
+            <p class="report-advice {{ item.ok is same as(true) ? 'good' : (item.ok is same as(false) ? 'warn' : 'info') }}">
+              {{ adviceText }}
+            </p>
+          {% endif %}
+
+          <small class="report-date">
+            <i class="fa-regular fa-clock"></i>
+            Repondu le {{ item.date|date('d/m/Y a H:i') }}
+          </small>
+        </article>
+      {% endfor %}
+    </section>
+  {% endif %}
+
+</div>
+{% endblock %}

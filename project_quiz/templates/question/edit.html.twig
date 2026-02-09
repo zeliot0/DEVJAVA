@@ -1,0 +1,154 @@
+{% extends 'admin/theme/base.html.twig' %}
+
+{% block title %}Modifier la question{% endblock %}
+
+{% block body %}
+<div class="form-page">
+  <div class="page-header">
+    <div>
+      <a href="{{ path('app_questions_by_theme', { id: question.theme.idT }) }}" class="back-link">
+        Retour aux questions
+      </a>
+      <h1>Modifier la question</h1>
+      <p class="muted">Theme : <strong>{{ question.theme.nom }}</strong></p>
+      <p class="form-intro">
+        Mets a jour le texte et le format de reponse pour garder un suivi clair.
+      </p>
+    </div>
+  </div>
+
+  <div class="form-card">
+    {{ form_start(form, { attr: { novalidate: 'novalidate' } }) }}
+
+    {% if form.vars.submitted and not form.vars.valid %}
+      <div class="form-errors-box">
+        <strong>Le formulaire contient des erreurs. Corrige les champs indiques.</strong>
+      </div>
+    {% endif %}
+
+    <div class="form-section">
+      <h3>Contenu de la question</h3>
+      <label class="field-label">Texte de la question *</label>
+      {{ form_widget(form.texte, {
+        attr: {
+          class: 'field',
+          placeholder: 'Ex: As-tu bu suffisamment d eau aujourd hui ?'
+        }
+      }) }}
+      <p class="form-help">Une phrase simple aide l utilisateur a repondre rapidement.</p>
+      {{ form_errors(form.texte) }}
+    </div>
+
+    <div class="form-section grid-2">
+      <div>
+        <label class="field-label">Type de question *</label>
+        {{ form_widget(form.type, { attr: { class: 'field js-question-type' } }) }}
+        <p class="form-help">{{ form.type.vars.help }}</p>
+        {{ form_errors(form.type) }}
+      </div>
+
+      <div>
+        <label class="field-label">Type de reponse *</label>
+        {{ form_widget(form.typeReponse, { attr: { class: 'field js-response-type' } }) }}
+        <p class="form-help">{{ form.typeReponse.vars.help }}</p>
+        {{ form_errors(form.typeReponse) }}
+      </div>
+    </div>
+
+    <div class="form-section grid-2 js-numeric-block">
+      <div>
+        <label class="field-label">Unite</label>
+        {{ form_widget(form.unite, {
+          attr: {
+            class: 'field',
+            placeholder: 'Ex: litres, heures, minutes'
+          }
+        }) }}
+        <p class="form-help">{{ form.unite.vars.help }}</p>
+        {{ form_errors(form.unite) }}
+      </div>
+
+      <div>
+        <label class="field-label">Valeur ideale</label>
+        {{ form_widget(form.valeurIdeale, {
+          attr: {
+            class: 'field',
+            placeholder: 'Ex: 2'
+          }
+        }) }}
+        <p class="form-help">{{ form.valeurIdeale.vars.help }}</p>
+        {{ form_errors(form.valeurIdeale) }}
+      </div>
+    </div>
+
+    <div class="form-section">
+      <label class="field-label">Niveau d importance</label>
+      <div class="stars-radio">
+        {{ form_widget(form.niveau) }}
+      </div>
+      <p class="form-help">{{ form.niveau.vars.help }}</p>
+      {{ form_errors(form.niveau) }}
+    </div>
+
+    <div class="form-section">
+      <label class="field-label">Frequence *</label>
+      {{ form_widget(form.frequence, { attr: { class: 'field' } }) }}
+      <p class="form-help">{{ form.frequence.vars.help }}</p>
+      {{ form_errors(form.frequence) }}
+    </div>
+
+    <div class="form-section switch-stack">
+      <label class="switch-label">
+        {{ form_widget(form.genereTache) }}
+        Generer une tache automatiquement
+      </label>
+      <p class="form-help">{{ form.genereTache.vars.help }}</p>
+
+      <label class="switch-label">
+        {{ form_widget(form.actif) }}
+        Question active
+      </label>
+      <p class="form-help">{{ form.actif.vars.help }}</p>
+    </div>
+
+    <div class="form-section conditional-hint" id="responseHint">
+      <strong>Suggestion</strong>
+      <p>Pour une reponse numerique, renseigne aussi une unite et une valeur ideale.</p>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn primary">Enregistrer les modifications</button>
+      <a href="{{ path('app_questions_by_theme', { id: question.theme.idT }) }}" class="btn">
+        Annuler
+      </a>
+    </div>
+
+    {{ form_end(form) }}
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const responseType = document.querySelector('.js-response-type');
+      const numericBlock = document.querySelector('.js-numeric-block');
+      const hint = document.getElementById('responseHint');
+      if (!responseType || !numericBlock || !hint) return;
+
+      function refreshResponseUI() {
+        const value = responseType.value;
+        const isNumber = value === 'number';
+
+        numericBlock.style.opacity = isNumber ? '1' : '0.55';
+        hint.querySelector('p').textContent = isNumber
+          ? 'Bonne pratique: precise unite + valeur ideale pour analyser les resultats.'
+          : 'Ici tu peux laisser Unite et Valeur ideale vides.';
+      }
+
+      responseType.addEventListener('change', refreshResponseUI);
+      refreshResponseUI();
+    });
+  </script>
+{% endblock %}

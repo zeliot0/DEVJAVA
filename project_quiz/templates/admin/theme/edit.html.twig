@@ -1,0 +1,148 @@
+{% extends 'admin/theme/base.html.twig' %}
+
+{% block title %}Modifier le thème — NEXA{% endblock %}
+
+{% block body %}
+
+<div class="page-header">
+    <div>
+        <h1>✏️ Modifier le thème</h1>
+        <p>Mettre à jour les informations du thème</p>
+    </div>
+
+    <a href="{{ path('app_theme_index') }}" class="btn">
+        ← Retour à la liste
+    </a>
+</div>
+
+<div class="form-shell">
+    <div class="form-card">
+
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+        {# ================= INFOS ================= #}
+        <div class="form-section">
+            <h3>Informations générales</h3>
+
+            <div class="form-grid-2">
+                <div>
+                    <label class="field-label">Nom du thème</label>
+                    {{ form_widget(form.nom, { attr: { class: 'field' } }) }}
+                    {{ form_errors(form.nom) }}
+                </div>
+
+                <div>
+                    <label class="field-label">Priorité</label>
+                    <div class="priority-control">
+                        {{ form_widget(form.priorite, { attr: { class: 'field priority-select js-priority-select' } }) }}
+                        <div class="priority-preview js-priority-preview" aria-hidden="true">
+                            <span class="priority-preview-title">Niveau visuel</span>
+                            <div class="priority-preview-stars">
+                                <i class="fa-regular fa-star" data-level="1"></i>
+                                <i class="fa-regular fa-star" data-level="2"></i>
+                                <i class="fa-regular fa-star" data-level="3"></i>
+                            </div>
+                            <small class="priority-preview-text js-priority-text">Moyenne</small>
+                        </div>
+                    </div>
+                    {{ form_errors(form.priorite) }}
+                </div>
+            </div>
+
+            <div style="margin-top:16px">
+                <label class="field-label">Description</label>
+                {{ form_widget(form.description_q, { attr: { class: 'field', rows: 4 } }) }}
+                {{ form_errors(form.description_q) }}
+            </div>
+        </div>
+
+        {# ================= APPARENCE ================= #}
+        <div class="form-section">
+            <h3>Apparence</h3>
+
+            <div class="icon-color-grid">
+                <div>
+                    <label class="field-label">Icône</label>
+                    <div class="icon-grid">
+                        {% for choice in form.icone %}
+                            <label class="icon-option">
+                                {{ form_widget(choice) }}
+                                <div class="icon-box">
+                                    <i class="{{ choice.vars.value }}"></i>
+                                </div>
+                            </label>
+                        {% endfor %}
+                    </div>
+                    {{ form_errors(form.icone) }}
+                </div>
+
+                <div>
+                    <label class="field-label">Couleur</label>
+                    {{ form_widget(form.couleur, { attr: { class: 'color-input' } }) }}
+                    {{ form_errors(form.couleur) }}
+                </div>
+            </div>
+        </div>
+
+        {# ================= STATUT ================= #}
+        <div class="form-section">
+            <h3>Statut</h3>
+            <label class="switch-label">
+                {{ form_widget(form.actif) }}
+                Activer ce thème
+            </label>
+        </div>
+
+        {# ================= INTENTION ================= #}
+        <div class="form-section">
+            <h3>Intention</h3>
+            {{ form_widget(form.intention, { attr: { class: 'field' } }) }}
+            {{ form_errors(form.intention) }}
+        </div>
+
+        {# ================= ACTIONS ================= #}
+        <div class="form-actions">
+            <button type="submit" class="btn primary">
+                <i class="fa-solid fa-save"></i>
+                Enregistrer
+            </button>
+
+            <a href="{{ path('app_theme_index') }}" class="btn">
+                Annuler
+            </a>
+        </div>
+
+        {{ form_end(form) }}
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const select = document.querySelector('.js-priority-select');
+        const preview = document.querySelector('.js-priority-preview');
+        if (!select || !preview) return;
+
+        const stars = preview.querySelectorAll('[data-level]');
+        const text = preview.querySelector('.js-priority-text');
+        const labels = { 1: 'Basse', 2: 'Moyenne', 3: 'Haute' };
+
+        function refresh() {
+          const level = parseInt(select.value || '2', 10);
+          stars.forEach((star) => {
+            const starLevel = parseInt(star.getAttribute('data-level'), 10);
+            star.classList.toggle('fa-solid', starLevel <= level);
+            star.classList.toggle('fa-regular', starLevel > level);
+          });
+          if (text) text.textContent = labels[level] || 'Moyenne';
+        }
+
+        select.addEventListener('change', refresh);
+        refresh();
+      });
+    </script>
+{% endblock %}
