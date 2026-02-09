@@ -1,0 +1,55 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block admin_page_title %}Gestion Utilisateurs{% endblock %}
+{% block admin_page_hint %}Membres et hiérarchie du système NEXA{% endblock %}
+
+{% block admin_content %}
+    <div class="panel">
+        <div class="panel-title"><i class="fa-solid fa-users-gear" style="color: var(--primary);"></i> Annuaire des Comptes</div>
+        <div class="table-wrap">
+            <table class="adm-table" style="width: 100%;">
+                <thead>
+                    <tr style="text-align: left; color: var(--muted); font-size: 0.8rem; text-transform: uppercase;">
+                        <th style="padding: 10px 20px;">Utilisateur</th>
+                        <th style="padding: 10px 20px;">Identifiant</th>
+                        <th style="padding: 10px 20px;">Permissions</th>
+                        <th style="padding: 10px 20px; text-align: right;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                        <tr>
+                            <td style="padding: 15px 20px; border-radius: 18px 0 0 18px;">
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <div class="brand-badge" style="width: 38px; height: 38px; font-size: 0.9rem; background: rgba(var(--surface-rgb), 0.1); color: var(--primary); border: 1px solid var(--border); box-shadow: none;">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                    <div style="font-weight: 850; font-size: 0.95rem;">{{ u.email }}</div>
+                                </div>
+                            </td>
+                            <td style="padding: 15px 20px; color: var(--muted); font-family: monospace;">#USR-{{ u.id_user }}</td>
+                            <td style="padding: 15px 20px;">
+                                <div style="display: flex; gap: 8px;">
+                                    {% for role in u.roles %}
+                                        <span class="badge" style="background: rgba(var(--surface-rgb), 0.2); color: var(--primary); border: 1px solid var(--border); font-size: 0.65rem;">
+                                            {{ role|replace({'ROLE_': ''}) }}
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td style="padding: 15px 20px; text-align: right; border-radius: 0 18px 18px 0;">
+                                <button class="btn-delete" disabled title="Action restreinte">
+                                    <i class="fa-solid fa-user-slash"></i> Désactiver
+                                </button>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: var(--muted); padding: 40px;">Aucun membre enregistré.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

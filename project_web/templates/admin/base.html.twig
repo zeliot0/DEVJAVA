@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}NEXA – Admin Hub{% endblock %}</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* DARK THEME (DEFAULT) */
+            --bg: #0b1224;
+            --surface: #111b33;
+            --surface-rgb: 17, 27, 51;
+            --text: #e7eefc;
+            --muted: #93a4c7;
+            --border: rgba(159, 122, 234, .25);
+            --primary: #5b5cf0;
+            --accent: #9f7aea;
+            --good: #10b981;
+            --warn: #f59e0b;
+            --bad: #ef4444;
+            --gradient: linear-gradient(135deg, #5b5cf0 0%, #9f7aea 100%);
+            --shadow: 0 20px 50px rgba(0,0,0,0.3);
+            --blob-opacity: 0.15;
+        }
+
+        [data-theme="light"] {
+            /* LIGHT THEME OVERRIDES */
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --surface-rgb: 255, 255, 255;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: rgba(91, 92, 240, 0.12);
+            --shadow: 0 10px 30px rgba(91, 92, 240, 0.08);
+            --blob-opacity: 0.08;
+        }
+
+        html, body {
+            background-color: var(--bg) !important;
+            color: var(--text) !important;
+            margin: 0; padding: 0;
+            font-family: 'Inter', sans-serif !important;
+            min-height: 100vh;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        /* Ambient Blobs */
+        body::before {
+            content: ""; position: fixed; inset: 0; z-index: -1;
+            background: 
+                radial-gradient(1000px 600px at 10% 0%, rgba(159, 122, 234, var(--blob-opacity)), transparent 60%),
+                radial-gradient(900px 500px at 90% 10%, rgba(91, 92, 240, var(--blob-opacity)), transparent 60%),
+                var(--bg);
+            transition: background 0.4s ease;
+        }
+
+        /* Topbar */
+        .adm-topbar {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(var(--surface-rgb), 0.8) !important;
+            backdrop-filter: blur(25px);
+            padding: 16px 24px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.4s ease;
+        }
+
+        .adm-brand { display: flex; align-items: center; gap: 14px; font-weight: 900; }
+        .brand-badge {
+            width: 42px; height: 42px; border-radius: 12px;
+            background: var(--gradient); display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 30px rgba(91, 92, 240, 0.4);
+            color: #fff;
+        }
+
+        .adm-nav-btns { display: flex; gap: 12px; align-items: center; }
+        .btn-adm {
+            text-decoration: none; color: var(--text); font-weight: 800; font-size: 0.9rem;
+            padding: 10px 20px; border-radius: 14px; background: rgba(var(--surface-rgb), 0.4);
+            border: 1px solid var(--border); transition: all 0.3s; display: flex; align-items: center; gap: 10px;
+        }
+        .btn-adm:hover { background: rgba(var(--surface-rgb), 0.6); transform: translateY(-2px); border-color: var(--accent); }
+        .btn-adm.active { background: var(--gradient); border: none; color: #fff; box-shadow: 0 8px 25px rgba(159, 122, 234, 0.3); }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--border);
+            background: rgba(var(--surface-rgb), 0.5); color: var(--text);
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s; font-size: 1.1rem;
+        }
+        .theme-toggle:hover { background: var(--surface); color: var(--primary); transform: rotate(15deg); }
+
+        /* Wrapper */
+        .adm-wrapper { max-width: 1400px; margin: 0 auto; padding: 40px 24px; }
+
+        /* KPI */
+        .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; margin-bottom: 40px; }
+        .kpi-card {
+            background: rgba(var(--surface-rgb), 0.6); border: 1px solid var(--border); border-radius: 26px; padding: 30px;
+            backdrop-filter: blur(15px); box-shadow: var(--shadow); transition: all 0.3s ease;
+        }
+        .kpi-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .kpi-label { font-size: 0.85rem; color: var(--muted); font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
+        .kpi-value { font-size: 3rem; font-weight: 950; letter-spacing: -2px; color: var(--text); margin: 0; }
+        .kpi-sub { font-size: 0.9rem; color: var(--muted); font-weight: 700; margin-top: 5px; }
+
+        /* Panels */
+        .panel { background: rgba(var(--surface-rgb), 0.5); border: 1px solid var(--border); border-radius: 30px; padding: 35px; backdrop-filter: blur(20px); box-shadow: var(--shadow); }
+        .panel-title { font-size: 1.4rem; font-weight: 900; margin-bottom: 30px; display: flex; align-items: center; gap: 15px; color: var(--text); }
+
+        /* Tables */
+        .adm-table { width: 100%; border-collapse: separate; border-spacing: 0 12px; }
+        .adm-table td { background: rgba(var(--surface-rgb), 0.4); padding: 20px; border-radius: 18px; font-weight: 750; border: 1px solid transparent; transition: all 0.3s; color: var(--text); }
+        .adm-table tr:hover td { border-color: var(--border); background: rgba(var(--surface-rgb), 0.8); }
+
+        /* Utility */
+        .badge { background: var(--gradient); padding: 6px 15px; border-radius: 10px; font-size: 0.75rem; font-weight: 900; color: #fff; }
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.1); color: var(--bad); border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 10px 20px; border-radius: 14px; cursor: pointer; font-weight: 850; transition: all 0.3s;
+        }
+        .btn-delete:hover { background: var(--bad); color: #fff; transform: scale(1.05); }
+
+    </style>
+
+    {% block stylesheets %}{% endblock %}
+</head>
+
+<body data-theme="dark">
+    <header class="adm-topbar">
+        <div class="adm-brand">
+            <div class="brand-badge"><i class="fa-solid fa-user-shield"></i></div>
+            <div class="brand-pro">
+                <div class="brand-name">NEXA</div>
+                <div class="brand-sub">Admin Hub</div>
+            </div>
+        </div>
+
+        <nav class="adm-nav-btns">
+            <a href="{{ path('admin_dashboard') }}" class="btn-adm {% if app.request.get('_route') == 'admin_dashboard' %}active{% endif %}">
+                <i class="fa-solid fa-chart-pie"></i> Dashboard
+            </a>
+            <a href="{{ path('admin_users') }}" class="btn-adm {% if app.request.get('_route') == 'admin_users' %}active{% endif %}">
+                <i class="fa-solid fa-users"></i> Utilisateurs
+            </a>
+            <a href="{{ path('admin_tasks') }}" class="btn-adm {% if app.request.get('_route') == 'admin_tasks' %}active{% endif %}">
+                <i class="fa-solid fa-shield-halved"></i> Modération
+            </a>
+            
+            <div style="width: 1px; height: 30px; background: var(--border); margin: 0 10px;"></div>
+
+            <!-- Theme Toggle Button -->
+            <button id="adminThemeToggle" class="theme-toggle" title="Changer de mode">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+
+            <a href="{{ path('app_task_index') }}" class="btn-adm" style="border-color: var(--primary);">
+                <i class="fa-solid fa-arrow-left-to-bracket"></i> Task Hub
+            </a>
+        </nav>
+    </header>
+
+    <main class="adm-wrapper">
+        <header class="page-header">
+            <h1 class="page-title">{% block admin_page_title %}Administration{% endblock %}</h1>
+            <p class="page-hint">{% block admin_page_hint %}Gestion et surveillance de NEXA{% endblock %}</p>
+        </header>
+
+        {% block admin_content %}{% endblock %}
+    </main>
+
+    <script>
+        // Sync Admin Theme with NEXA standard logic
+        (function() {
+            const html = document.documentElement;
+            const body = document.body;
+            const btn = document.getElementById('adminThemeToggle');
+            
+            function setTheme(theme) {
+                html.setAttribute('data-theme', theme);
+                body.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+                
+                if (btn) {
+                    btn.innerHTML = theme === 'dark' 
+                        ? '<i class="fa-solid fa-moon"></i>' 
+                        : '<i class="fa-solid fa-sun"></i>';
+                }
+            }
+
+            // Load initial theme
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            setTheme(savedTheme);
+
+            btn?.addEventListener('click', () => {
+                const current = html.getAttribute('data-theme') || 'dark';
+                setTheme(current === 'dark' ? 'light' : 'dark');
+            });
+        })();
+    </script>
+
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

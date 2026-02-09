@@ -6,6 +6,11 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/nexa-nav.css">
+<link rel="stylesheet" href="/assets/modern-drawers.css">
+<link rel="stylesheet" href="/assets/execution-drawer-fix.css">
+<link rel="stylesheet" href="/assets/ai-features.css">
+<link rel="stylesheet" href="/assets/business-features.css">
+<link rel="stylesheet" href="/assets/dropdown-actions.css">
 
 <div class="layout layout-pro" id="appLayout">
  
@@ -92,48 +97,10 @@
 
     <div class="topbar topbar-pro">
       <div class="top-left">
-        <button class="btn icon-only" id="topSidebarBtn" title="Afficher/Masquer la taskbar">
-          <i class="fa-solid fa-bars"></i>
-        </button>
-
-        <div class="brand-pro">
-          <div class="brand-name">NEXA</div>
-          <div class="brand-sub">Task Hub</div>
-        </div>
-      </div>
-
-      <div class="top-right">
-        <button class="btn subtle" type="button">
-          <i class="fa-regular fa-calendar"></i> Today
-        </button>
-
-        <div class="seg">
-          <button class="seg-btn is-active" type="button">
-            <i class="fa-solid fa-table-columns"></i> Board
-          </button>
-        </div>
-
-        <button class="btn primary" id="newBtn">
-          <i class="fa-solid fa-plus"></i> Nouvelle tâche
-        </button>
-
-        <button class="btn primary ghost" id="newCatBtn" type="button">
-          <i class="fa-solid fa-folder-plus"></i> Nouvelle catégorie
-        </button>
-
-        <button class="toggle" id="themeToggle" title="Changer de thème">
-          <i class="fas fa-moon"></i>
-        </button>
-      </div>
-    </div>
-
-    <div class="content-grid">
-      <section class="center">
-
-        <div class="toolbar toolbar-pro">
+        <div class="toolbar-integrated">
           <div class="field field-pro">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input id="searchInput" placeholder="Rechercher (titre, description)..." />
+            <input id="searchInput" placeholder="Rechercher..." />
             <button id="voiceBtn" class="icon-btn icon-btn-pro" type="button" title="Recherche vocale">
               <i class="fa-solid fa-microphone"></i>
             </button>
@@ -142,7 +109,7 @@
           <div class="field field-pro">
             <i class="fa-solid fa-flag"></i>
             <select id="prioFilter">
-              <option value="all">Toutes priorités</option>
+              <option value="all">Priorités</option>
               <option value="low">Basse</option>
               <option value="med">Moyenne</option>
               <option value="high">Haute</option>
@@ -152,17 +119,78 @@
           <div class="field field-pro">
             <i class="fa-solid fa-layer-group"></i>
             <select id="statusFilter">
-              <option value="all">Tous statuts</option>
+              <option value="all">Statuts</option>
               <option value="todo">À faire</option>
               <option value="doing">En cours</option>
               <option value="done">Terminé</option>
             </select>
           </div>
 
-          <button class="btn subtle" id="clearBtn">
-            <i class="fa-solid fa-broom"></i> Reset filtres
+          <button class="btn subtle icon-only" id="clearBtn" title="Reset filtres">
+            <i class="fa-solid fa-broom"></i>
           </button>
         </div>
+      </div>
+
+      <div class="top-right">
+
+
+        <!-- Actions -->
+        <button class="btn primary" id="newBtn">
+          <i class="fa-solid fa-plus"></i> Nouvelle tâche
+        </button>
+        <button class="btn primary ghost" id="newCatBtn" type="button">
+          <i class="fa-solid fa-folder-plus"></i> Nouvelle catégorie
+        </button>
+
+        <div class="v-divider"></div>
+
+        <!-- Governance & Export (Grouped) -->
+        <div class="actions-dropdown" id="actionsDropdown">
+          <button class="btn btn-modern main-actions-btn" id="mainActionsBtn" type="button" title="Actions & Exports">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+          </button>
+          
+          <div class="actions-menu" id="actionsMenu">
+            <button class="btn btn-modern pdf-btn" id="exportPdfBtn" type="button" title="Exporter en PDF">
+              <i class="fa-solid fa-file-pdf"></i> Export PDF
+            </button>
+            <button class="btn btn-modern excel-btn" id="exportExcelBtn" type="button" title="Exporter en Excel">
+              <i class="fa-solid fa-file-excel"></i> Excel
+            </button>
+            <button class="btn btn-modern" id="showTodayBtn" type="button" title="Afficher les tâches du jour">
+              <i class="fa-solid fa-calendar-day"></i> Aujourd'hui
+            </button>
+            <button class="btn btn-modern" id="showOverdueBtn" type="button" title="Afficher les tâches en retard">
+              <i class="fa-solid fa-triangle-exclamation"></i> En retard
+            </button>
+            <button class="btn btn-modern" id="autoPrioritizeBtn" type="button" title="Priorisation automatique">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-prioriser
+            </button>
+            <button class="btn btn-modern analytics-btn" id="showAnalyticsBtn" type="button" title="Voir les analytics">
+              <i class="fa-solid fa-chart-line"></i> Analytics
+            </button>
+            <button class="btn btn-modern" id="showCalendarBtn" type="button" title="Voir le calendrier des tâches">
+              <i class="fa-solid fa-calendar-days"></i> Calendrier
+            </button>
+            <button class="btn btn-modern" id="showWeatherBtn" type="button" title="Voir la météo">
+              <i class="fa-solid fa-cloud-sun"></i> Météo
+            </button>
+            <div class="menu-divider"></div>
+            <a href="{{ path('admin_dashboard') }}" class="btn btn-modern admin-btn" id="goToAdminBtn" title="Dashboard Admin" style="display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-shield-halved"></i> Admin
+            </a>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <section class="center">
+
+
 
         <div class="kpis kpis-pro">
           <div class="kpi kpi-pro">
@@ -211,62 +239,109 @@
 
     <!-- DRAWER TASK -->
     <div class="overlay" id="overlay"></div>
-    <aside class="drawer" id="drawer">
-      <div class="drawer-head">
+    <aside class="drawer drawer-modern" id="drawer">
+      <div class="drawer-head drawer-head-modern">
         <div>
-          <h3 class="drawer-title" id="drawerTitle">Nouvelle tâche</h3>
-          <div class="drawer-sub" id="drawerSub">Champs liés à la base de données</div>
+          <h3 class="drawer-title drawer-title-modern" id="drawerTitle">Nouvelle tâche</h3>
+          <div class="drawer-sub" id="drawerSub">Configurez les détails de votre mission</div>
         </div>
         <button class="icon-btn" id="closeDrawer" title="Fermer"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <div class="drawer-body">
-        <div class="field"><i class="fa-solid fa-heading"></i><input id="fTitle" placeholder="Titre" /></div>
-        <div class="field"><i class="fa-solid fa-align-left"></i><textarea id="fDesc" placeholder="Description"></textarea></div>
-
-        <div class="grid2">
-          <div class="field"><i class="fa-solid fa-flag"></i>
-            <select id="fPrio">
-              <option value="low">Basse</option>
-              <option value="med" selected>Moyenne</option>
-              <option value="high">Haute</option>
-            </select>
+      <div class="drawer-body drawer-body-modern">
+        <div class="form-section">
+          <div class="form-section-title"><i class="fa-solid fa-circle-info"></i> Informations principales</div>
+          <div class="field field-modern">
+            <i class="fa-solid fa-heading"></i>
+            <input id="fTitle" placeholder="Titre de la tâche" />
+            <label>TITRE</label>
           </div>
-
-          <div class="field"><i class="fa-solid fa-layer-group"></i>
-            <select id="fStatus">
-              <option value="todo">À faire</option>
-              <option value="doing">En cours</option>
-              <option value="done">Terminé</option>
-            </select>
+          <div class="field field-modern" style="margin-top: 15px;">
+            <i class="fa-solid fa-align-left"></i>
+            <textarea id="fDesc" placeholder="Description détaillée..."></textarea>
+            <label>DESCRIPTION</label>
           </div>
         </div>
 
-        <div class="grid2">
-          <div class="field"><i class="fa-regular fa-calendar"></i><input id="fDue" type="date" /></div>
+        <div class="form-section">
+          <div class="form-section-title"><i class="fa-solid fa-sliders"></i> Paramètres & Priorité</div>
+          <div class="grid2">
+            <div class="field field-modern">
+              <i class="fa-solid fa-flag"></i>
+              <select id="fPrio">
+                <option value="low">Basse</option>
+                <option value="med" selected>Moyenne</option>
+                <option value="high">Haute</option>
+              </select>
+              <label>PRIORITÉ</label>
+            </div>
 
-          <div class="field"><i class="fa-solid fa-folder"></i>
-            <select id="fCategory">
-              <option value="">Aucune catégorie</option>
-            </select>
+            <div class="field field-modern">
+              <i class="fa-solid fa-layer-group"></i>
+              <select id="fStatus">
+                <option value="todo">À faire</option>
+                <option value="doing">En cours</option>
+                <option value="done">Terminé</option>
+              </select>
+              <label>STATUT</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title"><i class="fa-solid fa-calendar-days"></i> Organisation</div>
+          <div class="grid2">
+            <div class="field field-modern">
+              <i class="fa-regular fa-calendar"></i>
+              <input id="fDue" type="date" />
+              <label>ÉCHÉANCE</label>
+            </div>
+
+            <div class="field field-modern">
+              <i class="fa-solid fa-folder"></i>
+              <select id="fCategory">
+                <option value="">Aucune catégorie</option>
+              </select>
+              <label>CATÉGORIE</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Assistant IA</div>
+          <div class="ai-toolbar" style="padding: 0; margin: 0; border: none;">
+            <button class="btn btn-modern ai-btn" id="aiGenerateDesc" type="button" title="Générer une description avec l'IA" style="flex: 1;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Description IA
+            </button>
+            
+            <button class="btn btn-modern ai-btn" id="aiAnalyzeTask" type="button" title="Analyser la tâche" style="flex: 1;">
+              <i class="fa-solid fa-brain"></i> Analyser
+            </button>
+          </div>
+
+          <div class="ai-suggestions" id="aiSuggestions">
+            <div class="ai-suggestion-title">
+              <i class="fa-solid fa-lightbulb"></i> Suggestions de l'IA
+            </div>
+            <div id="aiSuggestionsContent"></div>
           </div>
         </div>
       </div>
 
-      <div class="drawer-foot">
-        <button class="btn" id="deleteBtn" style="display:none;">
+      <div class="drawer-foot drawer-foot-modern">
+        <button class="btn btn-modern btn-delete" id="deleteBtn" style="display:none;">
           <i class="fa-solid fa-trash"></i> Supprimer
         </button>
 
-        <button class="btn" id="editBtn" style="display:none;">
+        <button class="btn btn-modern" id="editBtn" style="display:none;">
           <i class="fa-regular fa-pen-to-square"></i> Modifier
         </button>
 
-        <button class="btn" id="cancelBtn">
-          <i class="fa-regular fa-circle-xmark"></i> Annuler
+        <button class="btn btn-modern" id="cancelBtn" style="margin-left: auto;">
+          Annuler
         </button>
 
-        <button class="btn primary" id="saveBtn">
+        <button class="btn primary btn-modern" id="saveBtn">
           <i class="fa-solid fa-check"></i> Enregistrer
         </button>
       </div>
@@ -274,84 +349,102 @@
 
     <!-- DRAWER CATEGORY -->
     <div class="overlay" id="catOverlay"></div>
-    <aside class="drawer" id="catDrawer">
-      <div class="drawer-head">
+    <aside class="drawer drawer-modern" id="catDrawer">
+      <div class="drawer-head drawer-head-modern">
         <div>
-          <h3 class="drawer-title">Nouvelle catégorie</h3>
-          <div class="drawer-sub">Champs liés à la base de données</div>
+          <h3 class="drawer-title drawer-title-modern">Nouvelle catégorie</h3>
+          <div class="drawer-sub">Classez vos projets avec style</div>
         </div>
         <button class="icon-btn" id="closeCatDrawer" title="Fermer" type="button">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
-      <div class="drawer-body">
-        <div class="field">
-          <i class="fa-solid fa-heading"></i>
-          <input id="cat_name" placeholder="Nom (name) *" />
-        </div>
-
-        <div class="field">
-          <i class="fa-solid fa-align-left"></i>
-          <textarea id="cat_description" placeholder="Description (optionnel)"></textarea>
-        </div>
-
-        <div class="grid2">
-          <div class="field">
-            <i class="fa-solid fa-palette"></i>
-            <input id="cat_color" type="color" value="#7c3aed" />
+      <div class="drawer-body drawer-body-modern">
+        <div class="form-section">
+          <div class="form-section-title"><i class="fa-solid fa-layer-group"></i> Identité</div>
+          <div class="field field-modern">
+            <i class="fa-solid fa-heading"></i>
+            <input id="cat_name" placeholder="Nom de la catégorie *" />
+            <label>NOM</label>
           </div>
 
-          <div class="field">
-            <i class="fa-solid fa-icons"></i>
-            <input id="cat_icon" placeholder="Icône (ex: fa-solid fa-folder)" />
+          <div class="field field-modern" style="margin-top: 15px;">
+            <i class="fa-solid fa-align-left"></i>
+            <textarea id="cat_description" placeholder="Description courte (optionnel)"></textarea>
+            <label>DESCRIPTION</label>
           </div>
         </div>
 
-        <div class="grid2">
-          <div class="field">
-            <i class="fa-solid fa-toggle-on"></i>
-            <select id="cat_isActive">
-              <option value="1" selected>Active</option>
-              <option value="0">Inactive</option>
-            </select>
-          </div>
+        <div class="form-section">
+          <div class="form-section-title"><i class="fa-solid fa-palette"></i> Apparence & Icône</div>
+          <div class="grid2">
+            <div class="field field-modern">
+              <i class="fa-solid fa-palette"></i>
+              <input id="cat_color" type="color" value="#7c3aed" style="height: 38px; padding: 0; cursor: pointer;" />
+              <label>COULEUR</label>
+            </div>
 
-          <div class="field">
-            <i class="fa-solid fa-eye"></i>
-            <select id="cat_visibility">
-              <option value="">(null)</option>
-              <option value="public">public</option>
-              <option value="private">private</option>
-            </select>
+            <div class="field field-modern">
+              <i class="fa-solid fa-icons"></i>
+              <input id="cat_icon" placeholder="ex: fa-solid fa-star" />
+              <label>ICÔNE (FontAwesome)</label>
+            </div>
           </div>
         </div>
 
-        <div class="grid2">
-          <div class="field">
-            <i class="fa-solid fa-arrow-up-1-9"></i>
-            <input id="cat_position" type="number" placeholder="Position" />
+        <div class="form-section">
+          <div class="form-section-title"><i class="fa-solid fa-gear"></i> Paramètres avancés</div>
+          <div class="grid2">
+            <div class="field field-modern">
+              <i class="fa-solid fa-toggle-on"></i>
+              <select id="cat_isActive">
+                <option value="1" selected>Active</option>
+                <option value="0">Inactive</option>
+              </select>
+              <label>STATUT</label>
+            </div>
+
+            <div class="field field-modern">
+              <i class="fa-solid fa-eye"></i>
+              <select id="cat_visibility">
+                <option value="">Par défaut</option>
+                <option value="public">Public</option>
+                <option value="private">Privé</option>
+              </select>
+              <label>VISIBILITÉ</label>
+            </div>
           </div>
 
-          <div class="field">
-            <i class="fa-solid fa-list-check"></i>
-            <input id="cat_taskLimit" type="number" placeholder="Task limit" />
+          <div class="grid2" style="margin-top: 15px;">
+            <div class="field field-modern">
+              <i class="fa-solid fa-arrow-up-1-9"></i>
+              <input id="cat_position" type="number" placeholder="0" />
+              <label>ORDRE</label>
+            </div>
+
+            <div class="field field-modern">
+              <i class="fa-solid fa-list-check"></i>
+              <input id="cat_taskLimit" type="number" placeholder="∞" />
+              <label>LIMITE TÂCHES</label>
+            </div>
           </div>
         </div>
 
-        <div class="field">
+        <div class="field field-modern">
           <i class="fa-solid fa-hashtag"></i>
-          <input id="cat_no" placeholder="No (ex: CAT-0001) (optionnel)" />
+          <input id="cat_no" placeholder="Référence (ex: MKT-2024)" />
+          <label>IDENTIFIANT UNIQUE</label>
         </div>
       </div>
 
-      <div class="drawer-foot">
-        <button class="btn" id="cancelCatBtn" type="button">
-          <i class="fa-regular fa-circle-xmark"></i> Annuler
+      <div class="drawer-foot drawer-foot-modern">
+        <button class="btn btn-modern" id="cancelCatBtn" type="button" style="margin-left: auto;">
+          Annuler
         </button>
 
-        <button class="btn primary" id="saveCatBtn" type="button">
-          <i class="fa-solid fa-check"></i> Enregistrer
+        <button class="btn primary btn-modern" id="saveCatBtn" type="button">
+          <i class="fa-solid fa-check"></i> Créer la catégorie
         </button>
       </div>
     </aside>
@@ -361,14 +454,14 @@
        ======================= #}
     <div class="overlay" id="exeOverlay"></div>
 
-    <aside class="drawer" id="exeDrawer" aria-hidden="true">
-      <div class="drawer-head">
+    <aside class="drawer drawer-modern" id="exeDrawer" aria-hidden="true">
+      <div class="drawer-head drawer-head-modern">
         <div>
-          <h3 class="drawer-title">
-            <i class="fa-solid fa-scroll"></i> Journal d’exécution
+          <h3 class="drawer-title drawer-title-modern">
+            <i class="fa-solid fa-terminal"></i> Journal d’exécution
           </h3>
           <div class="drawer-sub">
-            Task: <b id="exeTaskTitle">—</b>
+            Suivi en temps réel de: <b id="exeTaskTitle" style="color: var(--primary)">—</b>
           </div>
         </div>
 
@@ -377,31 +470,30 @@
         </button>
       </div>
 
-      <div class="drawer-body">
+      <div class="drawer-body drawer-body-modern">
 
-        <div class="kpis kpis-pro" style="margin:0 0 12px;">
-          <div class="kpi kpi-pro">
-            <div class="kpi-title">Total</div>
-            <div class="kpi-value" id="exeKpiTotal">0</div>
+        <div class="kpis kpis-pro" style="margin: 0; background: rgba(var(--surface-rgb), 0.3); border-radius: 20px; padding: 10px;">
+          <div class="kpi kpi-pro" style="background: transparent; border: none; box-shadow: none; min-width: auto; padding: 10px;">
+            <div class="kpi-title" style="font-size: 0.7rem;">Total</div>
+            <div class="kpi-value" id="exeKpiTotal" style="font-size: 1.2rem;">0</div>
           </div>
-          <div class="kpi kpi-pro">
-            <div class="kpi-title">Doing</div>
-            <div class="kpi-value" id="exeKpiDoing">0</div>
+          <div class="kpi kpi-pro" style="background: transparent; border: none; box-shadow: none; min-width: auto; padding: 10px;">
+            <div class="kpi-title" style="font-size: 0.7rem;">Doing</div>
+            <div class="kpi-value" id="exeKpiDoing" style="font-size: 1.2rem; color: var(--primary)">0</div>
           </div>
-          <div class="kpi kpi-pro">
-            <div class="kpi-title">Done</div>
-            <div class="kpi-value" id="exeKpiDone">0</div>
+          <div class="kpi kpi-pro" style="background: transparent; border: none; box-shadow: none; min-width: auto; padding: 10px;">
+            <div class="kpi-title" style="font-size: 0.7rem;">Done</div>
+            <div class="kpi-value" id="exeKpiDone" style="font-size: 1.2rem; color: var(--good)">0</div>
           </div>
         </div>
 
-        <div class="toolbar toolbar-pro" style="margin:0 0 10px;">
-          <div class="field field-pro">
+        <div class="toolbar toolbar-pro" style="margin: 0; grid-template-columns: 1fr 120px;">
+          <div class="field field-modern" style="padding: 10px 14px !important;">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input id="exeSearch" placeholder="Rechercher une exécution..." />
+            <input id="exeSearch" placeholder="Filtrer..." />
           </div>
 
-          <div class="field field-pro">
-            <i class="fa-solid fa-layer-group"></i>
+          <div class="field field-modern" style="padding: 10px 14px !important;">
             <select id="exeStatusFilter">
               <option value="all">Tous</option>
               <option value="todo">À faire</option>
@@ -411,44 +503,50 @@
           </div>
         </div>
 
-        {# ✅ give ID so we can hide it in consult mode #}
-        <div id="exeCreateCard" class="card" style="padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.08); margin-bottom:12px;">
-          <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;">
-            <div style="font-weight:700;">➕ Nouvelle exécution</div>
-            <div style="opacity:.7;font-size:.9rem;">(liée à cette task)</div>
+        <div id="exeCreateCard" class="exe-card-modern">
+          <div style="display:flex;gap:10px;align-items:center;margin-bottom:18px;">
+            <div style="font-weight:800; font-size: 1.1rem; color: var(--text);">
+               <i class="fa-solid fa-plus-circle" style="color: var(--primary); margin-right: 8px;"></i>Nouvelle étape
+            </div>
           </div>
 
-          <div class="field"><i class="fa-solid fa-heading"></i>
-            <input id="exeTitle" placeholder="Titre de l’exécution" />
+          <div class="field field-modern">
+            <i class="fa-solid fa-heading"></i>
+            <input id="exeTitle" placeholder="Titre de l'action" />
+            <label>TITRE</label>
           </div>
 
-          <div class="field"><i class="fa-solid fa-align-left"></i>
-            <textarea id="exeDesc" placeholder="Description"></textarea>
+          <div class="field field-modern" style="margin-top: 15px;">
+            <i class="fa-solid fa-align-left"></i>
+            <textarea id="exeDesc" placeholder="Note ou résultat..." style="min-height: 60px;"></textarea>
+            <label>DESCRIPTION</label>
           </div>
 
-          <div class="grid2">
-            <div class="field"><i class="fa-solid fa-layer-group"></i>
+          <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px;">
+            <div class="field field-modern">
+              <i class="fa-solid fa-layer-group"></i>
               <select id="exeStatus">
                 <option value="todo">À faire</option>
                 <option value="doing">En cours</option>
                 <option value="done">Terminé</option>
               </select>
+              <label>STATUT</label>
             </div>
 
-            <button class="btn primary" id="exeSaveBtn" type="button">
-              <i class="fa-solid fa-check"></i> Ajouter
+            <button class="btn primary btn-modern" id="exeSaveBtn" type="button" style="width: 100%; justify-content: center; padding: 14px 20px !important;">
+              <i class="fa-solid fa-plus"></i> Ajouter l'exécution
             </button>
           </div>
 
           <input type="hidden" id="exeEditId" value="">
         </div>
 
-        <div id="exeList" style="display:flex;flex-direction:column;gap:10px;"></div>
+        <div id="exeList" style="display:flex;flex-direction:column;gap:12px;"></div>
       </div>
 
-      <div class="drawer-foot">
-        <button class="btn" id="exeCloseBtn" type="button">
-          <i class="fa-regular fa-circle-xmark"></i> Fermer
+      <div class="drawer-foot drawer-foot-modern">
+        <button class="btn btn-modern" id="exeCloseBtn" type="button" style="width: 100%; justify-content: center;">
+          <i class="fa-regular fa-circle-xmark"></i> Quitter le journal
         </button>
       </div>
     </aside>
@@ -483,19 +581,70 @@
       }
       .mini-btn:hover{ transform: translateY(-1px); }
 
-      /* ✅ VIEW ONLY MODE */
-      #exeDrawer.view-only #exeCreateCard{ display:none !important; }
-      #exeDrawer.view-only .exe-actions{ display:none !important; }
+      /* Better Toolbar Organization */
+      .top-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .btn-group-modern {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px;
+        background: rgba(var(--surface-rgb), 0.3);
+        border-radius: 14px;
+        border: 1px solid var(--border);
+      }
+
+      .v-divider {
+        width: 1px;
+        height: 24px;
+        background: rgba(255, 255, 255, 0.15);
+        margin: 0 4px;
+      }
+
+      .excel-btn {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        color: #fff !important;
+        border: none !important;
+      }
+
+      .analytics-btn {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+        color: #fff !important;
+        border: none !important;
+      }
+
+      .admin-btn {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+        color: #fff !important;
+        border: none !important;
+        text-decoration: none;
+      }
+
+      .btn-modern:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+      }
+
+      .pdf-btn {
+        background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%) !important;
+        color: #fff !important;
+        border: none !important;
+      }
     </style>
 
     <div id="toastHost" class="toast-host" aria-live="polite" aria-atomic="true"></div>
 
     <style>
-      #voiceBtn.listening{
-        background: rgba(255,0,0,.08);
-        border: 1px solid rgba(255,0,0,.35);
+      #voiceBtn.listening {
+        background: rgba(255, 0, 0, .08);
+        border: 1px solid rgba(255, 0, 0, .35);
       }
-      .toast-host{
+      .toast-host {
         position: fixed;
         right: 18px;
         bottom: 18px;
@@ -529,20 +678,51 @@
         create: "{{ path('api_tasks_create') }}",
         updateBase: "/api/tasks",
         deleteBase: "/api/tasks",
+        today: "/api/tasks/today",
+        overdue: "/api/tasks/overdue",
+        autoPrioritize: "/api/tasks/auto-prioritize",
+        batchStatus: "/api/tasks/batch/status",
+        batchDelete: "/api/tasks/batch/delete",
 
         /* ✅ FIX route problem: hardcode endpoints */
         categories: "/api/categories",
         categoriesCreate: "/api/categories",
+        categoriesUpdateBase: "/api/categories",
+        categoriesDeleteBase: "/api/categories",
 
         /* ✅ EXECUTIONS */
         exeList: "/api/executions",
         exeCreate: "/api/executions",
         exeUpdateBase: "/api/executions",
-        exeDeleteBase: "/api/executions"
+        exeDeleteBase: "/api/executions",
+
+        /* ✅ AI */
+        aiDescription: "/api/ai/description",
+        aiAnalyze: "/api/ai/analyze",
+        aiSubtasks: "/api/ai/subtasks",
+        aiSummary: "/api/ai/executions-summary",
+        aiEstimate: "/api/ai/estimate",
+        aiRiskScore: "/api/ai/risk-score",
+
+        /* ✅ Analytics */
+        analyticsThroughput: "/api/analytics/throughput",
+        analyticsWorkload: "/api/analytics/workload",
+        analyticsCycleTime: "/api/analytics/cycle-time",
+
+        /* ✅ Jobs */
+        jobsCreate: "/api/jobs",
+        jobsBase: "/api/jobs",
+
+        /* ✅ Dashboard */
+        dashboardStats: "/api/dashboard/stats",
+
+        /* ✅ Calendar & Weather */
+        calendarEvents: "/api/calendar/events",
+        weatherCurrent: "/api/weather/current"
       };
     </script>
 
-    <script src="/assets/board.js"></script>
+    <script src="/assets/board.js?v=20260209a"></script>
 
     {# ✅ Vue for the eye button #}
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
@@ -551,6 +731,64 @@
     <script src="/assets/executions.js"></script>
 
     <script src="/assets/nexa-nav.js"></script>
+    <script src="/assets/ai-features.js?v=20260209a"></script>
+    <script src="/assets/pdf-export-advanced.js?v=20260209a"></script>
+    <script src="/assets/business-features.js?v=20260209a"></script>
+    <script src="/assets/ai-integration.js?v=20260209a"></script>
+    <script src="/assets/business-integration.js?v=20260209c"></script>
+
+    <script>
+      // Actions Dropdown Logic
+      const mainActionsBtn = document.getElementById('mainActionsBtn');
+      const actionsMenu = document.getElementById('actionsMenu');
+      const actionsDropdown = document.getElementById('actionsDropdown');
+
+      if (mainActionsBtn && actionsMenu) {
+        mainActionsBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          actionsMenu.classList.toggle('active');
+          mainActionsBtn.classList.toggle('active');
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!actionsDropdown.contains(e.target)) {
+            actionsMenu.classList.remove('active');
+            mainActionsBtn.classList.remove('active');
+          }
+        });
+
+        // Close after clicking an action (optional, but good UX)
+        actionsMenu.querySelectorAll('.btn-modern').forEach(btn => {
+          btn.addEventListener('click', () => {
+            actionsMenu.classList.remove('active');
+            mainActionsBtn.classList.remove('active');
+          });
+        });
+      }
+    </script>
+
+    <!-- AI Thinking Indicator -->
+    <div class="ai-thinking" id="aiThinkingIndicator">
+      <div class="ai-spinner"></div>
+      <div class="ai-thinking-text">L'IA travaille pour vous...</div>
+    </div>
+
+    <!-- Analytics Modal -->
+    <div class="analytics-modal" id="analyticsModal">
+      <div class="analytics-content">
+        <div class="analytics-header">
+          <h2><i class="fa-solid fa-chart-line"></i> Analytics & Rapports</h2>
+          <button class="analytics-close" id="closeAnalytics">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="analytics-body" id="analyticsBody">
+          <!-- Content will be dynamically generated -->
+        </div>
+      </div>
+    </div>
+
     <script src="/assets/executions-consult-vue.js"></script>
 
   </main>
