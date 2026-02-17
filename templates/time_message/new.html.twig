@@ -1,0 +1,197 @@
+﻿{# templates/time_message/new.html.twig #}
+
+{% extends 'theme/base.html.twig' %}
+
+{% block title %}
+    {% if type == 'future' %}
+        Write to Future Self
+    {% else %}
+        Write to Past Self
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+<div class="container time-journal-page time-journal-form-page">
+    <div class="row justify-content-center">
+        <div class="col-lg-9 col-xl-8">
+            <div class="card time-form-main-card">
+                <div class="card-header {% if type == 'future' %}bg-primary{% else %}bg-secondary{% endif %} text-white">
+                    <h2 class="mb-0">
+                        {% if type == 'future' %}
+                            <i class="fa-solid fa-rocket me-2"></i>Write a Letter to Your Future Self
+                        {% else %}
+                            <i class="fa-solid fa-heart me-2"></i>Write a Letter to Your Past Self
+                        {% endif %}
+                    </h2>
+                </div>
+                <div class="card-body">
+
+                    {% if type == 'future' %}
+                        <div class="alert alert-info time-tip-box">
+                            <strong><i class="fa-solid fa-wand-magic-sparkles me-2"></i>Tip:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>What do you want to remember in the future?</li>
+                                <li>What hopes and dreams do you have?</li>
+                                <li>What advice would your future self need?</li>
+                                <li>How do you feel right now?</li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning time-tip-box">
+                            <strong><i class="fa-regular fa-lightbulb me-2"></i>Reflection Tip:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>What have you learned recently?</li>
+                                <li>What would you tell your past self?</li>
+                                <li>What are you proud of?</li>
+                                <li>What challenges did you overcome?</li>
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data" class="time-input-grid">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Title</label>
+                            <input type="text" name="title" class="form-control form-control-lg"
+                                   placeholder="Give this message a title..."
+                                   value="{{ goalId ? 'About my goal' : '' }}"
+                                   required>
+                            <small class="text-muted">Choose a title that will remind you of this moment</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Your Message</label>
+                            <textarea name="content" class="form-control" rows="8"
+                                      placeholder="{% if type == 'future' %}Dear Future Me...&#10;&#10;I hope you're doing well. Today I'm feeling...&#10;&#10;Remember to...&#10;&#10;With love,&#10;Your Past Self{% else %}Dear Past Me...&#10;&#10;I want to tell you that...&#10;&#10;Thank you for...&#10;&#10;Love,&#10;Your Future Self{% endif %}"
+                                      required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Related Goal (Optional)</label>
+                            <select name="goal_id" class="form-select">
+                                <option value="">-- No specific goal --</option>
+                                {% for goal in goals %}
+                                    <option value="{{ goal.idGoa }}" {% if goalId == goal.idGoa %}selected{% endif %}>
+                                        Goal - {{ goal.titleGoa }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <small class="text-muted">Connect this message to a goal for better context</small>
+                        </div>
+
+                        {% if type == 'future' %}
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">When should you receive this?</label>
+                                <select name="delivery_option" class="form-select delivery-option" required>
+                                    <option value="1month">In 1 month</option>
+                                    <option value="3months">In 3 months</option>
+                                    <option value="6months">In 6 months</option>
+                                    <option value="1year">In 1 year</option>
+                                    <option value="custom">Choose a specific date</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3 time-hidden" id="custom-date-container">
+                                <label class="form-label fw-bold">Custom Delivery Date</label>
+                                <input type="datetime-local" name="custom_delivery_date" class="form-control">
+                                <small class="text-muted">Choose when you want to receive this message</small>
+                            </div>
+                        {% endif %}
+
+                        {% if type == 'past' and future_messages is defined and future_messages|length > 0 %}
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Reply to one of your delivered letters? (Optional)</label>
+                                <select name="reply_to" class="form-select">
+                                    <option value="">-- Write a new letter --</option>
+                                    {% for message in future_messages %}
+                                        <option value="{{ message.id }}">
+                                            {{ message.titleMsg }} ({{ message.createdAtMsg|date('F j, Y') }})
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        {% endif %}
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Video Message (Optional)</label>
+                            <div class="input-group">
+                                <input type="file" name="video_file" class="form-control"
+                                       accept="video/mp4,video/quicktime,video/x-msvideo">
+                                <button class="btn btn-outline-secondary" type="button" id="cameraButton">
+                                    <i class="fa-solid fa-video me-1"></i>Record
+                                </button>
+                            </div>
+                            <small class="text-muted">Max 50MB. Supported formats: MP4, MOV, AVI</small>
+                        </div>
+
+                        <div class="d-flex gap-2 flex-wrap time-submit-row">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                {% if type == 'future' %}
+                                    <i class="fa-solid fa-paper-plane me-1"></i>Send to Future Self
+                                {% else %}
+                                    <i class="fa-solid fa-reply me-1"></i>Send to Past Self
+                                {% endif %}
+                            </button>
+                            <a href="{{ path('app_time_message_index') }}" class="btn btn-outline-secondary btn-lg">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mt-4 border-info time-preview-card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fa-regular fa-eye me-2"></i>Preview</h5>
+                </div>
+                <div class="card-body" id="preview">
+                    <p class="text-muted">Start typing to see a preview...</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const deliveryOption = document.querySelector('.delivery-option');
+    const customDateContainer = document.getElementById('custom-date-container');
+
+    if (deliveryOption) {
+        deliveryOption.addEventListener('change', function() {
+            customDateContainer.style.display = this.value === 'custom' ? 'block' : 'none';
+        });
+    }
+
+    const titleInput = document.querySelector('input[name="title"]');
+    const contentTextarea = document.querySelector('textarea[name="content"]');
+    const previewDiv = document.getElementById('preview');
+
+    function updatePreview() {
+        const title = titleInput.value || 'Your Title Here';
+        const content = contentTextarea.value || 'Your message will appear here...';
+
+        previewDiv.innerHTML = `
+            <div class="card">
+                <div class="card-header bg-light">
+                    <strong>${title}</strong>
+                </div>
+                <div class="card-body">
+                    <p>${content.replace(/\n/g, '<br>')}</p>
+                </div>
+            </div>
+        `;
+    }
+
+    if (titleInput && contentTextarea) {
+        titleInput.addEventListener('input', updatePreview);
+        contentTextarea.addEventListener('input', updatePreview);
+    }
+
+    const cameraButton = document.getElementById('cameraButton');
+    if (cameraButton) {
+        cameraButton.addEventListener('click', function() {
+            alert('Video recording is not enabled yet. Please upload a video file for now.');
+        });
+    }
+});
+</script>
+{% endblock %}

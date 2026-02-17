@@ -1,0 +1,94 @@
+﻿{# templates/time_message/reply.html.twig #}
+
+{% extends 'theme/base.html.twig' %}
+
+{% block title %}Reply to Message{% endblock %}
+
+{% block body %}
+<div class="container time-journal-page time-journal-reply-page">
+    <div class="row justify-content-center">
+        <div class="col-lg-9 col-xl-8">
+
+            <div class="mb-3">
+                <a href="{{ path('app_time_message_show', {'id': original_message.id}) }}" class="btn btn-outline-secondary">
+                    <i class="fa-solid fa-arrow-left me-1"></i>Back to Message
+                </a>
+            </div>
+
+            <div class="card time-panel-card">
+                <div class="card-header bg-success text-white">
+                    <h2 class="mb-0"><i class="fa-solid fa-reply me-2"></i>Reply to Your Past Self</h2>
+                </div>
+                <div class="card-body">
+
+                    <div class="original-message mb-4 p-3 rounded">
+                        <h5 class="text-muted mb-2">Original Message</h5>
+                        <div class="card border-info time-mini-card">
+                            <div class="card-header bg-info text-white">
+                                <strong>{{ original_message.titleMsg }}</strong>
+                                <small class="float-end">{{ original_message.createdAtMsg|date('F j, Y') }}</small>
+                            </div>
+                            <div class="card-body">
+                                <p class="message-text-block">{{ original_message.contentMsg|slice(0, 200) }}...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="post">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Your Reply</label>
+                            <textarea name="content" class="form-control" rows="8"
+                                      placeholder="Dear Past Me,&#10;&#10;I received your message from {{ original_message.createdAtMsg|date('F j, Y') }}. I want to tell you that...&#10;&#10;Thank you for...&#10;&#10;Love,&#10;Your Future Self ({{ 'now'|date('F j, Y') }})"
+                                      required></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Need inspiration?</label>
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <button type="button" class="btn btn-outline-info btn-sm w-100" onclick="insertPrompt('We did it! You would be so proud to know that...')">
+                                        <i class="fa-solid fa-trophy me-1"></i>Share success
+                                    </button>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <button type="button" class="btn btn-outline-info btn-sm w-100" onclick="insertPrompt('Thank you for not giving up when...')">
+                                        <i class="fa-solid fa-hands-clapping me-1"></i>Express gratitude
+                                    </button>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <button type="button" class="btn btn-outline-info btn-sm w-100" onclick="insertPrompt('You were right about... and you were wrong about...')">
+                                        <i class="fa-regular fa-lightbulb me-1"></i>Reflect on predictions
+                                    </button>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <button type="button" class="btn btn-outline-info btn-sm w-100" onclick="insertPrompt('The challenges you were facing then taught me...')">
+                                        <i class="fa-solid fa-mountain-sun me-1"></i>Share lessons
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 flex-wrap time-submit-row">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fa-solid fa-paper-plane me-1"></i>Send Reply to Past Self
+                            </button>
+                            <a href="{{ path('app_time_message_show', {'id': original_message.id}) }}" class="btn btn-outline-secondary btn-lg">Cancel</a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function insertPrompt(text) {
+    const textarea = document.querySelector('textarea[name="content"]');
+    if (textarea) {
+        textarea.value += text + '\n\n';
+        textarea.focus();
+    }
+}
+</script>
+{% endblock %}

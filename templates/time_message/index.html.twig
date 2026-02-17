@@ -1,0 +1,231 @@
+﻿{# templates/time_message/index.html.twig #}
+
+{% extends 'theme/base.html.twig' %}
+
+{% block title %}Time Traveler's Journal{% endblock %}
+
+{% block body %}
+<div class="container time-journal-page time-journal-index">
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card time-journal-hero">
+                <div class="card-body">
+                    <h1 class="display-4 time-journal-title">
+                        <span class="time-icon"><i class="fa-solid fa-hourglass-half"></i></span>
+                        Time Traveler's Journal
+                    </h1>
+                    <p class="lead mb-0">Write letters to your past and future self, then revisit them when the time feels right.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    <div class="row mb-4 g-3">
+        <div class="col-md-6">
+            <div class="card future-card h-100 time-action-card time-action-card-future">
+                <div class="card-body text-center d-flex flex-column justify-content-center">
+                    <div class="display-1 mb-3"><i class="fa-solid fa-rocket"></i></div>
+                    <h3>Letter to Future Self</h3>
+                    <p>Send a message to your future self. Receive it when you need it most.</p>
+                    <a href="{{ path('app_time_message_new_future') }}" class="btn btn-primary btn-lg">Write to Future Me</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card past-card h-100 time-action-card time-action-card-past">
+                <div class="card-body text-center d-flex flex-column justify-content-center">
+                    <div class="display-1 mb-3"><i class="fa-solid fa-heart"></i></div>
+                    <h3>Letter to Past Self</h3>
+                    <p>Reflect on your journey and write to your past self.</p>
+                    <a href="{{ path('app_time_message_new_past') }}" class="btn btn-secondary btn-lg">Write to Past Me</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if undelivered_messages|length > 0 %}
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card border-info time-panel-card">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0"><i class="fa-regular fa-clock me-2"></i>Upcoming Letters from Your Past Self</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for message in undelivered_messages %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-info h-100 time-mini-card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <h5 class="card-title">{{ message.titleMsg }}</h5>
+                                        <span class="badge bg-warning">{{ message.getDaysUntilDelivery }} days</span>
+                                    </div>
+                                    <p class="card-text text-muted small">{{ message.contentMsg|slice(0, 100) }}...</p>
+                                    <div class="progress mb-2 time-progress">
+                                        {% set daysTotal = 365 %}
+                                        {% set daysLeft = message.getDaysUntilDelivery %}
+                                        {% if daysLeft < 365 and daysLeft > 0 %}
+                                            {% set progress = 100 - (daysLeft * 100 / daysTotal) %}
+                                        {% elseif daysLeft <= 0 %}
+                                            {% set progress = 100 %}
+                                        {% else %}
+                                            {% set progress = 0 %}
+                                        {% endif %}
+                                        <div class="progress-bar bg-info js-time-progress" role="progressbar" data-progress="{{ progress|round }}">{{ progress|round }}%</div>
+                                    </div>
+                                    <p class="card-text"><small class="text-muted">Expected: {{ message.deliveryDateMsg|date('F j, Y') }}</small></p>
+                                    {% if message.goal %}
+                                        <span class="badge bg-secondary">Goal #{{ message.goal.idGoa }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card time-panel-card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fa-solid fa-paper-plane me-2"></i>Messages to Your Future Self</h4>
+                </div>
+                <div class="card-body">
+                    {% if future_messages|length > 0 %}
+                        <div class="list-group">
+                            {% for message in future_messages %}
+                                <a href="{{ path('app_time_message_show', {'id': message.id}) }}" class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ message.titleMsg }}</h5>
+                                        <small>
+                                            {% if message.isDeliveredMsg %}
+                                                <span class="badge bg-success">Delivered</span>
+                                            {% else %}
+                                                <span class="badge bg-warning">Pending</span>
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                    <p class="mb-1">{{ message.contentMsg|slice(0, 150) }}...</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">
+                                            Written: {{ message.createdAtMsg|date('F j, Y') }}
+                                            {% if message.goal %}
+                                                • Goal #{{ message.goal.idGoa }}
+                                            {% endif %}
+                                        </small>
+                                        {% if message.videoPathMsg %}
+                                            <span class="badge bg-info">Video</span>
+                                        {% endif %}
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4 time-empty-state">
+                            <p class="text-muted">No messages to future self yet.</p>
+                            <a href="{{ path('app_time_message_new_future') }}" class="btn btn-outline-primary">Write Your First Letter</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card time-panel-card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="fa-solid fa-reply me-2"></i>Messages from Your Past Self</h4>
+                </div>
+                <div class="card-body">
+                    {% if past_messages|length > 0 %}
+                        <div class="list-group">
+                            {% for message in past_messages %}
+                                <a href="{{ path('app_time_message_show', {'id': message.id}) }}" class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ message.titleMsg }}</h5>
+                                        <small class="text-muted">{{ message.deliveryDateMsg|date('F j, Y') }}</small>
+                                    </div>
+                                    <p class="mb-1">{{ message.contentMsg|slice(0, 150) }}...</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">
+                                            Written: {{ message.createdAtMsg|date('F j, Y') }}
+                                            {% if message.parentMessageId %}
+                                                • Reply
+                                            {% endif %}
+                                        </small>
+                                        {% if message.videoPathMsg %}
+                                            <span class="badge bg-info">Video</span>
+                                        {% endif %}
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4 time-empty-state">
+                            <p class="text-muted">No messages from past self yet. Write to your future self first.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card time-panel-card">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="mb-0"><i class="fa-regular fa-lightbulb me-2"></i>Reflections</h4>
+                </div>
+                <div class="card-body">
+                    {% if reflections|length > 0 %}
+                        <div class="list-group">
+                            {% for message in reflections %}
+                                <a href="{{ path('app_time_message_show', {'id': message.id}) }}" class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ message.titleMsg }}</h5>
+                                        <small class="text-muted">{{ message.createdAtMsg|date('F j, Y') }}</small>
+                                    </div>
+                                    <p class="mb-1">{{ message.contentMsg|slice(0, 150) }}...</p>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-3">No reflections yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.js-time-progress').forEach(function (bar) {
+                const value = Number(bar.dataset.progress || 0);
+                bar.style.width = Math.max(0, Math.min(100, value)) + '%';
+            });
+        });
+    </script>
+{% endblock %}

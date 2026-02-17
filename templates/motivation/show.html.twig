@@ -1,0 +1,276 @@
+﻿{% extends 'theme/base.html.twig' %}
+
+{% block title %}{{ motivation.titleMotiv }} - Motivation{% endblock %}
+
+{% block body %}
+<div class="motivation-show-container">
+    <!-- Navigation Header -->
+    <div class="show-navigation">
+        <a href="{{ path('app_motivation_index') }}" class="back-btn">
+            <i class="bi bi-arrow-left"></i> Retour à la liste
+        </a>
+        {% if not is_granted('ROLE_ADMIN') %}
+        <div class="action-buttons">
+            <a href="{{ path('app_motivation_edit', {'id': motivation.id}) }}" class="edit-btn">
+                <i class="bi bi-pencil"></i> Modifier
+            </a>
+            {{ include('motivation/_delete_form.html.twig') }}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Main Content -->
+    <div class="motivation-show-card">
+        <!-- Mood Badge -->
+        <div class="motivation-mood-badge mood-{{ motivation.moodMotiv }}">
+            {% set emoji_map = {
+                'motivated': 'smile',
+                'happy': 'laughing', 
+                'sad': 'slightly-frowning',
+                'stressed': 'expressionless',
+                'tired': 'sleepy',
+                'determined': 'sunglasses',
+                'optimistic': 'grin'
+            } %}
+            <i class="bi bi-emoji-{{ emoji_map[motivation.moodMotiv] ?? 'smile' }}"></i>
+            {{ motivation.moodMotiv|capitalize }}
+        </div>
+
+        <!-- Title -->
+        <h1 class="motivation-show-title">
+            <i class="bi bi-quote"></i> {{ motivation.titleMotiv }}
+        </h1>
+
+        <!-- Image -->
+        {% if motivation.imageMotiv %}
+        <div class="motivation-show-image-container">
+            <img src="{{ asset('uploads/motivation/' ~ motivation.imageMotiv) }}" 
+                 alt="{{ motivation.titleMotiv }}" 
+                 class="motivation-show-image">
+        </div>
+        {% else %}
+        <div class="motivation-show-image-placeholder">
+            <i class="bi bi-chat-heart-fill"></i>
+            <span>Pas d'image</span>
+        </div>
+        {% endif %}
+
+        <!-- Description -->
+        <div class="motivation-show-description">
+            <h3><i class="bi bi-chat-text"></i> Description</h3>
+            <p>{{ motivation.descriptionMotiv }}</p>
+        </div>
+
+        <!-- Details Grid -->
+        <div class="motivation-details-grid">
+            <div class="detail-card">
+                <div class="detail-icon">
+                    <i class="bi bi-calendar"></i>
+                </div>
+                <div class="detail-content">
+                    <h4>Créé le</h4>
+                    <p>{{ motivation.createdAt ? motivation.createdAt|date('d/m/Y') : 'Date non disponible' }}</p>
+                </div>
+            </div>
+
+            <div class="detail-card">
+                <div class="detail-icon">
+                    <i class="bi bi-heart"></i>
+                </div>
+                <div class="detail-content">
+                    <h4>Humeur</h4>
+                    <p class="mood-{{ motivation.moodMotiv }}">
+                        {{ motivation.moodMotiv|capitalize }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="detail-card">
+                <div class="detail-icon">
+                    <i class="bi bi-tag"></i>
+                </div>
+                <div class="detail-content">
+                    <h4>ID</h4>
+                    <p>#{{ motivation.id }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Share & Actions -->
+        <div class="motivation-actions-show">
+            <button class="action-btn share-btn" onclick="shareMotivation()">
+                <i class="bi bi-share"></i> Partager
+            </button>
+            <button class="action-btn save-btn" onclick="saveMotivation()">
+                <i class="bi bi-bookmark"></i> Sauvegarder
+            </button>
+            {% if not is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('app_motivation_by_mood', {'mood': motivation.moodMotiv}) }}" class="action-btn similar-btn">
+                <i class="bi bi-filter"></i> Voir similaire
+            </a>
+            {% endif %}
+        </div>
+
+        <!-- Celebration Section (if mood is happy/optimistic/motivated) -->
+        {% if motivation.moodMotiv in ['happy', 'optimistic', 'motivated'] %}
+        <div class="celebration-section">
+            <h3><i class="bi bi-stars"></i> Moment de célébration !</h3>
+            <p>Cette motivation positive mérite d'être célébrée !</p>
+            
+            <!-- Mini Palestinian Flag -->
+            <div class="mini-palestine-flag">
+                <div class="mini-flag-top"></div>
+                <div class="mini-flag-middle">
+                    <div class="mini-triangle"></div>
+                </div>
+                <div class="mini-flag-bottom"></div>
+            </div>
+            
+            <p class="celebration-quote">
+                <strong>"Et n'oubliez pas, notre objectif principal est de libérer GAZA !"</strong>
+            </p>
+            
+            <button class="celebrate-mini-btn" onclick="playMiniCelebration()">
+                <i class="bi bi-fire"></i> Célébrer cette motivation
+            </button>
+        </div>
+        {% endif %}
+
+        <!-- Related Motivations -->
+        {% if relatedMotivations|length > 0 %}
+        <div class="related-motivations">
+            <h3><i class="bi bi-collection"></i> Motivations similaires</h3>
+            <div class="related-grid">
+                {% for related in relatedMotivations|slice(0, 3) %}
+                <a href="{{ path('app_motivation_show', {'id': related.id}) }}" class="related-card">
+                    <div class="related-mood mood-{{ related.moodMotiv }}">
+                        <i class="bi bi-emoji-{{ emoji_map[related.moodMotiv] ?? 'smile' }}"></i>
+                    </div>
+                    <h4>{{ related.titleMotiv|slice(0, 30) }}...</h4>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Celebration Modal -->
+<div id="celebrationModal" class="celebration-modal" style="display: none;">
+    <div class="modal-content">
+        <h2 class="modal-title">&#127881; Motivation Positive ! &#127881;</h2>
+        <p class="modal-message">
+            "{{ motivation.titleMotiv }}"
+        </p>
+        <p class="modal-quote">
+            Cette motivation vous inspire à continuer vers vos objectifs !
+            <br>
+            <strong>Et rappelez-vous, notre combat continue pour une Palestine libre !</strong>
+        </p>
+        
+        <!-- Palestinian Flag -->
+        <div class="modal-flag">
+            <div class="flag-top"></div>
+            <div class="flag-middle">
+                <div class="flag-triangle"></div>
+            </div>
+            <div class="flag-bottom"></div>
+        </div>
+        
+        <button class="modal-close-btn" onclick="closeModal()">
+            &#127477;&#127480; Continuer le combat ! &#127477;&#127480;
+        </button>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+function shareMotivation() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Motivation: {{ motivation.titleMotiv }}',
+            text: '{{ motivation.descriptionMotiv|slice(0, 100) }}...',
+            url: window.location.href
+        });
+    } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(window.location.href);
+        alert('Lien copié dans le presse-papier !');
+    }
+}
+
+function saveMotivation() {
+    // Save to localStorage or send to backend
+    const savedMotivations = JSON.parse(localStorage.getItem('savedMotivations') || '[]');
+    const motivationData = {
+        id: {{ motivation.id }},
+        title: '{{ motivation.titleMotiv }}',
+        mood: '{{ motivation.moodMotiv }}',
+        savedAt: new Date().toISOString()
+    };
+    
+    if (!savedMotivations.find(m => m.id === motivationData.id)) {
+        savedMotivations.push(motivationData);
+        localStorage.setItem('savedMotivations', JSON.stringify(savedMotivations));
+        
+        // Show feedback
+        const btn = document.querySelector('.save-btn');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-check-circle"></i> Sauvegardé !';
+        btn.style.background = '#10b981';
+        
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.style.background = '';
+        }, 2000);
+    } else {
+        alert('Cette motivation est déjà sauvegardée !');
+    }
+}
+
+function playMiniCelebration() {
+    const modal = document.getElementById('celebrationModal');
+    modal.style.display = 'flex';
+    
+    // Play celebration sound
+    playCelebrationSound();
+    
+    // Auto-close after 8 seconds
+    setTimeout(closeModal, 8000);
+}
+
+function closeModal() {
+    const modal = document.getElementById('celebrationModal');
+    modal.style.display = 'none';
+}
+
+function playCelebrationSound() {
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        
+        notes.forEach((frequency, index) => {
+            setTimeout(() => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = frequency;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            }, index * 100);
+        });
+    } catch (e) {
+        console.log("Audio context not supported");
+    }
+}
+</script>
+{% endblock %}
+

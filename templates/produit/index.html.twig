@@ -1,0 +1,161 @@
+﻿{% extends 'theme/base.html.twig' %}
+
+{% block title %}Produits - NEXA{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/product-index-modern.css?v=20260214b') }}">
+{% endblock %}
+
+{% block body %}
+{% set currentSort = app.request.get('sort') %}
+{% set currentDir = (app.request.get('dir') ?: 'DESC')|upper %}
+{% set queryParams = app.request.query.all %}
+{% set totalProducts = produits|length %}
+{% set totalStock = 0 %}
+{% set lowStockCount = 0 %}
+{% for p in produits %}
+    {% set qty = p.quantiteStock ?? 0 %}
+    {% set totalStock = totalStock + qty %}
+    {% if qty < 5 %}
+        {% set lowStockCount = lowStockCount + 1 %}
+    {% endif %}
+{% endfor %}
+
+<div class="produits-page-modern">
+    <div class="page-header produits-header-modern">
+        <div>
+            <div class="produits-kicker">Stock manager</div>
+            <h1>Produits</h1>
+            <p>{{ is_granted('ROLE_ADMIN') ? 'Consultation du stock (admin)' : 'Gestion du stock et des informations produits' }}</p>
+        </div>
+
+        <div class="page-actions produits-actions-modern">
+            <a href="{{ path('app_mouvement_index') }}" class="btn">
+                <i class="fa-solid fa-right-left"></i> Mouvements
+            </a>
+            {% if not is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_produit_stats') }}" class="btn">Stats</a>
+                <a href="{{ path('app_produit_pdf', queryParams) }}" class="btn">PDF</a>
+                <a href="{{ path('app_produit_new') }}" class="btn primary">+ Ajouter un produit</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <section class="produits-kpi-row" aria-label="Indicateurs produits">
+        <article class="produits-kpi">
+            <span>Total produits</span>
+            <strong>{{ totalProducts }}</strong>
+        </article>
+        <article class="produits-kpi">
+            <span>Stock cumulé</span>
+            <strong>{{ totalStock }}</strong>
+        </article>
+        <article class="produits-kpi {{ lowStockCount > 0 ? 'is-alert' : '' }}">
+            <span>Stock critique</span>
+            <strong>{{ lowStockCount }}</strong>
+        </article>
+    </section>
+
+    <form method="get" class="search-bar produits-search-modern">
+        <div class="produits-search-input">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" name="q" value="{{ q }}" placeholder="Rechercher un produit..." autocomplete="off">
+        </div>
+
+        <div class="produits-search-right">
+            <label for="sort">Trier par :</label>
+            <select id="sort" name="sort">
+                <option value="" {{ currentSort is empty ? 'selected' : '' }}>Date d'ajout</option>
+                <option value="nom" {{ currentSort == 'nom' ? 'selected' : '' }}>Nom</option>
+                <option value="categorie" {{ currentSort == 'categorie' ? 'selected' : '' }}>Catégorie</option>
+                <option value="stock" {{ currentSort == 'stock' ? 'selected' : '' }}>Stock</option>
+            </select>
+
+            <select name="dir">
+                <option value="DESC" {{ currentDir == 'DESC' ? 'selected' : '' }}>DESC</option>
+                <option value="ASC" {{ currentDir == 'ASC' ? 'selected' : '' }}>ASC</option>
+            </select>
+
+            <button type="submit" class="btn primary">
+                <i class="fa-solid fa-filter"></i> Rechercher
+            </button>
+
+            {% if q or currentSort %}
+                <a class="btn" href="{{ path('app_produit_index') }}">
+                    <i class="fa-solid fa-rotate-left"></i> Reset
+                </a>
+            {% endif %}
+        </div>
+    </form>
+
+    <div class="pack-grid produits-grid-modern">
+        {% for produit in produits %}
+            {% set lowStock = produit.quantiteStock is not null and produit.quantiteStock < 5 %}
+            {% set watchStock = produit.quantiteStock is not null and produit.quantiteStock >= 5 and produit.quantiteStock < 15 %}
+            {% set stockStateClass = lowStock ? 'is-low' : (watchStock ? 'is-watch' : 'is-ok') %}
+            {% set stockStateLabel = lowStock ? 'Critique' : (watchStock ? 'A surveiller' : 'Stable') %}
+
+            <article class="pack-card produits-card-modern {{ lowStock ? 'low-stock' : '' }}">
+                <div class="produits-card-head">
+                    <div class="produits-item-media">
+                        <div class="thumb produits-thumb-modern">
+                            {% if produit.photoP %}
+                                <img src="{{ asset('uploads/produits/' ~ produit.photoP) }}" alt="{{ produit.nomP }}">
+                            {% else %}
+                                <span class="thumb-placeholder">{{ produit.nomP|slice(0, 1)|upper }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="produits-item-text">
+                            <h3>{{ produit.nomP }}</h3>
+                            <span>#{{ produit.idP }}</span>
+                            <div class="produits-health {{ stockStateClass }}">
+                                <i class="fa-solid fa-wave-square"></i> {{ stockStateLabel }}
+                            </div>
+                        </div>
+                    </div>
+                    <span class="nexa-badge {{ lowStock ? 'high' : '' }}">{{ produit.categorieP ?: 'Stock' }}</span>
+                </div>
+
+                <div class="produits-stock-box">
+                    <span>Stock actuel</span>
+                    <strong>{{ produit.quantiteStock }} <small>{{ produit.uniteP }}</small></strong>
+                </div>
+
+                <div class="produits-meta">
+                    <div class="nexa-meta-item produits-meta-item">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>{{ produit.emplacement ?: '—' }}</span>
+                    </div>
+                    <div class="nexa-meta-item produits-meta-item">
+                        <i class="fa-solid fa-calendar"></i>
+                        <span>Ajout: {{ produit.dateAjout ? produit.dateAjout|date('d/m/Y') : '—' }}</span>
+                    </div>
+                </div>
+
+                <div class="nexa-actions-cell produits-actions-row">
+                    <a href="{{ path('app_produit_show', {'id_p': produit.idP}) }}" class="nexa-btn-icon view" title="Voir">
+                        <i class="fa-solid fa-eye"></i>
+                    </a>
+                    {% if not is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('app_produit_edit', {'id_p': produit.idP}) }}" class="nexa-btn-icon edit" title="Modifier">
+                        <i class="fa-solid fa-pen"></i>
+                    </a>
+                    <form method="post" action="{{ path('app_produit_delete', {'id_p': produit.idP}) }}" onsubmit="return confirm('Supprimer ?');" style="display:inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.idP) }}">
+                        <button class="nexa-btn-icon delete" title="Supprimer" type="submit">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </article>
+        {% else %}
+            <div class="produits-empty">Aucun produit enregistré.</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

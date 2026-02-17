@@ -1,0 +1,46 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block admin_page_title %}Profil Utilisateur{% endblock %}
+{% block admin_page_hint %}Details du compte selectionne{% endblock %}
+
+{% block admin_content %}
+    <div class="panel" style="max-width: 760px;">
+        <div class="panel-title">
+            <i class="fa-solid fa-user" style="color: var(--primary);"></i>
+            Informations du compte
+        </div>
+
+        <table class="adm-table" style="width: 100%;">
+            <tbody>
+                <tr>
+                    <td style="width: 220px; color: var(--muted);">Identifiant</td>
+                    <td>#USR-{{ user.id }}</td>
+                </tr>
+                <tr>
+                    <td style="color: var(--muted);">Nom</td>
+                    <td>{{ user.nom }}</td>
+                </tr>
+                <tr>
+                    <td style="color: var(--muted);">Email</td>
+                    <td>{{ user.email }}</td>
+                </tr>
+                <tr>
+                    <td style="color: var(--muted);">Roles</td>
+                    <td>
+                        {% for role in user.roles %}
+                            <span class="badge" style="margin-right: 8px;">{{ role|replace({'ROLE_': ''}) }}</span>
+                        {% else %}
+                            <span class="badge">USER</span>
+                        {% endfor %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="margin-top: 24px;">
+            <a href="{{ path('app_user_list') }}" class="btn-adm">
+                <i class="fa-solid fa-arrow-left"></i> Retour a la liste
+            </a>
+        </div>
+    </div>
+{% endblock %}

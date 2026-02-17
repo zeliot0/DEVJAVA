@@ -1,0 +1,33 @@
+﻿{% extends 'theme/base.html.twig' %}
+
+{% block title %}Nouveau Produit - NEXA{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/product-form-modern.css?v=20260214a') }}">
+{% endblock %}
+
+{% block body %}
+
+<div class="page-header product-form-modern-page-header">
+    <div>
+        <div class="product-kicker">Stock manager</div>
+        <h1>Créer un nouveau produit</h1>
+        <p>Définissez les informations du produit</p>
+    </div>
+
+    <a href="{{ path('app_produit_index') }}" class="btn product-back-btn">
+        <i class="fa-solid fa-arrow-left"></i> Retour à la liste
+    </a>
+</div>
+
+<div class="form-shell product-form-modern-shell">
+    <div class="form-card product-form-modern-card">
+        {{ include('produit/_form.html.twig', {'button_label': 'Créer le produit'}) }}
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,70 @@
+﻿{# templates/milestones/_form.html.twig #}
+{{ form_start(form) }}
+
+    {# Titre #}
+    <div class="mb-3">
+        {{ form_label(form.title) }}
+        {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+        
+        {% if form.title.vars.errors|length > 0 %}
+            <div class="alert alert-danger mt-2">
+                {% for error in form.title.vars.errors %}
+                    <div class="text-danger">{{ error.message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <small class="form-text text-muted">Minimum 3 caractères, maximum 100 caractères</small>
+    </div>
+
+    {# Description #}
+    <div class="mb-3">
+        {{ form_label(form.description) }}
+        {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+        
+        {% if form.description.vars.errors|length > 0 %}
+            <div class="alert alert-danger mt-2">
+                {% for error in form.description.vars.errors %}
+                    <div class="text-danger">{{ error.message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <small class="form-text text-muted">Minimum 10 caractères, maximum 255 caractères</small>
+    </div>
+
+    {# Date d'échéance #}
+    <div class="mb-3">
+        {{ form_label(form.dueDate) }}
+        {{ form_widget(form.dueDate, {'attr': {'class': 'form-control'}}) }}
+        
+        {% if form.dueDate.vars.errors|length > 0 %}
+            <div class="alert alert-danger mt-2">
+                {% for error in form.dueDate.vars.errors %}
+                    <div class="text-danger">{{ error.message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    {# Date de complétion #}
+    <div class="mb-3">
+        {{ form_label(form.completedDate) }}
+        {{ form_widget(form.completedDate, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    {# Objectif associé #}
+    <div class="mb-3">
+        {{ form_label(form.goalGoa) }}
+        {{ form_widget(form.goalGoa, {'attr': {'class': 'form-select'}}) }}
+        
+        {% if form.goalGoa.vars.errors|length > 0 %}
+            <div class="alert alert-danger mt-2">
+                {% for error in form.goalGoa.vars.errors %}
+                    <div class="text-danger">{{ error.message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+
+{{ form_end(form) }}

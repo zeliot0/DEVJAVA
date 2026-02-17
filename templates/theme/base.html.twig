@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<html lang="fr" data-theme="dark" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+
+    <title>{% block title %}NEXA{% endblock %}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+    <link rel="stylesheet" href="{{ asset('css/base.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/nexaa.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/ui-refine.css?v=20260213af') }}">
+    <link rel="stylesheet" href="{{ asset('css/stock-pages.css?v=20260213c') }}">
+    <link rel="stylesheet" href="{{ asset('css/premium-refine.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/global-bubbles-bg.css?v=20260214a') }}">
+    {% set __route = app.request.attributes.get('_route')|default('') %}
+    {% if __route starts with 'app_goal_' or __route starts with 'app_motivation_' or __route starts with 'app_milestones_' or __route starts with 'app_time_message_' %}
+        <link rel="stylesheet" href="{{ asset('css/style.css?v=20260217tm3') }}">
+    {% endif %}
+    <link rel="stylesheet" href="{{ asset('assets/nexa-nav.css?v=20260217c') }}">
+    {% block stylesheets %}{% endblock %}
+    <link rel="stylesheet" href="{{ asset('css/page-white-bg-overrides.css?v=20260214d') }}">
+</head>
+
+{% set currentRoute = app.request.attributes.get('_route')|default('') %}
+{% set isStockRoute = currentRoute starts with 'app_produit_' or currentRoute starts with 'app_mouvement_' %}
+{% set isConscienceRoute = currentRoute in ['app_conscience_index', 'user_theme_index', 'app_theme_answer', 'app_theme_rapport', 'app_theme_rapport_pdf', 'app_user_answer'] or currentRoute starts with 'app_question_' %}
+{% set isGoalsRoute = currentRoute starts with 'app_goal_' or currentRoute starts with 'app_motivation_' or currentRoute starts with 'app_milestones_' or currentRoute starts with 'app_time_message_' %}
+{% set isMilestonesRoute = currentRoute starts with 'app_milestones_' %}
+{% set isTaskRoute = currentRoute starts with 'app_task_' %}
+{% set currentUserName = app.user and app.user.nom ? app.user.nom|capitalize : 'Utilisateur' %}
+{% set currentUserEmail = app.user and app.user.email ? app.user.email : '' %}
+{% set currentUserInitial = app.user and app.user.nom ? app.user.nom|first|upper : 'U' %}
+
+<body class="has-global-bubbles {{ isStockRoute ? 'stock-pages ' : '' }}{{ isConscienceRoute ? 'conscience-page ' : '' }}{{ isGoalsRoute ? 'goals-page-theme ' : '' }}{{ isMilestonesRoute ? 'milestones-page-theme ' : '' }}{{ isTaskRoute ? 'task-page-theme' : '' }}">
+
+{{ include('_global_bubbles_bg.html.twig') }}
+
+<div class="backdrop-new" id="backdropNav" aria-hidden="true"></div>
+
+<header class="navbar-custom" id="topbarNav">
+    <a href="{{ path('app_landing') }}" class="logo-new">NEXA</a>
+
+    <nav class="desktop-nav" aria-label="Main Navigation">
+        <div class="nav-pill-new">
+            <a href="{{ path('app_task_index') }}" id="nav_1" class="{{ currentRoute starts with 'app_task_' ? 'active' : '' }}">TASKS</a>
+            <a href="{{ path('app_conscience_index') }}" id="nav_2" class="{{ currentRoute in ['app_conscience_index', 'user_theme_index', 'app_theme_answer', 'app_theme_rapport', 'app_theme_rapport_pdf', 'app_user_answer'] ? 'active' : '' }}">CONSCIENCE</a>
+            <a href="{{ path('app_goal_index') }}" id="nav_3" class="{{ currentRoute starts with 'app_goal_' or currentRoute starts with 'app_motivation_' or currentRoute starts with 'app_milestones_' or currentRoute starts with 'app_time_message_' or currentRoute starts with 'app_theme_' or currentRoute starts with 'app_question_' ? 'active' : '' }}">GOALS</a>
+            <a href="{{ path('app_produit_index') }}" id="nav_4" class="{{ currentRoute starts with 'app_produit_' or currentRoute starts with 'app_mouvement_' ? 'active' : '' }}">PRODUIT</a>
+        </div>
+    </nav>
+    <div class="goals-popover-menu" id="goalsPopoverNav" hidden>
+        <a href="{{ path('app_goal_index') }}"><i class="fa-solid fa-bullseye"></i> Objectifs</a>
+        <a href="{{ path('app_milestones_index') }}"><i class="fa-solid fa-flag"></i> Jalons</a>
+        <a href="{{ path('app_motivation_index') }}"><i class="fa-solid fa-heart"></i> Motivation</a>
+        <a href="{{ path('app_time_message_index') }}"><i class="fa-solid fa-hourglass-half"></i> Time message</a>
+    </div>
+
+    <div class="header-actions-new">
+        <div class="lang-switch-new">
+            <button class="lang-btn-new" id="langBtnNav" type="button">
+                <i class="fa-solid fa-globe"></i>
+                <span id="currentLangNav">FR</span>
+            </button>
+            <div class="lang-menu-new" id="langMenuNav">
+                <div data-lang="fr">FR</div>
+                <div data-lang="en">EN</div>
+                <div data-lang="ar">AR</div>
+            </div>
+        </div>
+
+        <button class="icon-btn" id="themeToggleNav" type="button"><i class="fa-solid fa-moon"></i></button>
+        <button class="icon-btn burger-new" id="menuBtnNav" type="button"><i class="fa-solid fa-bars"></i></button>
+        <div class="user-menu-nav">
+            <button type="button" class="user-quick-nav user-menu-trigger-nav" id="userMenuTriggerNav" aria-expanded="false" aria-controls="userMenuDropdownNav">
+                <span class="uq-meta">
+                    <strong>{{ currentUserName }}</strong>
+                    <small>Plan Starter</small>
+                </span>
+                <span class="uq-avatar">{{ currentUserInitial }}</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="user-menu-dropdown-nav" id="userMenuDropdownNav" hidden>
+                <a href="{{ path('app_profile') }}"><i class="fa-regular fa-user"></i> Mon profil</a>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('admin_dashboard') }}"><i class="fa-solid fa-shield-halved"></i> Dashboard</a>
+                {% endif %}
+                <a href="{{ path('app_logout') }}" class="danger"><i class="fa-solid fa-right-from-bracket"></i> Deconnexion</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<aside class="drawer-new" id="drawerNav">
+    <div class="drawer-top-new">
+        <div class="drawer-title-new" id="drawerTitleNav">NEXA</div>
+        <button class="icon-btn" id="closeDrawerNav" type="button"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <nav class="drawer-nav-new">
+        <a href="{{ path('app_task_index') }}" id="mnav_1">TASKS</a>
+        <a href="{{ path('app_conscience_index') }}" id="mnav_2">CONSCIENCE</a>
+        <a href="{{ path('app_goal_index') }}" id="mnav_3">GOALS</a>
+        <div class="drawer-goals-subnav">
+            <a href="{{ path('app_goal_index') }}" class="{{ currentRoute starts with 'app_goal_' ? 'active' : '' }}">
+                <i class="fa-solid fa-bullseye"></i> Objectifs
+            </a>
+            <a href="{{ path('app_milestones_index') }}" class="{{ currentRoute starts with 'app_milestones_' ? 'active' : '' }}">
+                <i class="fa-solid fa-flag"></i> Jalons
+            </a>
+            <a href="{{ path('app_motivation_index') }}" class="{{ currentRoute starts with 'app_motivation_' ? 'active' : '' }}">
+                <i class="fa-solid fa-heart"></i> Motivation
+            </a>
+            <a href="{{ path('app_time_message_index') }}" class="{{ currentRoute starts with 'app_time_message_' ? 'active' : '' }}">
+                <i class="fa-solid fa-hourglass-half"></i> Time message
+            </a>
+        </div>
+        <a href="{{ path('app_produit_index') }}" id="mnav_4">PRODUIT</a>
+    </nav>
+
+    <a href="{{ path('app_profile') }}" class="drawer-user-card">
+        <span class="uq-avatar">{{ currentUserInitial }}</span>
+        <span class="uq-meta">
+            <strong>{{ currentUserName }}</strong>
+            <small>{{ currentUserEmail }}</small>
+        </span>
+    </a>
+</aside>
+
+<div class="toast-new" id="toastNav"></div>
+
+<main style="padding-top: calc(var(--nav-height) + 10px);">
+    {% block body %}{% endblock %}
+</main>
+
+<script src="{{ asset('js/board.js') }}"></script>
+<script src="{{ asset('js/global-bubbles-bg.js?v=20260214a') }}"></script>
+<script src="{{ asset('assets/nexa-nav.js?v=20260217c') }}"></script>
+
+{% block javascripts %}{% endblock %}
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+

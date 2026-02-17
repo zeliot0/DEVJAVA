@@ -1,0 +1,128 @@
+﻿{% extends 'theme/base.html.twig' %}
+
+{% block title %}Conscience - NEXA{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div>
+        <h1>Conscience</h1>
+        <p>Choisissez un thème actif et répondez aux questions du jour.</p>
+    </div>
+
+    <div class="page-actions">
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('app_theme_new') }}" class="btn primary">
+                <i class="fa-solid fa-plus"></i> Nouveau thème
+            </a>
+            <a href="{{ path('app_theme_index') }}" class="btn">
+                <i class="fa-solid fa-sliders"></i> Gestion thèmes
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<form method="get" action="{{ path('app_conscience_index') }}" class="search-bar conscience-toolbar">
+    <div class="conscience-search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" name="q" value="{{ search }}" placeholder="Rechercher un thème..." autocomplete="off">
+        <button type="button" class="conscience-voice-btn" id="conscienceVoiceBtn" title="Recherche vocale">
+            <i class="fa-solid fa-microphone"></i>
+        </button>
+    </div>
+
+    <div class="conscience-filter-box">
+        <label>Trier par :</label>
+        <select name="sort">
+            <option value="newest" {{ (sort|default('newest')) == 'newest' ? 'selected' : '' }}>Plus récents</option>
+            <option value="priority_desc" {{ (sort|default('newest')) == 'priority_desc' ? 'selected' : '' }}>Priorité haute</option>
+            <option value="priority_asc" {{ (sort|default('newest')) == 'priority_asc' ? 'selected' : '' }}>Priorité basse</option>
+            <option value="questions_desc" {{ (sort|default('newest')) == 'questions_desc' ? 'selected' : '' }}>Plus de questions</option>
+        </select>
+    </div>
+</form>
+
+<section class="kpi-grid">
+    <div class="kpi-card">
+        <span>Thèmes actifs</span>
+        <strong>{{ themes|length }}</strong>
+    </div>
+
+    <div class="kpi-card">
+        <span>Questions à traiter</span>
+        <strong>
+            {% set totalQuestions = 0 %}
+            {% for theme in themes %}
+                {% set totalQuestions = totalQuestions + (theme.questions|length) %}
+            {% endfor %}
+            {{ totalQuestions }}
+        </strong>
+    </div>
+</section>
+
+<section class="themes-grid" id="themes-container">
+    {% include 'conscience/_themes_list.html.twig' with { themes: themes } %}
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.querySelector('.conscience-search-box input[name="q"]');
+    const sortSelect = document.querySelector('.conscience-filter-box select[name="sort"]');
+    const voiceBtn = document.getElementById('conscienceVoiceBtn');
+    const container = document.getElementById('themes-container');
+    if (!input || !container) return;
+
+    let timeout = null;
+    const buildUrl = () => {
+        const q = encodeURIComponent(input.value || '');
+        const s = encodeURIComponent(sortSelect ? sortSelect.value : 'newest');
+        return `{{ path('app_conscience_index') }}?q=${q}&sort=${s}`;
+    };
+
+    const refreshThemes = () => {
+        fetch(buildUrl(), {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.text())
+        .then(html => {
+            container.innerHTML = html;
+        });
+    };
+
+    input.addEventListener('input', () => {
+        clearTimeout(timeout);
+
+        timeout = setTimeout(() => {
+            refreshThemes();
+        }, 250);
+    });
+
+    if (sortSelect) {
+        sortSelect.addEventListener('change', refreshThemes);
+    }
+
+    if (voiceBtn) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            voiceBtn.style.display = 'none';
+        } else {
+            const recognition = new SpeechRecognition();
+            recognition.lang = document.documentElement.lang === 'en' ? 'en-US' : 'fr-FR';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            voiceBtn.addEventListener('click', () => {
+                recognition.start();
+            });
+
+            recognition.addEventListener('result', (event) => {
+                const transcript = event.results?.[0]?.[0]?.transcript || '';
+                if (!transcript) return;
+                input.value = transcript;
+                refreshThemes();
+            });
+        }
+    }
+});
+</script>
+{% endblock %}
+
