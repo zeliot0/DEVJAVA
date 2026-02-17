@@ -31,7 +31,7 @@
         <i class="fa-solid fa-house"></i> Dashboard
       </a>
 
-      <a class="sb-item active" href="{{ path('task_index') }}">
+      <a class="sb-item active" href="{{ path('app_task_index') }}">
         <i class="fa-solid fa-list-check"></i> Tasks
       </a>
 
@@ -237,11 +237,31 @@
         create: "{{ path('api_tasks_create') }}",
         updateBase: "/api/tasks",
         deleteBase: "/api/tasks",
-        categories: "{{ path('api_categories_list') }}"
+        today: "/api/tasks/today",
+        overdue: "/api/tasks/overdue",
+        autoPrioritize: "/api/tasks/auto-prioritize",
+        batchStatus: "/api/tasks/batch/status",
+        batchDelete: "/api/tasks/batch/delete",
+        categories: "{{ path('api_categories_list') }}",
+        categoriesCreate: "/api/categories",
+        categoriesUpdateBase: "/api/categories",
+        categoriesDeleteBase: "/api/categories",
+        aiDescription: "/api/ai/description",
+        aiAnalyze: "/api/ai/analyze",
+        aiSubtasks: "/api/ai/subtasks",
+        aiSummary: "/api/ai/executions-summary",
+        aiEstimate: "/api/ai/estimate",
+        aiRiskScore: "/api/ai/risk-score",
+        analyticsThroughput: "/api/analytics/throughput",
+        analyticsWorkload: "/api/analytics/workload",
+        analyticsCycleTime: "/api/analytics/cycle-time",
+        jobsCreate: "/api/jobs",
+        jobsBase: "/api/jobs",
+        dashboardStats: "/api/dashboard/stats"
       };
     </script>
 
-    <script src="/assets/board.js"></script>
+    <script src="/assets/board.js?v=20260209a"></script>
 
   </main>
 </div>

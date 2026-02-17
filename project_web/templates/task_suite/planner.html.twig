@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Task Suite - Planner{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="{{ asset('css/task-suite.css?v=20260215c') }}">
+{% endblock %}
+
+{% block body %}
+<div class="suite-page" data-suite-page="planner">
+  {% include 'task_suite/_nav.html.twig' %}
+
+  <section class="suite-panel">
+    <h2>Quick Capture</h2>
+    <p class="muted">Type: "Finish API docs tomorrow high" then create a task in one click.</p>
+    <div class="row">
+      <input id="quickCaptureInput" type="text" placeholder="Example: call client tomorrow high" />
+      <button id="quickCaptureBtn" class="suite-btn">Create Task</button>
+    </div>
+    <p id="quickCaptureResult" class="muted"></p>
+  </section>
+
+  <section class="suite-grid three">
+    <article class="suite-card">
+      <h3>Top Tasks Now</h3>
+      <ul class="suite-list">
+        {% for task in topTasks %}
+          <li>
+            <strong>{{ task.title }}</strong>
+            <span>{{ task.priority|upper }} | {{ task.status|upper }}{% if task.dueAt %} | {{ task.dueAt }}{% endif %}</span>
+          </li>
+        {% else %}
+          <li>No active tasks found.</li>
+        {% endfor %}
+      </ul>
+    </article>
+
+    <article class="suite-card">
+      <h3>Stale Tasks (7+ days)</h3>
+      <ul class="suite-list">
+        {% for task in staleTasks %}
+          <li>
+            <strong>{{ task.title }}</strong>
+            <span>Last update: {{ task.updatedAt }}</span>
+          </li>
+        {% else %}
+          <li>No stale tasks.</li>
+        {% endfor %}
+      </ul>
+    </article>
+
+    <article class="suite-card">
+      <h3>Overdue Tasks</h3>
+      <ul class="suite-list">
+        {% for task in overdueTasks %}
+          <li>
+            <strong>{{ task.title }}</strong>
+            <span>Due: {{ task.dueAt ?? 'N/A' }}</span>
+          </li>
+        {% else %}
+          <li>No overdue tasks.</li>
+        {% endfor %}
+      </ul>
+    </article>
+  </section>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="{{ asset('js/task-suite.js?v=20260215c') }}"></script>
+{% endblock %}

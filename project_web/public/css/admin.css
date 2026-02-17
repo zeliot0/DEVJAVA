@@ -1,0 +1,523 @@
+/* =============================
+   ADMIN PAGE — NEXA
+============================= */
+
+.admin-page{
+  min-height:100vh;
+  padding:50px 70px;
+  font-family: Inter, system-ui, sans-serif;
+  background:
+    radial-gradient(900px 500px at 5% 15%, rgba(124,58,237,.18), transparent 60%),
+    radial-gradient(900px 500px at 90% 25%, rgba(79,70,229,.15), transparent 60%),
+    #f8fafc;
+}
+
+/* HEADER */
+.admin-header h1{
+  font-size:2.6rem;
+  font-weight:900;
+  margin-bottom:6px;
+}
+
+.admin-header p{
+  color:#64748b;
+  margin-bottom:42px;
+}
+
+/* GRID */
+.user-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
+  gap:26px;
+}
+
+/* CARD */
+.user-card{
+  background:rgba(255,255,255,.9);
+  border-radius:22px;
+  padding:22px 24px;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  box-shadow:0 25px 70px rgba(15,23,42,.12);
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+
+.user-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 45px 110px rgba(79,70,229,.28);
+}
+
+/* AVATAR */
+.user-avatar{
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#4f46e5,#7c3aed);
+  color:#fff;
+  font-weight:900;
+  font-size:22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* INFO */
+.user-info{
+  flex:1;
+}
+
+.user-info h3{
+  margin:0;
+  font-size:1.15rem;
+}
+
+.user-info p{
+  margin:3px 0 10px;
+  font-size:13px;
+  color:#64748b;
+}
+
+/* BADGES */
+.badge{
+  font-size:11px;
+  padding:4px 10px;
+  border-radius:999px;
+  font-weight:700;
+}
+
+.badge.admin{
+  background:#ede9fe;
+  color:#6d28d9;
+}
+
+.badge.user{
+  background:#e0f2fe;
+  color:#0369a1;
+}
+
+/* DELETE BUTTON */
+.btn-delete{
+  background:none;
+  border:none;
+  font-size:20px;
+  cursor:pointer;
+  opacity:.55;
+  transition:opacity .2s ease, transform .2s ease;
+}
+
+.btn-delete:hover{
+  opacity:1;
+  transform:scale(1.2);
+}
+.user-card.admin{
+  outline:2px solid rgba(124,58,237,.4);
+}
+@keyframes float {
+  0%,100% { transform:translateY(0) }
+  50% { transform:translateY(-4px) }
+}
+
+.user-avatar{
+  animation: float 4s ease-in-out infinite;
+}
+/* ===============================
+   HEADER ADMIN — NEXA STYLE
+================================ */
+
+.admin-header {
+    padding: 60px 80px 40px;
+    position: relative;
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: auto;
+}
+
+.admin-header h1 {
+    font-size: 3.2rem;
+    font-weight: 900;
+    margin: 0;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, #6c63ff, #9b6cff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.brand {
+    color: #111;
+    margin-left: 8px;
+}
+
+.admin-header p {
+    margin-top: 12px;
+    font-size: 1.05rem;
+    color: #64748b;
+}
+
+/* Ligne décorative */
+.admin-header::after {
+    content: "";
+    display: block;
+    margin-top: 26px;
+    width: 80px;
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #6c63ff, #9b6cff);
+}
+.admin-header {
+    animation: fadeSlide 0.8s ease forwards;
+}
+
+@keyframes fadeSlide {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.admin-header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 60px;
+}
+.header-content {
+    text-align: center;
+    max-width: 800px;
+    position: relative;
+}
+
+.header-content h1 {
+    font-size: 3.2rem;
+    font-weight: 900;
+    margin-bottom: 12px;
+}
+.gradient-text {
+    background: linear-gradient(135deg, #6a5cff, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.brand {
+    color: #0f172a;
+    margin-left: 10px;
+}
+
+.header-content p {
+    font-size: 1.1rem;
+    color: #64748b;
+    margin-top: 8px;
+}
+.header-content::after {
+    content: "";
+    display: block;
+    width: 70px;
+    height: 4px;
+    background: linear-gradient(135deg, #6a5cff, #8b5cf6);
+    margin: 28px auto 0;
+    border-radius: 999px;
+}
+/* ===== FIX TITRE ADMIN ===== */
+
+.admin-header {
+  padding: 40px 40px 20px; /* ↓ moins haut */
+  margin-bottom: 30px;     /* ↓ rapproche la liste */
+}
+
+.header-content {
+  text-align: center;
+}
+
+.admin-header h1 {
+  font-size: 2.4rem;       /* ↓ plus équilibré */
+  font-weight: 900;
+  line-height: 1.05;
+  margin-bottom: 10px;
+}
+
+.gradient-text {
+  display: block;          /* Administration au-dessus */
+  font-size: 2.2rem;
+}
+
+.brand {
+  display: block;          /* NEXA en dessous */
+  font-size: 2.6rem;
+  font-weight: 900;
+  margin-top: 4px;
+}
+
+.admin-header p {
+  font-size: 1rem;
+  margin-top: 10px;
+  color: #64748b;
+}
+/* VIEW BUTTON */
+.btn-view{
+  text-decoration: none;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.btn-view .eye{
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(99,102,241,.1);
+  color: #4f46e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all .25s ease;
+}
+
+/* hover effect */
+.user-card:hover .btn-view .eye{
+  background: linear-gradient(135deg,#4f46e5,#7c3aed);
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 10px 25px rgba(79,70,229,.35);
+}
+.btn-view{
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease;
+}
+
+.user-card:hover .btn-view{
+  opacity: 1;
+  pointer-events: auto;
+}
+/* =============================
+   USER DETAILS PAGE
+============================= */
+
+.details-wrapper{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-top:20px;
+}
+
+.details-card{
+  background:rgba(255,255,255,.95);
+  border-radius:26px;
+  padding:32px 36px;
+  width:100%;
+  max-width:520px;
+  display:flex;
+  align-items:center;
+  gap:24px;
+  box-shadow:0 30px 80px rgba(15,23,42,.15);
+  animation: fadeUp .6s ease;
+}
+
+.details-avatar{
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#4f46e5,#7c3aed);
+  color:#fff;
+  font-size:32px;
+  font-weight:900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.details-info h3{
+  margin:0;
+  font-size:1.4rem;
+  font-weight:800;
+}
+
+.details-info p{
+  margin:6px 0 14px;
+  color:#64748b;
+  font-size:14px;
+}
+
+.details-roles{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+/* Actions */
+.details-actions{
+  margin-top:26px;
+}
+
+/* Back button */
+.btn-back{
+  display:inline-block;
+  padding:10px 22px;
+  border-radius:999px;
+  background:rgba(99,102,241,.12);
+  color:#4f46e5;
+  font-weight:700;
+  text-decoration:none;
+  transition:all .25s ease;
+}
+
+.btn-back:hover{
+  background:linear-gradient(135deg,#4f46e5,#7c3aed);
+  color:#fff;
+  box-shadow:0 10px 25px rgba(79,70,229,.35);
+  transform:translateY(-2px);
+}
+
+/* Animation */
+@keyframes fadeUp{
+  from{
+    opacity:0;
+    transform:translateY(15px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+/* =============================
+   USER DETAILS BOX
+============================= */
+
+.details-container{
+  display:flex;
+  justify-content:center;
+  margin-top:10px;
+}
+
+.details-card-box{
+  background:rgba(255,255,255,.95);
+  width:100%;
+  max-width:420px;
+  padding:40px 36px;
+  border-radius:28px;
+  text-align:center;
+  box-shadow:0 30px 90px rgba(15,23,42,.18);
+  animation: fadeUp .6s ease;
+}
+
+/* Avatar */
+.details-avatar-big{
+  width:96px;
+  height:96px;
+  margin:0 auto 18px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#4f46e5,#7c3aed);
+  color:white;
+  font-size:36px;
+  font-weight:900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* Name + Email */
+.details-name{
+  margin:0;
+  font-size:1.5rem;
+  font-weight:900;
+}
+
+.details-email{
+  margin:6px 0 18px;
+  color:#64748b;
+  font-size:14px;
+}
+
+/* Roles */
+.details-roles{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  margin-bottom:24px;
+}
+
+/* Back button */
+.btn-back{
+  display:inline-block;
+  padding:10px 24px;
+  border-radius:999px;
+  background:rgba(99,102,241,.12);
+  color:#4f46e5;
+  font-weight:700;
+  text-decoration:none;
+  transition:all .25s ease;
+}
+
+.btn-back:hover{
+  background:linear-gradient(135deg,#4f46e5,#7c3aed);
+  color:white;
+  box-shadow:0 10px 25px rgba(79,70,229,.35);
+  transform:translateY(-2px);
+}
+
+/* Animation */
+@keyframes fadeUp{
+  from{
+    opacity:0;
+    transform:translateY(15px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+.actions{
+  display:flex;
+  gap:10px;
+}
+
+.btn{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  text-decoration:none;
+  transition:.25s;
+}
+
+/* ACCEPT */
+.btn.accept{
+  background:#dcfce7;
+  color:#166534;
+}
+.btn.accept:hover{
+  background:#22c55e;
+  color:white;
+}
+
+/* REFUSE */
+.btn.refuse{
+  background:#fee2e2;
+  color:#991b1b;
+}
+.btn.refuse:hover{
+  background:#ef4444;
+  color:white;
+}
+
+/* FLASH MESSAGE */
+.flash-success{
+  background:#dcfce7;
+  color:#166534;
+  padding:12px 18px;
+  border-radius:12px;
+  margin-bottom:20px;
+  font-weight:600;
+}

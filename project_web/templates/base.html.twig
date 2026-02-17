@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr" data-theme="dark">
 <head>
     <meta charset="UTF-8">
@@ -10,13 +10,165 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    {# ✅ NEXA CSS (doit être dans public/assets/NEXAstyle.css) #}
+    {# âœ… NEXA CSS (doit Ãªtre dans public/assets/NEXAstyle.css) #}
     <link rel="stylesheet" href="{{ asset('assets/NEXAAstyle.css') }}">
-
+    <link rel="stylesheet" href="{{ asset('css/stylee.css?v=20260213b') }}">
+    <link rel="stylesheet" href="{{ asset('css/global-bubbles-bg.css?v=20260214a') }}">
     {% block stylesheets %}{% endblock %}
+    
+    {% set currentRoute = app.request.attributes.get('_route')|default('') %}
+    {% set isMusicLounge = currentRoute == 'app_task_suite_music_lounge' %}
+    
+    {% if not isMusicLounge %}
+        <link rel="stylesheet" href="{{ asset('css/page-white-bg-overrides.css?v=20260214f') }}">
+    {% endif %}
+    
+    {# SEAMLESS NAVIGATION ENGINE (Hotwire Turbo) #}
+    <script src="https://unpkg.com/@hotwired/turbo@8.0.0-beta.1/dist/turbo.es2017-umd.js"></script>
+
+    {# GOBAL AUDIO ENGINE #}
+    <audio id="globalAudioEngine" data-turbo-permanent preload="auto"></audio>
+
 </head>
-<body>
-{% block body %}{% endblock %}
-{% block javascripts %}{% endblock %}
+<body class="has-global-bubbles {{ isMusicLounge ? 'music-lounge-body' : '' }} {{ (currentRoute starts with 'app_task_' and not isMusicLounge) ? 'task-page-theme' : '' }}">
+    {{ include('_global_bubbles_bg.html.twig') }}
+    
+    <div id="mainContentBlock">
+        {% block body %}{% endblock %}
+    </div>
+
+    {# GLOBAL PERSISTENT PLAYER - ULTRA SLIM RIBBON #}
+    <div id="globalPlayerShell" class="global-persistent-player hidden" data-turbo-permanent>
+        <div class="global-player-left">
+            <div class="global-player-cover" id="gpCover" style="background-image: url('https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=100&auto=format&fit=crop');"></div>
+            <div class="global-player-info">
+                <h4 id="gpTitle">Song Name</h4>
+                <p id="gpArtist">Artist</p>
+            </div>
+        </div>
+
+        <div class="global-player-center">
+            <div class="global-player-controls">
+                <button id="gpPrev" style="opacity: 0.5;"><i class="fa-solid fa-step-backward"></i></button>
+                <button id="gpPlayPause" class="global-player-play"><i class="fa-solid fa-play"></i></button>
+                <button id="gpNext" style="opacity: 0.5;"><i class="fa-solid fa-step-forward"></i></button>
+            </div>
+            <div class="global-progress-container">
+                <span id="gpCurrentTime" style="font-size: 0.6rem; opacity: 0.6; min-width: 25px;">0:00</span>
+                <div class="global-progress-bar" id="gpProgressBase">
+                    <div class="global-progress-fill" id="gpProgressFill" style="width: 0%"></div>
+                </div>
+                <span id="gpTotalTime" style="font-size: 0.6rem; opacity: 0.6; min-width: 25px;">0:00</span>
+            </div>
+        </div>
+
+        <div class="global-player-right">
+            <div class="energetic-visualizer" id="gpVisualizer" style="transform: scale(0.8);">
+                <div class="v-bar" style="animation-delay: 0s"></div>
+                <div class="v-bar" style="animation-delay: 0.2s"></div>
+                <div class="v-bar" style="animation-delay: 0.4s"></div>
+            </div>
+            <button id="gpClose" style="background:none; border:none; color:rgba(255,255,255,0.3); cursor:pointer; font-size: 0.8rem; margin-left: 10px;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
+
+    <script src="{{ asset('js/global-bubbles-bg.js?v=20260214a') }}"></script>
+    <script>
+        // GLOBAL AUDIO CONTROLLER
+        document.addEventListener('turbo:load', () => {
+            const ga = document.getElementById('globalAudioEngine');
+            const ps = document.getElementById('globalPlayerShell');
+            const pb = document.getElementById('gpPlayPause');
+            const pc = document.getElementById('gpClose');
+            const pNext = document.getElementById('gpNext');
+            const pPrev = document.getElementById('gpPrev');
+            
+            if(!ga || !ps) return;
+
+            // DRAGGABLE LOGIC
+            let isDragging = false;
+            let offset = { x: 0, y: 0 };
+
+            ps.onmousedown = (e) => {
+                if (e.target.closest('button') || e.target.closest('.global-progress-bar')) return;
+                isDragging = true;
+                offset.x = e.clientX - ps.offsetLeft;
+                offset.y = e.clientY - ps.offsetTop;
+                ps.style.transition = 'none';
+            };
+
+            document.onmousemove = (e) => {
+                if (!isDragging) return;
+                ps.style.left = (e.clientX - offset.x) + (ps.offsetWidth/2) + 'px';
+                ps.style.top = (e.clientY - offset.y) + (ps.offsetHeight/2) + 'px';
+                ps.style.bottom = 'auto';
+                ps.style.transform = 'translateX(-50%)';
+            };
+
+            document.onmouseup = () => {
+                isDragging = false;
+                ps.style.transition = 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+            };
+
+            const sync = () => {
+                if(!ga.duration) return;
+                const pct = (ga.currentTime / ga.duration) * 100;
+                const fill = document.getElementById('gpProgressFill');
+                if(fill) fill.style.width = pct + '%';
+                
+                const fmt = (s) => (isNaN(s) ? '0:00' : `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`);
+                const cur = document.getElementById('gpCurrentTime');
+                const tot = document.getElementById('gpTotalTime');
+                if(cur) cur.innerText = fmt(ga.currentTime);
+                if(tot) tot.innerText = fmt(ga.duration);
+            };
+
+            const refresh = () => {
+                const icon = ga.paused ? 'fa-play' : 'fa-pause';
+                if(pb) {
+                    pb.innerHTML = `<i class="fa-solid ${icon}"></i>`;
+                    ga.paused ? pb.classList.remove('playing') : pb.classList.add('playing');
+                }
+                const viz = document.getElementById('gpVisualizer');
+                if(viz) {
+                    viz.style.opacity = ga.paused ? '0.2' : '1';
+                    viz.querySelectorAll('.v-bar').forEach(b => b.style.animationPlayState = ga.paused ? 'paused' : 'running');
+                }
+                if (ga.src && ga.src !== window.location.href) ps.classList.remove('hidden');
+                else ps.classList.add('hidden');
+                
+                // Update Lounge UI if present
+                const lPlay = document.getElementById('loungePlayPause');
+                if (lPlay) {
+                    lPlay.innerHTML = `<i class="fa-solid ${icon}"></i>`;
+                    ga.paused ? lPlay.classList.remove('playing') : lPlay.classList.add('playing');
+                }
+            };
+
+            if(pb) pb.onclick = (e) => { e.preventDefault(); ga.paused ? ga.play() : ga.pause(); refresh(); };
+            if(pc) pc.onclick = (e) => { e.preventDefault(); ga.pause(); ga.src = ""; ps.classList.add('hidden'); };
+            if(pNext) pNext.onclick = (e) => { e.preventDefault(); if(window.globalNext) window.globalNext(); };
+            if(pPrev) pPrev.onclick = (e) => { e.preventDefault(); if(window.globalPrev) window.globalPrev(); };
+
+            ga.onplay = refresh; ga.onpause = refresh;
+            ga.onended = () => { if(window.globalNext) window.globalNext(); else if(pc) pc.click(); };
+            
+            setInterval(sync, 500);
+            refresh();
+
+            window.playGlobalTrack = (src, title, artist, cover) => {
+                if(!src) return;
+                ga.src = src; ga.play().catch(() => {});
+                document.getElementById('gpTitle').innerText = title || 'Unknown';
+                document.getElementById('gpArtist').innerText = artist || 'Unknown';
+                if(cover) document.getElementById('gpCover').style.backgroundImage = `url(${cover})`;
+                ps.classList.remove('hidden');
+                refresh();
+            };
+        });
+    </script>
+    {% block javascripts %}{% endblock %}
 </body>
 </html>
+
+

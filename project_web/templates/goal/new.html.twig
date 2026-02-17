@@ -1,0 +1,144 @@
+﻿{# templates/goal/new.html.twig - FIXED #}
+{% extends 'theme/base.html.twig' %}
+
+{% block title %}Nouvel Objectif{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/goal-form-modern.css?v=20260214a') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4 goals-form-page goals-form-modern-page">
+    <div class="d-flex justify-content-between align-items-center mb-4 goals-form-header">
+        <div>
+            <div class="goals-kicker">Goal planner</div>
+            <h1 class="h2 mb-1"><i class="fas fa-plus-circle me-2"></i>Créer un nouvel objectif</h1>
+            <p class="text-muted mb-0">Remplissez les détails de votre nouvel objectif</p>
+        </div>
+        <div class="goals-inline-actions">
+            <a href="{{ path('app_milestones_index') }}" class="btn btn-outline-secondary goals-btn goals-btn-secondary">
+                <i class="fas fa-flag me-1"></i> Jalons
+            </a>
+            <a href="{{ path('app_goal_index') }}" class="btn btn-outline-secondary goals-btn goals-btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Retour
+            </a>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm goals-form-card">
+        <div class="card-body">
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                {{ form_errors(form) }}
+                <div class="goals-form-layout">
+                    <div class="goals-form-main">
+                        <section class="goals-section">
+                            <h3 class="goals-section-title"><i class="fas fa-pen"></i> Informations principales</h3>
+                            <div class="mb-3">
+                                {{ form_label(form.titleGoa, 'Titre*', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                {{ form_widget(form.titleGoa, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Apprendre Symfony', 'required': 'required'}}) }}
+                                <div class="form-text">Donnez un titre clair à votre objectif</div>
+                                {{ form_errors(form.titleGoa) }}
+                            </div>
+
+                            <div class="mb-0">
+                                {{ form_label(form.descriptionGoa, 'Description', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                {{ form_widget(form.descriptionGoa, {'attr': {'class': 'form-control', 'rows': 3, 'placeholder': 'Décrivez votre objectif en détail...'}}) }}
+                                <div class="form-text">Décrivez ce que vous souhaitez accomplir</div>
+                                {{ form_errors(form.descriptionGoa) }}
+                            </div>
+                        </section>
+
+                        <section class="goals-section">
+                            <h3 class="goals-section-title"><i class="fas fa-calendar-alt"></i> Planification</h3>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_label(form.dateDebutGoa, 'Date de début*', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                    {{ form_widget(form.dateDebutGoa, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                                    {{ form_errors(form.dateDebutGoa) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_label(form.dateFinalGoa, 'Date de fin*', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                    {{ form_widget(form.dateFinalGoa, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                                    {{ form_errors(form.dateFinalGoa) }}
+                                </div>
+                            </div>
+
+                            <div class="row mb-0">
+                                <div class="col-md-4 mb-3">
+                                    {{ form_label(form.categoryGoa, 'Catégorie*', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                    {{ form_widget(form.categoryGoa, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                                    {{ form_errors(form.categoryGoa) }}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    {{ form_label(form.priorityGoa, 'Priorité*', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                    {{ form_widget(form.priorityGoa, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                                    {{ form_errors(form.priorityGoa) }}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    {{ form_label(form.statusGoa, 'Statut*', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                    {{ form_widget(form.statusGoa, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                                    {{ form_errors(form.statusGoa) }}
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="goals-section">
+                            <h3 class="goals-section-title"><i class="fas fa-chart-line"></i> Suivi</h3>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_label(form.progressGoa, 'Progression (%)', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                    {{ form_widget(form.progressGoa, {'attr': {'class': 'form-control', 'min': '0', 'max': '100', 'type': 'number'}}) }}
+                                    <div class="form-text">Progression actuelle de 0 à 100%</div>
+                                    {{ form_errors(form.progressGoa) }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form_label(form.colorGoa, 'Couleur', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                    <div class="d-flex align-items-center gap-3">
+                                        {{ form_widget(form.colorGoa, {'attr': {'class': 'form-control form-control-color w-auto', 'type': 'color', 'title': 'Choisissez une couleur'}}) }}
+                                        <div class="form-text">Couleur d'identification</div>
+                                    </div>
+                                    {{ form_errors(form.colorGoa) }}
+                                </div>
+                            </div>
+
+                            <div class="mb-0">
+                                {{ form_label(form.notesGoa, 'Notes', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                {{ form_widget(form.notesGoa, {'attr': {'class': 'form-control', 'rows': 2, 'placeholder': 'Notes additionnelles...'}}) }}
+                                <div class="form-text">Informations complémentaires optionnelles</div>
+                                {{ form_errors(form.notesGoa) }}
+                            </div>
+                        </section>
+
+                        <div class="d-flex gap-2 justify-content-end mt-4 pt-3 border-top goals-form-actions">
+                            <a href="{{ path('app_goal_index') }}" class="btn btn-outline-secondary goals-btn goals-btn-secondary">
+                                <i class="fas fa-times me-1"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn btn-primary goals-btn goals-btn-primary">
+                                <i class="fas fa-check me-1"></i> Créer l'objectif
+                            </button>
+                        </div>
+                    </div>
+
+                    <aside class="goals-form-aside" aria-label="Aide">
+                        <div class="goals-aside-card">
+                            <h3><i class="fas fa-lightbulb"></i> Conseils rapides</h3>
+                            <ul>
+                                <li>Utilisez un titre court et précis.</li>
+                                <li>Définissez une date de fin réaliste.</li>
+                                <li>Commencez à 10-20% si l’objectif vient d’être créé.</li>
+                                <li>Ajoutez une note avec les prochaines actions.</li>
+                            </ul>
+                        </div>
+                    </aside>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,350 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Task Nexus - NEXA{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="{{ asset('css/task-suite.css?v=20260216c') }}">
+  <style>
+    /* Task Nexus - Creative Workspace */
+    .nexus-shell {
+        position: relative;
+        height: calc(100vh - 120px);
+        margin-top: 20px;
+        background: #02040a;
+        border-radius: 32px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.1);
+        display: grid;
+        grid-template-columns: 1fr 340px;
+    }
+
+    /* Cosmic Background */
+    .nexus-canvas-area {
+        position: relative;
+        background: radial-gradient(circle at center, #0a0f1d 0%, #02040a 100%);
+        overflow: hidden;
+        cursor: grab;
+    }
+
+    .nexus-canvas-area:active { cursor: grabbing; }
+
+    .star-bg {
+        position: absolute;
+        inset: 0;
+        background-image: 
+            radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
+            radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
+            radial-gradient(2px 2px at 90px 40px, rgba(255,255,255,0.5), rgba(0,0,0,0));
+        background-size: 200px 200px;
+        opacity: 0.3;
+        pointer-events: none;
+    }
+
+    /* Task Node - The Orb */
+    .task-node {
+        position: absolute;
+        min-width: 180px;
+        padding: 18px;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(14px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 24px;
+        color: #fff;
+        z-index: 10;
+        cursor: grab;
+        transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), box-shadow 0.4s ease, border-color 0.4s;
+        user-select: none;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .task-node:hover {
+        transform: scale(1.08) translateY(-8px);
+        border-color: #3b82f6;
+        box-shadow: 0 20px 40px rgba(59, 130, 246, 0.25);
+    }
+
+    .task-node.active {
+        background: rgba(59, 130, 246, 0.1);
+        border-color: #3b82f6;
+        box-shadow: 0 0 50px rgba(59, 130, 246, 0.4);
+        z-index: 100;
+    }
+
+    /* Aura / Vitals */
+    .orb-aura {
+        position: absolute;
+        inset: -4px;
+        border-radius: 28px;
+        border: 2px solid transparent;
+        pointer-events: none;
+    }
+
+    .task-node.active .orb-aura {
+        border-color: rgba(59, 130, 246, 0.5);
+        animation: orbPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes orbPulse {
+        0%, 100% { transform: scale(1); opacity: 0.5; }
+        50% { transform: scale(1.1); opacity: 0.2; }
+    }
+
+    .task-node header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+    }
+
+    .task-node .priority-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        box-shadow: 0 0 10px currentColor;
+    }
+
+    .task-node h4 {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 800;
+        line-height: 1.3;
+        letter-spacing: -0.01em;
+    }
+
+    .task-node .maturity-bar {
+        height: 4px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 2px;
+        margin-top: 8px;
+        overflow: hidden;
+    }
+
+    .task-node .maturity-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #3b82f6, #60a5fa);
+        width: 0%;
+        transition: width 1s ease;
+    }
+
+    /* Sidebar Refinements */
+    .nexus-info-panel {
+        background: rgba(8, 10, 15, 0.98);
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 32px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        backdrop-filter: blur(50px);
+        overflow-y: auto;
+    }
+
+    .execution-mini-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        max-height: 300px;
+        overflow-y: auto;
+        display: grid;
+        gap: 10px;
+    }
+
+    .exe-item {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.06);
+        padding: 12px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        transition: 0.2s;
+    }
+
+    .exe-item:hover {
+        background: rgba(255,255,255,0.08);
+    }
+
+    .exe-head {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 700;
+        margin-bottom: 4px;
+        color: #fff;
+    }
+
+    .exe-status {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: rgba(59, 130, 246, 0.2);
+        color: #60a5fa;
+    }
+
+    .exe-add-box {
+        background: rgba(59, 130, 246, 0.05);
+        border: 1px dashed rgba(59, 130, 246, 0.3);
+        border-radius: 16px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .exe-input {
+        background: rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 8px;
+        padding: 8px 12px;
+        color: #fff;
+        font-size: 0.85rem;
+    }
+
+    .exe-input:focus {
+        border-color: #3b82f6;
+        outline: none;
+    }
+
+    .nexus-info-panel h2 {
+        font-size: 1.4rem;
+        font-weight: 900;
+        color: #fff;
+        margin: 0;
+    }
+
+    .relation-card {
+        padding: 20px;
+        background: rgba(255,255,255,0.03);
+        border-radius: 20px;
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .relation-card label {
+        display: block;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: rgba(255,255,255,0.3);
+        margin-bottom: 12px;
+    }
+
+    .nexus-btn {
+        width: 100%;
+        padding: 14px;
+        border-radius: 14px;
+        border: none;
+        background: #fff;
+        color: #000;
+        font-weight: 800;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .nexus-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+    }
+
+    .nexus-btn.secondary {
+        background: rgba(255,255,255,0.05);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Floating Controls */
+    .nexus-controls {
+        position: absolute;
+        bottom: 30px;
+        left: 30px;
+        display: flex;
+        gap: 12px;
+    }
+
+    .nexus-ctrl-item {
+        width: 50px;
+        height: 50px;
+        border-radius: 16px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        backdrop-filter: blur(10px);
+    }
+
+    .nexus-ctrl-item:hover {
+        background: #fff;
+        color: #000;
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+<div class="suite-page" data-suite-page="workflows">
+    {% include 'task_suite/_nav.html.twig' %}
+
+    <div class="nexus-shell">
+        
+        <!-- Interactive Canvas -->
+        <main class="nexus-canvas-area" id="nexusCanvas">
+            <div class="star-bg"></div>
+            <svg class="nexus-svg-layer" id="nexusSvg"></svg>
+
+            {% for task in tasks %}
+            <div class="task-node" 
+                 id="task-{{ task.id }}"
+                 data-id="{{ task.id }}"
+                 data-title="{{ task.title }}"
+                 style="top: {{ 100 + (loop.index0 * 60) % 400 }}px; left: {{ 100 + (loop.index0 * 180) % 600 }}px;">
+                <div class="orb-aura"></div>
+                <header>
+                    <div class="priority-dot" style="color: {{ task.priority == 'high' ? '#ef4444' : (task.priority == 'med' ? '#f59e0b' : '#10b981') }}; background: currentColor;"></div>
+                    <span style="font-size:0.6rem; opacity:0.3;">T-{{ task.id }}</span>
+                </header>
+                <h4>{{ task.title }}</h4>
+                <div class="maturity-bar"><div class="maturity-fill" id="maturity-{{ task.id }}"></div></div>
+            </div>
+            {% endfor %}
+
+            <div class="nexus-controls">
+                <div class="nexus-ctrl-item" id="nexusReset" title="Reset View"><i class="fa-solid fa-compress"></i></div>
+                <div class="nexus-ctrl-item" id="nexusRandomize" title="Shuffle Map"><i class="fa-solid fa-shuffle"></i></div>
+                <button class="nexus-btn" style="width: auto; padding: 0 24px; margin-left:12px;">
+                    <i class="fa-solid fa-plus"></i> New Nexus Orb
+                </button>
+            </div>
+        </main>
+
+        <!-- Information Sidebar -->
+        <aside class="nexus-info-panel">
+            <h2>Orb Vitals</h2>
+            <div id="activeTaskDetails" style="display: contents;">
+                <div class="relation-card">
+                    <label>Active Relation</label>
+                    <div style="text-align:center; padding: 40px 0;">
+                        <i class="fa-solid fa-atom fa-spin" style="font-size: 3rem; opacity: 0.05; color: #fff;"></i>
+                        <p style="color:rgba(255,255,255,0.2); margin-top: 20px; font-size: 0.8rem;">Select an orb to monitor its maturity</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relation-card" style="margin-top:auto;">
+                <label>Nexus Maturity</label>
+                <div style="display:flex; justify-content:space-between; align-items:center; color: #fff;">
+                    <span style="color:rgba(255,255,255,0.4); font-size:0.8rem;">Connected Nodes</span>
+                    <strong id="nodeCount">{{ tasks|length }}</strong>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="{{ asset('js/task-suite.js?v=20260216c') }}"></script>
+{% endblock %}

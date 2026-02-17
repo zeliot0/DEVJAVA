@@ -38,12 +38,14 @@ class Produit
     #[ORM\Column(length: 255)]
     private ?string $emplacement = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photo_p = null;
+
     /**
      * @var Collection<int, Mouvement>
      */
     #[ORM\OneToMany(targetEntity: Mouvement::class, mappedBy: 'produit')]
     private Collection $mouvements;
-
     public function __construct()
     {
         $this->mouvements = new ArrayCollection();
@@ -139,6 +141,18 @@ class Produit
         return $this;
     }
 
+    public function getPhotoP(): ?string
+    {
+        return $this->photo_p;
+    }
+
+    public function setPhotoP(?string $photo_p): static
+    {
+        $this->photo_p = $photo_p;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Mouvement>
      */
@@ -168,4 +182,9 @@ class Produit
 
         return $this;
     }
+public function __toString(): string
+{
+    return $this->nom_p;
+}
+
 }

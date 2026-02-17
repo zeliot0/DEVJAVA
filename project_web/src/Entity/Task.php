@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TaskRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -56,6 +58,12 @@ class Task
     #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id_cat', nullable: true, onDelete: 'SET NULL')]
     private ?Category $category = null;
 
+    /**
+     * @var Collection<int, Execution>
+     */
+    #[ORM\OneToMany(mappedBy: 'task', targetEntity: Execution::class, orphanRemoval: true)]
+    private Collection $executions;
+
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $createAt;
 
@@ -65,6 +73,7 @@ class Task
     public function __construct()
     {
         $now = new \DateTimeImmutable();
+        $this->executions = new ArrayCollection();
         $this->createAt = $now;
         $this->updateAt = $now;
     }
@@ -102,6 +111,35 @@ class Task
 
     public function getCategory(): ?Category { return $this->category; }
     public function setCategory(?Category $category): self { $this->category = $category; return $this; }
+
+    /**
+     * @return Collection<int, Execution>
+     */
+    public function getExecutions(): Collection
+    {
+        return $this->executions;
+    }
+
+    public function addExecution(Execution $execution): self
+    {
+        if (!$this->executions->contains($execution)) {
+            $this->executions->add($execution);
+            $execution->setTask($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExecution(Execution $execution): self
+    {
+        if ($this->executions->removeElement($execution)) {
+            if ($execution->getTask() === $this) {
+                $execution->setTask(null);
+            }
+        }
+
+        return $this;
+    }
 
     public function getCreateAt(): \DateTimeImmutable { return $this->createAt; }
     public function setCreateAt(\DateTimeImmutable $d): self { $this->createAt = $d; return $this; }

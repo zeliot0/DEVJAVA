@@ -1,0 +1,13 @@
+{% set route = app.request.attributes.get('_route') %}
+<header class="suite-header">
+  <div class="suite-header-left">
+    <a href="{{ path('app_task_index') }}" class="suite-back"><i class="fa-solid fa-arrow-left"></i> Tasks</a>
+    <h1>Task Productivity Suite</h1>
+  </div>
+  <nav class="suite-nav">
+    <a href="{{ path('app_task_suite_hub') }}" class="{{ route == 'app_task_suite_hub' ? 'active' : '' }}">Hub</a>
+    <a href="{{ path('app_task_suite_focus') }}" class="{{ route == 'app_task_suite_focus' ? 'active' : '' }}">Focus</a>
+    <a href="{{ path('app_task_suite_workflows') }}" class="{{ route == 'app_task_suite_workflows' ? 'active' : '' }}">Workflows</a>
+    <a href="{{ path('app_task_suite_music_lounge') }}" class="{{ route == 'app_task_suite_music_lounge' ? 'active' : '' }}">Music Lounge</a>
+  </nav>
+</header>

@@ -1,0 +1,381 @@
+{% extends 'theme/base.html.twig' %}
+
+{% block title %}Conscience - NEXA{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/conscience-modern-pro.css?v=20260215i') }}">
+{% endblock %}
+
+{% block body %}
+<div class="conscience-modern-page">
+    <div class="page-header">
+        <div>
+            <h1>Conscience</h1>
+            <p>Mode intelligent active: priorites, progression et focus automatique.</p>
+        </div>
+
+        <div class="page-actions">
+            <a href="{{ path('app_creative_lab') }}" class="btn">
+                <i class="fa-solid fa-gamepad"></i> Creative Lab
+            </a>
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_theme_new') }}" class="btn primary">
+                    <i class="fa-solid fa-plus"></i> Nouveau theme
+                </a>
+                <a href="{{ path('app_theme_index') }}" class="btn">
+                    <i class="fa-solid fa-sliders"></i> Gestion themes
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <form method="get" action="{{ path('app_conscience_index') }}" class="search-bar conscience-toolbar">
+        <div class="conscience-search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" name="q" value="{{ search }}" placeholder="Rechercher un theme..." autocomplete="off">
+            <button type="button" class="conscience-voice-btn" id="conscienceVoiceBtn" title="Recherche vocale">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
+        </div>
+
+        <div class="conscience-filter-box">
+            <label>Trier par :</label>
+            <select name="sort">
+                <option value="smart" {{ (sort|default('smart')) == 'smart' ? 'selected' : '' }}>Smart (recommande)</option>
+                <option value="newest" {{ (sort|default('smart')) == 'newest' ? 'selected' : '' }}>Plus recents</option>
+                <option value="priority_desc" {{ (sort|default('smart')) == 'priority_desc' ? 'selected' : '' }}>Priorite haute</option>
+                <option value="priority_asc" {{ (sort|default('smart')) == 'priority_asc' ? 'selected' : '' }}>Priorite basse</option>
+                <option value="questions_desc" {{ (sort|default('smart')) == 'questions_desc' ? 'selected' : '' }}>Plus de questions</option>
+            </select>
+        </div>
+    </form>
+
+    <section class="kpi-grid kpi-overview-grid">
+        <div class="kpi-card kpi-stat-card">
+            <span>Themes actifs</span>
+            <strong>{{ themes|length }}</strong>
+        </div>
+
+        <div class="kpi-card kpi-stat-card">
+            <span>Questions a traiter</span>
+            <strong>{{ totalActiveQuestions|default(0) }}</strong>
+        </div>
+
+        <div class="kpi-card kpi-stat-card">
+            <span>En attente</span>
+            <strong>{{ totalPending|default(0) }}</strong>
+        </div>
+
+        <div class="kpi-card kpi-stat-card">
+            <span>Progression globale</span>
+            <strong>{{ globalProgress|default(0) }}%</strong>
+        </div>
+    </section>
+
+    {% if focusThemes is defined and focusThemes is not empty %}
+        <section class="kpi-grid kpi-focus-grid" style="margin-top: 10px;">
+            {% for theme in focusThemes %}
+                {% set s = themeStats[theme.idT]|default({}) %}
+                <article class="kpi-card kpi-focus-card">
+                    <span>Focus #{{ loop.index }}: {{ theme.nom }}</span>
+                    <strong>{{ s.progress|default(0) }}%</strong>
+                    <small>{{ s.pending|default(0) }} en attente</small>
+                </article>
+            {% endfor %}
+        </section>
+    {% endif %}
+
+    <section class="kpi-grid" style="margin-top: 10px;">
+        <article class="kpi-card" style="grid-column: 1/-1;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap: wrap;">
+                <div>
+                    <span style="font-weight: 800; display:block; margin-bottom:4px;">Interaction User/Admin</span>
+                    <small style="opacity:.8;">Donnez votre avis: etes-vous satisfait de vos themes? Quel theme vous aimez le plus?</small>
+                </div>
+            </div>
+
+            <form method="post" action="{{ path('app_conscience_feedback_submit') }}" style="margin-top:12px; display:grid; gap:10px;">
+                <input type="hidden" name="_token" value="{{ csrf_token('conscience_feedback') }}">
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div>
+                        <label for="satisfaction" style="font-weight:700; display:block; margin-bottom:4px;">Satisfaction globale (1-5)</label>
+                        <select id="satisfaction" name="satisfaction" required style="width:100%; padding:10px; border-radius:10px; border:1px solid #dbe2ef;">
+                            <option value="">Choisir...</option>
+                            <option value="5">5 - Tres satisfait</option>
+                            <option value="4">4 - Satisfait</option>
+                            <option value="3">3 - Moyen</option>
+                            <option value="2">2 - Peu satisfait</option>
+                            <option value="1">1 - Pas satisfait</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="favorite_theme_id" style="font-weight:700; display:block; margin-bottom:4px;">Theme prefere</label>
+                        <select id="favorite_theme_id" name="favorite_theme_id" style="width:100%; padding:10px; border-radius:10px; border:1px solid #dbe2ef;">
+                            <option value="">Selectionner un theme</option>
+                            {% for theme in themes %}
+                                <option value="{{ theme.idT }}">{{ theme.nom }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="feedback_comment" style="font-weight:700; display:block; margin-bottom:4px;">Commentaire (optionnel)</label>
+                    <textarea id="feedback_comment"
+                              name="comment"
+                              rows="3"
+                              placeholder="Ex: J'aime ce theme car..."
+                              style="width:100%; padding:10px; border-radius:10px; border:1px solid #dbe2ef;"></textarea>
+                </div>
+
+                <div>
+                    <button type="submit" class="btn primary">
+                        <i class="fa-solid fa-paper-plane"></i> Envoyer mon feedback
+                    </button>
+                </div>
+            </form>
+        </article>
+    </section>
+
+    <section class="kpi-grid" style="margin-top: 10px;">
+        <article class="kpi-card" style="grid-column: 1/-1;">
+            <span style="font-weight: 800; display:block; margin-bottom:6px;">Partie Themes: proposer un nouveau theme</span>
+            <small style="opacity:.8;">Partagez une idee creative: votre theme est cree et utilisable en temps reel.</small>
+
+            <form method="post" action="{{ path('app_conscience_theme_suggestion_submit') }}" style="margin-top:12px; display:grid; gap:10px;">
+                <input type="hidden" name="_token" value="{{ csrf_token('conscience_theme_suggestion') }}">
+
+                <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                    <button type="button" class="btn ghost quick-theme-chip" data-theme-name="Relations & communication">Relations & communication</button>
+                    <button type="button" class="btn ghost quick-theme-chip" data-theme-name="Finance perso smart">Finance perso smart</button>
+                    <button type="button" class="btn ghost quick-theme-chip" data-theme-name="Focus et deep work">Focus et deep work</button>
+                    <button type="button" class="btn ghost quick-theme-chip" data-theme-name="Confiance en soi">Confiance en soi</button>
+                    <button type="button" class="btn ghost quick-theme-chip" data-theme-name="Energie & sommeil">Energie & sommeil</button>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <input id="suggested_theme_name"
+                           name="suggested_theme_name"
+                           type="text"
+                           required
+                           placeholder="Ex: Creativite quotidienne"
+                           style="width:100%; padding:10px; border-radius:10px; border:1px solid #dbe2ef;">
+
+                    <select id="suggested_theme_vibe"
+                            name="suggested_theme_vibe"
+                            style="width:100%; padding:10px; border-radius:10px; border:1px solid #dbe2ef;">
+                        <option value="">Ambiance du theme</option>
+                        <option value="motivation">Motivation</option>
+                        <option value="calme">Calme</option>
+                        <option value="performance">Performance</option>
+                        <option value="bien_etre">Bien-etre</option>
+                        <option value="creativite">Creativite</option>
+                    </select>
+                </div>
+
+                <textarea id="suggested_theme_goal"
+                          name="suggested_theme_goal"
+                          rows="2"
+                          placeholder="Pourquoi ce theme serait utile pour vous?"
+                          style="width:100%; padding:10px; border-radius:10px; border:1px solid #dbe2ef;"></textarea>
+
+                <div>
+                    <button type="submit" class="btn primary">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Creer et utiliser ce theme maintenant
+                    </button>
+                </div>
+            </form>
+        </article>
+    </section>
+
+    <section class="kpi-grid" style="margin-top: 10px;">
+        <article class="kpi-card conscience-chatbot-card" style="grid-column: 1/-1;">
+            <div class="conscience-chatbot-head">
+                <div>
+                    <span class="conscience-chatbot-title">Assistant Conscience</span>
+                    <small>Discutez avec le chatbot pour prioriser vos themes et obtenir des actions concretes.</small>
+                </div>
+            </div>
+
+            <div id="conscienceChatMessages" class="conscience-chat-messages"></div>
+
+            <div id="conscienceChatSuggestions" class="conscience-chat-suggestions">
+                <button type="button" class="btn ghost conscience-chat-chip">Quel theme dois-je traiter en premier ?</button>
+                <button type="button" class="btn ghost conscience-chat-chip">Donne-moi une action rapide aujourd hui</button>
+                <button type="button" class="btn ghost conscience-chat-chip">Comment ameliorer ma progression ?</button>
+            </div>
+
+            <form id="conscienceChatForm" class="conscience-chat-form">
+                <input type="text" id="conscienceChatInput" placeholder="Ecrivez votre question..." autocomplete="off">
+                <button type="submit" class="btn primary">
+                    <i class="fa-solid fa-paper-plane"></i> Envoyer
+                </button>
+            </form>
+        </article>
+    </section>
+
+    <section class="themes-grid" id="themes-container">
+        {% include 'conscience/_themes_list.html.twig' with { themes: themes, themeStats: themeStats|default({}) } %}
+    </section>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.querySelector('.conscience-search-box input[name="q"]');
+    const sortSelect = document.querySelector('.conscience-filter-box select[name="sort"]');
+    const voiceBtn = document.getElementById('conscienceVoiceBtn');
+    const container = document.getElementById('themes-container');
+
+    let timeout = null;
+    const buildUrl = () => {
+        const q = encodeURIComponent(input ? input.value : '');
+        const s = encodeURIComponent(sortSelect ? sortSelect.value : 'smart');
+        return `{{ path('app_conscience_index') }}?q=${q}&sort=${s}`;
+    };
+
+    const refreshThemes = () => {
+        fetch(buildUrl(), {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.text())
+        .then(html => {
+            container.innerHTML = html;
+        });
+    };
+
+    if (input && container) {
+        input.addEventListener('input', () => {
+            clearTimeout(timeout);
+
+            timeout = setTimeout(() => {
+                refreshThemes();
+            }, 250);
+        });
+    }
+
+    if (sortSelect && container) {
+        sortSelect.addEventListener('change', refreshThemes);
+    }
+
+    if (voiceBtn && input && container) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            voiceBtn.style.display = 'none';
+        } else {
+            const recognition = new SpeechRecognition();
+            recognition.lang = document.documentElement.lang === 'en' ? 'en-US' : 'fr-FR';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            voiceBtn.addEventListener('click', () => {
+                recognition.start();
+            });
+
+            recognition.addEventListener('result', (event) => {
+                const transcript = event.results?.[0]?.[0]?.transcript || '';
+                if (!transcript) return;
+                input.value = transcript;
+                refreshThemes();
+            });
+        }
+    }
+
+    const quickThemeBtns = document.querySelectorAll('.quick-theme-chip');
+    const suggestedThemeInput = document.getElementById('suggested_theme_name');
+    if (quickThemeBtns.length > 0 && suggestedThemeInput) {
+        quickThemeBtns.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const value = btn.getAttribute('data-theme-name') || '';
+                if (!value) return;
+                suggestedThemeInput.value = value;
+                suggestedThemeInput.focus();
+            });
+        });
+    }
+
+    const chatForm = document.getElementById('conscienceChatForm');
+    const chatInput = document.getElementById('conscienceChatInput');
+    const chatMessages = document.getElementById('conscienceChatMessages');
+    const chatSuggestions = document.getElementById('conscienceChatSuggestions');
+    const chatbotUrl = '{{ path('app_conscience_chatbot') }}';
+
+    const appendChatMessage = (role, text) => {
+        if (!chatMessages) return;
+        const message = document.createElement('div');
+        message.className = `conscience-chat-message ${role}`;
+        message.textContent = text;
+        chatMessages.appendChild(message);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    };
+
+    const renderSuggestions = (items) => {
+        if (!chatSuggestions) return;
+        if (!Array.isArray(items) || items.length === 0) return;
+
+        chatSuggestions.innerHTML = '';
+        items.slice(0, 3).forEach((item) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'btn ghost conscience-chat-chip';
+            btn.textContent = item;
+            btn.addEventListener('click', () => {
+                if (!chatInput) return;
+                chatInput.value = item;
+                chatForm?.requestSubmit();
+            });
+            chatSuggestions.appendChild(btn);
+        });
+    };
+
+    const askChatbot = async (message) => {
+        appendChatMessage('user', message);
+
+        try {
+            const response = await fetch(chatbotUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ message })
+            });
+
+            if (!response.ok) {
+                throw new Error('chatbot_error');
+            }
+
+            const data = await response.json();
+            appendChatMessage('bot', data.reply || 'Je n ai pas compris. Reessayez.');
+            renderSuggestions(data.suggestions || []);
+        } catch (e) {
+            appendChatMessage('bot', 'Erreur reseau. Reessayez dans quelques secondes.');
+        }
+    };
+
+    if (chatForm && chatInput && chatMessages) {
+        appendChatMessage('bot', 'Bonjour. Je suis votre assistant Conscience. Posez-moi une question.');
+
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const message = (chatInput.value || '').trim();
+            if (!message) return;
+            chatInput.value = '';
+            askChatbot(message);
+        });
+    }
+
+    if (chatSuggestions && chatInput) {
+        chatSuggestions.querySelectorAll('.conscience-chat-chip').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                chatInput.value = btn.textContent || '';
+                chatForm?.requestSubmit();
+            });
+        });
+    }
+
+});
+</script>
+{% endblock %}

@@ -1,0 +1,80 @@
+motivation_messages:
+  motivated:
+    - arabic: "وَأَن لَّيْسَ لِلْإِنسَانِ إِلَّا مَا سَعَى"
+      french: "L'homme n'obtient que le fruit de ses efforts."
+      english: "A person gets only what they strive for."
+      source: "Sourate An-Najm (53:39)"
+    - arabic: "فَإِذَا عَزَمْتَ فَتَوَكَّلْ عَلَى اللَّهِ"
+      french: "Quand tu as pris une décision, place ta confiance en Allah."
+      english: "Once you decide, put your trust in Allah."
+      source: "Sourate Aal-Imran (3:159)"
+
+  happy:
+    - arabic: "قُلْ بِفَضْلِ اللَّهِ وَبِرَحْمَتِهِ فَبِذَٰلِكَ فَلْيَفْرَحُوا"
+      french: "Qu'ils se réjouissent de la grâce et de la miséricorde d'Allah."
+      english: "Let them rejoice in Allah's bounty and mercy."
+      source: "Sourate Yunus (10:58)"
+    - arabic: "وَأَمَّا بِنِعْمَةِ رَبِّكَ فَحَدِّثْ"
+      french: "Proclame les bienfaits de ton Seigneur."
+      english: "Speak of the blessings of your Lord."
+      source: "Sourate Ad-Duha (93:11)"
+
+  sad:
+    - arabic: "لَا تَحْزَنْ إِنَّ اللَّهَ مَعَنَا"
+      french: "Ne t'attriste pas, Allah est avec nous."
+      english: "Do not grieve; Allah is with us."
+      source: "Sourate At-Tawbah (9:40)"
+    - arabic: "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا"
+      french: "Avec la difficulté vient certes la facilité."
+      english: "Indeed, with hardship comes ease."
+      source: "Sourate Ash-Sharh (94:6)"
+
+  stressed:
+    - arabic: "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ"
+      french: "C'est par le rappel d'Allah que les coeurs se tranquillisent."
+      english: "Hearts find peace in the remembrance of Allah."
+      source: "Sourate Ar-Ra'd (13:28)"
+    - arabic: "وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ"
+      french: "Quiconque place sa confiance en Allah, Il lui suffit."
+      english: "Whoever relies on Allah, He is sufficient for them."
+      source: "Sourate At-Talaq (65:3)"
+
+  tired:
+    - arabic: "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا"
+      french: "Allah n'impose à aucune âme une charge supérieure à sa capacité."
+      english: "Allah does not burden a soul beyond what it can bear."
+      source: "Sourate Al-Baqarah (2:286)"
+    - arabic: "إِنَّ رَبَّكَ يَعْلَمُ أَنَّكَ تَقُومُ أَدْنَىٰ مِن ثُلُثَيِ اللَّيْلِ"
+      french: "Ton Seigneur sait les efforts que tu fournis."
+      english: "Your Lord knows the effort you put in."
+      source: "Sourate Al-Muzzammil (73:20)"
+
+  determined:
+    - arabic: "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ"
+      french: "Allah est avec les endurants."
+      english: "Allah is with the patient and steadfast."
+      source: "Sourate Al-Baqarah (2:153)"
+    - arabic: "وَلَا تَهِنُوا وَلَا تَحْزَنُوا"
+      french: "Ne faiblissez pas et ne vous attristez pas."
+      english: "Do not lose heart and do not grieve."
+      source: "Sourate Aal-Imran (3:139)"
+
+  optimistic:
+    - arabic: "إِنَّ مَعَ الْعُسْرِ يُسْرًا"
+      french: "Avec la difficulté vient la facilité."
+      english: "With hardship comes ease."
+      source: "Sourate Ash-Sharh (94:5)"
+    - arabic: "وَعَسَىٰ أَن تَكْرَهُوا شَيْئًا وَهُوَ خَيْرٌ لَّكُمْ"
+      french: "Il se peut que vous détestiez une chose alors qu'elle est un bien pour vous."
+      english: "You may dislike something while it is good for you."
+      source: "Sourate Al-Baqarah (2:216)"
+
+  unmotivated:
+    - arabic: "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا"
+      french: "Avec chaque difficulté, il y a une facilité."
+      english: "With every hardship, there is ease."
+      source: "Sourate Ash-Sharh (94:6)"
+    - arabic: "وَلَا تَيْأَسُوا مِن رَّوْحِ اللَّهِ"
+      french: "Ne désespérez pas de la miséricorde d'Allah."
+      english: "Do not despair of Allah's mercy."
+      source: "Sourate Yusuf (12:87)"

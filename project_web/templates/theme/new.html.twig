@@ -1,0 +1,160 @@
+﻿{% extends 'theme/base.html.twig' %}
+
+{% block title %}Nouveau thème — NEXA{% endblock %}
+
+{% block body %}
+<div class="theme-new-page">
+
+<div class="page-header">
+    <div>
+        <h1>Créer un nouveau thème</h1>
+        <p>Définissez les informations principales du thème</p>
+    </div>
+
+    <a href="{{ path('app_theme_index') }}" class="btn">
+        ← Retour à la liste
+    </a>
+</div>
+
+<div class="form-shell">
+    <div class="form-card">
+
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+        {% if form.vars.submitted and not form.vars.valid %}
+            <div class="form-errors-box">
+                <strong>⚠️ Veuillez corriger les erreurs suivantes :</strong>
+                <ul>
+                    {% for field in form %}
+                        {% for error in field.vars.errors %}
+                            <li>{{ error.message }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <div class="form-two-columns">
+            <div class="form-column-left">
+                <div class="form-section">
+                    <h3><i class="fa-solid fa-thumbtack"></i> Informations générales</h3>
+
+                    <div>
+                        <label class="field-label">Nom du thème</label>
+                        {{ form_widget(form.nom, { attr: { class: 'field', placeholder: 'Choisir un domaine' } }) }}
+                    </div>
+
+                    <div style="margin-top: 1.25rem;">
+                        <label class="field-label">Priorité</label>
+                        <div class="priority-control">
+                            {{ form_widget(form.priorite, { attr: { class: 'field priority-select js-priority-select' } }) }}
+                            <div class="priority-preview js-priority-preview" aria-hidden="true">
+                                <span class="priority-preview-title">Niveau visuel</span>
+                                <div class="priority-preview-stars">
+                                    <i class="fa-regular fa-star" data-level="1"></i>
+                                    <i class="fa-regular fa-star" data-level="2"></i>
+                                    <i class="fa-regular fa-star" data-level="3"></i>
+                                </div>
+                                <small class="priority-preview-text js-priority-text">Moyenne</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 1.25rem;">
+                        <label class="field-label">Description</label>
+                        {{ form_widget(form.description_q, {
+                            attr: { class: 'field', rows: 5, placeholder: 'Décrivez brièvement ce thème...' }
+                        }) }}
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><i class="fa-solid fa-bullseye"></i> Intention</h3>
+                    {{ form_widget(form.intention, {
+                        attr: { class: 'field', placeholder: 'Ex: Améliorer le bien-être quotidien' }
+                    }) }}
+                </div>
+            </div>
+
+            <div class="form-column-right">
+                <div class="form-section">
+                    <h3><i class="fa-solid fa-palette"></i> Apparence</h3>
+
+                    <div>
+                        <label class="field-label">Icône</label>
+                        <div class="icon-grid">
+                            {% for choice in form.icone %}
+                                <label class="icon-option">
+                                    {{ form_widget(choice) }}
+                                    <div class="icon-box">
+                                        <i class="{{ choice.vars.value }}"></i>
+                                    </div>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 1.5rem;">
+                        <label class="field-label">Couleur</label>
+                        <div class="color-picker-wrapper">
+                            {{ form_widget(form.couleur, { attr: { class: 'color-input' } }) }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><i class="fa-solid fa-gear"></i> Statut</h3>
+                    <label class="switch-label">
+                        {{ form_widget(form.actif) }}
+                        Activer ce thème
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn primary">
+                <i class="fa-solid fa-check"></i>
+                Créer le thème
+            </button>
+
+            <a href="{{ path('app_theme_index') }}" class="btn">
+                Annuler
+            </a>
+        </div>
+
+        {{ form_end(form) }}
+
+    </div>
+</div>
+
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const select = document.querySelector('.js-priority-select');
+        const preview = document.querySelector('.js-priority-preview');
+        if (!select || !preview) return;
+
+        const stars = preview.querySelectorAll('[data-level]');
+        const text = preview.querySelector('.js-priority-text');
+        const labels = { 1: 'Basse', 2: 'Moyenne', 3: 'Haute' };
+
+        function refresh() {
+          const level = parseInt(select.value || '2', 10);
+          stars.forEach((star) => {
+            const starLevel = parseInt(star.getAttribute('data-level'), 10);
+            star.classList.toggle('fa-solid', starLevel <= level);
+            star.classList.toggle('fa-regular', starLevel > level);
+          });
+          if (text) text.textContent = labels[level] || 'Moyenne';
+        }
+
+        select.addEventListener('change', refresh);
+        refresh();
+      });
+    </script>
+{% endblock %}

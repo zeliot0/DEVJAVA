@@ -1,0 +1,39 @@
+.page {
+  width: min(860px, 100%);
+  margin: 0 auto;
+}
+
+.radio-group {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: rgba(var(--surface-rgb), 0.45);
+  font-weight: 700;
+}
+
+.radio-option input {
+  accent-color: #7c3aed;
+}
+
+.form-group {
+  margin-bottom: 14px;
+}
+
+.text-answer {
+  min-height: 120px;
+}
+
+@media (max-width: 640px) {
+  .radio-group {
+    grid-template-columns: 1fr;
+  }
+}

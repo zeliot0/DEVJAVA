@@ -1,0 +1,175 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Music Lounge | Energetic Audio Hub{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="{{ asset('css/spotify-clone.css?v=20260216c') }}">
+  <style>
+    /* Energetic Mood Overlay */
+    .mood-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 50% -20%, var(--spotify-green), transparent 70%);
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 1;
+      animation: moodShift 15s infinite alternate;
+    }
+
+    @keyframes moodShift {
+      0% { filter: hue-rotate(0deg); opacity: 0.1; }
+      100% { filter: hue-rotate(90deg); opacity: 0.2; }
+    }
+
+    .mx-shell {
+       animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Modern Track Styling */
+    .music-track-item {
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      padding: 12px 16px !important;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .music-track-item:hover {
+      background: rgba(255,255,255,0.05) !important;
+      transform: translateX(10px);
+      border-left: 4px solid var(--spotify-green);
+    }
+
+    .music-track-item.active {
+      background: rgba(187, 134, 252, 0.1) !important;
+      color: var(--spotify-green) !important;
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+<div class="suite-page" data-suite-page="music">
+  <div class="mood-overlay"></div>
+  
+  <div class="mx-shell">
+    {# --- SIDEBAR --- #}
+    <aside class="mx-side">
+      <a href="{{ path('app_task_index') }}" class="mx-return-btn">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>Return to Tasks</span>
+      </a>
+
+      <div class="side-section" style="padding: 20px;">
+        <div class="mx-side-head" style="margin-bottom: 24px;">
+          <h3 style="font-size: 1.1rem; color: #fff;"><i class="fa-solid fa-rocket" style="color: var(--spotify-green);"></i> Explorateur</h3>
+        </div>
+        <nav style="display: flex; flex-direction: column; gap: 16px;">
+          <div class="mx-side-head"><h3><i class="fa-solid fa-house"></i> Home</h3></div>
+          <div class="mx-side-head"><h3><i class="fa-solid fa-bolt"></i> Trending</h3></div>
+          <div class="mx-side-head"><h3><i class="fa-solid fa-radio"></i> Radio</h3></div>
+        </nav>
+      </div>
+
+      <div class="side-section" style="flex: 1; display: flex; flex-direction: column; padding: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+        <div class="mx-side-head" style="justify-content: space-between;">
+          <h3 style="color: var(--spotify-muted); font-size: 0.8rem; text-transform: uppercase;">Your Library</h3>
+          <i class="fa-solid fa-plus"></i>
+        </div>
+        
+        <ul class="mx-lib-list" style="margin-top: 20px; list-style: none; padding: 0;">
+          <li style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+            <div style="width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(45deg, var(--spotify-green), #6200EE);"></div>
+            <div><strong>Liked Songs</strong><br><small>361 tracks</small></div>
+          </li>
+          <li style="display: flex; align-items: center; gap: 12px; opacity: 0.6;">
+            <div style="width: 48px; height: 48px; border-radius: 8px; background: #333;"></div>
+            <div><strong>Focus Mix</strong><br><small>Playlist</small></div>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    {# --- MAIN CONTENT --- #}
+    <main class="mx-center">
+      <header class="mx-top" style="background: transparent;">
+        <div class="mx-top-left">
+          <button class="mx-icon-btn"><i class="fa-solid fa-chevron-left"></i></button>
+          <button class="mx-icon-btn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        
+        <div class="mx-search-wrap" style="width: 400px;">
+          <i class="fa-solid fa-magnifying-glass" style="left: 16px;"></i>
+          <input id="musicApiTerm" type="text" placeholder="Search energetic hits..." style="background: rgba(255,255,255,0.05); padding: 12px 12px 12px 48px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); width: 100%; color: #fff;">
+        </div>
+
+        <div class="mx-top-right">
+          <button id="loadRealSongsBtn" class="mx-return-btn" style="margin: 0; padding: 8px 16px; font-size: 0.8rem;">REFRESH LIST</button>
+        </div>
+      </header>
+
+      <div class="mx-content-scroll">
+        <section class="mx-now-card">
+          <div class="mx-now-cover" style="background: url('https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=400&auto=format&fit=crop'); background-size: cover; background-position: center;"></div>
+          <div class="mx-now-data">
+            <div style="margin-bottom: 24px;">
+               <div class="smart-badge" style="background: rgba(187, 134, 252, 0.2); color: var(--spotify-green); border: 1px solid var(--accent-glow);">
+                  <i class="fa-solid fa-music"></i>
+                  <span>NEXA AUDIO HUB</span>
+               </div>
+            </div>
+
+            <h2 id="loungeNowTitle" style="font-size: 6.5rem;">Select Track</h2>
+            <p id="loungeNowArtist" style="font-size: 1.2rem; opacity: 0.6; font-weight: 300;">Synchronizing with your creative pulse...</p>
+            
+            <div style="margin-top: 40px; display: flex; align-items: center; gap: 24px;">
+              <button id="loungePlayPause" class="mx-icon-btn" style="background: var(--spotify-green); color: black; width: 72px; height: 72px; font-size: 2rem; box-shadow: 0 0 30px var(--accent-glow);"><i class="fa-solid fa-play"></i></button>
+              <button class="mx-icon-btn" style="width: 54px; height: 54px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);"><i class="fa-regular fa-heart" style="font-size: 1.2rem;"></i></button>
+              <button class="mx-icon-btn" style="width: 54px; height: 54px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);"><i class="fa-solid fa-ellipsis" style="font-size: 1.2rem;"></i></button>
+            </div>
+          </div>
+        </section>
+
+        <section class="mx-list-card" style="padding: 0 40px 100px;">
+            <div style="display: grid; grid-template-columns: 40px 4fr 3fr 1fr; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 16px; color: var(--spotify-muted); font-size: 0.75rem; text-transform: uppercase;">
+              <span>#</span>
+              <span>Title</span>
+              <span>Artist</span>
+              <span style="text-align: right;"><i class="fa-regular fa-clock"></i></span>
+            </div>
+            <ul class="music-track-list" id="musicTrackList" style="list-style: none; padding: 0;">
+               {# Tracks injected by JS #}
+               <li style="padding: 40px; text-align: center; color: var(--spotify-muted);">Loading your energy...</li>
+            </ul>
+        </section>
+      </div>
+    </main>
+
+    {# --- RIGHT PANEL --- #}
+    <aside class="mx-right" style="width: 320px; background: transparent; border: none; padding: 0;">
+       <div style="background: var(--glass-bg); backdrop-filter: var(--glass-blur); border: var(--glass-border); border-radius: 24px; padding: 24px; height: 100%;">
+          <h3 style="font-size: 1rem; margin-bottom: 20px;">Up Next</h3>
+          <div id="upNextList">
+             {# Track suggestions #}
+             <div style="display: flex; gap: 12px; align-items: center; opacity: 0.7;">
+                <div style="width: 40px; height: 40px; background: #222; border-radius: 4px;"></div>
+                <div style="font-size: 0.8rem;"><strong>Next Energy</strong><br>Artist Name</div>
+             </div>
+          </div>
+       </div>
+    </aside>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="{{ asset('js/task-suite.js?v=20260216m') }}"></script>
+{% endblock %}

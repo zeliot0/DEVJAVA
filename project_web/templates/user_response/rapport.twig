@@ -1,0 +1,322 @@
+{% extends 'theme/base.html.twig' %}
+
+{% block title %}Rapport - {{ theme.nom }}{% endblock %}
+
+{% block body %}
+<div class="wrap report-wrap">
+
+  <section class="page-header report-hero">
+    <div class="page-header-top">
+      <div class="page-title">
+        <h1><i class="fa-solid fa-chart-column"></i> Rapport - {{ theme.nom }}</h1>
+        <p>Synthese de vos reponses et recommandations.</p>
+      </div>
+
+      <div class="page-actions">
+        <a href="{{ path('app_theme_answer', { id: theme.idT }) }}" class="btn ghost">
+          Retour aux questions
+        </a>
+        <a href="{{ path('app_theme_rapport_pdf', { id: theme.idT }) }}" class="btn primary">
+          <i class="fa-solid fa-file-pdf"></i> Exporter en PDF
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {% if details is empty %}
+    <div class="report-empty">
+      <i class="fa-regular fa-folder-open"></i>
+      <h3>Aucune reponse enregistree</h3>
+      <p>Commencez par repondre aux questions pour generer le rapport.</p>
+    </div>
+  {% else %}
+    {% set total = insights.totalResponses|default(details|length) %}
+    {% set good = insights.good|default(0) %}
+    {% set warn = insights.warn|default(0) %}
+    {% set score = insights.score|default(0) %}
+
+    <section class="report-kpi-strip">
+      <article class="report-kpi">
+        <span>Total</span>
+        <strong>{{ total }}</strong>
+      </article>
+      <article class="report-kpi good">
+        <span>Bonnes habitudes</span>
+        <strong>{{ good }}</strong>
+      </article>
+      <article class="report-kpi warn">
+        <span>A ameliorer</span>
+        <strong>{{ warn }}</strong>
+      </article>
+      <article class="report-kpi score">
+        <span>Score global</span>
+        <strong>{{ score }}%</strong>
+      </article>
+    </section>
+
+    <section class="report-scorebar">
+      <div class="report-scorebar-track">
+        <div class="report-scorebar-fill" style="width: {{ score }}%"></div>
+      </div>
+      <small>Progression globale sur ce theme</small>
+    </section>
+
+    {% if insights is defined %}
+      <section class="report-kpi-strip" style="margin-top:16px;">
+        <article class="report-kpi score">
+          <span>Score qualite</span>
+          <strong>{{ insights.weightedScore|default(0) }}%</strong>
+        </article>
+        <article class="report-kpi warn">
+          <span>Indice de risque</span>
+          <strong>{{ insights.riskIndex|default(0) }}%</strong>
+        </article>
+        <article class="report-kpi">
+          <span>Tendance</span>
+          <strong>+{{ insights.trend.up|default(0) }} / -{{ insights.trend.down|default(0) }}</strong>
+        </article>
+        <article class="report-kpi">
+          <span>Niveau de maturite</span>
+          <strong>{{ insights.maturityLevel|default('A renforcer') }}</strong>
+        </article>
+      </section>
+
+      <section class="report-kpi-strip" style="margin-top:16px;">
+        <article class="report-kpi">
+          <span>Fraicheur data</span>
+          <strong>{{ insights.freshnessScore|default(0) }}%</strong>
+        </article>
+        <article class="report-kpi">
+          <span>Consistance</span>
+          <strong>{{ insights.consistencyScore|default(0) }}%</strong>
+        </article>
+        <article class="report-kpi">
+          <span>Confiance analytique</span>
+          <strong>{{ insights.confidenceScore|default(0) }}%</strong>
+        </article>
+      </section>
+
+      <section class="report-grid" style="margin-top: 14px;">
+        <article class="report-card is-neutral">
+          <div class="report-card-top">
+            <h3><i class="fa-solid fa-file-lines"></i> Synthese executive</h3>
+            <span class="report-badge neutral">Analyse pro</span>
+          </div>
+          <p class="report-advice info">{{ insights.summary|default('') }}</p>
+        </article>
+      </section>
+
+      <section class="report-kpi-strip" style="margin-top:16px;">
+        <article class="report-kpi">
+          <span>Couverture</span>
+          <strong>{{ insights.completionRate|default(0) }}%</strong>
+        </article>
+        <article class="report-kpi">
+          <span>Momentum</span>
+          <strong>{{ insights.momentum|default('Demarrage') }}</strong>
+        </article>
+        <article class="report-kpi warn">
+          <span>Restant</span>
+          <strong>{{ insights.pending|default(0) }}</strong>
+        </article>
+      </section>
+
+      {% if insights.recommendations is not empty %}
+        <section class="report-grid" style="margin-top: 14px;">
+          {% for reco in insights.recommendations %}
+            <article class="report-card is-warn">
+              <div class="report-card-top">
+                <h3><i class="fa-solid fa-wand-magic-sparkles"></i> {{ reco.title }}</h3>
+                <span class="report-badge warn">Priorite {{ reco.priority|default(1) }}</span>
+              </div>
+              <p class="report-advice warn">{{ reco.message }}</p>
+            </article>
+          {% endfor %}
+        </section>
+      {% endif %}
+
+      {% if insights.actionPlan is defined %}
+        <section class="report-grid" style="margin-top: 14px;">
+          <article class="report-card is-warn">
+            <div class="report-card-top">
+              <h3><i class="fa-solid fa-bolt"></i> Plan 24h</h3>
+              <span class="report-badge warn">Immediat</span>
+            </div>
+            {% for item in insights.actionPlan.immediate|default([]) %}
+              <p class="report-advice warn"><strong>{{ item.title }}:</strong> {{ item.action }}</p>
+            {% endfor %}
+          </article>
+
+          <article class="report-card is-neutral">
+            <div class="report-card-top">
+              <h3><i class="fa-solid fa-calendar-week"></i> Plan 7 jours</h3>
+              <span class="report-badge neutral">Hebdomadaire</span>
+            </div>
+            {% for item in insights.actionPlan.weekly|default([]) %}
+              <p class="report-advice info"><strong>{{ item.title }}:</strong> {{ item.action }}</p>
+            {% endfor %}
+          </article>
+
+          <article class="report-card is-good">
+            <div class="report-card-top">
+              <h3><i class="fa-solid fa-chess-king"></i> Plan 30 jours</h3>
+              <span class="report-badge good">Strategique</span>
+            </div>
+            {% for item in insights.actionPlan.strategic|default([]) %}
+              <p class="report-advice good"><strong>{{ item.title }}:</strong> {{ item.action }}</p>
+            {% endfor %}
+          </article>
+        </section>
+      {% endif %}
+
+      {% if insights.alerts is not empty %}
+        <section class="report-grid" style="margin-top: 14px;">
+          {% for alert in insights.alerts %}
+            <article class="report-card is-warn">
+              <div class="report-card-top">
+                <h3><i class="fa-solid fa-triangle-exclamation"></i> {{ alert.title }}</h3>
+                <span class="report-badge warn">P{{ alert.priority|default(1) }}</span>
+              </div>
+              <p class="report-advice warn">{{ alert.message }}</p>
+            </article>
+          {% endfor %}
+        </section>
+      {% endif %}
+
+      {% if insights.strengths is not empty %}
+        <section class="report-grid" style="margin-top: 14px;">
+          {% for strength in insights.strengths %}
+            <article class="report-card is-good">
+              <div class="report-card-top">
+                <h3><i class="fa-solid fa-medal"></i> {{ strength.title }}</h3>
+                <span class="report-badge good">Positif</span>
+              </div>
+              <p class="report-advice good">{{ strength.message }}</p>
+            </article>
+          {% endfor %}
+        </section>
+      {% endif %}
+    {% endif %}
+
+    <section class="report-grid">
+      {% for item in details %}
+        {% set badgeText = item.ok is same as(true) ? 'Bonne habitude' : (item.ok is same as(false) ? 'A ameliorer' : 'Information utile') %}
+        {% set adviceText = (item.advice ?? '')|trim %}
+        {% set adviceLower = adviceText|lower %}
+        {% set hideAdvice = false %}
+        {% if item.ok is same as(true) and ('bonne habitude' in adviceLower) %}
+          {% set hideAdvice = true %}
+        {% elseif item.ok is same as(false) and ('amelior' in adviceLower) %}
+          {% set hideAdvice = true %}
+        {% elseif item.ok is null and ('information' in adviceLower) %}
+          {% set hideAdvice = true %}
+        {% endif %}
+
+        <article class="report-card {{ item.ok is same as(true) ? 'is-good' : (item.ok is same as(false) ? 'is-warn' : 'is-neutral') }}">
+          <div class="report-card-top">
+            <h3>
+              <i class="fa-solid {{ item.type == 'boolean' ? 'fa-toggle-on' : (item.type == 'number' ? 'fa-hashtag' : 'fa-message') }}"></i>
+              {{ item.question }}
+            </h3>
+            <span class="report-badge {{ item.ok is same as(true) ? 'good' : (item.ok is same as(false) ? 'warn' : 'neutral') }}">
+              {{ badgeText }}
+            </span>
+          </div>
+
+          <div class="report-line">
+            <span class="report-label">Votre reponse</span>
+            <strong class="report-value">
+              {% if item.type == 'boolean' %}
+                {{ item.value == '1' ? 'Oui' : 'Non' }}
+              {% else %}
+                {{ item.value }}
+                {% if item.unite %} {{ item.unite }}{% endif %}
+              {% endif %}
+            </strong>
+          </div>
+
+          {% if item.type == 'number' and item.ideal is not null %}
+            <div class="report-line report-target">
+              <span class="report-label">Objectif</span>
+              <strong class="report-value">
+                {{ item.ideal }}{% if item.unite %} {{ item.unite }}{% endif %}
+              </strong>
+            </div>
+            {% if item.gap is not null %}
+              <div class="report-line">
+                <span class="report-label">Ecart vs objectif</span>
+                <strong class="report-value">
+                  {{ item.gap > 0 ? '+' : '' }}{{ item.gap|number_format(2, '.', ' ') }}{% if item.unite %} {{ item.unite }}{% endif %}
+                  {% if item.gapPercent is not null %}
+                    ({{ item.gapPercent > 0 ? '+' : '' }}{{ item.gapPercent|number_format(1, '.', ' ') }}%)
+                  {% endif %}
+                </strong>
+              </div>
+            {% endif %}
+          {% endif %}
+
+          {% if adviceText is not empty and not hideAdvice %}
+            <p class="report-advice {{ item.ok is same as(true) ? 'good' : (item.ok is same as(false) ? 'warn' : 'info') }}">
+              {{ adviceText }}
+            </p>
+          {% endif %}
+
+          <small class="report-date">
+            <i class="fa-regular fa-clock"></i>
+            Repondu le {{ item.date|date('d/m/Y a H:i') }}
+          </small>
+        </article>
+      {% endfor %}
+    </section>
+
+    {% set seedSuggestion = taskSuggestions|default([])|first %}
+    {% set seedItem = details|first %}
+    {% set seedTitle = seedSuggestion ? seedSuggestion.title : ('[' ~ theme.nom ~ '] Action suite au rapport') %}
+    {% set seedDescription = seedSuggestion
+      ? seedSuggestion.description
+      : (seedItem
+          ? ('Question: ' ~ seedItem.question ~ ' | Reponse: ' ~ (seedItem.value ?? 'N/A') ~ '.')
+          : 'Action generee depuis vos reponses du rapport.')
+    %}
+    {% set seedPriority = seedSuggestion ? seedSuggestion.priority : ((seedItem and seedItem.ok is same as(false)) ? 'high' : 'med') %}
+    {% set seedDueAt = seedSuggestion
+      ? seedSuggestion.dueAt
+      : (('now'|date_modify('+2 day'))|date('Y-m-d'))
+    %}
+
+    <section class="report-grid" style="margin-top: 14px;">
+      <article class="report-card is-neutral">
+        <div class="report-card-top">
+          <h3><i class="fa-solid fa-list-check"></i> Generer une tache depuis vos reponses</h3>
+          <span class="report-badge neutral">Action</span>
+        </div>
+        <p class="report-advice info">
+          Voulez-vous creer une tache basee sur ce rapport ? Si vous cliquez Oui, vous serez redirige vers la gestion des taches avec le formulaire d'ajout deja ouvert.
+        </p>
+        <div class="page-actions" style="margin-top:10px;">
+          <a class="btn primary"
+             href="{{ path('app_task_index', {
+               open_task_from_report: 1,
+               title: seedTitle,
+               description: seedDescription,
+               priority: seedPriority,
+               status: 'todo',
+               dueAt: seedDueAt
+             }) }}">
+            <i class="fa-solid fa-check"></i> Oui, generer une tache
+          </a>
+          <button type="button" class="btn ghost" onclick="this.closest('.report-card').remove()">
+            Non
+          </button>
+        </div>
+      </article>
+    </section>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+{% endblock %}
+

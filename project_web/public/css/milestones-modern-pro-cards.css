@@ -1,0 +1,153 @@
+/* Milestones page - strong final premium override */
+body.milestones-page-theme .milestones-page-modern .page-header,
+body.milestones-page-theme .milestones-page-modern .nexa-milestone-progress,
+body.milestones-page-theme .milestones-page-modern .milestones-modern-card,
+body.milestones-page-theme .milestones-page-modern .milestones-modern-empty {
+  border: 1px solid #e4e8f0 !important;
+  border-radius: 22px !important;
+  background: #ffffff !important;
+  box-shadow: 0 18px 34px rgba(15, 23, 42, 0.08) !important;
+}
+
+body.milestones-page-theme .milestones-page-modern .page-header {
+  padding: 24px 28px !important;
+}
+
+body.milestones-page-theme .milestones-page-modern .page-header h1 {
+  color: #0f172a !important;
+  font-size: clamp(2.1rem, 3.2vw, 3.1rem) !important;
+  letter-spacing: -0.03em !important;
+}
+
+body.milestones-page-theme .milestones-page-modern .page-header p {
+  color: #64748b !important;
+}
+
+body.milestones-page-theme .milestones-page-modern .milestones-add-btn {
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, #5b8dff, #2f6df0) !important;
+  border: 0 !important;
+  box-shadow: 0 14px 26px rgba(47, 109, 240, 0.24) !important;
+}
+
+body.milestones-page-theme .milestones-page-modern .nexa-milestone-progress-title {
+  color: #1f2a44 !important;
+  font-size: 2.15rem !important;
+}
+
+body.milestones-page-theme .milestones-page-modern .nexa-milestone-progress-count {
+  border: 1px solid #dbe4ef !important;
+  border-radius: 999px !important;
+  background: #f8fafc !important;
+  color: #334155 !important;
+}
+
+body.milestones-page-theme .milestones-page-modern .milestones-modern-card {
+  min-height: 286px !important;
+  padding: 20px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease !important;
+}
+
+body.milestones-page-theme .milestones-page-modern .milestones-modern-card::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 6px !important;
+  height: 100% !important;
+  background: linear-gradient(180deg, #5b8dff, #2f6df0) !important;
+}
+
+body.milestones-page-theme .milestones-page-modern .milestones-modern-card::after {
+  content: "" !important;
+  position: absolute !important;
+  right: -80px !important;
+  bottom: -90px !important;
+  width: 220px !important;
+  height: 220px !important;
+  border-radius: 999px !important;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.18), transparent 70%) !important;
+  pointer-events: none !important;
+}
+
+body.milestones-page-theme .milestones-page-modern .milestones-modern-card:hover {
+  transform: translateY(-4px) !important;
+  border-color: #d1d8e5 !important;
+  box-shadow: 0 24px 40px rgba(15, 23, 42, 0.12) !important;
+}
+
+body.milestones-page-theme .milestones-page-modern .nexa-milestone-title {
+  color: #0f172a !important;
+  font-size: clamp(2rem, 2.5vw, 2.6rem) !important;
+  line-height: 1 !important;
+}
+
+body.milestones-page-theme .milestones-page-modern .nexa-badge {
+  border-radius: 999px !important;
+  border: 1px solid #dbe4ef !important;
+  background: #f8fafc !important;
+  color: #334155 !important;
+}
+
+body.milestones-page-theme .milestones-page-modern .milestones-modern-description {
+  color: #475569 !important;
+  font-size: 1.02rem !important;
+  line-height: 1.5 !important;
+}
+
+body.milestones-page-theme .milestones-page-modern .milestones-modern-meta {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+body.milestones-page-theme .milestones-page-modern .nexa-meta-item {
+  border: 1px solid #dbe4ef !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+  min-height: 42px !important;
+}
+
+body.milestones-page-theme .milestones-page-modern .nexa-meta-item i {
+  color: #2f6df0 !important;
+}
+
+body.milestones-page-theme .milestones-page-modern .milestones-modern-actions {
+  border-top: 1px solid #e8edf4 !important;
+  padding-top: 12px !important;
+}
+
+body.milestones-page-theme .milestones-page-modern .nexa-btn-action {
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 12px !important;
+  border: 1px solid #dbe4ef !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+}
+
+body.milestones-page-theme .milestones-page-modern .nexa-btn-action:hover {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] body.milestones-page-theme .milestones-page-modern .page-header,
+html[data-theme="dark"] body.milestones-page-theme .milestones-page-modern .nexa-milestone-progress,
+html[data-theme="dark"] body.milestones-page-theme .milestones-page-modern .milestones-modern-card,
+html[data-theme="dark"] body.milestones-page-theme .milestones-page-modern .milestones-modern-empty {
+  background: #111827 !important;
+  border-color: rgba(148, 163, 184, 0.25) !important;
+  box-shadow: 0 20px 36px rgba(2, 6, 23, 0.42) !important;
+}
+
+html[data-theme="dark"] body.milestones-page-theme .milestones-page-modern .nexa-milestone-title,
+html[data-theme="dark"] body.milestones-page-theme .milestones-page-modern .nexa-milestone-progress-title {
+  color: #e5e7eb !important;
+}
+
+html[data-theme="dark"] body.milestones-page-theme .milestones-page-modern .milestones-modern-description,
+html[data-theme="dark"] body.milestones-page-theme .milestones-page-modern .page-header p {
+  color: #94a3b8 !important;
+}

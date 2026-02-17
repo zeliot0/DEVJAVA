@@ -1,0 +1,91 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block admin_page_title %}Feedback Conscience{% endblock %}
+{% block admin_page_hint %}Satisfaction utilisateur et themes preferes remontes depuis le module Conscience{% endblock %}
+
+{% block admin_content %}
+  <div class="kpi-row">
+    <div class="kpi-card" style="border-left: 5px solid var(--primary);">
+      <div class="kpi-label">Total avis</div>
+      <div class="kpi-value">{{ stats.total }}</div>
+      <div class="kpi-sub">Feedbacks collectes</div>
+    </div>
+    <div class="kpi-card" style="border-left: 5px solid var(--good);">
+      <div class="kpi-label">Satisfaction moyenne</div>
+      <div class="kpi-value">{{ stats.avg }}/5</div>
+      <div class="kpi-sub">Note globale</div>
+    </div>
+    <div class="kpi-card" style="border-left: 5px solid var(--warn);">
+      <div class="kpi-label">Avis positifs</div>
+      <div class="kpi-value">{{ stats.five + stats.four }}</div>
+      <div class="kpi-sub">Notes 4 et 5</div>
+    </div>
+    <div class="kpi-card" style="border-left: 5px solid var(--bad);">
+      <div class="kpi-label">Avis critiques</div>
+      <div class="kpi-value">{{ stats.one + stats.two }}</div>
+      <div class="kpi-sub">Notes 1 et 2</div>
+    </div>
+  </div>
+
+  <div class="adm-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div class="panel">
+      <div class="panel-title"><i class="fa-solid fa-star" style="color: var(--warn);"></i> Themes preferes</div>
+      <table class="adm-table">
+        <tbody>
+          {% for row in topThemes %}
+            <tr>
+              <td>
+                <strong>{{ row.theme }}</strong>
+                <span style="float:right;" class="badge">{{ row.count }} votes</span>
+              </td>
+            </tr>
+          {% else %}
+            <tr><td style="color: var(--muted);">Aucun theme prefere pour le moment.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title"><i class="fa-solid fa-comment-dots" style="color: var(--accent);"></i> Derniers feedbacks</div>
+      <table class="adm-table">
+        <tbody>
+          {% for f in feedbacks %}
+            <tr>
+              <td>
+                <div style="display:flex; justify-content:space-between; gap:10px; align-items:center;">
+                  <strong>{{ f.user ? f.user.nom : 'Utilisateur' }}</strong>
+                  <span class="badge">{{ f.satisfaction }}/5</span>
+                </div>
+                <div style="margin-top:6px; color: var(--muted); font-weight:700;">
+                  Theme prefere: {{ f.favoriteTheme ? f.favoriteTheme.nom : 'Non precise' }}
+                </div>
+                {% if f.suggestedThemeName %}
+                  <div style="margin-top:6px; color: var(--text); font-weight:800;">
+                    Nouveau theme propose: {{ f.suggestedThemeName }}
+                    {% if f.suggestedThemeVibe %}
+                      <span class="badge" style="margin-left:8px;">{{ f.suggestedThemeVibe }}</span>
+                    {% endif %}
+                  </div>
+                {% endif %}
+                {% if f.suggestedThemeGoal %}
+                  <div style="margin-top:6px; color: var(--muted);">
+                    Pourquoi: {{ f.suggestedThemeGoal }}
+                  </div>
+                {% endif %}
+                {% if f.comment %}
+                  <div style="margin-top:6px;">{{ f.comment }}</div>
+                {% endif %}
+                <div style="margin-top:8px; color: var(--muted); font-size:.8rem;">
+                  {{ f.createdAt|date('d/m/Y H:i') }}
+                </div>
+              </td>
+            </tr>
+          {% else %}
+            <tr><td style="color: var(--muted);">Aucun feedback recu.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

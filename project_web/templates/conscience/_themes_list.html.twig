@@ -1,0 +1,76 @@
+{% for theme in themes %}
+    {% set pr = theme.priorite ?? 2 %}
+    {% set prClass = pr >= 4 ? 'critical' : (pr == 3 ? 'high' : (pr == 2 ? 'medium' : 'low')) %}
+    {% set prLabel = pr >= 4 ? 'Critique' : (pr == 3 ? 'Elevee' : (pr == 2 ? 'Moyenne' : 'Basse')) %}
+    {% set stats = themeStats[theme.idT]|default({}) %}
+    {% set activeQuestions = stats.activeQuestions|default(theme.questions|filter(q => q.actif)|length) %}
+    {% set pending = stats.pending|default(0) %}
+    {% set progress = stats.progress|default(0) %}
+
+    <article class="theme-card conscience-theme-card">
+        <div class="conscience-card-top">
+            <div class="conscience-card-main">
+                <div class="conscience-theme-icon" style="--theme-color: {{ theme.couleur|default('#8b5cf6') }};">
+                    {% if theme.icone and (theme.icone starts with 'fa') %}
+                        <i class="{{ theme.icone }}"></i>
+                    {% else %}
+                        {{ theme.icone|default('<i class="fa-solid fa-brain"></i>')|raw }}
+                    {% endif %}
+                </div>
+                <div class="conscience-theme-info">
+                    <h3>{{ theme.nom }}</h3>
+                    <span>{{ theme.createdAt|date('d/m/Y') }}</span>
+                </div>
+            </div>
+            <span class="theme-status {{ theme.actif ? 'active' : 'inactive' }}">
+                {{ theme.actif ? 'Actif' : 'Inactif' }}
+            </span>
+        </div>
+
+        <p class="conscience-theme-text">
+            {{ theme.intention ?? theme.descriptionQ ?? 'Participez a ce theme pour ameliorer votre conscience.' }}
+        </p>
+
+        <div class="conscience-card-bottom">
+            <div class="conscience-meta">
+                <span class="conscience-meta-pill">
+                    <i class="fa-solid fa-circle-question"></i>
+                    <strong>{{ activeQuestions }}</strong> q.
+                </span>
+                <span class="conscience-meta-pill">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                    <strong>{{ pending }}</strong> en attente
+                </span>
+                <span class="conscience-meta-pill conscience-priority {{ prClass }}">
+                    <i class="fa-solid fa-flag"></i>
+                    Priorite <strong>P{{ pr }}</strong>
+                    <em>{{ prLabel }}</em>
+                </span>
+            </div>
+            <div class="conscience-meta" style="margin-top: 8px;">
+                <span class="conscience-meta-pill">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    Progression <strong>{{ progress }}%</strong>
+                </span>
+            </div>
+
+            <div class="conscience-actions">
+                <a href="{{ path('app_theme_answer', { id: theme.idT }) }}" class="conscience-action start" title="Repondre">
+                    <i class="fa-solid fa-play"></i>
+                </a>
+                <a href="{{ path('app_theme_rapport', { id: theme.idT }) }}" class="conscience-action" title="Rapport">
+                    <i class="fa-solid fa-chart-simple"></i>
+                </a>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('app_questions_by_theme', { id: theme.idT }) }}" class="conscience-action manage" title="Gerer">
+                        <i class="fa-solid fa-list-check"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </article>
+{% else %}
+    <div style="grid-column: 1/-1; text-align: center; padding: 40px; background: white; border-radius: 20px;">
+        <p>Aucun theme trouve.</p>
+    </div>
+{% endfor %}

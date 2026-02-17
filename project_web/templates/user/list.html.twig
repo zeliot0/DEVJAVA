@@ -1,0 +1,50 @@
+{% extends 'base-sid.html.twig' %}
+
+{% block title %}Administration – Utilisateurs{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="admin-page">
+
+  <header class="admin-header">
+    <div class="header-content">
+      <h1>
+        <span class="gradient-text">Administration</span>
+        <span class="brand">NEXA</span>
+      </h1>
+      <p>Gestion intelligente et sécurisée des utilisateurs</p>
+    </div>
+  </header>
+
+  <div class="user-grid">
+    {% for user in users %}
+      <div class="user-card">
+
+        <div class="user-avatar">
+          {{ user.nom|first|upper }}
+        </div>
+
+        <div class="user-info">
+          <h3>{{ user.nom }}</h3>
+          <p>{{ user.email }}</p>
+
+          {% if 'ROLE_ADMIN' in user.roles %}
+            <span class="badge admin">ADMIN</span>
+          {% else %}
+            <span class="badge user">USER</span>
+          {% endif %}
+        </div>
+
+    <a href="{{ path('app_user_show', {id: user.id}) }}" class="btn-view">
+  <span class="eye">👁️</span>
+</a>
+
+      </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

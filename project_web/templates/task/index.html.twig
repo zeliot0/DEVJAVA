@@ -1,89 +1,98 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
-{% block title %}NEXA – Task Hub{% endblock %}
+{% block title %}NEXA - Task Hub{% endblock %}
 
 {% block body %}
+{% set currentUserName = app.user and app.user.nom ? app.user.nom|capitalize : 'Utilisateur' %}
+{% set currentUserEmail = app.user and app.user.email ? app.user.email : '' %}
+{% set currentUserInitial = app.user and app.user.nom ? app.user.nom|first|upper : 'U' %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/nexa-nav.css">
+<link rel="stylesheet" href="/assets/nexa-nav.css?v=20260214b">
+<link rel="stylesheet" href="/assets/modern-drawers.css">
+<link rel="stylesheet" href="/assets/execution-drawer-fix.css">
+<link rel="stylesheet" href="/assets/ai-features.css">
+<link rel="stylesheet" href="/assets/business-features.css?v=20260210w">
+<link rel="stylesheet" href="/assets/dropdown-actions.css?v=20260213k">
+<link rel="stylesheet" href="/assets/task-cards-premium.css?v=20260213z">
+<link rel="stylesheet" href="{{ asset('css/page-white-bg-overrides.css?v=20260214d') }}">
+<link rel="stylesheet" href="{{ asset('css/task-notion-pro.css?v=20260214a') }}">
+<link rel="stylesheet" href="{{ asset('css/task-refresh-warm.css?v=20260214c') }}">
 
 <div class="layout layout-pro" id="appLayout">
  
-  <!-- 🚀 Premium Navigation System -->
+  <!-- Premium Navigation System -->
   <div class="backdrop-new" id="backdropNav" aria-hidden="true"></div>
  
   <header class="navbar-custom" id="topbarNav">
-    <div class="logo-new">NEXA</div>
+    <a href="{{ path('app_landing') }}" class="logo-new">NEXA</a>
  
     <nav class="desktop-nav" aria-label="Main Navigation">
       <div class="nav-pill-new">
-        <a href="#" class="active" id="nav_1">Tasks</a>
-        <a href="#" id="nav_2">Planning</a>
-        <a href="#" id="nav_3">Analytics</a>
-        <a href="#" id="nav_4">Community</a>
-        <a href="#" id="nav_5">Settings</a>
+        <a href="{{ path('app_task_index') }}" class="active" id="nav_1">TASKS</a>
+        <a href="{{ path('app_conscience_index') }}" id="nav_2">CONSCIENCE</a>
+        <a href="{{ path('app_goal_index') }}" id="nav_3">GOALS</a>
+        <a href="{{ path('app_produit_index') }}" id="nav_4">PRODUIT</a>
       </div>
     </nav>
  
     <div class="header-actions-new">
-      <form class="search-new" id="searchFormNav" autocomplete="off">
-        <i class="fa-solid fa-magnifying-glass" style="opacity:0.6"></i>
-        <input id="searchInputNav" type="search" placeholder="Search..." />
-        <button class="search-btn-new" type="submit"><i class="fa-solid fa-arrow-right"></i></button>
-      </form>
- 
       <div class="lang-switch-new">
         <button class="lang-btn-new" id="langBtnNav">
           <i class="fa-solid fa-globe"></i>
           <span id="currentLangNav">FR</span>
         </button>
         <div class="lang-menu-new" id="langMenuNav">
-          <div data-lang="fr">🇫🇷 Français</div>
-          <div data-lang="en">🇬🇧 English</div>
-          <div data-lang="ar">🇸🇦 العربية</div>
+          <div data-lang="fr">FR - Francais</div>
+          <div data-lang="en">EN - English</div>
+          <div data-lang="ar">AR - Arabic</div>
         </div>
       </div>
  
       <button class="icon-btn" id="themeToggleNav"><i class="fa-solid fa-moon"></i></button>
       <button class="icon-btn burger-new" id="menuBtnNav"><i class="fa-solid fa-bars"></i></button>
-      <button class="cta-new">Go Pro</button>
+
+      <div class="user-menu-nav">
+        <button type="button" class="user-quick-nav user-menu-trigger-nav" id="userMenuTriggerNav" aria-expanded="false" aria-controls="userMenuDropdownNav">
+          <span class="uq-meta">
+            <strong>{{ currentUserName }}</strong>
+            <small>Plan Starter</small>
+          </span>
+          <span class="uq-avatar">{{ currentUserInitial }}</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="user-menu-dropdown-nav" id="userMenuDropdownNav" hidden>
+          <a href="{{ path('app_profile') }}"><i class="fa-regular fa-user"></i> Mon profil</a>
+          {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('admin_dashboard') }}"><i class="fa-solid fa-shield-halved"></i> Dashboard</a>
+          {% endif %}
+          <a href="{{ path('app_logout') }}" class="danger"><i class="fa-solid fa-right-from-bracket"></i> Deconnexion</a>
+        </div>
+      </div>
     </div>
   </header>
  
-  <!-- 🕊️ Solidarity Banner -->
-  <div class="solidarity-banner" id="bannerNav">
-    <div class="solidarity-track" id="bannerTrackNav">
-      <div class="solidarity-item">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg" alt="Palestine">
-        <span id="bannerTextNav"><strong>Stand for Freedom</strong> • Justice • Dignity • Humanity</span>
-      </div>
-      <div class="solidarity-item" aria-hidden="true">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg" alt="">
-        <span id="bannerTextCloneNav"><strong>Stand for Freedom</strong> • Justice • Dignity • Humanity</span>
-      </div>
-    </div>
-  </div>
- 
-  <!-- 📱 Mobile Navigation Drawer -->
+  <!-- Mobile Navigation Drawer -->
   <aside class="drawer-new" id="drawerNav">
     <div class="drawer-top-new">
       <div class="drawer-title-new" id="drawerTitleNav">NEXA</div>
       <button class="icon-btn" id="closeDrawerNav"><i class="fa-solid fa-xmark"></i></button>
     </div>
-    <form class="search-new" id="searchFormMobileNav" style="display:flex; min-width:unset">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input id="searchInputMobileNav" type="search" placeholder="Search..." />
-    </form>
     <nav class="drawer-nav-new">
-      <a href="#" id="mnav_1">Tasks</a>
-      <a href="#" id="mnav_2">Planning</a>
-      <a href="#" id="mnav_3">Analytics</a>
-      <a href="#" id="mnav_4">Community</a>
-      <a href="#" id="mnav_5">Settings</a>
+      <a href="{{ path('app_task_index') }}" id="mnav_1">TASKS</a>
+      <a href="{{ path('app_conscience_index') }}" id="mnav_2">CONSCIENCE</a>
+      <a href="{{ path('app_goal_index') }}" id="mnav_3">GOALS</a>
+      <a href="{{ path('app_produit_index') }}" id="mnav_4">PRODUIT</a>
     </nav>
-    <button class="cta-new" style="margin-top:auto">Go Pro</button>
+    <a href="{{ path('app_profile') }}" class="drawer-user-card">
+      <span class="uq-avatar">{{ currentUserInitial }}</span>
+      <span class="uq-meta">
+        <strong>{{ currentUserName }}</strong>
+        <small>{{ currentUserEmail }}</small>
+      </span>
+    </a>
   </aside>
- 
+
   <div class="toast-new" id="toastNav"></div>
 
 
@@ -92,48 +101,11 @@
 
     <div class="topbar topbar-pro">
       <div class="top-left">
-        <button class="btn icon-only" id="topSidebarBtn" title="Afficher/Masquer la taskbar">
-          <i class="fa-solid fa-bars"></i>
-        </button>
-
-        <div class="brand-pro">
-          <div class="brand-name">NEXA</div>
-          <div class="brand-sub">Task Hub</div>
-        </div>
-      </div>
-
-      <div class="top-right">
-        <button class="btn subtle" type="button">
-          <i class="fa-regular fa-calendar"></i> Today
-        </button>
-
-        <div class="seg">
-          <button class="seg-btn is-active" type="button">
-            <i class="fa-solid fa-table-columns"></i> Board
-          </button>
-        </div>
-
-        <button class="btn primary" id="newBtn">
-          <i class="fa-solid fa-plus"></i> Nouvelle tâche
-        </button>
-
-        <button class="btn primary ghost" id="newCatBtn" type="button">
-          <i class="fa-solid fa-folder-plus"></i> Nouvelle catégorie
-        </button>
-
-        <button class="toggle" id="themeToggle" title="Changer de thème">
-          <i class="fas fa-moon"></i>
-        </button>
-      </div>
-    </div>
-
-    <div class="content-grid">
-      <section class="center">
-
-        <div class="toolbar toolbar-pro">
+        <div class="toolbar-block-title">Recherche et filtres</div>
+        <div class="toolbar-integrated">
           <div class="field field-pro">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input id="searchInput" placeholder="Rechercher (titre, description)..." />
+            <input id="searchInput" placeholder="Rechercher..." />
             <button id="voiceBtn" class="icon-btn icon-btn-pro" type="button" title="Recherche vocale">
               <i class="fa-solid fa-microphone"></i>
             </button>
@@ -142,7 +114,7 @@
           <div class="field field-pro">
             <i class="fa-solid fa-flag"></i>
             <select id="prioFilter">
-              <option value="all">Toutes priorités</option>
+              <option value="all">Priorités</option>
               <option value="low">Basse</option>
               <option value="med">Moyenne</option>
               <option value="high">Haute</option>
@@ -152,17 +124,103 @@
           <div class="field field-pro">
             <i class="fa-solid fa-layer-group"></i>
             <select id="statusFilter">
-              <option value="all">Tous statuts</option>
+              <option value="all">Statuts</option>
               <option value="todo">À faire</option>
               <option value="doing">En cours</option>
               <option value="done">Terminé</option>
             </select>
           </div>
 
-          <button class="btn subtle" id="clearBtn">
-            <i class="fa-solid fa-broom"></i> Reset filtres
+          <button class="btn subtle icon-only" id="clearBtn" title="Reset filtres">
+            <i class="fa-solid fa-broom"></i>
           </button>
         </div>
+      </div>
+
+      <div class="top-right">
+        <div class="toolbar-block-title toolbar-block-title-right">Actions rapides</div>
+        <div class="top-actions-primary">
+          <button class="btn primary" id="newBtn">
+            <i class="fa-solid fa-plus"></i> Nouvelle tâche
+          </button>
+          <button class="btn primary" id="newCatBtn" type="button">
+            <i class="fa-solid fa-folder-plus"></i> Nouvelle catégorie
+          </button>
+          <a href="{{ path('app_task_suite_hub') }}" class="productivity-suite-launch" title="Ouvrir Task Productivity Suite">
+            <span class="ps-icon"><i class="fa-solid fa-rocket"></i></span>
+            <span class="ps-label">Productivity Suite</span>
+          </a>
+          <a href="{{ path('app_task_suite_focus') }}" class="productivity-suite-launch focus-launch-btn" title="Lancer le Focus Mode">
+            <span class="ps-icon"><i class="fa-solid fa-stopwatch-20"></i></span>
+            <span class="ps-label">Focus Mode</span>
+          </a>
+          <a href="{{ path('app_task_suite_music_lounge') }}" class="music-orb-launch" title="Ouvrir Music Lounge" aria-label="Ouvrir Music Lounge">
+            <span class="orb-ring orb-ring-1"></span>
+            <span class="orb-ring orb-ring-2"></span>
+            <span class="orb-ring orb-ring-3"></span>
+            <span class="orb-ring orb-ring-4"></span>
+            <span class="orb-core">
+              <span class="siri-capsule"></span>
+            </span>
+            <span class="orb-dot"></span>
+          </a>
+        </div>
+
+        <div class="top-actions-secondary">
+          <div class="v-divider"></div>
+
+          <div class="actions-dropdown" id="actionsDropdown">
+            <button class="btn btn-modern main-actions-btn" id="mainActionsBtn" type="button" title="Actions & Exports">
+              <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+
+            <div class="actions-menu" id="actionsMenu">
+            <button class="btn btn-modern pdf-btn" id="exportPdfBtn" type="button" title="Exporter en PDF">
+              <i class="fa-solid fa-file-pdf"></i> Export PDF
+            </button>
+            <button class="btn btn-modern excel-btn" id="exportExcelBtn" type="button" title="Exporter en Excel">
+              <i class="fa-solid fa-file-excel"></i> Excel
+            </button>
+            <button class="btn btn-modern" id="showTodayBtn" type="button" title="Afficher les tâches du jour">
+              <i class="fa-solid fa-calendar-day"></i> Aujourd'hui
+            </button>
+            <button class="btn btn-modern" id="showOverdueBtn" type="button" title="Afficher les tâches en retard">
+              <i class="fa-solid fa-triangle-exclamation"></i> En retard
+            </button>
+            <button class="btn btn-modern" id="autoPrioritizeBtn" type="button" title="Priorisation automatique">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-prioriser
+            </button>
+            <button class="btn btn-modern analytics-btn" id="showAnalyticsBtn" type="button" title="Voir les analytics">
+              <i class="fa-solid fa-chart-line"></i> Analytics
+            </button>
+            <button class="btn btn-modern" id="showCalendarBtn" type="button" title="Voir le calendrier des taches">
+              <i class="fa-solid fa-calendar-days"></i> Calendrier
+            </button>
+            <button class="btn btn-modern" id="showWeatherBtn" type="button" title="Voir la météo">
+              <i class="fa-solid fa-cloud-sun"></i> Météo
+            </button>
+            <a href="{{ path('app_task_suite_hub') }}" class="btn btn-modern" title="Ouvrir Task Productivity Suite" style="display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-rocket"></i> Productivity Suite
+            </a>
+            <a href="{{ path('app_task_suite_focus') }}" class="btn btn-modern" title="Lancer Focus Mode" style="display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-stopwatch-20"></i> Focus Mode
+            </a>
+            <div class="menu-divider"></div>
+            {% if is_granted('ROLE_ADMIN') %}
+              <a href="{{ path('admin_dashboard') }}" class="btn btn-modern admin-btn" id="goToAdminBtn" title="Dashboard Admin" style="display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-shield-halved"></i> Admin
+              </a>
+            {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <section class="center">
+
+
 
         <div class="kpis kpis-pro">
           <div class="kpi kpi-pro">
@@ -211,62 +269,109 @@
 
     <!-- DRAWER TASK -->
     <div class="overlay" id="overlay"></div>
-    <aside class="drawer" id="drawer">
-      <div class="drawer-head">
+    <aside class="drawer drawer-modern" id="drawer">
+      <div class="drawer-head drawer-head-modern">
         <div>
-          <h3 class="drawer-title" id="drawerTitle">Nouvelle tâche</h3>
-          <div class="drawer-sub" id="drawerSub">Champs liés à la base de données</div>
+          <h3 class="drawer-title drawer-title-modern" id="drawerTitle">Nouvelle tâche</h3>
+          <div class="drawer-sub" id="drawerSub">Configurez les détails de votre mission</div>
         </div>
         <button class="icon-btn" id="closeDrawer" title="Fermer"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <div class="drawer-body">
-        <div class="field"><i class="fa-solid fa-heading"></i><input id="fTitle" placeholder="Titre" /></div>
-        <div class="field"><i class="fa-solid fa-align-left"></i><textarea id="fDesc" placeholder="Description"></textarea></div>
-
-        <div class="grid2">
-          <div class="field"><i class="fa-solid fa-flag"></i>
-            <select id="fPrio">
-              <option value="low">Basse</option>
-              <option value="med" selected>Moyenne</option>
-              <option value="high">Haute</option>
-            </select>
+      <div class="drawer-body drawer-body-modern">
+        <div class="form-section">
+          <div class="form-section-title"><i class="fa-solid fa-circle-info"></i> Informations principales</div>
+          <div class="field field-modern">
+            <i class="fa-solid fa-heading"></i>
+            <input id="fTitle" placeholder="Titre de la tâche" />
+            <label>TITRE</label>
           </div>
-
-          <div class="field"><i class="fa-solid fa-layer-group"></i>
-            <select id="fStatus">
-              <option value="todo">À faire</option>
-              <option value="doing">En cours</option>
-              <option value="done">Terminé</option>
-            </select>
+          <div class="field field-modern" style="margin-top: 15px;">
+            <i class="fa-solid fa-align-left"></i>
+            <textarea id="fDesc" placeholder="Description détaillée..."></textarea>
+            <label>DESCRIPTION</label>
           </div>
         </div>
 
-        <div class="grid2">
-          <div class="field"><i class="fa-regular fa-calendar"></i><input id="fDue" type="date" /></div>
+        <div class="form-section">
+          <div class="form-section-title"><i class="fa-solid fa-sliders"></i> Paramètres & Priorité</div>
+          <div class="grid2">
+            <div class="field field-modern">
+              <i class="fa-solid fa-flag"></i>
+              <select id="fPrio">
+                <option value="low">Basse</option>
+                <option value="med" selected>Moyenne</option>
+                <option value="high">Haute</option>
+              </select>
+              <label>PRIORITÉ</label>
+            </div>
 
-          <div class="field"><i class="fa-solid fa-folder"></i>
-            <select id="fCategory">
-              <option value="">Aucune catégorie</option>
-            </select>
+            <div class="field field-modern">
+              <i class="fa-solid fa-layer-group"></i>
+              <select id="fStatus">
+                <option value="todo">À faire</option>
+                <option value="doing">En cours</option>
+                <option value="done">Terminé</option>
+              </select>
+              <label>STATUT</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title"><i class="fa-solid fa-calendar-days"></i> Organisation</div>
+          <div class="grid2">
+            <div class="field field-modern">
+              <i class="fa-regular fa-calendar"></i>
+              <input id="fDue" type="date" />
+              <label>ÉCHÉANCE</label>
+            </div>
+
+            <div class="field field-modern">
+              <i class="fa-solid fa-folder"></i>
+              <select id="fCategory">
+                <option value="">Aucune catégorie</option>
+              </select>
+              <label>CATÉGORIE</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Assistant IA</div>
+          <div class="ai-toolbar" style="padding: 0; margin: 0; border: none;">
+            <button class="btn btn-modern ai-btn" id="aiGenerateDesc" type="button" title="Générer une description avec l'IA" style="flex: 1;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Description IA
+            </button>
+            
+            <button class="btn btn-modern ai-btn" id="aiAnalyzeTask" type="button" title="Analyser la tÃ¢che" style="flex: 1;">
+              <i class="fa-solid fa-brain"></i> Analyser
+            </button>
+          </div>
+
+          <div class="ai-suggestions" id="aiSuggestions">
+            <div class="ai-suggestion-title">
+              <i class="fa-solid fa-lightbulb"></i> Suggestions de l'IA
+            </div>
+            <div id="aiSuggestionsContent"></div>
           </div>
         </div>
       </div>
 
-      <div class="drawer-foot">
-        <button class="btn" id="deleteBtn" style="display:none;">
+      <div class="drawer-foot drawer-foot-modern">
+        <button class="btn btn-modern btn-delete" id="deleteBtn" style="display:none;">
           <i class="fa-solid fa-trash"></i> Supprimer
         </button>
 
-        <button class="btn" id="editBtn" style="display:none;">
+        <button class="btn btn-modern" id="editBtn" style="display:none;">
           <i class="fa-regular fa-pen-to-square"></i> Modifier
         </button>
 
-        <button class="btn" id="cancelBtn">
-          <i class="fa-regular fa-circle-xmark"></i> Annuler
+        <button class="btn btn-modern" id="cancelBtn" style="margin-left: auto;">
+          Annuler
         </button>
 
-        <button class="btn primary" id="saveBtn">
+        <button class="btn primary btn-modern" id="saveBtn">
           <i class="fa-solid fa-check"></i> Enregistrer
         </button>
       </div>
@@ -274,84 +379,102 @@
 
     <!-- DRAWER CATEGORY -->
     <div class="overlay" id="catOverlay"></div>
-    <aside class="drawer" id="catDrawer">
-      <div class="drawer-head">
+    <aside class="drawer drawer-modern" id="catDrawer">
+      <div class="drawer-head drawer-head-modern">
         <div>
-          <h3 class="drawer-title">Nouvelle catégorie</h3>
-          <div class="drawer-sub">Champs liés à la base de données</div>
+          <h3 class="drawer-title drawer-title-modern">Nouvelle catégorie</h3>
+          <div class="drawer-sub">Classez vos projets avec style</div>
         </div>
         <button class="icon-btn" id="closeCatDrawer" title="Fermer" type="button">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
-      <div class="drawer-body">
-        <div class="field">
-          <i class="fa-solid fa-heading"></i>
-          <input id="cat_name" placeholder="Nom (name) *" />
-        </div>
-
-        <div class="field">
-          <i class="fa-solid fa-align-left"></i>
-          <textarea id="cat_description" placeholder="Description (optionnel)"></textarea>
-        </div>
-
-        <div class="grid2">
-          <div class="field">
-            <i class="fa-solid fa-palette"></i>
-            <input id="cat_color" type="color" value="#7c3aed" />
+      <div class="drawer-body drawer-body-modern">
+        <div class="form-section">
+          <div class="form-section-title"><i class="fa-solid fa-layer-group"></i> Identité</div>
+          <div class="field field-modern">
+            <i class="fa-solid fa-heading"></i>
+            <input id="cat_name" placeholder="Nom de la catégorie *" />
+            <label>NOM</label>
           </div>
 
-          <div class="field">
-            <i class="fa-solid fa-icons"></i>
-            <input id="cat_icon" placeholder="Icône (ex: fa-solid fa-folder)" />
+          <div class="field field-modern" style="margin-top: 15px;">
+            <i class="fa-solid fa-align-left"></i>
+            <textarea id="cat_description" placeholder="Description courte (optionnel)"></textarea>
+            <label>DESCRIPTION</label>
           </div>
         </div>
 
-        <div class="grid2">
-          <div class="field">
-            <i class="fa-solid fa-toggle-on"></i>
-            <select id="cat_isActive">
-              <option value="1" selected>Active</option>
-              <option value="0">Inactive</option>
-            </select>
-          </div>
+        <div class="form-section">
+          <div class="form-section-title"><i class="fa-solid fa-palette"></i> Apparence & Icône</div>
+          <div class="grid2">
+            <div class="field field-modern">
+              <i class="fa-solid fa-palette"></i>
+              <input id="cat_color" type="color" value="#7c3aed" style="height: 38px; padding: 0; cursor: pointer;" />
+              <label>COULEUR</label>
+            </div>
 
-          <div class="field">
-            <i class="fa-solid fa-eye"></i>
-            <select id="cat_visibility">
-              <option value="">(null)</option>
-              <option value="public">public</option>
-              <option value="private">private</option>
-            </select>
+            <div class="field field-modern">
+              <i class="fa-solid fa-icons"></i>
+              <input id="cat_icon" placeholder="ex: fa-solid fa-star" />
+              <label>ICÔNE (FontAwesome)</label>
+            </div>
           </div>
         </div>
 
-        <div class="grid2">
-          <div class="field">
-            <i class="fa-solid fa-arrow-up-1-9"></i>
-            <input id="cat_position" type="number" placeholder="Position" />
+        <div class="form-section">
+          <div class="form-section-title"><i class="fa-solid fa-gear"></i> Paramètres avancés</div>
+          <div class="grid2">
+            <div class="field field-modern">
+              <i class="fa-solid fa-toggle-on"></i>
+              <select id="cat_isActive">
+                <option value="1" selected>Active</option>
+                <option value="0">Inactive</option>
+              </select>
+              <label>STATUT</label>
+            </div>
+
+            <div class="field field-modern">
+              <i class="fa-solid fa-eye"></i>
+              <select id="cat_visibility">
+                <option value="">Par défaut</option>
+                <option value="public">Public</option>
+                <option value="private">Privé</option>
+              </select>
+              <label>VISIBILITÉ</label>
+            </div>
           </div>
 
-          <div class="field">
-            <i class="fa-solid fa-list-check"></i>
-            <input id="cat_taskLimit" type="number" placeholder="Task limit" />
+          <div class="grid2" style="margin-top: 15px;">
+            <div class="field field-modern">
+              <i class="fa-solid fa-arrow-up-1-9"></i>
+              <input id="cat_position" type="number" placeholder="0" />
+              <label>ORDRE</label>
+            </div>
+
+            <div class="field field-modern">
+              <i class="fa-solid fa-list-check"></i>
+              <input id="cat_taskLimit" type="number" placeholder="8" />
+              <label>LIMITE TÂCHES</label>
+            </div>
           </div>
         </div>
 
-        <div class="field">
+        <div class="field field-modern">
           <i class="fa-solid fa-hashtag"></i>
-          <input id="cat_no" placeholder="No (ex: CAT-0001) (optionnel)" />
+          <input id="cat_no" placeholder="Référence (ex: MKT-2024)" />
+          <label>IDENTIFIANT UNIQUE</label>
         </div>
       </div>
 
-      <div class="drawer-foot">
-        <button class="btn" id="cancelCatBtn" type="button">
-          <i class="fa-regular fa-circle-xmark"></i> Annuler
+      <div class="drawer-foot drawer-foot-modern">
+        <button class="btn btn-modern" id="cancelCatBtn" type="button" style="margin-left: auto;">
+          Annuler
         </button>
 
-        <button class="btn primary" id="saveCatBtn" type="button">
-          <i class="fa-solid fa-check"></i> Enregistrer
+        <button class="btn primary btn-modern" id="saveCatBtn" type="button">
+          <i class="fa-solid fa-check"></i> Créer la catégorie
         </button>
       </div>
     </aside>
@@ -361,14 +484,14 @@
        ======================= #}
     <div class="overlay" id="exeOverlay"></div>
 
-    <aside class="drawer" id="exeDrawer" aria-hidden="true">
-      <div class="drawer-head">
+    <aside class="drawer drawer-modern" id="exeDrawer" aria-hidden="true">
+      <div class="drawer-head drawer-head-modern">
         <div>
-          <h3 class="drawer-title">
-            <i class="fa-solid fa-scroll"></i> Journal d’exécution
+          <h3 class="drawer-title drawer-title-modern">
+            <i class="fa-solid fa-terminal"></i> Journal d’exécution
           </h3>
           <div class="drawer-sub">
-            Task: <b id="exeTaskTitle">—</b>
+            Suivi en temps réel de: <b id="exeTaskTitle" style="color: var(--primary)">—</b>
           </div>
         </div>
 
@@ -377,31 +500,30 @@
         </button>
       </div>
 
-      <div class="drawer-body">
+      <div class="drawer-body drawer-body-modern">
 
-        <div class="kpis kpis-pro" style="margin:0 0 12px;">
-          <div class="kpi kpi-pro">
-            <div class="kpi-title">Total</div>
-            <div class="kpi-value" id="exeKpiTotal">0</div>
+        <div class="kpis kpis-pro" style="margin: 0; background: rgba(var(--surface-rgb), 0.3); border-radius: 20px; padding: 10px;">
+          <div class="kpi kpi-pro" style="background: transparent; border: none; box-shadow: none; min-width: auto; padding: 10px;">
+            <div class="kpi-title" style="font-size: 0.7rem;">Total</div>
+            <div class="kpi-value" id="exeKpiTotal" style="font-size: 1.2rem;">0</div>
           </div>
-          <div class="kpi kpi-pro">
-            <div class="kpi-title">Doing</div>
-            <div class="kpi-value" id="exeKpiDoing">0</div>
+          <div class="kpi kpi-pro" style="background: transparent; border: none; box-shadow: none; min-width: auto; padding: 10px;">
+            <div class="kpi-title" style="font-size: 0.7rem;">Doing</div>
+            <div class="kpi-value" id="exeKpiDoing" style="font-size: 1.2rem; color: var(--primary)">0</div>
           </div>
-          <div class="kpi kpi-pro">
-            <div class="kpi-title">Done</div>
-            <div class="kpi-value" id="exeKpiDone">0</div>
+          <div class="kpi kpi-pro" style="background: transparent; border: none; box-shadow: none; min-width: auto; padding: 10px;">
+            <div class="kpi-title" style="font-size: 0.7rem;">Done</div>
+            <div class="kpi-value" id="exeKpiDone" style="font-size: 1.2rem; color: var(--good)">0</div>
           </div>
         </div>
 
-        <div class="toolbar toolbar-pro" style="margin:0 0 10px;">
-          <div class="field field-pro">
+        <div class="toolbar toolbar-pro" style="margin: 0; grid-template-columns: 1fr 120px;">
+          <div class="field field-modern" style="padding: 10px 14px !important;">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input id="exeSearch" placeholder="Rechercher une exécution..." />
+            <input id="exeSearch" placeholder="Filtrer..." />
           </div>
 
-          <div class="field field-pro">
-            <i class="fa-solid fa-layer-group"></i>
+          <div class="field field-modern" style="padding: 10px 14px !important;">
             <select id="exeStatusFilter">
               <option value="all">Tous</option>
               <option value="todo">À faire</option>
@@ -411,91 +533,556 @@
           </div>
         </div>
 
-        {# ✅ give ID so we can hide it in consult mode #}
-        <div id="exeCreateCard" class="card" style="padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.08); margin-bottom:12px;">
-          <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;">
-            <div style="font-weight:700;">➕ Nouvelle exécution</div>
-            <div style="opacity:.7;font-size:.9rem;">(liée à cette task)</div>
+        <div id="exeCreateCard" class="exe-card-modern">
+          <div style="display:flex;gap:10px;align-items:center;margin-bottom:18px;">
+            <div style="font-weight:800; font-size: 1.1rem; color: var(--text);">
+               <i class="fa-solid fa-plus-circle" style="color: var(--primary); margin-right: 8px;"></i>Nouvelle étape
+            </div>
           </div>
 
-          <div class="field"><i class="fa-solid fa-heading"></i>
-            <input id="exeTitle" placeholder="Titre de l’exécution" />
+          <div class="field field-modern">
+            <i class="fa-solid fa-heading"></i>
+            <input id="exeTitle" placeholder="Titre de l'action" />
+            <label>TITRE</label>
           </div>
 
-          <div class="field"><i class="fa-solid fa-align-left"></i>
-            <textarea id="exeDesc" placeholder="Description"></textarea>
+          <div class="field field-modern" style="margin-top: 15px;">
+            <i class="fa-solid fa-align-left"></i>
+            <textarea id="exeDesc" placeholder="Note ou rÃ©sultat..." style="min-height: 60px;"></textarea>
+            <label>DESCRIPTION</label>
           </div>
 
-          <div class="grid2">
-            <div class="field"><i class="fa-solid fa-layer-group"></i>
+          <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px;">
+            <div class="field field-modern">
+              <i class="fa-solid fa-layer-group"></i>
               <select id="exeStatus">
                 <option value="todo">À faire</option>
                 <option value="doing">En cours</option>
                 <option value="done">Terminé</option>
               </select>
+              <label>STATUT</label>
             </div>
 
-            <button class="btn primary" id="exeSaveBtn" type="button">
-              <i class="fa-solid fa-check"></i> Ajouter
+            <button class="btn primary btn-modern" id="exeSaveBtn" type="button" style="width: 100%; justify-content: center; padding: 14px 20px !important;">
+              <i class="fa-solid fa-plus"></i> Ajouter l execution
             </button>
           </div>
 
           <input type="hidden" id="exeEditId" value="">
         </div>
 
-        <div id="exeList" style="display:flex;flex-direction:column;gap:10px;"></div>
+        <div id="exeList" style="display:flex;flex-direction:column;gap:12px;"></div>
       </div>
 
-      <div class="drawer-foot">
-        <button class="btn" id="exeCloseBtn" type="button">
-          <i class="fa-regular fa-circle-xmark"></i> Fermer
+      <div class="drawer-foot drawer-foot-modern">
+        <button class="btn btn-modern" id="exeCloseBtn" type="button" style="width: 100%; justify-content: center;">
+          <i class="fa-regular fa-circle-xmark"></i> Quitter le journal
         </button>
       </div>
     </aside>
 
     <style>
-      .exe-item{
-        padding:12px;
-        border-radius:16px;
-        border:1px solid rgba(255,255,255,.08);
-        background: rgba(255,255,255,.03);
-        display:flex;
-        gap:10px;
-        align-items:flex-start;
-        justify-content:space-between;
+      .exe-item {
+        padding: 16px;
+        border-radius: 20px;
+        border: 1px solid rgba(var(--primary-rgb, 91, 92, 240), 0.1);
+        background: rgba(var(--surface-rgb), 0.4);
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
+        transition: all 0.3s ease;
+        margin-bottom: 8px;
+        backdrop-filter: blur(8px);
       }
-      .exe-left{ display:flex; gap:10px; align-items:flex-start; }
-      .exe-badge{
-        font-size:.75rem;
-        padding:4px 8px;
-        border-radius:999px;
-        border:1px solid rgba(255,255,255,.14);
-        opacity:.9;
-        white-space:nowrap;
+      .exe-item:hover {
+        background: rgba(var(--surface-rgb), 0.6);
+        border-color: rgba(var(--primary-rgb, 91, 92, 240), 0.3);
+        transform: translateX(4px);
       }
-      .exe-actions{ display:flex; gap:8px; }
-      .mini-btn{
-        border-radius:12px;
-        padding:8px 10px;
-        border:1px solid rgba(255,255,255,.12);
-        background: rgba(255,255,255,.04);
-        cursor:pointer;
+      .exe-left { 
+        display: flex; 
+        gap: 14px; 
+        align-items: center; 
+        flex: 1;
+        min-width: 0;
       }
-      .mini-btn:hover{ transform: translateY(-1px); }
+      .exe-status-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .exe-status-dot.todo { background: #94a3b8; box-shadow: 0 0 10px rgba(148, 163, 184, 0.3); }
+      .exe-status-dot.doing { background: var(--primary); box-shadow: 0 0 10px rgba(91, 92, 240, 0.4); }
+      .exe-status-dot.done { background: var(--good); box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
 
-      /* ✅ VIEW ONLY MODE */
-      #exeDrawer.view-only #exeCreateCard{ display:none !important; }
-      #exeDrawer.view-only .exe-actions{ display:none !important; }
+      .exe-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+      }
+      .exe-title-text {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .exe-desc-text {
+        font-size: 0.85rem;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+      
+      .exe-badge {
+        font-size: 0.7rem;
+        padding: 4px 10px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--muted);
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      .exe-actions { display: flex; gap: 8px; }
+      .mini-btn {
+        border-radius: 10px;
+        width: 32px;
+        height: 32px;
+        display: grid;
+        place-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .mini-btn:hover { 
+        background: rgba(var(--primary-rgb, 91, 92, 240), 0.1);
+        color: var(--primary);
+        border-color: var(--primary);
+        transform: scale(1.1);
+      }
+      .mini-btn.danger:hover {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--bad);
+        border-color: var(--bad);
+      }
+
+
+      /* Professional toolbar organization */
+      .topbar-pro {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(360px, 390px);
+        gap: 10px;
+        align-items: start;
+        padding: 9px;
+        border: 1px solid rgba(148, 163, 184, 0.26);
+        border-radius: 14px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(249, 250, 255, 0.9));
+        box-shadow: 0 8px 18px rgba(30, 41, 59, 0.08);
+        overflow: visible;
+      }
+
+      .top-left,
+      .top-right {
+        min-width: 0;
+      }
+
+      .toolbar-block-title {
+        font-size: 0.68rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #5f6b85;
+        margin: 0 0 6px 2px;
+      }
+
+      .toolbar-block-title-right {
+        text-align: right;
+        margin-right: 2px;
+      }
+
+      .toolbar-integrated {
+        display: grid;
+        grid-template-columns: minmax(190px, 1fr) minmax(110px, 140px) minmax(110px, 140px) 38px;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .toolbar-integrated > * {
+        min-width: 0;
+      }
+
+      .toolbar-integrated .field.field-pro {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        min-height: 40px;
+        border-radius: 12px;
+        border: 1px solid #dbe2f2;
+        background: #fff;
+        box-shadow: 0 3px 8px rgba(30, 41, 59, 0.05);
+        overflow: hidden;
+      }
+
+      .toolbar-integrated .field.field-pro select,
+      .toolbar-integrated .field.field-pro input {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .toolbar-integrated #clearBtn {
+        width: 38px;
+        height: 38px;
+        border-radius: 11px;
+      }
+
+      .top-right {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        justify-items: end;
+        align-content: start;
+      }
+
+      .top-actions-primary,
+      .top-actions-secondary {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: nowrap;
+      }
+
+      .top-actions-secondary {
+        padding-left: 2px;
+      }
+
+      .top-actions-secondary .actions-dropdown {
+        display: flex;
+        align-items: center;
+      }
+
+      .topbar-pro .top-right #newBtn,
+      .topbar-pro .top-right #newCatBtn {
+        width: 170px;
+        height: 40px;
+        min-height: 40px;
+        min-width: 150px;
+        max-width: 170px;
+        padding: 0 14px;
+        border-radius: 12px;
+        font-size: 0.88rem;
+        font-weight: 700;
+        line-height: 1;
+        white-space: nowrap;
+        box-sizing: border-box;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .topbar-pro .top-right #newBtn,
+      .topbar-pro .top-right #newCatBtn {
+        border: 1px solid transparent;
+        color: #fff;
+        background: linear-gradient(135deg, #5b5cf0 0%, #7c3aed 100%);
+        box-shadow: 0 8px 18px rgba(91, 92, 240, 0.2);
+      }
+
+      .topbar-pro .top-right #newCatBtn i {
+        color: #ffffff;
+      }
+
+      @media (max-width: 760px) {
+        .topbar-pro {
+          grid-template-columns: 1fr;
+          padding: 10px;
+        }
+
+        .toolbar-block-title-right {
+          text-align: left;
+        }
+
+        .topbar-pro .top-right {
+          width: 100%;
+          justify-content: stretch;
+        }
+
+        .top-actions-primary,
+        .top-actions-secondary {
+          width: 100%;
+        }
+
+        .topbar-pro .top-right #newBtn,
+        .topbar-pro .top-right #newCatBtn {
+          width: 100%;
+          min-width: 0;
+          max-width: none;
+        }
+
+        .top-actions-secondary {
+          justify-content: flex-end;
+        }
+
+        .top-actions-secondary .v-divider {
+          display: none;
+        }
+      }
+
+      @media (max-width: 1180px) {
+        .topbar-pro {
+          grid-template-columns: 1fr;
+        }
+
+        .toolbar-block-title-right {
+          text-align: left;
+        }
+
+        .toolbar-integrated {
+          grid-template-columns: minmax(220px, 1fr) minmax(140px, 0.8fr) minmax(140px, 0.8fr) 48px;
+        }
+
+        .top-right {
+          justify-items: stretch;
+        }
+
+        .top-actions-primary {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .top-actions-secondary {
+          width: 100%;
+          justify-content: flex-end;
+        }
+
+        .topbar-pro .top-right #newBtn,
+        .topbar-pro .top-right #newCatBtn {
+          width: calc(50% - 6px);
+          min-width: 0;
+          max-width: none;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .toolbar-integrated {
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 44px;
+        }
+
+        .toolbar-integrated .field.field-pro:first-child {
+          grid-column: 1 / -1;
+        }
+
+        .toolbar-integrated #clearBtn {
+          width: 44px;
+          height: 44px;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .toolbar-integrated {
+          grid-template-columns: minmax(0, 1fr) 44px;
+          align-items: center;
+        }
+
+        .toolbar-integrated .field.field-pro:first-child {
+          grid-column: 1 / -1;
+        }
+
+        .toolbar-integrated .field.field-pro:nth-child(2) {
+          grid-column: 1 / 2;
+        }
+
+        .toolbar-integrated .field.field-pro:nth-child(3) {
+          grid-column: 1 / 2;
+          grid-row: 3;
+        }
+
+        .toolbar-integrated #clearBtn {
+          grid-column: 2 / 3;
+          grid-row: 3;
+          justify-self: end;
+        }
+      }
+
+      .btn-group-modern {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px;
+        background: rgba(var(--surface-rgb), 0.3);
+        border-radius: 14px;
+        border: 1px solid var(--border);
+      }
+
+      .v-divider {
+        width: 1px;
+        height: 22px;
+        background: rgba(255, 255, 255, 0.15);
+        margin: 0 2px;
+      }
+
+      .excel-btn {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        color: #fff !important;
+        border: none !important;
+      }
+
+      .analytics-btn {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+        color: #fff !important;
+        border: none !important;
+      }
+
+      .admin-btn {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+        color: #fff !important;
+        border: none !important;
+        text-decoration: none;
+      }
+
+      .btn-modern:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+      }
+
+      .pdf-btn {
+        background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%) !important;
+        color: #fff !important;
+        border: none !important;
+      }
+
+      /* Inline validation errors under each field */
+      .drawer-modern .field.field-modern {
+        position: relative;
+      }
+
+      .drawer-modern .field.field-modern.has-error {
+        border-color: #ef4444 !important;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.14);
+        margin-bottom: 24px;
+      }
+
+      .drawer-modern .field.field-modern.has-error::after {
+        content: attr(data-error);
+        position: absolute;
+        left: 8px;
+        top: calc(100% + 6px);
+        color: #dc2626;
+        font-size: 0.82rem;
+        font-weight: 700;
+        line-height: 1.3;
+        white-space: normal;
+        z-index: 2;
+      }
+
+      /* Task drawer form visual polish (without changing drawer structure) */
+      #drawer .drawer-head-modern {
+        background: linear-gradient(135deg, #5b5cf0 0%, #7c3aed 100%);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+      }
+
+      #drawer .drawer-title-modern {
+        background: none !important;
+        -webkit-background-clip: border-box !important;
+        background-clip: border-box !important;
+        -webkit-text-fill-color: #ffffff !important;
+        color: #ffffff !important;
+        letter-spacing: -0.02em;
+      }
+
+      #drawer .drawer-sub {
+        color: rgba(255, 255, 255, 0.9) !important;
+        font-weight: 600;
+      }
+
+      #drawer .form-section {
+        border: 1px solid #dbe3f5;
+        border-radius: 18px;
+        background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+        padding: 16px;
+        box-shadow: 0 8px 18px rgba(30, 41, 59, 0.07);
+      }
+
+      #drawer .form-section-title {
+        margin-bottom: 12px;
+        font-size: 0.76rem;
+        letter-spacing: 0.11em;
+        color: #66728c;
+      }
+
+      #drawer .field.field-modern {
+        background: #ffffff !important;
+        border: 1px solid #d8e1f2 !important;
+        border-radius: 14px !important;
+        box-shadow: 0 4px 12px rgba(30, 41, 59, 0.06);
+      }
+
+      #drawer .field.field-modern i {
+        color: #6366f1;
+        opacity: 0.95;
+      }
+
+      #drawer .field.field-modern input,
+      #drawer .field.field-modern select,
+      #drawer .field.field-modern textarea {
+        color: #1f2a44 !important;
+      }
+
+      #drawer .field.field-modern input::placeholder,
+      #drawer .field.field-modern textarea::placeholder {
+        color: #8a97af;
+      }
+
+      #drawer .field.field-modern textarea {
+        min-height: 84px;
+      }
+
+      #drawer .field.field-modern label {
+        opacity: 0.9;
+        top: -11px;
+        transform: none;
+        background: #f8faff;
+        border: 1px solid #d8e1f2;
+        color: #5b5cf0;
+      }
+
+      #drawer .field.field-modern:focus-within {
+        border-color: #7c3aed !important;
+        box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.14), 0 8px 16px rgba(30, 41, 59, 0.08) !important;
+        transform: none;
+      }
+
+      #drawer .grid2 {
+        gap: 12px;
+      }
+
+      #drawer .drawer-foot-modern {
+        background: #f9fbff !important;
+        border-top: 1px solid #dce5f6 !important;
+      }
+
+      #drawer .drawer-foot-modern .btn {
+        min-height: 44px;
+        border-radius: 12px !important;
+      }
     </style>
 
     <div id="toastHost" class="toast-host" aria-live="polite" aria-atomic="true"></div>
 
     <style>
-      #voiceBtn.listening{
-        background: rgba(255,0,0,.08);
-        border: 1px solid rgba(255,0,0,.35);
+      #voiceBtn.listening {
+        background: rgba(255, 0, 0, .08);
+        border: 1px solid rgba(255, 0, 0, .35);
       }
-      .toast-host{
+      .toast-host {
         position: fixed;
         right: 18px;
         bottom: 18px;
@@ -523,36 +1110,852 @@
       }
     </style>
 
+    <style>
+      /* Full visual refresh: professional + attractive */
+      #appLayout .topbar.topbar-pro {
+        border-radius: 18px !important;
+        border: 1px solid rgba(99, 102, 241, 0.16) !important;
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(247, 250, 255, 0.86)) !important;
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08) !important;
+        padding: 12px !important;
+      }
+
+      #appLayout .toolbar-block-title {
+        font-size: 0.66rem !important;
+        letter-spacing: 0.12em !important;
+        color: #6b7280 !important;
+      }
+
+      #appLayout .toolbar-integrated {
+        gap: 10px !important;
+      }
+
+      #appLayout .toolbar-integrated .field.field-pro {
+        min-height: 42px !important;
+        border-radius: 13px !important;
+        border: 1px solid rgba(148, 163, 184, 0.28) !important;
+        background: rgba(255, 255, 255, 0.96) !important;
+        box-shadow: 0 6px 14px rgba(15, 23, 42, 0.05) !important;
+      }
+
+      #appLayout .toolbar-integrated .field.field-pro i {
+        color: #7c3aed !important;
+      }
+
+      #appLayout .topbar-pro .top-right #newBtn,
+      #appLayout .topbar-pro .top-right #newCatBtn {
+        height: 42px !important;
+        min-height: 42px !important;
+        min-width: 165px !important;
+        max-width: 185px !important;
+        border-radius: 13px !important;
+        font-size: 0.9rem !important;
+        font-weight: 800 !important;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+        box-shadow: 0 12px 24px rgba(99, 102, 241, 0.24) !important;
+      }
+
+      #appLayout .main-actions-btn {
+        width: 42px !important;
+        min-width: 42px !important;
+        height: 42px !important;
+        border-radius: 12px !important;
+      }
+
+      #appLayout .kpis.kpis-pro {
+        gap: 12px !important;
+      }
+
+      #appLayout .kpi.kpi-pro {
+        border-radius: 16px !important;
+        border: 1px solid rgba(99, 102, 241, 0.14) !important;
+        background: linear-gradient(165deg, rgba(255, 255, 255, 0.94), rgba(245, 248, 255, 0.9)) !important;
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.06) !important;
+      }
+
+      #appLayout .kpi.kpi-pro::before {
+        height: 2px !important;
+        background: linear-gradient(90deg, #8b5cf6, #6366f1, #06b6d4) !important;
+      }
+
+      #appLayout .board.board-pro {
+        gap: 12px !important;
+      }
+
+      #appLayout .col.col-pro {
+        border-radius: 18px !important;
+        border: 1px solid rgba(99, 102, 241, 0.14) !important;
+        background: linear-gradient(165deg, rgba(255, 255, 255, 0.92), rgba(244, 247, 255, 0.9)) !important;
+        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08) !important;
+      }
+
+      #appLayout .col-header.col-header-pro {
+        border-bottom: 1px solid rgba(99, 102, 241, 0.12) !important;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(245, 249, 255, 0.95)) !important;
+      }
+
+      #appLayout .col-count {
+        border-color: rgba(99, 102, 241, 0.22) !important;
+        background: #fff !important;
+        color: #5b21b6 !important;
+      }
+
+      #appLayout .task {
+        border-radius: 16px !important;
+        border: 1px solid rgba(99, 102, 241, 0.16) !important;
+        background: linear-gradient(170deg, rgba(255, 255, 255, 0.98), rgba(246, 248, 255, 0.93)) !important;
+        box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08) !important;
+      }
+
+      #appLayout .task:hover {
+        transform: translateY(-3px) !important;
+        border-color: rgba(124, 58, 237, 0.34) !important;
+        box-shadow: 0 18px 32px rgba(15, 23, 42, 0.12) !important;
+      }
+
+      #appLayout .task::after {
+        width: 3px !important;
+        background: linear-gradient(180deg, #6366f1, #8b5cf6) !important;
+      }
+
+      #appLayout .task .icon-btn {
+        width: 34px !important;
+        height: 34px !important;
+        border-radius: 10px !important;
+        border: 1px solid rgba(99, 102, 241, 0.2) !important;
+        background: rgba(255, 255, 255, 0.92) !important;
+        color: #6d28d9 !important;
+      }
+
+      #appLayout .task .icon-btn:hover {
+        background: #f5f3ff !important;
+      }
+
+      #appLayout .chip {
+        border-radius: 999px !important;
+        font-weight: 800 !important;
+      }
+
+      html[data-theme="dark"] #appLayout .topbar.topbar-pro,
+      html[data-theme="dark"] #appLayout .kpi.kpi-pro,
+      html[data-theme="dark"] #appLayout .col.col-pro {
+        border-color: rgba(167, 139, 250, 0.2) !important;
+        background: linear-gradient(165deg, rgba(15, 23, 42, 0.86), rgba(23, 34, 58, 0.82)) !important;
+        box-shadow: 0 18px 34px rgba(2, 6, 23, 0.34) !important;
+      }
+
+      html[data-theme="dark"] #appLayout .col-header.col-header-pro {
+        background: linear-gradient(180deg, rgba(17, 24, 39, 0.94), rgba(30, 41, 59, 0.86)) !important;
+        border-bottom-color: rgba(167, 139, 250, 0.2) !important;
+      }
+
+      html[data-theme="dark"] #appLayout .toolbar-integrated .field.field-pro {
+        background: rgba(15, 23, 42, 0.72) !important;
+        border-color: rgba(167, 139, 250, 0.24) !important;
+      }
+
+      html[data-theme="dark"] #appLayout .task {
+        border-color: rgba(167, 139, 250, 0.24) !important;
+        background: linear-gradient(170deg, rgba(17, 24, 39, 0.92), rgba(30, 41, 59, 0.86)) !important;
+      }
+
+      html[data-theme="dark"] #appLayout .task-title,
+      html[data-theme="dark"] #appLayout .task-desc,
+      html[data-theme="dark"] #appLayout .kpi-title,
+      html[data-theme="dark"] #appLayout .kpi-value,
+      html[data-theme="dark"] #appLayout .col-title {
+        color: #e5ecfb !important;
+      }
+
+      html[data-theme="dark"] #appLayout .task .icon-btn {
+        background: rgba(30, 41, 59, 0.9) !important;
+        color: #c4b5fd !important;
+        border-color: rgba(167, 139, 250, 0.28) !important;
+      }
+    </style>
+
     <script>
       window.NEXA_API = {
         list: "{{ path('api_tasks_list') }}",
         create: "{{ path('api_tasks_create') }}",
         updateBase: "/api/tasks",
         deleteBase: "/api/tasks",
+        today: "/api/tasks/today",
+        overdue: "/api/tasks/overdue",
+        autoPrioritize: "/api/tasks/auto-prioritize",
+        batchStatus: "/api/tasks/batch/status",
+        batchDelete: "/api/tasks/batch/delete",
 
-        /* ✅ FIX route problem: hardcode endpoints */
+        /* ? FIX route problem: hardcode endpoints */
         categories: "/api/categories",
         categoriesCreate: "/api/categories",
+        categoriesUpdateBase: "/api/categories",
+        categoriesDeleteBase: "/api/categories",
 
-        /* ✅ EXECUTIONS */
+        /* ? EXECUTIONS */
         exeList: "/api/executions",
         exeCreate: "/api/executions",
         exeUpdateBase: "/api/executions",
-        exeDeleteBase: "/api/executions"
+        exeDeleteBase: "/api/executions",
+
+        /* ? AI */
+        aiDescription: "/api/ai/description",
+        aiAnalyze: "/api/ai/analyze",
+        aiSubtasks: "/api/ai/subtasks",
+        aiSummary: "/api/ai/executions-summary",
+        aiEstimate: "/api/ai/estimate",
+        aiRiskScore: "/api/ai/risk-score",
+
+        /* ? Analytics */
+        analyticsThroughput: "/api/analytics/throughput",
+        analyticsWorkload: "/api/analytics/workload",
+        analyticsCycleTime: "/api/analytics/cycle-time",
+
+        /* ? Jobs */
+        jobsCreate: "/api/jobs",
+        jobsBase: "/api/jobs",
+
+        /* ? Dashboard */
+        dashboardStats: "/api/dashboard/stats",
+
+        /* ? Calendar & Weather */
+        calendarEvents: "/api/calendar/events",
+        weatherCurrent: "/api/weather/current"
       };
     </script>
 
-    <script src="/assets/board.js"></script>
+    <script src="/assets/board.js?v=20260215a"></script>
 
-    {# ✅ Vue for the eye button #}
+    {# âœ… Vue for the eye button #}
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 
-    {# ✅ executions drawer logic (no injection) #}
+    {# âœ… executions drawer logic (no injection) #}
     <script src="/assets/executions.js"></script>
 
-    <script src="/assets/nexa-nav.js"></script>
+    <script src="/assets/nexa-nav.js?v=20260214c"></script>
+    <script src="/assets/ai-features.js?v=20260209a"></script>
+    <script src="/assets/pdf-export-advanced.js?v=20260209a"></script>
+    <script src="/assets/business-features.js?v=20260210w"></script>
+    <script src="/assets/ai-integration.js?v=20260209a"></script>
+    <script src="/assets/business-integration.js?v=20260210w"></script>
+
+    <script>
+      // Actions Dropdown Logic
+      const mainActionsBtn = document.getElementById('mainActionsBtn');
+      const actionsMenu = document.getElementById('actionsMenu');
+      const actionsDropdown = document.getElementById('actionsDropdown');
+
+      if (mainActionsBtn && actionsMenu) {
+        mainActionsBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          actionsMenu.classList.toggle('active');
+          mainActionsBtn.classList.toggle('active');
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!actionsDropdown.contains(e.target)) {
+            actionsMenu.classList.remove('active');
+            mainActionsBtn.classList.remove('active');
+          }
+        });
+
+        // Close after clicking an action (optional, but good UX)
+        actionsMenu.querySelectorAll('.btn-modern').forEach(btn => {
+          btn.addEventListener('click', () => {
+            actionsMenu.classList.remove('active');
+            mainActionsBtn.classList.remove('active');
+          });
+        });
+      }
+    </script>
+
+    <!-- AI Thinking Indicator -->
+    <div class="ai-thinking" id="aiThinkingIndicator">
+      <div class="ai-spinner"></div>
+      <div class="ai-thinking-text">L'IA travaille pour vous...</div>
+    </div>
+
+    <!-- Analytics Modal -->
+    <div class="analytics-modal" id="analyticsModal">
+      <div class="analytics-content">
+        <div class="analytics-header">
+          <h2><i class="fa-solid fa-chart-line"></i> Analytics & Rapports</h2>
+          <button class="analytics-close" id="closeAnalytics">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="analytics-body" id="analyticsBody">
+          <!-- Content will be dynamically generated -->
+        </div>
+      </div>
+    </div>
+
     <script src="/assets/executions-consult-vue.js"></script>
+
+    <style id="task-final-pro">
+      /* Final modern override */
+      #appLayout,
+      #appLayout .main.main-pro {
+        background: linear-gradient(180deg, #f8faff, #f4f7fc) !important;
+      }
+
+      #appLayout .topbar.topbar-pro {
+        border: 1px solid rgba(99, 102, 241, 0.16) !important;
+        border-radius: 14px !important;
+        background: rgba(255, 255, 255, 0.9) !important;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08) !important;
+        backdrop-filter: blur(8px);
+      }
+
+      #appLayout .toolbar-block-title {
+        color: #64748b !important;
+        font-size: 0.67rem !important;
+        letter-spacing: 0.11em !important;
+      }
+
+      #appLayout .toolbar-integrated .field.field-pro {
+        border: 1px solid #dbe4f0 !important;
+        border-radius: 10px !important;
+        background: #ffffff !important;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+      }
+
+      #appLayout .toolbar-integrated .field.field-pro i {
+        color: #7c3aed !important;
+      }
+
+      #appLayout .topbar .btn.primary,
+      #appLayout .topbar-pro .top-right #newBtn,
+      #appLayout .topbar-pro .top-right #newCatBtn {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+        color: #ffffff !important;
+        border: 1px solid transparent !important;
+        border-radius: 10px !important;
+        box-shadow: 0 10px 20px rgba(99, 102, 241, 0.25) !important;
+      }
+
+      #appLayout .main-actions-btn {
+        border: 1px solid #dbe4f0 !important;
+        background: #ffffff !important;
+        color: #475569 !important;
+        border-radius: 10px !important;
+      }
+
+      #appLayout .kpi.kpi-pro {
+        border: 1px solid #dfe7f2 !important;
+        border-radius: 14px !important;
+        background: linear-gradient(170deg, #ffffff, #f7f9ff) !important;
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05) !important;
+      }
+
+      #appLayout .kpi.kpi-pro::before {
+        background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4) !important;
+        height: 2px !important;
+      }
+
+      #appLayout .kpi-title {
+        color: #64748b !important;
+        font-weight: 700 !important;
+      }
+
+      #appLayout .kpi-value,
+      #appLayout .col-title,
+      #appLayout .task-title {
+        color: #0f172a !important;
+      }
+
+      #appLayout .col.col-pro {
+        border: 1px solid #dfe7f2 !important;
+        border-radius: 14px !important;
+        background: linear-gradient(170deg, #ffffff, #f8faff) !important;
+        box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06) !important;
+      }
+
+      #appLayout .col-header.col-header-pro {
+        background: rgba(255, 255, 255, 0.9) !important;
+        border-bottom: 1px solid #e8eef8 !important;
+      }
+
+      #appLayout .col-count {
+        background: #f8faff !important;
+        border-color: #dbe4f0 !important;
+        color: #5b21b6 !important;
+      }
+
+      #appLayout .task {
+        border: 1px solid #dde6f2 !important;
+        border-radius: 12px !important;
+        background: #ffffff !important;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+      }
+
+      #appLayout .task:hover {
+        transform: translateY(-2px) !important;
+        border-color: #cfdcf0 !important;
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08) !important;
+      }
+
+      #appLayout .task::after {
+        width: 3px !important;
+        background: linear-gradient(180deg, #6366f1, #8b5cf6) !important;
+      }
+
+      #appLayout .task-desc {
+        color: #475569 !important;
+      }
+
+      #appLayout .task .icon-btn {
+        border: 1px solid #dbe4f0 !important;
+        border-radius: 9px !important;
+        background: #ffffff !important;
+        color: #6d28d9 !important;
+      }
+
+      #appLayout .task .icon-btn:hover {
+        background: #f5f3ff !important;
+        border-color: #cfd4ff !important;
+      }
+
+      #appLayout .actions-menu {
+        border-radius: 12px !important;
+        border: 1px solid #dbe4f0 !important;
+        background: #ffffff !important;
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14) !important;
+      }
+
+      #appLayout .actions-menu .btn-modern,
+      #appLayout .actions-menu .pdf-btn,
+      #appLayout .actions-menu .excel-btn,
+      #appLayout .actions-menu .analytics-btn,
+      #appLayout .actions-menu .admin-btn {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: none !important;
+      }
+
+      #appLayout .actions-menu .btn-modern:hover {
+        background: #f8fafc !important;
+        border-color: #dbe3ef !important;
+        transform: none !important;
+        filter: none !important;
+      }
+
+      html[data-theme="dark"] #appLayout,
+      html[data-theme="dark"] #appLayout .main.main-pro {
+        background: #0b1220 !important;
+      }
+
+      html[data-theme="dark"] #appLayout .topbar.topbar-pro,
+      html[data-theme="dark"] #appLayout .kpi.kpi-pro,
+      html[data-theme="dark"] #appLayout .col.col-pro,
+      html[data-theme="dark"] #appLayout .task,
+      html[data-theme="dark"] #appLayout .actions-menu {
+        background: linear-gradient(170deg, rgba(17, 24, 39, 0.95), rgba(30, 41, 59, 0.9)) !important;
+        border-color: rgba(148, 163, 184, 0.24) !important;
+      }
+
+      html[data-theme="dark"] #appLayout .kpi-title,
+      html[data-theme="dark"] #appLayout .task-desc {
+        color: #94a3b8 !important;
+      }
+
+      html[data-theme="dark"] #appLayout .kpi-value,
+      html[data-theme="dark"] #appLayout .col-title,
+      html[data-theme="dark"] #appLayout .task-title,
+      html[data-theme="dark"] #appLayout .actions-menu .btn-modern {
+        color: #e5e7eb !important;
+      }
+    </style>
+
+    <style id="task-bg-force">
+      body.task-page-theme .global-bubbles-bg {
+        display: none !important;
+      }
+
+      body.task-page-theme {
+        min-height: 100vh !important;
+        background:
+          radial-gradient(1500px 980px at 0% 100%, rgba(255, 154, 72, 0.5), transparent 58%),
+          radial-gradient(1500px 980px at 100% 100%, rgba(69, 189, 138, 0.48), transparent 58%),
+          linear-gradient(180deg, #f7fbff 0%, #e7edf6 48%, #d8e1ec 100%) !important;
+        background-repeat: no-repeat !important;
+        background-attachment: fixed !important;
+      }
+
+      body.task-page-theme #appLayout {
+        min-height: 100vh;
+        background: transparent !important;
+      }
+
+      body.task-page-theme #appLayout .main.main-pro {
+        background: transparent !important;
+      }
+
+      body.task-page-theme #appLayout .content-grid,
+      body.task-page-theme #appLayout .center {
+        background: transparent !important;
+      }
+
+      /* Keep drawers and top nav clean */
+      body.task-page-theme .navbar-custom,
+      body.task-page-theme #drawer,
+      body.task-page-theme #catDrawer,
+      body.task-page-theme #exeDrawer {
+        background-color: #f7fbff !important;
+        background-image: none !important;
+      }
+
+      /* Drawer should start below fixed navbar */
+      body.task-page-theme .drawer.drawer-modern,
+      body.task-page-theme #drawer,
+      body.task-page-theme #catDrawer,
+      body.task-page-theme #exeDrawer {
+        top: calc(var(--nav-height, 86px) + 8px) !important;
+        height: calc(100vh - var(--nav-height, 86px) - 8px) !important;
+        border-radius: 20px 0 0 20px !important;
+      }
+    </style>
+
+    <style id="task-modern-recolor">
+      body.task-page-theme {
+        --neo-bg: #eef4f8;
+        --neo-panel: #f8fbfd;
+        --neo-panel-2: #eef6fb;
+        --neo-border: #bdd2e0;
+        --neo-ink: #0f172a;
+        --neo-muted: #4b5563;
+        --neo-primary: #0f766e;
+        --neo-primary-2: #0891b2;
+        --neo-accent: #ff6b3d;
+      }
+
+      body.task-page-theme {
+        background:
+          radial-gradient(1200px 760px at 0% 100%, rgba(255, 107, 61, 0.32), transparent 62%),
+          radial-gradient(1200px 760px at 100% 100%, rgba(14, 165, 233, 0.3), transparent 62%),
+          linear-gradient(180deg, #f6fbff 0%, var(--neo-bg) 55%, #dce8f2 100%) !important;
+      }
+
+      body.task-page-theme .navbar-custom,
+      body.task-page-theme .topbar.topbar-pro,
+      body.task-page-theme .kpi.kpi-pro,
+      body.task-page-theme .col.col-pro,
+      body.task-page-theme .task,
+      body.task-page-theme .actions-menu {
+        border-color: var(--neo-border) !important;
+        background: linear-gradient(160deg, var(--neo-panel), var(--neo-panel-2)) !important;
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08) !important;
+      }
+
+      body.task-page-theme .topbar .btn.primary,
+      body.task-page-theme #newBtn,
+      body.task-page-theme #newCatBtn {
+        background: linear-gradient(135deg, var(--neo-primary), var(--neo-primary-2)) !important;
+        color: #ecfeff !important;
+        box-shadow: 0 14px 24px rgba(8, 145, 178, 0.26) !important;
+      }
+
+      body.task-page-theme .main-actions-btn,
+      body.task-page-theme .toolbar-integrated .field.field-pro,
+      body.task-page-theme .task .icon-btn {
+        border-color: var(--neo-border) !important;
+        background: #ffffff !important;
+      }
+
+      body.task-page-theme .toolbar-integrated .field.field-pro i,
+      body.task-page-theme .task .icon-btn,
+      body.task-page-theme .col-count {
+        color: var(--neo-primary) !important;
+      }
+
+      body.task-page-theme .kpi-title,
+      body.task-page-theme .task-desc {
+        color: var(--neo-muted) !important;
+      }
+
+      body.task-page-theme .kpi-value,
+      body.task-page-theme .task-title,
+      body.task-page-theme .col-title {
+        color: var(--neo-ink) !important;
+      }
+
+      body.task-page-theme .task::after {
+        background: linear-gradient(180deg, var(--neo-accent), #f59e0b, var(--neo-primary)) !important;
+      }
+
+      body.task-page-theme .chip.prio.high {
+        background: rgba(255, 107, 61, 0.12) !important;
+        border-color: rgba(255, 107, 61, 0.35) !important;
+        color: #9a3412 !important;
+      }
+    </style>
+
+    <style id="task-color-force">
+      body.task-page-theme {
+        background:
+          radial-gradient(1200px 760px at 0% 100%, rgba(99, 102, 241, 0.2), transparent 62%),
+          radial-gradient(1200px 760px at 100% 100%, rgba(16, 185, 129, 0.18), transparent 62%),
+          linear-gradient(180deg, #f5f7fb 0%, #e8edf5 52%, #d9e0ea 100%) !important;
+      }
+
+      body.task-page-theme #topbarNav,
+      body.task-page-theme #appLayout .topbar.topbar-pro,
+      body.task-page-theme #appLayout .kpi.kpi-pro,
+      body.task-page-theme #appLayout .col.col-pro,
+      body.task-page-theme #appLayout .task,
+      body.task-page-theme #appLayout .actions-menu {
+        background: linear-gradient(155deg, #ffffff, #f3f6fb) !important;
+        border: 1px solid #b8c3d7 !important;
+        box-shadow: 0 12px 24px rgba(30, 41, 59, 0.1) !important;
+      }
+
+      body.task-page-theme #appLayout .toolbar-integrated .field.field-pro,
+      body.task-page-theme #appLayout .main-actions-btn,
+      body.task-page-theme #appLayout .task .icon-btn {
+        background: #ffffff !important;
+        border: 1px solid #becadc !important;
+      }
+
+      body.task-page-theme #appLayout #newBtn,
+      body.task-page-theme #appLayout #newCatBtn,
+      body.task-page-theme #appLayout .topbar .btn.primary {
+        background: linear-gradient(135deg, #4338ca, #2563eb) !important;
+        color: #eef2ff !important;
+        border: 1px solid rgba(67, 56, 202, 0.35) !important;
+        box-shadow: 0 12px 24px rgba(67, 56, 202, 0.22) !important;
+      }
+
+      body.task-page-theme #appLayout .kpi-title,
+      body.task-page-theme #appLayout .task-desc {
+        color: #475569 !important;
+      }
+
+      body.task-page-theme #appLayout .kpi-value,
+      body.task-page-theme #appLayout .task-title,
+      body.task-page-theme #appLayout .col-title {
+        color: #0f172a !important;
+      }
+
+      body.task-page-theme #appLayout .toolbar-integrated .field.field-pro i,
+      body.task-page-theme #appLayout .task .icon-btn,
+      body.task-page-theme #appLayout .col-count {
+        color: #334155 !important;
+      }
+
+      body.task-page-theme #appLayout .task::after {
+        background: linear-gradient(180deg, #6366f1, #3b82f6, #10b981) !important;
+      }
+
+      body.task-page-theme #appLayout .chip.prio.high {
+        background: rgba(239, 68, 68, 0.1) !important;
+        border-color: rgba(239, 68, 68, 0.28) !important;
+        color: #991b1b !important;
+      }
+    </style>
+
+    <style id="task-music-orb-btn">
+      #appLayout .productivity-suite-launch {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        min-height: 44px;
+        padding: 6px 16px 6px 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(139, 92, 246, 0.22);
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(10px);
+        text-decoration: none;
+        color: #1e293b;
+        box-shadow: 0 4px 12px rgba(67, 56, 202, 0.08);
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        overflow: hidden;
+      }
+
+      #appLayout .productivity-suite-launch .ps-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        background: linear-gradient(135deg, #7c3aed, #5b5cf0);
+        font-size: 0.85rem;
+        box-shadow: 0 4px 10px rgba(91, 92, 240, 0.25);
+        transition: transform 0.3s ease;
+      }
+
+      #appLayout .focus-launch-btn .ps-icon {
+        background: linear-gradient(135deg, #f59e0b, #ef4444);
+        box-shadow: 0 4px 10px rgba(245, 158, 11, 0.25);
+      }
+
+      #appLayout .productivity-suite-launch .ps-label {
+        font-weight: 800;
+        font-size: 0.88rem;
+        letter-spacing: 0.01em;
+        color: #1e293b;
+      }
+
+      #appLayout .productivity-suite-launch:hover {
+        transform: translateY(-2px);
+        background: #ffffff;
+        border-color: rgba(139, 92, 246, 0.45);
+        box-shadow: 0 12px 24px rgba(67, 56, 202, 0.14);
+      }
+
+      #appLayout .productivity-suite-launch:hover .ps-icon {
+        transform: scale(1.1) rotate(6deg);
+      }
+
+      html[data-theme="dark"] #appLayout .productivity-suite-launch {
+        background: rgba(30, 41, 59, 0.5);
+        border-color: rgba(148, 163, 184, 0.18);
+        color: #e2e8f0;
+      }
+
+      html[data-theme="dark"] #appLayout .productivity-suite-launch .ps-label {
+        color: #e2e8f0;
+      }
+      
+      html[data-theme="dark"] #appLayout .productivity-suite-launch:hover {
+        background: rgba(30, 41, 59, 0.85);
+      }
+
+      #appLayout .music-orb-launch {
+        position: relative;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 6px;
+        border: 1px solid rgba(56, 189, 248, 0.34);
+        text-decoration: none;
+        overflow: hidden;
+        box-shadow: 0 14px 28px rgba(59, 130, 246, 0.28);
+        background: radial-gradient(circle at 35% 30%, #ffffff, #e8ecff 45%, #d0ddff 100%);
+      }
+
+      #appLayout .music-orb-launch .orb-ring {
+        position: absolute;
+        border-radius: 50%;
+        border: 2px solid transparent;
+      }
+
+      #appLayout .music-orb-launch .orb-ring-1 {
+        width: 50px;
+        height: 50px;
+        border-color: rgba(14, 165, 233, 0.28);
+      }
+
+      #appLayout .music-orb-launch .orb-ring-2 {
+        width: 44px;
+        height: 44px;
+        border-color: rgba(59, 130, 246, 0.34);
+      }
+
+      #appLayout .music-orb-launch .orb-ring-3 {
+        width: 38px;
+        height: 38px;
+        border-color: rgba(139, 92, 246, 0.38);
+      }
+
+      #appLayout .music-orb-launch .orb-ring-4 {
+        width: 32px;
+        height: 32px;
+        border-color: rgba(236, 72, 153, 0.3);
+      }
+
+      #appLayout .music-orb-launch .orb-core {
+        position: relative;
+        z-index: 2;
+        width: 18px;
+        height: 30px;
+        border-radius: 14px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(246, 248, 255, 0.84));
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow:
+          0 0 0 2px rgba(255, 255, 255, 0.52),
+          0 0 16px rgba(99, 102, 241, 0.3);
+      }
+
+      #appLayout .music-orb-launch .siri-capsule {
+        width: 12px;
+        height: 24px;
+        border-radius: 12px;
+        background: linear-gradient(180deg, #ffedd5 0%, #a855f7 45%, #22d3ee 100%);
+      }
+
+      #appLayout .music-orb-launch .orb-dot {
+        position: absolute;
+        bottom: 7px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #ffffff;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+      }
+
+      #appLayout .music-orb-launch:hover {
+        transform: translateY(-2px) scale(1.03);
+        box-shadow: 0 18px 34px rgba(37, 99, 235, 0.32);
+      }
+
+      #appLayout .music-orb-launch:hover .orb-ring-1 {
+        animation: orbPulse 1.25s ease-in-out infinite;
+      }
+
+      #appLayout .music-orb-launch:hover .orb-ring-2 {
+        animation: orbPulse 1.25s ease-in-out infinite 0.2s;
+      }
+
+      #appLayout .music-orb-launch:hover .orb-ring-3 {
+        animation: orbPulse 1.25s ease-in-out infinite 0.32s;
+      }
+
+      #appLayout .music-orb-launch:hover .orb-ring-4 {
+        animation: orbPulse 1.25s ease-in-out infinite 0.44s;
+      }
+
+      @keyframes orbPulse {
+        0% { transform: scale(1); opacity: 1; }
+        100% { transform: scale(1.18); opacity: 0.28; }
+      }
+    </style>
 
   </main>
 </div>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

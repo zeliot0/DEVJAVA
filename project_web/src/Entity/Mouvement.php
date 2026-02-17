@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Entity;
-
+use App\Entity\Produit;
 use App\Repository\MouvementRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -83,12 +83,12 @@ class Mouvement
         return $this;
     }
 
-    public function getProduit(): ?produit
+    public function getProduit(): ?Produit
     {
         return $this->produit;
     }
 
-    public function setProduit(?produit $produit): static
+    public function setProduit(?Produit $produit): static
     {
         $this->produit = $produit;
 

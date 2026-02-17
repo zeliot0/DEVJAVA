@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Task Suite - Automation{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="{{ asset('css/task-suite.css?v=20260215c') }}">
+{% endblock %}
+
+{% block body %}
+<div class="suite-page" data-suite-page="automation">
+  {% include 'task_suite/_nav.html.twig' %}
+
+  <section class="suite-panel">
+    <h2>Automation Actions</h2>
+    <div class="row wrap">
+      <button id="autoPrioritizeAllBtn" class="suite-btn">Auto Prioritize All</button>
+      <button id="loadTodayBtn" class="suite-btn">Load Today Tasks</button>
+      <button id="loadOverdueBtn" class="suite-btn">Load Overdue Tasks</button>
+      <button id="loadCalendarBtn" class="suite-btn">Load Calendar</button>
+      <button id="loadWeatherBtn" class="suite-btn">Load Weather</button>
+      <button id="loadHolidaysBtn" class="suite-btn">Load Holidays (US)</button>
+    </div>
+    <p class="muted">Holidays use Nager.Date free API. Weather uses your Open-Meteo endpoint.</p>
+  </section>
+
+  <section class="suite-grid two">
+    <article class="suite-card">
+      <h3>Action Result</h3>
+      <pre id="automationOutput">Run an automation action.</pre>
+    </article>
+    <article class="suite-card">
+      <h3>Recommended Rules</h3>
+      <ul class="suite-list">
+        <li>If due in 48h and status=todo, increase priority.</li>
+        <li>If stale for 7+ days, alert assignee.</li>
+        <li>If overdue, move to urgent queue and notify.</li>
+        <li>If task due on holiday/weekend, suggest next business day.</li>
+      </ul>
+    </article>
+  </section>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="{{ asset('js/task-suite.js?v=20260215c') }}"></script>
+{% endblock %}

@@ -27,12 +27,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(name: 'nom_user', length: 100)]
     private ?string $nom_user = null;
 
+    
+    /* =====================
+       GETTERS / SETTERS
+    ====================== */
+
     public function getId(): ?int
-    {
-        return $this->id_user;
-    }
-     // ✅ UTILE SI TU VEUX L’UTILISER TOI
-    public function getIdUser(): ?int
     {
         return $this->id_user;
     }
@@ -44,8 +44,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        $roles = $this->roles;
+        $roles = [];
+
+        foreach ($this->roles as $role) {
+            if (!is_string($role)) {
+                continue;
+            }
+
+            // Accept malformed values like "ROLE_ADMIN,ROLE_USER" from manual DB edits.
+            foreach (explode(',', $role) as $item) {
+                $item = trim($item);
+                if ($item !== '') {
+                    $roles[] = $item;
+                }
+            }
+        }
+
         $roles[] = 'ROLE_USER';
+
         return array_unique($roles);
     }
 
@@ -83,7 +99,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->nom_user;
     }
-
 
     public function setNom(string $nom): static
     {

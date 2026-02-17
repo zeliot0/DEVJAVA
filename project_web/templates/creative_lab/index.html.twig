@@ -1,0 +1,76 @@
+{% extends 'theme/base.html.twig' %}
+
+{% block title %}Creative Lab - NEXA{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/creative-lab.css?v=20260215a') }}">
+{% endblock %}
+
+{% block body %}
+<div class="creative-lab-page">
+    <section class="creative-hero">
+        <div>
+            <h1>Creative Lab</h1>
+            <p>Un espace fun et moderne pour stimuler la concentration: Tic-Tac-Toe, enigmes et puzzle.</p>
+        </div>
+        <a href="{{ path('app_conscience_index') }}" class="btn ghost">
+            <i class="fa-solid fa-arrow-left"></i> Retour Conscience
+        </a>
+    </section>
+
+    <section class="creative-lab-grid">
+        <article class="game-card">
+            <div class="game-card-head">
+                <h2><i class="fa-solid fa-xmark"></i> Tic-Tac-Toe</h2>
+                <button type="button" class="btn ghost" id="tttResetBtn">Reset</button>
+            </div>
+            <p>Alignez 3 symboles pour gagner.</p>
+            <div class="ttt-board" id="tttBoard"></div>
+            <div class="game-status" id="tttStatus">Votre tour (X)</div>
+        </article>
+
+        <article class="game-card">
+            <div class="game-card-head">
+                <h2><i class="fa-solid fa-lightbulb"></i> Enigme du jour</h2>
+                <button type="button" class="btn ghost" id="riddleNextBtn">Suivante</button>
+            </div>
+            <p>Test rapide de logique.</p>
+            <div class="riddle-box">
+                <strong id="riddleQuestion"></strong>
+                <input id="riddleAnswer" type="text" placeholder="Votre reponse..." autocomplete="off">
+                <div class="riddle-actions">
+                    <button type="button" class="btn primary" id="riddleCheckBtn">Verifier</button>
+                </div>
+                <div class="game-status" id="riddleStatus"></div>
+            </div>
+        </article>
+
+        <article class="game-card puzzle-card">
+            <div class="game-card-head">
+                <h2><i class="fa-solid fa-puzzle-piece"></i> Puzzle 3x3</h2>
+                <button type="button" class="btn ghost" id="puzzleShuffleBtn">Melanger</button>
+            </div>
+            <p>Remettez les chiffres en ordre de 1 a 8.</p>
+            <div class="puzzle-grid" id="puzzleGrid"></div>
+            <div class="game-status" id="puzzleStatus">Cliquez une case voisine du vide.</div>
+        </article>
+
+        <article class="game-card reflex-card">
+            <div class="game-card-head">
+                <h2><i class="fa-solid fa-bolt"></i> Reflex Click</h2>
+                <button type="button" class="btn ghost" id="reflexStartBtn">Start 10s</button>
+            </div>
+            <p>Cliquez le plus vite possible pendant 10 secondes.</p>
+            <button type="button" class="reflex-target" id="reflexTargetBtn">TAP</button>
+            <div class="game-status" id="reflexStatus">Appuyez sur Start pour commencer.</div>
+        </article>
+
+    </section>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/creative-lab.js?v=20260215a') }}"></script>
+{% endblock %}

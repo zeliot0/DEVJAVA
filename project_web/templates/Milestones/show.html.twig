@@ -1,0 +1,113 @@
+﻿{% extends 'theme/base.html.twig' %}
+
+{% block title %}Détails du Jalon{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4 goals-form-page goal-show-form-page milestone-show-page">
+    <div class="d-flex justify-content-between align-items-center mb-4 goals-form-header">
+        <div>
+            <h1 class="h2 mb-1"><i class="fas fa-flag me-2"></i>{{ milestone.title }}</h1>
+            <p class="mb-0">Détails du jalon</p>
+        </div>
+        <div class="goals-inline-actions">
+            <a href="{{ path('app_milestones_index') }}" class="btn btn-outline-secondary goals-btn goals-btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Retour aux jalons
+            </a>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm goals-form-card">
+        <div class="card-body">
+            <div class="goals-form-layout">
+                <div class="goals-form-main">
+                    <section class="goals-section">
+                        <h3 class="goals-section-title"><i class="fas fa-file-alt"></i> Informations du jalon</h3>
+
+                        <div class="mb-3 d-flex gap-2 flex-wrap">
+                            <span class="milestone-status-pill {% if milestone.completedDate %}is-done{% elseif milestone.dueDate < date() %}is-late{% else %}is-open{% endif %}">
+                                {% if milestone.completedDate %}Terminé{% elseif milestone.dueDate < date() %}En retard{% else %}En cours{% endif %}
+                            </span>
+                            {% if milestone.goalGoa %}
+                                <span class="milestone-goal-pill">
+                                    <i class="fas fa-bullseye me-1"></i> {{ milestone.goalGoa.titleGoa }}
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Titre</label>
+                            <div class="goal-readonly-field">{{ milestone.title }}</div>
+                        </div>
+
+                        <div class="mb-0">
+                            <label class="form-label fw-semibold">Description</label>
+                            <div class="goal-readonly-field goal-readonly-multiline">{{ milestone.description }}</div>
+                        </div>
+                    </section>
+
+                    <section class="goals-section">
+                        <h3 class="goals-section-title"><i class="fas fa-calendar-alt"></i> Dates</h3>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Date d'échéance</label>
+                                <div class="goal-readonly-field">{{ milestone.dueDate ? milestone.dueDate|date('d/m/Y') : 'N/A' }}</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Date de complétion</label>
+                                <div class="goal-readonly-field">{{ milestone.completedDate ? milestone.completedDate|date('d/m/Y') : 'Non terminée' }}</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-0">
+                            <label class="form-label fw-semibold">Créé le</label>
+                            <div class="goal-readonly-field">{{ milestone.createdAt ? milestone.createdAt|date('d/m/Y à H:i') : 'N/A' }}</div>
+                        </div>
+                    </section>
+
+                    {% if not is_granted('ROLE_ADMIN') %}
+                        <div class="d-flex gap-2 justify-content-end mt-4 pt-3 border-top goals-form-actions">
+                            <a href="{{ path('app_milestones_edit', {'id': milestone.id}) }}" class="btn btn-primary goals-btn goals-btn-primary">
+                                <i class="fas fa-pen me-1"></i> Modifier
+                            </a>
+                            <form method="post" action="{{ path('app_milestones_delete', {'id': milestone.id}) }}" class="d-inline-flex"
+                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce jalon ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ milestone.id) }}">
+                                <button type="submit" class="btn btn-outline-danger goals-btn goals-btn-secondary">
+                                    <i class="fas fa-trash me-1"></i> Supprimer
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <aside class="goals-form-aside" aria-label="Aperçu">
+                    <div class="goals-aside-card">
+                        <h3><i class="fas fa-info-circle"></i> Aperçu</h3>
+                        <ul>
+                            <li><strong>ID:</strong> {{ milestone.id }}</li>
+                            <li><strong>Objectif:</strong> {{ milestone.goalGoa ? milestone.goalGoa.titleGoa : 'Aucun' }}</li>
+                            <li><strong>Échéance:</strong> {{ milestone.dueDate ? milestone.dueDate|date('d/m/Y') : 'N/A' }}</li>
+                            <li><strong>Statut:</strong> {% if milestone.completedDate %}Terminé{% else %}En attente{% endif %}</li>
+                        </ul>
+
+                        {% if milestone.goalGoa %}
+                            <hr>
+                            <p class="mb-2"><strong>Progression objectif</strong></p>
+                            <div class="goal-readonly-progress">
+                                <div class="goal-readonly-progress-fill" style="width: {{ milestone.goalGoa.progressGoa|default(0) }}%;"></div>
+                            </div>
+                            <div class="goal-readonly-progress-text">{{ milestone.goalGoa.progressGoa|default(0) }}%</div>
+                            <a href="{{ path('app_goal_show', {'id_g': milestone.goalGoa.idGoa}) }}"
+                               class="btn btn-outline-secondary goals-btn goals-btn-secondary w-100 mt-2">
+                                <i class="fas fa-arrow-right me-1"></i> Voir l'objectif
+                            </a>
+                        {% endif %}
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

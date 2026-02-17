@@ -40,4 +40,40 @@ class UserRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    /**
+     * @return User[]
+     */
+    public function findForAdminList(?string $search, string $sort): array
+    {
+        $qb = $this->createQueryBuilder('u');
+
+        if ($search !== null && trim($search) !== '') {
+            $term = '%' . mb_strtolower(trim($search)) . '%';
+            $qb
+                ->andWhere('LOWER(u.email) LIKE :term OR LOWER(u.nom_user) LIKE :term')
+                ->setParameter('term', $term);
+        }
+
+        switch ($sort) {
+            case 'email_asc':
+                $qb->orderBy('u.email', 'ASC');
+                break;
+            case 'name_asc':
+                $qb->orderBy('u.nom_user', 'ASC');
+                break;
+            case 'admin_first':
+                $qb
+                    ->addSelect("CASE WHEN u.roles LIKE '%ROLE_ADMIN%' THEN 0 ELSE 1 END AS HIDDEN roleOrder")
+                    ->orderBy('roleOrder', 'ASC')
+                    ->addOrderBy('u.id_user', 'ASC');
+                break;
+            case 'newest':
+            default:
+                $qb->orderBy('u.id_user', 'DESC');
+                break;
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

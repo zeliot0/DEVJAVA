@@ -1,0 +1,164 @@
+/* Produits page - final premium/professional override */
+.stock-pages .produits-page-modern .page-header,
+.stock-pages .produits-page-modern .produits-kpi,
+.stock-pages .produits-page-modern .produits-search-modern,
+.stock-pages .produits-page-modern .produits-card-modern,
+.stock-pages .produits-page-modern .produits-empty {
+  border: 1px solid #e4e8f0 !important;
+  border-radius: 20px !important;
+  background: #ffffff !important;
+  box-shadow: 0 16px 30px rgba(15, 23, 42, 0.07) !important;
+}
+
+.stock-pages .produits-page-modern .page-header {
+  padding: 24px 26px !important;
+}
+
+.stock-pages .produits-page-modern .produits-kicker {
+  background: #eef2ff !important;
+  border-color: #cdd8f6 !important;
+  color: #3b4f7a !important;
+}
+
+.stock-pages .produits-page-modern .produits-header-modern h1 {
+  color: #0f172a !important;
+}
+
+.stock-pages .produits-page-modern .produits-header-modern p {
+  color: #64748b !important;
+}
+
+.stock-pages .produits-page-modern .produits-actions-modern .btn {
+  border-radius: 12px !important;
+  border: 1px solid #dbe4ef !important;
+  background: #ffffff !important;
+}
+
+.stock-pages .produits-page-modern .produits-actions-modern .btn.primary {
+  border: 0 !important;
+  background: linear-gradient(135deg, #5b8dff, #2f6df0) !important;
+  box-shadow: 0 12px 24px rgba(47, 109, 240, 0.24) !important;
+}
+
+.stock-pages .produits-page-modern .produits-kpi {
+  border-radius: 16px !important;
+}
+
+.stock-pages .produits-page-modern .produits-kpi strong {
+  color: #0f172a !important;
+}
+
+.stock-pages .produits-page-modern .produits-kpi.is-alert {
+  border-color: #fecaca !important;
+  background: #fef2f2 !important;
+}
+
+.stock-pages .produits-page-modern .produits-search-modern {
+  border-radius: 18px !important;
+}
+
+.stock-pages .produits-page-modern .produits-search-right select {
+  border: 1px solid #dbe4ef !important;
+  border-radius: 11px !important;
+}
+
+.stock-pages .produits-page-modern .produits-search-right .btn.primary {
+  border: 0 !important;
+  background: linear-gradient(135deg, #5b8dff, #2f6df0) !important;
+}
+
+.stock-pages .produits-page-modern .produits-card-modern {
+  border-radius: 22px !important;
+  padding: 18px !important;
+  position: relative;
+  overflow: hidden !important;
+}
+
+.stock-pages .produits-page-modern .produits-card-modern::before {
+  content: "" !important;
+  position: absolute !important;
+  right: -70px !important;
+  bottom: -90px !important;
+  width: 220px !important;
+  height: 220px !important;
+  border-radius: 999px !important;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.16), transparent 70%) !important;
+  pointer-events: none !important;
+}
+
+.stock-pages .produits-page-modern .produits-card-modern:hover {
+  transform: translateY(-4px) !important;
+  border-color: #d0d9e6 !important;
+  box-shadow: 0 22px 36px rgba(15, 23, 42, 0.11) !important;
+}
+
+.stock-pages .produits-page-modern .produits-thumb-modern {
+  width: 54px !important;
+  height: 54px !important;
+  border-radius: 14px !important;
+}
+
+.stock-pages .produits-page-modern .produits-item-text h3 {
+  color: #0f172a !important;
+  font-size: clamp(1.5rem, 2.2vw, 1.9rem) !important;
+}
+
+.stock-pages .produits-page-modern .produits-health {
+  border-radius: 999px !important;
+}
+
+.stock-pages .produits-page-modern .produits-stock-box {
+  border: 1px solid #dbe4ef !important;
+  border-radius: 16px !important;
+  background: #f8fafc !important;
+}
+
+.stock-pages .produits-page-modern .produits-stock-box strong {
+  color: #1e3a8a !important;
+}
+
+.stock-pages .produits-page-modern .produits-meta-item {
+  border: 1px solid #dbe4ef !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+}
+
+.stock-pages .produits-page-modern .produits-actions-row {
+  border-top: 1px solid #e8edf4 !important;
+  padding-top: 12px !important;
+}
+
+.stock-pages .produits-page-modern .produits-actions-row .nexa-btn-icon {
+  width: 40px !important;
+  height: 40px !important;
+  border: 1px solid #dbe4ef !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+}
+
+.stock-pages .produits-page-modern .produits-actions-row .nexa-btn-icon:hover {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .stock-pages .produits-page-modern .page-header,
+html[data-theme="dark"] .stock-pages .produits-page-modern .produits-kpi,
+html[data-theme="dark"] .stock-pages .produits-page-modern .produits-search-modern,
+html[data-theme="dark"] .stock-pages .produits-page-modern .produits-card-modern,
+html[data-theme="dark"] .stock-pages .produits-page-modern .produits-empty {
+  background: #111827 !important;
+  border-color: rgba(148, 163, 184, 0.26) !important;
+  box-shadow: 0 20px 36px rgba(2, 6, 23, 0.42) !important;
+}
+
+html[data-theme="dark"] .stock-pages .produits-page-modern .produits-header-modern h1,
+html[data-theme="dark"] .stock-pages .produits-page-modern .produits-item-text h3,
+html[data-theme="dark"] .stock-pages .produits-page-modern .produits-kpi strong {
+  color: #e5e7eb !important;
+}
+
+html[data-theme="dark"] .stock-pages .produits-page-modern .produits-header-modern p,
+html[data-theme="dark"] .stock-pages .produits-page-modern .produits-item-text span {
+  color: #94a3b8 !important;
+}

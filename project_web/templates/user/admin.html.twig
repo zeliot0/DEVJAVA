@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin | Utilisateurs{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="admin-container">
+
+  <h1>Gestion des utilisateurs</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Nom</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for user in users %}
+        <tr>
+          <td>{{ user.id }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.nom }}</td>
+          <td>
+            <form method="post"
+                  action="{{ path('app_user_delete', {id: user.id}) }}"
+                  onsubmit="return confirm('Supprimer cet utilisateur ?');">
+              <button class="btn-delete">Supprimer</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <a class="logout" href="{{ path('app_logout') }}">Déconnexion</a>
+
+</div>
+{% endblock %}

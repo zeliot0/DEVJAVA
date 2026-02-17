@@ -1,0 +1,290 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap");
+
+.stock-pages .product-stats-modern-page {
+  --stats-bg: #f6eee3;
+  --stats-bg-2: #efdac4;
+  --stats-paper: #fff9f0;
+  --stats-paper-2: #fff3e2;
+  --stats-ink: #1c1917;
+  --stats-muted: #6b5a4a;
+  --stats-accent: #0f766e;
+  --stats-accent-2: #f97316;
+  --stats-line: rgba(120, 113, 108, 0.28);
+  --stats-shadow: 0 20px 48px rgba(68, 56, 43, 0.22);
+  position: relative;
+  isolation: isolate;
+  padding-bottom: 8px;
+  font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+}
+
+.stock-pages .product-stats-modern-page::before {
+  content: "";
+  position: absolute;
+  inset: -44px -30px -20px;
+  z-index: 0;
+  border-radius: 38px;
+  background:
+    radial-gradient(circle at 4% 8%, rgba(249, 115, 22, 0.25), transparent 32%),
+    radial-gradient(circle at 88% 14%, rgba(15, 118, 110, 0.26), transparent 36%),
+    linear-gradient(130deg, var(--stats-bg), var(--stats-bg-2));
+  pointer-events: none;
+}
+
+.stock-pages .product-stats-modern-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+.stock-pages .product-stats-modern-page .page-header {
+  border: 2px solid var(--stats-line) !important;
+  border-radius: 28px !important;
+  padding: 26px 30px !important;
+  background: linear-gradient(155deg, var(--stats-paper), var(--stats-paper-2)) !important;
+  box-shadow: var(--stats-shadow) !important;
+  animation: stats-fade-up 0.55s ease both;
+}
+
+.stock-pages .product-stats-modern-page .page-header h1 {
+  margin: 0;
+  color: var(--stats-ink) !important;
+  font-size: clamp(2rem, 3.4vw, 3.05rem) !important;
+  letter-spacing: -0.02em !important;
+  text-transform: uppercase;
+}
+
+.stock-pages .product-stats-modern-page .page-header p {
+  margin-top: 4px;
+  color: var(--stats-muted) !important;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.stock-pages .product-stats-modern-page .stats-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.stock-pages .product-stats-modern-page .page-header .btn {
+  border: 2px solid rgba(28, 25, 23, 0.28) !important;
+  border-radius: 14px !important;
+  background: #fff8ee !important;
+  color: var(--stats-ink) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.01em;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.stock-pages .product-stats-modern-page .page-header .btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(15, 118, 110, 0.42) !important;
+  box-shadow: 0 12px 22px rgba(15, 118, 110, 0.16) !important;
+}
+
+.stock-pages .product-stats-modern-page .page-header .btn.primary {
+  border-color: rgba(15, 118, 110, 0.55) !important;
+  background: linear-gradient(135deg, #0f766e, #0891b2) !important;
+  color: #ecfeff !important;
+  box-shadow: 0 16px 28px rgba(8, 145, 178, 0.3) !important;
+}
+
+.stock-pages .product-stats-modern-page .form-card {
+  border: 2px solid var(--stats-line) !important;
+  border-radius: 30px !important;
+  padding: clamp(18px, 2.4vw, 28px) !important;
+  background: linear-gradient(140deg, #fff7ec, #fff4e8 64%, #fff9f2) !important;
+  box-shadow: var(--stats-shadow) !important;
+  animation: stats-fade-up 0.7s ease both;
+}
+
+.stock-pages .product-stats-modern-page .form-section,
+.stock-pages .product-stats-modern-page .form-section + .form-section,
+.stock-pages .product-stats-modern-page .form-section h3 {
+  border: 0 !important;
+}
+
+.stock-pages .product-stats-modern-page .form-section + .form-section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 2px dashed rgba(120, 113, 108, 0.3) !important;
+}
+
+.stock-pages .product-stats-modern-page .info-box {
+  border: 2px solid rgba(120, 113, 108, 0.3) !important;
+  border-radius: 22px !important;
+  padding: 18px !important;
+  background: linear-gradient(145deg, #fffefa, #fff6e8) !important;
+  box-shadow: 0 12px 22px rgba(120, 113, 108, 0.12) !important;
+}
+
+.stock-pages .product-stats-modern-page .info-label {
+  color: var(--stats-muted) !important;
+  font-size: 0.86rem !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.stock-pages .product-stats-modern-page .info-value {
+  color: var(--stats-ink) !important;
+  font-size: clamp(2.15rem, 3.2vw, 2.85rem) !important;
+  line-height: 1;
+}
+
+.stock-pages .product-stats-modern-page .stats-chart-title {
+  margin: 0;
+  color: var(--stats-ink) !important;
+  font-size: clamp(1.5rem, 2.6vw, 2rem) !important;
+  letter-spacing: -0.01em;
+}
+
+.stock-pages .product-stats-modern-page .histo {
+  margin-top: 14px;
+  gap: 14px !important;
+}
+
+.stock-pages .product-stats-modern-page .histo-row {
+  grid-template-columns: minmax(110px, 220px) 1fr auto !important;
+  gap: 14px !important;
+  align-items: center !important;
+  padding: 12px 14px !important;
+  border: 2px solid rgba(120, 113, 108, 0.24);
+  border-radius: 16px;
+  background: rgba(255, 250, 241, 0.82);
+  animation: stats-fade-up 0.8s ease both;
+}
+
+.stock-pages .product-stats-modern-page .histo-label {
+  color: var(--stats-ink) !important;
+  font-size: clamp(1.2rem, 2.1vw, 1.7rem) !important;
+  font-weight: 700 !important;
+  overflow-wrap: anywhere;
+}
+
+.stock-pages .product-stats-modern-page .histo-track {
+  height: 18px !important;
+  border-radius: 999px !important;
+  border: 2px solid rgba(120, 113, 108, 0.22) !important;
+  background:
+    linear-gradient(90deg, rgba(15, 118, 110, 0.08) 0, rgba(15, 118, 110, 0.08) 1px, transparent 1px, transparent 12px),
+    linear-gradient(90deg, #ece7dc, #e7dfd3) !important;
+  background-size: 12px 100%, 100% 100% !important;
+  overflow: hidden;
+}
+
+.stock-pages .product-stats-modern-page .histo-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--stats-accent-2), #f59e0b 34%, var(--stats-accent) 100%) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.36), 0 0 16px rgba(15, 118, 110, 0.26);
+  animation: stats-bar-grow 1.1s cubic-bezier(0.2, 0.95, 0.25, 1) both;
+  transform-origin: left center;
+}
+
+.stock-pages .product-stats-modern-page .histo-value {
+  color: var(--stats-ink) !important;
+  font-size: clamp(1.1rem, 2vw, 1.7rem) !important;
+  font-weight: 700 !important;
+}
+
+.stock-pages .product-stats-modern-page .stats-chart-help {
+  margin-top: 10px;
+  color: var(--stats-muted);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  font-size: 0.84rem;
+}
+
+.stock-pages .product-stats-modern-page .warning {
+  border: 2px dashed rgba(120, 113, 108, 0.44) !important;
+  background: rgba(255, 244, 230, 0.88) !important;
+  color: #7c2d12 !important;
+}
+
+@keyframes stats-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes stats-bar-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (max-width: 920px) {
+  .stock-pages .product-stats-modern-page .page-header {
+    padding: 20px 18px !important;
+  }
+
+  .stock-pages .product-stats-modern-page .stats-actions {
+    width: 100%;
+  }
+
+  .stock-pages .product-stats-modern-page .page-header .btn {
+    flex: 1 1 160px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 700px) {
+  .stock-pages .product-stats-modern-page::before {
+    inset: -28px -12px -10px;
+    border-radius: 24px;
+  }
+
+  .stock-pages .product-stats-modern-page .histo-row {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .stock-pages .product-stats-modern-page .histo-track {
+    order: 3;
+  }
+
+  .stock-pages .product-stats-modern-page .histo-value {
+    justify-self: start;
+  }
+}
+
+html[data-theme="dark"] .stock-pages .product-stats-modern-page {
+  --stats-bg: #0f1720;
+  --stats-bg-2: #1b2430;
+  --stats-paper: #18212d;
+  --stats-paper-2: #1f2a37;
+  --stats-ink: #e8ecf1;
+  --stats-muted: #a6b4c2;
+  --stats-line: rgba(148, 163, 184, 0.28);
+  --stats-shadow: 0 24px 44px rgba(2, 8, 20, 0.45);
+}
+
+html[data-theme="dark"] .stock-pages .product-stats-modern-page .page-header .btn {
+  background: #222d3a !important;
+  color: #f1f5f9 !important;
+}
+
+html[data-theme="dark"] .stock-pages .product-stats-modern-page .form-card,
+html[data-theme="dark"] .stock-pages .product-stats-modern-page .info-box,
+html[data-theme="dark"] .stock-pages .product-stats-modern-page .histo-row {
+  background: linear-gradient(150deg, rgba(30, 41, 59, 0.86), rgba(30, 41, 59, 0.62)) !important;
+}
+
+html[data-theme="dark"] .stock-pages .product-stats-modern-page .histo-track {
+  background:
+    linear-gradient(90deg, rgba(56, 189, 248, 0.09) 0, rgba(56, 189, 248, 0.09) 1px, transparent 1px, transparent 12px),
+    linear-gradient(90deg, rgba(71, 85, 105, 0.72), rgba(51, 65, 85, 0.68)) !important;
+}
+
+html[data-theme="dark"] .stock-pages .product-stats-modern-page .warning {
+  background: rgba(127, 29, 29, 0.24) !important;
+  color: #fecaca !important;
+}

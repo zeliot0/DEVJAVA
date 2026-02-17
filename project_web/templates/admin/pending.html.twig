@@ -1,0 +1,42 @@
+{% extends 'base-sid.html.twig' %}
+
+{% block title %}Utilisateurs en attente{% endblock %}
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('css/adminn.css') }}">
+{% endblock %}
+{% block body %}
+<div class="admin-page">
+
+<h2>⏳ Comptes en attente</h2>
+
+{% for message in app.flashes('success') %}
+  <div class="flash-success">{{ message }}</div>
+{% endfor %}
+
+<div class="user-grid">
+  {% for user in users %}
+    <div class="user-card">
+
+      <div class="user-avatar">
+        {{ user.nom|first|upper }}
+      </div>
+
+      <div class="user-info">
+        <h3>{{ user.nom }}</h3>
+        <p>{{ user.email }}</p>
+      </div>
+
+      <div class="actions">
+        <a href="{{ path('admin_user_accept', {id: user.id}) }}"
+           class="btn accept">✔</a>
+
+        <a href="{{ path('admin_user_refuse', {id: user.id}) }}"
+           class="btn refuse"
+           onclick="return confirm('Refuser cet utilisateur ?')">✖</a>
+      </div>
+
+    </div>
+  {% endfor %}
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,112 @@
+﻿{# templates/goal/show.html.twig - Version corrigée #}
+{% extends 'theme/base.html.twig' %}
+
+{% block title %}Détails de l'objectif - {{ goal.titleGoa }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4 goals-form-page goal-show-form-page">
+    <div class="d-flex justify-content-between align-items-center mb-4 goals-form-header">
+        <div>
+            <h1 class="h2 mb-1"><i class="fas fa-bullseye me-2"></i>{{ goal.titleGoa }}</h1>
+            <p class="mb-0">Détails de l'objectif</p>
+        </div>
+        <div class="goals-inline-actions">
+            <a href="{{ path('app_milestones_index') }}" class="btn btn-outline-secondary goals-btn goals-btn-secondary">
+                <i class="fas fa-flag me-1"></i> Jalons
+            </a>
+            <a href="{{ path('app_goal_index') }}" class="btn btn-outline-secondary goals-btn goals-btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+            </a>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm goals-form-card">
+        <div class="card-body">
+            <div class="goals-form-layout">
+                <div class="goals-form-main">
+                    <section class="goals-section">
+                        <h3 class="goals-section-title"><i class="fas fa-pen"></i> Informations principales</h3>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Titre</label>
+                            <div class="goal-readonly-field">{{ goal.titleGoa }}</div>
+                        </div>
+                        <div class="mb-0">
+                            <label class="form-label fw-semibold">Description</label>
+                            <div class="goal-readonly-field goal-readonly-multiline">{{ goal.descriptionGoa ?: 'Aucune description' }}</div>
+                        </div>
+                    </section>
+
+                    <section class="goals-section">
+                        <h3 class="goals-section-title"><i class="fas fa-calendar-alt"></i> Planification</h3>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Date de début</label>
+                                <div class="goal-readonly-field">{{ goal.dateDebutGoa ? goal.dateDebutGoa|date('d/m/Y') : 'Non définie' }}</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Date de fin</label>
+                                <div class="goal-readonly-field">{{ goal.dateFinalGoa ? goal.dateFinalGoa|date('d/m/Y') : 'Non définie' }}</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="goals-section">
+                        <h3 class="goals-section-title"><i class="fas fa-chart-line"></i> Suivi</h3>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-semibold">Catégorie</label>
+                                <div class="goal-readonly-field">{{ goal.categoryGoa ?: 'N/A' }}</div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-semibold">Statut</label>
+                                <div class="goal-readonly-field">{{ goal.statusGoa ?: 'N/A' }}</div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-semibold">Priorité</label>
+                                <div class="goal-readonly-field">{{ goal.priorityGoa ?: 'N/A' }}</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Progression</label>
+                            <div class="goal-readonly-progress">
+                                <div class="goal-readonly-progress-fill" style="width: {{ goal.progressGoa|default(0) }}%;"></div>
+                            </div>
+                            <div class="goal-readonly-progress-text">{{ goal.progressGoa|default(0) }}% complété</div>
+                        </div>
+
+                        <div class="mb-0">
+                            <label class="form-label fw-semibold">Notes</label>
+                            <div class="goal-readonly-field goal-readonly-multiline">{{ goal.notesGoa ?: 'Aucune note' }}</div>
+                        </div>
+                    </section>
+
+                    {% if not is_granted('ROLE_ADMIN') %}
+                        <div class="d-flex gap-2 justify-content-end mt-4 pt-3 border-top goals-form-actions">
+                            <a href="{{ path('app_goal_edit', {'id_g': goal.getIdGoa()}) }}"
+                               class="btn btn-primary goals-btn goals-btn-primary">
+                                <i class="fas fa-edit me-1"></i> Modifier
+                            </a>
+                            {{ include('goal/_delete_form.html.twig') }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <aside class="goals-form-aside" aria-label="Aperçu">
+                    <div class="goals-aside-card">
+                        <h3><i class="fas fa-info-circle"></i> Aperçu</h3>
+                        <ul>
+                            <li><strong>ID:</strong> {{ goal.getIdGoa() }}</li>
+                            <li><strong>Couleur:</strong> <span class="goal-color-chip" style="background: {{ goal.colorGoa ?: '#7c3aed' }};"></span></li>
+                            <li><strong>Début:</strong> {{ goal.dateDebutGoa ? goal.dateDebutGoa|date('d/m/Y') : 'N/A' }}</li>
+                            <li><strong>Fin:</strong> {{ goal.dateFinalGoa ? goal.dateFinalGoa|date('d/m/Y') : 'N/A' }}</li>
+                        </ul>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

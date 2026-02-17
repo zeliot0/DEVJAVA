@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<title>UserResponse</title>
+
+{% block body %}
+    <h1>UserResponse</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ user_response.id }}</td>
+            </tr>
+            <tr>
+                <th>Valeur</th>
+                <td>{{ user_response.valeur }}</td>
+            </tr>
+            <tr>
+                <th>Humeur</th>
+                <td>{{ user_response.humeur }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{{ user_response.date ? user_response.date|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>CreatedAt</th>
+                <td>{{ user_response.createdAt ? user_response.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_user_response_index') }}">back to list</a>
+
+    <a href="{{ path('app_user_response_edit', {'id': user_response.id}) }}">edit</a>
+
+    {{ include('user_response/_delete_form.html.twig') }}
+{% endblock %}

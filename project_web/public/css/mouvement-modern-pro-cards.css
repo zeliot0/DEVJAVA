@@ -1,0 +1,147 @@
+/* Mouvements page - final premium/pro card system */
+.stock-pages .mouvements-page-modern .page-header,
+.stock-pages .mouvements-page-modern .search-bar,
+.stock-pages .mouvements-page-modern .pack-card,
+.stock-pages .mouvements-page-modern .warning {
+  border: 1px solid #e4e8f0 !important;
+  border-radius: 20px !important;
+  background: #ffffff !important;
+  box-shadow: 0 16px 30px rgba(15, 23, 42, 0.07) !important;
+}
+
+.stock-pages .mouvements-page-modern .page-header {
+  padding: 24px 26px !important;
+}
+
+.stock-pages .mouvements-page-modern .page-header h1 {
+  color: #0f172a !important;
+}
+
+.stock-pages .mouvements-page-modern .page-header p {
+  color: #64748b !important;
+}
+
+.stock-pages .mouvements-page-modern .page-header .btn {
+  border: 1px solid #dbe4ef !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+}
+
+.stock-pages .mouvements-page-modern .page-header .btn.primary {
+  border: 0 !important;
+  background: linear-gradient(135deg, #5b8dff, #2f6df0) !important;
+  box-shadow: 0 12px 24px rgba(47, 109, 240, 0.24) !important;
+}
+
+.stock-pages .mouvements-page-modern .search-bar {
+  border-radius: 18px !important;
+}
+
+.stock-pages .mouvements-page-modern .search-input input,
+.stock-pages .mouvements-page-modern .search-select select {
+  border: 1px solid #dbe4ef !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+}
+
+.stock-pages .mouvements-page-modern .search-bar .btn.primary {
+  border: 0 !important;
+  background: linear-gradient(135deg, #5b8dff, #2f6df0) !important;
+}
+
+.stock-pages .mouvements-page-modern .pack-grid {
+  gap: 16px !important;
+}
+
+.stock-pages .mouvements-page-modern .pack-card {
+  border-radius: 22px !important;
+  padding: 18px !important;
+  position: relative;
+  overflow: hidden !important;
+}
+
+.stock-pages .mouvements-page-modern .pack-card::before {
+  content: "" !important;
+  position: absolute !important;
+  right: -70px !important;
+  bottom: -90px !important;
+  width: 220px !important;
+  height: 220px !important;
+  border-radius: 999px !important;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.16), transparent 70%) !important;
+  pointer-events: none !important;
+}
+
+.stock-pages .mouvements-page-modern .pack-card:hover {
+  transform: translateY(-4px) !important;
+  border-color: #d0d9e6 !important;
+  box-shadow: 0 22px 36px rgba(15, 23, 42, 0.11) !important;
+}
+
+.stock-pages .mouvements-page-modern .thumb {
+  width: 54px !important;
+  height: 54px !important;
+  border-radius: 14px !important;
+}
+
+.stock-pages .mouvements-page-modern .item-title {
+  color: #0f172a !important;
+  font-size: clamp(1.5rem, 2.2vw, 1.9rem) !important;
+}
+
+.stock-pages .mouvements-page-modern .item-sub {
+  color: #64748b !important;
+}
+
+.stock-pages .mouvements-page-modern .pack-pill {
+  border-radius: 999px !important;
+  font-size: 0.85rem !important;
+  padding: 0 12px !important;
+}
+
+.stock-pages .mouvements-page-modern .pack-metric {
+  color: #0f172a !important;
+}
+
+.stock-pages .mouvements-page-modern .pack-metric small {
+  color: #64748b !important;
+}
+
+.stock-pages .mouvements-page-modern .pack-list li {
+  color: #334155 !important;
+}
+
+.stock-pages .mouvements-page-modern .pack-actions {
+  border-top: 1px solid #e8edf4 !important;
+  padding-top: 12px !important;
+}
+
+.stock-pages .mouvements-page-modern .pack-actions .btn {
+  border-radius: 12px !important;
+}
+
+.stock-pages .mouvements-page-modern .pack-actions .btn.primary {
+  border: 0 !important;
+  background: linear-gradient(135deg, #5b8dff, #2f6df0) !important;
+}
+
+html[data-theme="dark"] .stock-pages .mouvements-page-modern .page-header,
+html[data-theme="dark"] .stock-pages .mouvements-page-modern .search-bar,
+html[data-theme="dark"] .stock-pages .mouvements-page-modern .pack-card,
+html[data-theme="dark"] .stock-pages .mouvements-page-modern .warning {
+  background: #111827 !important;
+  border-color: rgba(148, 163, 184, 0.26) !important;
+  box-shadow: 0 20px 36px rgba(2, 6, 23, 0.42) !important;
+}
+
+html[data-theme="dark"] .stock-pages .mouvements-page-modern .page-header h1,
+html[data-theme="dark"] .stock-pages .mouvements-page-modern .item-title,
+html[data-theme="dark"] .stock-pages .mouvements-page-modern .pack-metric {
+  color: #e5e7eb !important;
+}
+
+html[data-theme="dark"] .stock-pages .mouvements-page-modern .page-header p,
+html[data-theme="dark"] .stock-pages .mouvements-page-modern .item-sub,
+html[data-theme="dark"] .stock-pages .mouvements-page-modern .pack-metric small {
+  color: #94a3b8 !important;
+}

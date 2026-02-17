@@ -22,7 +22,6 @@ final class ExecutionApiController extends AbstractController
             return $this->json(['ok' => true, 'data' => []]);
         }
 
-        // Fix: Sort by 'id_exe', not 'id_ex'
         $items = $repo->findBy(['task' => $taskId], ['id_exe' => 'DESC']);
 
         $data = array_map(static function (Execution $e) {
@@ -59,7 +58,7 @@ final class ExecutionApiController extends AbstractController
         $e = new Execution();
         $e->setTask($task);
 
-        // ✅ Compatible Exe
+        
         $e->setTitleExe($title);
         $e->setDescExe($desc);
         $e->setStatusExe($status);

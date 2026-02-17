@@ -4,35 +4,65 @@ namespace App\Entity;
 
 use App\Repository\MilestonesRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MilestonesRepository::class)]
 class Milestones
 {
-   #[ORM\Id]
-#[ORM\GeneratedValue]
-#[ORM\Column(name: 'id_m', type: 'integer')]
-private ?int $id = null;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(name: 'id_M')]
+    private ?int $id = null;
 
+    #[ORM\Column(name: 'title_milestone', length: 255)]
+    #[Assert\NotBlank(message: 'Le titre est obligatoire')]
+    #[Assert\Length(
+        min: 3,
+        max: 100,
+        minMessage: 'Le titre doit faire au moins {{ limit }} caractères',
+        maxMessage: 'Le titre ne peut pas dépasser {{ limit }} caractères'
+    )]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z0-9\s\-\'",\.!?À-ÿ]+$/u',
+        message: 'Le titre contient des caractères non autorisés'
+    )]
+    private ?string $title = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $titleMilestone = null;
+    #[ORM\Column(name: 'description_milestone', length: 255)]
+    #[Assert\NotBlank(message: 'La description est obligatoire')]
+    #[Assert\Length(
+        min: 10,
+        max: 255,
+        minMessage: 'La description doit faire au moins {{ limit }} caractères',
+        maxMessage: 'La description ne peut pas dépasser {{ limit }} caractères'
+    )]
+    private ?string $description = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $descriptionMilestone = null;
-
-    #[ORM\Column]
+    #[ORM\Column(name: 'due_date')]
+    #[Assert\NotBlank(message: 'La date d\'échéance est obligatoire')]
+    #[Assert\GreaterThanOrEqual(
+        value: 'today',
+        message: 'La date d\'échéance ne peut pas être dans le passé'
+    )]
+    #[Assert\Type('\DateTimeInterface', message: 'La date d\'échéance doit être une date valide')]
     private ?\DateTimeImmutable $dueDate = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(name: 'completed_date', nullable: true)]
+    #[Assert\GreaterThanOrEqual(
+        propertyPath: 'dueDate',
+        message: 'La date de complétion doit être après la date d\'échéance'
+    )]
+    #[Assert\Type('\DateTimeInterface', message: 'La date de complétion doit être une date valide')]
     private ?\DateTimeImmutable $completedDate = null;
 
-    
-    #[ORM\Column]
+    #[ORM\Column(name: 'created_at')]
+    #[Assert\NotNull(message: 'La date de création est obligatoire')]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'milestones')]
+    #[ORM\ManyToOne(inversedBy: 'milestonesGoa')]
     #[ORM\JoinColumn(name: 'goal_id', referencedColumnName: 'id_g', nullable: false)]
-    private ?Goal $goal = null;
+    #[Assert\NotNull(message: 'L\'objectif est obligatoire')]
+    private ?Goal $goalGoa = null;
 
     public function __construct()
     {
@@ -44,25 +74,25 @@ private ?int $id = null;
         return $this->id;
     }
 
-    public function getTitleMilestone(): ?string
+    public function getTitle(): ?string
     {
-        return $this->titleMilestone;
+        return $this->title;
     }
 
-    public function setTitleMilestone(string $titleMilestone): static       
+    public function setTitle(string $title): static       
     {
-        $this->titleMilestone = $titleMilestone;
+        $this->title = $title;
         return $this;
     }
 
-    public function getDescriptionMilestone(): ?string
+    public function getDescription(): ?string
     {
-        return $this->descriptionMilestone;
+        return $this->description;
     }
 
-    public function setDescriptionMilestone(string $descriptionMilestone): static
+    public function setDescription(string $description): static
     {
-        $this->descriptionMilestone = $descriptionMilestone;
+        $this->description = $description;
         return $this;
     }
 
@@ -99,104 +129,32 @@ private ?int $id = null;
         return $this;
     }
 
-    public function getGoal(): ?Goal
+    
+    public function getStatus(): string
     {
-        return $this->goal;
+        if ($this->completedDate) {
+            return 'completed';
+        }
+        
+        if ($this->dueDate && $this->dueDate < new \DateTimeImmutable()) {
+            return 'overdue';
+        }
+        
+        if ($this->dueDate && $this->dueDate <= new \DateTimeImmutable('+7 days')) {
+            return 'upcoming';
+        }
+        
+        return 'pending';
     }
 
-    public function setGoal(?Goal $goal): static
+    public function getGoalGoa(): ?Goal
     {
-        $this->goal = $goal;
-        return $this;
+        return $this->goalGoa;
     }
 
-    // ========================
-    // ALIAS METHODS FOR BACKWARD COMPATIBILITY
-    // These allow templates to use old property names
-    // ========================
-
-    /**
-     * Alias for getTitleMilestone()
-     */
-    public function getTitleGoa(): ?string
+    public function setGoalGoa(?Goal $goalGoa): static
     {
-        return $this->titleMilestone;
-    }
-
-    /**
-     * Alias for setTitleMilestone()
-     */
-    public function setTitleGoa(string $titleGoa): static
-    {
-        $this->titleMilestone = $titleGoa;
-        return $this;
-    }
-
-    /**
-     * Alias for getDescriptionMilestone()
-     */
-    public function getDescriptionGoa(): ?string
-    {
-        return $this->descriptionMilestone;
-    }
-
-    /**
-     * Alias for setDescriptionMilestone()
-     */
-    public function setDescriptionGoa(string $descriptionGoa): static
-    {
-        $this->descriptionMilestone = $descriptionGoa;
-        return $this;
-    }
-
-    /**
-     * Alias for getDueDate()
-     */
-    public function getCompletedatGoa(): ?\DateTimeImmutable
-    {
-        return $this->dueDate;
-    }
-
-    /**
-     * Alias for setDueDate()
-     */
-    public function setCompletedatGoa(\DateTimeImmutable $completedatGoa): static
-    {
-        $this->dueDate = $completedatGoa;
-        return $this;
-    }
-
-    /**
-     * Alias for getCreatedAt()
-     */
-    public function getCreatedatGoa(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Alias for setCreatedAt()
-     */
-    public function setCreatedatGoa(\DateTimeImmutable $createdatGoa): static
-    {
-        $this->createdAt = $createdatGoa;
-        return $this;
-    }
-
-    /**
-     * Alias for getCompletedDate()
-     */
-    public function getCompletedatGoaCompleted(): ?\DateTimeImmutable
-    {
-        return $this->completedDate;
-    }
-
-    /**
-     * Alias for setCompletedDate()
-     */
-    public function setCompletedatGoaCompleted(?\DateTimeImmutable $completedatGoa): static
-    {
-        $this->completedDate = $completedatGoa;
+        $this->goalGoa = $goalGoa;
         return $this;
     }
 }

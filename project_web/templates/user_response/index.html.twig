@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<title>UserResponse index</title>
+
+{% block body %}
+    <h1>UserResponse index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Valeur</th>
+                <th>Humeur</th>
+                <th>Date</th>
+                <th>CreatedAt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user_response in user_responses %}
+            <tr>
+                <td>{{ user_response.id }}</td>
+                <td>{{ user_response.valeur }}</td>
+                <td>{{ user_response.humeur }}</td>
+                <td>{{ user_response.date ? user_response.date|date('Y-m-d') : '' }}</td>
+                <td>{{ user_response.createdAt ? user_response.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_user_response_show', {'id': user_response.id}) }}">show</a>
+                    <a href="{{ path('app_user_response_edit', {'id': user_response.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_user_response_new') }}">Create new</a>
+{% endblock %}

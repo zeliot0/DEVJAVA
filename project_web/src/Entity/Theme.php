@@ -12,40 +12,43 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: ThemeRepository::class)]
 class Theme
 {
-     #[ORM\Id]
+    #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(name: 'id_t', type: 'integer')]
-    private ?int $id = null;
+    #[ORM\Column(type: 'integer')]
+    private ?int $id_t = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "Le nom du thème est obligatoire")]
     #[Assert\Length(
         min: 3,
+        max: 255,
         minMessage: "Le nom doit contenir au moins {{ limit }} caractères",
-        max: 255
+        maxMessage: "Le nom ne doit pas dépasser {{ limit }} caractères"
     )]
     private ?string $nom = null;
 
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: 'text')]
+    #[Assert\NotBlank(message: "La description est obligatoire")]
     #[Assert\Length(
-        max: 500,
+        min: 10,
+        max: 50,
+        minMessage: "La description doit contenir au moins {{ limit }} caractères",
         maxMessage: "La description ne doit pas dépasser {{ limit }} caractères"
     )]
     private ?string $description_q = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "L’intention est obligatoire")]
     #[Assert\Length(
-        max: 255,
+        min: 10,
+        max: 50,
+        minMessage: "L’intention doit contenir au moins {{ limit }} caractères",
         maxMessage: "L’intention ne doit pas dépasser {{ limit }} caractères"
     )]
     private ?string $intention = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "L’icône est obligatoire")]
-    #[Assert\Regex(
-        pattern: "/^fa-/",
-        message: "L’icône doit être une classe FontAwesome valide (ex: fa-solid fa-heart)"
-    )]
     private ?string $icone = null;
 
     #[ORM\Column(length: 255)]
@@ -80,7 +83,7 @@ class Theme
         $this->createdAt = new DateTimeImmutable();
     }
 
-    // ===== GETTERS / SETTERS =====
+    // ================= GETTERS / SETTERS =================
 
     public function getIdT(): ?int
     {
@@ -103,7 +106,7 @@ class Theme
         return $this->description_q;
     }
 
-    public function setDescriptionQ(?string $description_q): self
+    public function setDescriptionQ(string $description_q): self
     {
         $this->description_q = $description_q;
         return $this;
@@ -114,7 +117,7 @@ class Theme
         return $this->intention;
     }
 
-    public function setIntention(?string $intention): self
+    public function setIntention(string $intention): self
     {
         $this->intention = $intention;
         return $this;
