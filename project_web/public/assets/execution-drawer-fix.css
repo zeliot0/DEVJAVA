@@ -1,0 +1,18 @@
+/* Fix for execution drawer button visibility */
+.exe-card-modern textarea {
+    min-height: 60px !important;
+    max-height: 120px !important;
+}
+
+.exe-card-modern .btn-modern {
+    margin-top: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+}
+
+/* Ensure drawer body scrolls properly */
+#exeDrawer .drawer-body-modern {
+    padding-bottom: 40px !important;
+}

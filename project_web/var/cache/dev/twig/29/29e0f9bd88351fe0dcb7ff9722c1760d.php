@@ -1,0 +1,616 @@
+<?php
+
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Extension\CoreExtension;
+use Twig\Extension\SandboxExtension;
+use Twig\Markup;
+use Twig\Sandbox\SecurityError;
+use Twig\Sandbox\SecurityNotAllowedTagError;
+use Twig\Sandbox\SecurityNotAllowedFilterError;
+use Twig\Sandbox\SecurityNotAllowedFunctionError;
+use Twig\Source;
+use Twig\Template;
+use Twig\TemplateWrapper;
+
+/* user/theme/index.html.twig */
+class __TwigTemplate_c6a3bcdf2dc09746ff0a671698793569 extends Template
+{
+    private Source $source;
+    /**
+     * @var array<string, Template>
+     */
+    private array $macros = [];
+
+    public function __construct(Environment $env)
+    {
+        parent::__construct($env);
+
+        $this->source = $this->getSourceContext();
+
+        $this->blocks = [
+            'title' => [$this, 'block_title'],
+            'body' => [$this, 'block_body'],
+        ];
+    }
+
+    protected function doGetParent(array $context): bool|string|Template|TemplateWrapper
+    {
+        // line 1
+        return "theme/base.html.twig";
+    }
+
+    protected function doDisplay(array $context, array $blocks = []): iterable
+    {
+        $macros = $this->macros;
+        $__internal_5a27a8ba21ca79b61932376b2fa922d2 = $this->extensions["Symfony\\Bundle\\WebProfilerBundle\\Twig\\WebProfilerExtension"];
+        $__internal_5a27a8ba21ca79b61932376b2fa922d2->enter($__internal_5a27a8ba21ca79b61932376b2fa922d2_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "template", "user/theme/index.html.twig"));
+
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f = $this->extensions["Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension"];
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->enter($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "template", "user/theme/index.html.twig"));
+
+        $this->parent = $this->load("theme/base.html.twig", 1);
+        yield from $this->parent->unwrap()->yield($context, array_merge($this->blocks, $blocks));
+        
+        $__internal_5a27a8ba21ca79b61932376b2fa922d2->leave($__internal_5a27a8ba21ca79b61932376b2fa922d2_prof);
+
+        
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->leave($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof);
+
+    }
+
+    // line 3
+    /**
+     * @return iterable<null|scalar|\Stringable>
+     */
+    public function block_title(array $context, array $blocks = []): iterable
+    {
+        $macros = $this->macros;
+        $__internal_5a27a8ba21ca79b61932376b2fa922d2 = $this->extensions["Symfony\\Bundle\\WebProfilerBundle\\Twig\\WebProfilerExtension"];
+        $__internal_5a27a8ba21ca79b61932376b2fa922d2->enter($__internal_5a27a8ba21ca79b61932376b2fa922d2_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "block", "title"));
+
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f = $this->extensions["Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension"];
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->enter($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "block", "title"));
+
+        yield "Theme Management — NEXA";
+        
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->leave($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof);
+
+        
+        $__internal_5a27a8ba21ca79b61932376b2fa922d2->leave($__internal_5a27a8ba21ca79b61932376b2fa922d2_prof);
+
+        yield from [];
+    }
+
+    // line 5
+    /**
+     * @return iterable<null|scalar|\Stringable>
+     */
+    public function block_body(array $context, array $blocks = []): iterable
+    {
+        $macros = $this->macros;
+        $__internal_5a27a8ba21ca79b61932376b2fa922d2 = $this->extensions["Symfony\\Bundle\\WebProfilerBundle\\Twig\\WebProfilerExtension"];
+        $__internal_5a27a8ba21ca79b61932376b2fa922d2->enter($__internal_5a27a8ba21ca79b61932376b2fa922d2_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "block", "body"));
+
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f = $this->extensions["Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension"];
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->enter($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "block", "body"));
+
+        // line 6
+        yield "
+<!-- ================= HEADER ================= -->
+<section class=\"page-header\">
+    <div class=\"page-header-top\">
+
+        <!-- TITLE -->
+        <div class=\"page-title\">
+            <h1>Theme Management</h1>
+            <p>Manage themes, questions and priorities</p>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class=\"page-actions\">
+
+            <!-- 🔍 SEARCH -->
+            <form method=\"get\"
+                  action=\"";
+        // line 22
+        yield $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_theme_index");
+        yield "\"
+                  class=\"search-form\"
+                  onsubmit=\"return false;\">
+                <div class=\"search-wrapper\">
+                    <i class=\"fa-solid fa-magnifying-glass\"></i>
+                    <input
+                        type=\"text\"
+                        name=\"q\"
+                        value=\"";
+        // line 30
+        yield (((array_key_exists("search", $context) &&  !(null === $context["search"]))) ? ($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($context["search"], "html", null, true)) : (""));
+        yield "\"
+                        placeholder=\"Search theme...\"
+                        class=\"search-input\"
+                        autocomplete=\"off\"
+                    >
+                </div>
+            </form>
+
+        </div>
+    </div>
+</section>
+
+<!-- ================= KPI ================= -->
+<section class=\"kpi-grid\">
+    <div class=\"kpi-card\">
+        <span>Total themes</span>
+        <strong>";
+        // line 46
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(Twig\Extension\CoreExtension::length($this->env->getCharset(), (isset($context["themes"]) || array_key_exists("themes", $context) ? $context["themes"] : (function () { throw new RuntimeError('Variable "themes" does not exist.', 46, $this->source); })())), "html", null, true);
+        yield "</strong>
+    </div>
+
+    <div class=\"kpi-card\">
+        <span>Active themes</span>
+        <strong>";
+        // line 51
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(Twig\Extension\CoreExtension::length($this->env->getCharset(), Twig\Extension\CoreExtension::filter($this->env, (isset($context["themes"]) || array_key_exists("themes", $context) ? $context["themes"] : (function () { throw new RuntimeError('Variable "themes" does not exist.', 51, $this->source); })()), function ($__t__) use ($context, $macros) { $context["t"] = $__t__; return CoreExtension::getAttribute($this->env, $this->source, (isset($context["t"]) || array_key_exists("t", $context) ? $context["t"] : (function () { throw new RuntimeError('Variable "t" does not exist.', 51, $this->source); })()), "actif", [], "any", false, false, false, 51); })), "html", null, true);
+        yield "</strong>
+    </div>
+</section>
+
+<!-- ================= THEMES ================= -->
+<section class=\"themes-grid\" id=\"themes-container\">
+
+";
+        // line 58
+        $context['_parent'] = $context;
+        $context['_seq'] = CoreExtension::ensureTraversable((isset($context["themes"]) || array_key_exists("themes", $context) ? $context["themes"] : (function () { throw new RuntimeError('Variable "themes" does not exist.', 58, $this->source); })()));
+        $context['_iterated'] = false;
+        foreach ($context['_seq'] as $context["_key"] => $context["theme"]) {
+            // line 59
+            yield "    <article class=\"theme-card\">
+
+        <div class=\"theme-card-header\">
+            <div class=\"theme-left\">
+                <div class=\"theme-icon\"
+                     style=\"--theme-accent: ";
+            // line 64
+            yield ((CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "couleur", [], "any", false, false, false, 64)) ? ($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "couleur", [], "any", false, false, false, 64), "html", null, true)) : ("#6366f1"));
+            yield "\">
+                    ";
+            // line 65
+            if ((CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "icone", [], "any", false, false, false, 65) && (is_string($_v0 = CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "icone", [], "any", false, false, false, 65)) && is_string($_v1 = "fa") && str_starts_with($_v0, $_v1)))) {
+                // line 66
+                yield "                        <i class=\"";
+                yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "icone", [], "any", false, false, false, 66), "html", null, true);
+                yield "\"></i>
+                    ";
+            } else {
+                // line 68
+                yield "                        ";
+                yield ((CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "icone", [], "any", true, true, false, 68)) ? (Twig\Extension\CoreExtension::default(CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "icone", [], "any", false, false, false, 68), "")) : (""));
+                yield "
+                    ";
+            }
+            // line 70
+            yield "                </div>
+
+                <div class=\"theme-info\">
+                    <h3>";
+            // line 73
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "nom", [], "any", false, false, false, 73), "html", null, true);
+            yield "</h3>
+                    <span>";
+            // line 74
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Twig\Extension\CoreExtension']->formatDate(CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "createdAt", [], "any", false, false, false, 74), "d M Y"), "html", null, true);
+            yield "</span>
+                </div>
+            </div>
+
+            <span class=\"theme-status ";
+            // line 78
+            yield (((($tmp = CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "actif", [], "any", false, false, false, 78)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) ? ("active") : ("inactive"));
+            yield "\">
+                ";
+            // line 79
+            yield (((($tmp = CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "actif", [], "any", false, false, false, 79)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) ? ("Active") : ("Inactive"));
+            yield "
+            </span>
+        </div>
+
+        <div class=\"theme-card-body\">
+            <p>";
+            // line 84
+            yield (((CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "intention", [], "any", true, true, false, 84) &&  !(null === CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "intention", [], "any", false, false, false, 84)))) ? ($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "intention", [], "any", false, false, false, 84), "html", null, true)) : ("No description_q provided."));
+            yield "</p>
+        </div>
+
+        <div class=\"theme-card-footer\">
+            <div class=\"theme-stats\">
+                <span>
+                    <i class=\"fa-solid fa-circle-question\"></i>
+                    ";
+            // line 91
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(Twig\Extension\CoreExtension::length($this->env->getCharset(), CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "questions", [], "any", false, false, false, 91)), "html", null, true);
+            yield "
+                </span>
+                <span class=\"priority-chip\">
+                    <i class=\"fa-solid fa-flag\"></i>
+                    <em>P";
+            // line 95
+            yield (((CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "priorite", [], "any", true, true, false, 95) &&  !(null === CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "priorite", [], "any", false, false, false, 95)))) ? ($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "priorite", [], "any", false, false, false, 95), "html", null, true)) : (2));
+            yield "</em>
+                    <small class=\"priority-stars\" aria-label=\"Priorité ";
+            // line 96
+            yield (((CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "priorite", [], "any", true, true, false, 96) &&  !(null === CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "priorite", [], "any", false, false, false, 96)))) ? ($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "priorite", [], "any", false, false, false, 96), "html", null, true)) : (2));
+            yield " sur 3\">
+                        ";
+            // line 97
+            $context['_parent'] = $context;
+            $context['_seq'] = CoreExtension::ensureTraversable(range(1, 3));
+            foreach ($context['_seq'] as $context["_key"] => $context["i"]) {
+                // line 98
+                yield "                            <i class=\"fa-star ";
+                yield ((($context["i"] <= (((CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "priorite", [], "any", true, true, false, 98) &&  !(null === CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "priorite", [], "any", false, false, false, 98)))) ? (CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "priorite", [], "any", false, false, false, 98)) : (2)))) ? ("fa-solid") : ("fa-regular"));
+                yield "\"></i>
+                        ";
+            }
+            $_parent = $context['_parent'];
+            unset($context['_seq'], $context['_key'], $context['i'], $context['_parent']);
+            $context = array_intersect_key($context, $_parent) + $_parent;
+            // line 100
+            yield "                    </small>
+                </span>
+            </div>
+
+            <!-- ✅ ACTIONS : VIEW ONLY -->
+            <div class=\"theme-actions\">
+    <a href=\"";
+            // line 106
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_theme_answer", ["id" => CoreExtension::getAttribute($this->env, $this->source, $context["theme"], "idT", [], "any", false, false, false, 106)]), "html", null, true);
+            yield "\">
+        <i class=\"fa-solid fa-eye\"></i>
+    </a>
+</div>
+
+        </div>
+
+    </article>
+
+";
+            $context['_iterated'] = true;
+        }
+        // line 115
+        if (!$context['_iterated']) {
+            // line 116
+            yield "    <div class=\"empty-state\">
+        No themes found.
+    </div>
+";
+        }
+        $_parent = $context['_parent'];
+        unset($context['_seq'], $context['_key'], $context['theme'], $context['_parent'], $context['_iterated']);
+        $context = array_intersect_key($context, $_parent) + $_parent;
+        // line 120
+        yield "
+</section>
+
+<!-- ================= JS : SEARCH INSTANT ================= -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.querySelector('.search-input');
+    const container = document.getElementById('themes-container');
+    if (!input) return;
+
+    let timeout = null;
+
+    input.addEventListener('input', () => {
+        clearTimeout(timeout);
+
+        timeout = setTimeout(() => {
+            fetch(`";
+        // line 136
+        yield $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_theme_index");
+        yield "?q=` + encodeURIComponent(input.value), {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(res => res.text())
+            .then(html => {
+                container.innerHTML = html;
+            });
+        }, 250);
+    });
+});
+</script>
+<div id=\"chatbot-bubble\">🤖</div>
+
+<div id=\"chatbot-box\" class=\"chatbot hidden\">
+  <div class=\"chat-header\">
+    Theme Assistant
+    <span id=\"chat-close\">✕</span>
+  </div>
+
+  <div id=\"chat-messages\" class=\"chat-messages\">
+    <div class=\"bot\">
+      مرحبا 👋  
+      نجم نعاونك في اختيار أو تطوير الـ themes.
+    </div>
+  </div>
+
+  <input
+    type=\"text\"
+    id=\"chat-input\"
+    placeholder=\"اسألني...\"
+  >
+</div>
+<script>
+const bubble = document.getElementById('chatbot-bubble');
+const box = document.getElementById('chatbot-box');
+const closeBtn = document.getElementById('chat-close');
+const input = document.getElementById('chat-input');
+const messages = document.getElementById('chat-messages');
+
+bubble.onclick = () => box.classList.toggle('hidden');
+closeBtn.onclick = () => box.classList.add('hidden');
+
+input.addEventListener('keydown', async (e) => {
+  if (e.key === 'Enter' && input.value.trim() !== '') {
+
+    const msg = input.value;
+    messages.innerHTML += `<div class=\"user\">\${msg}</div>`;
+    input.value = '';
+
+    const res = await fetch('";
+        // line 185
+        yield $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_theme_assistant");
+        yield "', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: msg })
+    });
+
+    const data = await res.json();
+    messages.innerHTML += `<div class=\"bot\">\${data.reply}</div>`;
+    messages.scrollTop = messages.scrollHeight;
+  }
+});
+</script>
+
+";
+        
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->leave($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof);
+
+        
+        $__internal_5a27a8ba21ca79b61932376b2fa922d2->leave($__internal_5a27a8ba21ca79b61932376b2fa922d2_prof);
+
+        yield from [];
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function getTemplateName(): string
+    {
+        return "user/theme/index.html.twig";
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function isTraitable(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function getDebugInfo(): array
+    {
+        return array (  365 => 185,  313 => 136,  295 => 120,  286 => 116,  284 => 115,  270 => 106,  262 => 100,  253 => 98,  249 => 97,  245 => 96,  241 => 95,  234 => 91,  224 => 84,  216 => 79,  212 => 78,  205 => 74,  201 => 73,  196 => 70,  190 => 68,  184 => 66,  182 => 65,  178 => 64,  171 => 59,  166 => 58,  156 => 51,  148 => 46,  129 => 30,  118 => 22,  100 => 6,  87 => 5,  64 => 3,  41 => 1,);
+    }
+
+    public function getSourceContext(): Source
+    {
+        return new Source("{% extends 'theme/base.html.twig' %}
+
+{% block title %}Theme Management — NEXA{% endblock %}
+
+{% block body %}
+
+<!-- ================= HEADER ================= -->
+<section class=\"page-header\">
+    <div class=\"page-header-top\">
+
+        <!-- TITLE -->
+        <div class=\"page-title\">
+            <h1>Theme Management</h1>
+            <p>Manage themes, questions and priorities</p>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class=\"page-actions\">
+
+            <!-- 🔍 SEARCH -->
+            <form method=\"get\"
+                  action=\"{{ path('app_theme_index') }}\"
+                  class=\"search-form\"
+                  onsubmit=\"return false;\">
+                <div class=\"search-wrapper\">
+                    <i class=\"fa-solid fa-magnifying-glass\"></i>
+                    <input
+                        type=\"text\"
+                        name=\"q\"
+                        value=\"{{ search ?? '' }}\"
+                        placeholder=\"Search theme...\"
+                        class=\"search-input\"
+                        autocomplete=\"off\"
+                    >
+                </div>
+            </form>
+
+        </div>
+    </div>
+</section>
+
+<!-- ================= KPI ================= -->
+<section class=\"kpi-grid\">
+    <div class=\"kpi-card\">
+        <span>Total themes</span>
+        <strong>{{ themes|length }}</strong>
+    </div>
+
+    <div class=\"kpi-card\">
+        <span>Active themes</span>
+        <strong>{{ themes|filter(t => t.actif)|length }}</strong>
+    </div>
+</section>
+
+<!-- ================= THEMES ================= -->
+<section class=\"themes-grid\" id=\"themes-container\">
+
+{% for theme in themes %}
+    <article class=\"theme-card\">
+
+        <div class=\"theme-card-header\">
+            <div class=\"theme-left\">
+                <div class=\"theme-icon\"
+                     style=\"--theme-accent: {{ theme.couleur ?: '#6366f1' }}\">
+                    {% if theme.icone and (theme.icone starts with 'fa') %}
+                        <i class=\"{{ theme.icone }}\"></i>
+                    {% else %}
+                        {{ theme.icone|default('')|raw }}
+                    {% endif %}
+                </div>
+
+                <div class=\"theme-info\">
+                    <h3>{{ theme.nom }}</h3>
+                    <span>{{ theme.createdAt|date('d M Y') }}</span>
+                </div>
+            </div>
+
+            <span class=\"theme-status {{ theme.actif ? 'active' : 'inactive' }}\">
+                {{ theme.actif ? 'Active' : 'Inactive' }}
+            </span>
+        </div>
+
+        <div class=\"theme-card-body\">
+            <p>{{ theme.intention ?? 'No description_q provided.' }}</p>
+        </div>
+
+        <div class=\"theme-card-footer\">
+            <div class=\"theme-stats\">
+                <span>
+                    <i class=\"fa-solid fa-circle-question\"></i>
+                    {{ theme.questions|length }}
+                </span>
+                <span class=\"priority-chip\">
+                    <i class=\"fa-solid fa-flag\"></i>
+                    <em>P{{ theme.priorite ?? 2 }}</em>
+                    <small class=\"priority-stars\" aria-label=\"Priorité {{ theme.priorite ?? 2 }} sur 3\">
+                        {% for i in 1..3 %}
+                            <i class=\"fa-star {{ i <= (theme.priorite ?? 2) ? 'fa-solid' : 'fa-regular' }}\"></i>
+                        {% endfor %}
+                    </small>
+                </span>
+            </div>
+
+            <!-- ✅ ACTIONS : VIEW ONLY -->
+            <div class=\"theme-actions\">
+    <a href=\"{{ path('app_theme_answer', { id: theme.idT }) }}\">
+        <i class=\"fa-solid fa-eye\"></i>
+    </a>
+</div>
+
+        </div>
+
+    </article>
+
+{% else %}
+    <div class=\"empty-state\">
+        No themes found.
+    </div>
+{% endfor %}
+
+</section>
+
+<!-- ================= JS : SEARCH INSTANT ================= -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.querySelector('.search-input');
+    const container = document.getElementById('themes-container');
+    if (!input) return;
+
+    let timeout = null;
+
+    input.addEventListener('input', () => {
+        clearTimeout(timeout);
+
+        timeout = setTimeout(() => {
+            fetch(`{{ path('app_theme_index') }}?q=` + encodeURIComponent(input.value), {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(res => res.text())
+            .then(html => {
+                container.innerHTML = html;
+            });
+        }, 250);
+    });
+});
+</script>
+<div id=\"chatbot-bubble\">🤖</div>
+
+<div id=\"chatbot-box\" class=\"chatbot hidden\">
+  <div class=\"chat-header\">
+    Theme Assistant
+    <span id=\"chat-close\">✕</span>
+  </div>
+
+  <div id=\"chat-messages\" class=\"chat-messages\">
+    <div class=\"bot\">
+      مرحبا 👋  
+      نجم نعاونك في اختيار أو تطوير الـ themes.
+    </div>
+  </div>
+
+  <input
+    type=\"text\"
+    id=\"chat-input\"
+    placeholder=\"اسألني...\"
+  >
+</div>
+<script>
+const bubble = document.getElementById('chatbot-bubble');
+const box = document.getElementById('chatbot-box');
+const closeBtn = document.getElementById('chat-close');
+const input = document.getElementById('chat-input');
+const messages = document.getElementById('chat-messages');
+
+bubble.onclick = () => box.classList.toggle('hidden');
+closeBtn.onclick = () => box.classList.add('hidden');
+
+input.addEventListener('keydown', async (e) => {
+  if (e.key === 'Enter' && input.value.trim() !== '') {
+
+    const msg = input.value;
+    messages.innerHTML += `<div class=\"user\">\${msg}</div>`;
+    input.value = '';
+
+    const res = await fetch('{{ path(\"app_theme_assistant\") }}', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: msg })
+    });
+
+    const data = await res.json();
+    messages.innerHTML += `<div class=\"bot\">\${data.reply}</div>`;
+    messages.scrollTop = messages.scrollHeight;
+  }
+});
+</script>
+
+{% endblock %}
+
+", "user/theme/index.html.twig", "C:\\Users\\Siwar\\Desktop\\bal de projet finalll\\project_web\\templates\\user\\theme\\index.html.twig");
+    }
+}
