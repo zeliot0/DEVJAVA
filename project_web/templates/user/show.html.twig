@@ -1,52 +1,94 @@
-{% extends 'base-sid.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Détails utilisateur{% endblock %}
+{% set body_class = 'conscience-page' %}
+
+{% block title %}PROFIL UTILISATEUR : {{ user.nom }} — NEXA Intelligence{% endblock %}
 
 {% block stylesheets %}
-<link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/conscience-modern-proo.css?v=' ~ 'now'|date('U')) }}">
+    <style>
+        .u-profile-card { background: white; border: 1px solid #efefef; border-radius: 12px; padding: 48px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .u-avatar-large { width: 120px; height: 120px; border-radius: 50%; background: #eff6ff; color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: 800; border: 4px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px; position: relative; overflow: hidden; }
+        .u-avatar-img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .role-badge { font-size: 10px; font-weight: 800; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 24px; }
+        .role-admin { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+        .role-user { background: #f0fdf4; color: #166534; border: 1px solid #dcfce7; }
+        
+        .u-prop-list { width: 100%; max-width: 400px; margin-top: 32px; border-top: 1px solid #f8fafc; padding-top: 32px; text-align: left; }
+        .u-prop-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #fcfcfc; }
+        .u-prop-k { font-size: 11px; font-weight: 700; color: var(--notion-text-muted); text-transform: uppercase; }
+        .u-prop-v { font-size: 13px; font-weight: 600; color: var(--notion-text); }
+    </style>
 {% endblock %}
 
 {% block body %}
-<div class="admin-page">
+<div class="conscience-modern-page">
 
-  <header class="admin-header">
-    <div class="header-content">
-      <h1>
-        <span class="gradient-text">Détails</span>
-        <span class="brand">Utilisateur</span>
-      </h1>
-      <p>Informations complètes de l’utilisateur</p>
-    </div>
-  </header>
+    <header class="conscience-page-header">
+        <h1>Analyse d'Identité</h1>
+        <p>Spécifications du profil utilisateur ID #{{ user.id }}</p>
+    </header>
 
-  <div class="details-container">
-
-    <div class="details-card-box">
-
-      <div class="details-avatar-big">
-        {{ user.nom|first|upper }}
-      </div>
-
-      <h3 class="details-name">{{ user.nom }}</h3>
-      <p class="details-email">{{ user.email }}</p>
-
-      <div class="details-roles">
-        {% for role in user.roles %}
-          {% if role == 'ROLE_ADMIN' %}
-            <span class="badge admin">ADMIN</span>
-          {% else %}
-            <span class="badge user">USER</span>
-          {% endif %}
-        {% endfor %}
-      </div>
-
-      <a href="{{ path('app_user_list') }}" class="btn-back">
-        ← Retour à la liste
-      </a>
-
+    <div class="conscience-header-actions" style="margin-bottom: 32px;">
+        <div class="page-actions">
+            <a href="{{ path('app_user_list') }}" class="btn">
+                ← Retour au Répertoire
+            </a>
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_user_admin', {id: user.id}) }}" class="btn primary">
+                    Gérer l'Accès
+                </a>
+            {% endif %}
+        </div>
     </div>
 
-  </div>
+    <div class="u-profile-card">
+        <div class="u-avatar-large">
+            {% if user.profilePhoto %}
+                <img src="{{ asset('uploads/profiles/' ~ user.profilePhoto) }}" class="u-avatar-img">
+            {% else %}
+                {{ user.nom|first|upper }}
+            {% endif %}
+        </div>
+
+        <h2 style="font-size: 24px; font-weight: 800; color: var(--notion-text); margin-bottom: 8px;">{{ user.nom }}</h2>
+        <p style="font-size: 14px; color: var(--notion-text-muted); margin-bottom: 16px;">{{ user.email }}</p>
+
+        <div style="display: flex; gap: 8px;">
+            {% for role in user.roles %}
+                <span class="role-badge {{ role == 'ROLE_ADMIN' ? 'role-admin' : 'role-user' }}">
+                    {{ role|replace({'ROLE_': ''}) }}
+                </span>
+            {% endfor %}
+        </div>
+
+        <div class="u-prop-list">
+            <div class="u-prop-row">
+                <span class="u-prop-k">Date d'Inscription</span>
+                <span class="u-prop-v">{{ user.createAt ? user.createAt|date('d F Y') : 'N/A' }}</span>
+            </div>
+            <div class="u-prop-row">
+                <span class="u-prop-k">Auth Faciale</span>
+                <span class="u-prop-v" style="color: {{ user.isFaceEnabled ? '#10b981' : '#94a3b8' }};">
+                    {{ user.isFaceEnabled ? 'ACTIVÉE' : 'NON CONFIGURÉE' }}
+                </span>
+            </div>
+            <div class="u-prop-row">
+                <span class="u-prop-k">Pulsation Système</span>
+                <span class="u-prop-v">{{ user.updateAt ? user.updateAt|date('H:i:s') : 'N/A' }}</span>
+            </div>
+        </div>
+        
+        {% if is_granted('ROLE_ADMIN') %}
+            <div style="margin-top: 48px; width: 100%; display: flex; justify-content: center; gap: 12px;">
+                <a href="mailto:{{ user.email }}" class="btn">
+                    <i class="fa-solid fa-envelope"></i> Contacter
+                </a>
+            </div>
+        {% endif %}
+    </div>
 
 </div>
 {% endblock %}

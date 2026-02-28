@@ -6,6 +6,7 @@ use App\Entity\Question;
 use App\Entity\Theme;
 use App\Form\QuestionType;
 use App\Repository\QuestionRepository;
+use App\Service\ConscienceNotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,6 +29,7 @@ final class QuestionController extends AbstractController
     public function new(
         Theme $theme,
         Request $request,
+        ConscienceNotificationService $conscienceNotificationService,
         EntityManagerInterface $entityManager
     ): Response {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
@@ -41,6 +43,12 @@ final class QuestionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($question);
             $entityManager->flush();
+
+            $actor = $this->getUser();
+            $conscienceNotificationService->notifyNewQuestionForTheme(
+                $theme,
+                $actor instanceof \App\Entity\User ? $actor : null
+            );
 
             return $this->redirectToRoute('app_questions_by_theme', [
                 'id' => $theme->getIdT(),

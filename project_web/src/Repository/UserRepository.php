@@ -76,4 +76,17 @@ class UserRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    /**
+     * @return User[]
+     */
+    public function findFaceEnabledUsers(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.face_enabled = :enabled')
+            ->andWhere('u.face_descriptor IS NOT NULL')
+            ->setParameter('enabled', true)
+            ->getQuery()
+            ->getResult();
+    }
 }

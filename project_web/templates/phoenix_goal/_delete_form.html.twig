@@ -1,0 +1,4 @@
+﻿<form method="post" action="{{ path('app_phoenix_goal_delete', {'id': phoenix_goal.id}) }}" onsubmit="return confirm('Delete this phoenix goal?');" style="display:inline-flex;">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ phoenix_goal.id) }}">
+    <button class="pg-btn pg-btn-danger" type="submit"><i class="fas fa-trash"></i> Delete</button>
+</form>

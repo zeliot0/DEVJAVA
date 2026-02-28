@@ -1,0 +1,127 @@
+/* Product articles page */
+.stock-pages .articles-toolbar {
+  width: min(1240px, calc(100% - 48px));
+  margin: 0 auto 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.stock-pages .articles-toolbar .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stock-pages .articles-warning {
+  width: min(1240px, calc(100% - 48px));
+  margin: 0 auto 18px;
+}
+
+.stock-pages .articles-more {
+  width: min(1240px, calc(100% - 48px));
+  margin: 18px auto 0;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.stock-pages .articles-grid .article-hero {
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: rgba(var(--surface-rgb), 0.92);
+  aspect-ratio: 16 / 10;
+}
+
+.stock-pages .articles-grid .article-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.stock-pages .articles-grid .article-hero-placeholder {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--text);
+}
+
+.stock-pages .articles-grid .article-title-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.stock-pages .articles-grid .article-title-link:hover .item-title {
+  text-decoration: underline;
+}
+
+.stock-pages .articles-grid .article-desc {
+  color: var(--muted);
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.stock-pages .articles-grid .pack-actions .btn {
+  min-width: 0;
+}
+
+.stock-pages .articles-grid .article-features {
+  margin-top: 6px;
+}
+
+.stock-pages .pack-pill.blue,
+.stock-pages .pack-pill.purple,
+.stock-pages .pack-pill.orange,
+.stock-pages .pack-pill.teal {
+  color: #fff;
+  border-color: transparent;
+}
+
+.stock-pages .pack-pill.blue {
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+}
+
+.stock-pages .pack-pill.purple {
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+}
+
+.stock-pages .pack-pill.orange {
+  background: linear-gradient(135deg, #f59e0b, #fb7185);
+}
+
+.stock-pages .pack-pill.teal {
+  background: linear-gradient(135deg, #14b8a6, #22c55e);
+}
+
+@media (max-width: 760px) {
+  .stock-pages .articles-toolbar {
+    width: calc(100% - 24px);
+  }
+
+  .stock-pages .articles-warning {
+    width: calc(100% - 24px);
+  }
+
+  .stock-pages .articles-more {
+    width: calc(100% - 24px);
+  }
+
+  .stock-pages .articles-more .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .stock-pages .articles-toolbar .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

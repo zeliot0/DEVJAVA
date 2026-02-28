@@ -1,0 +1,223 @@
+﻿{# templates/goal/index.html.twig #}
+{% extends 'theme/base.html.twig' %}
+
+{% block title %}Objectifs - NEXA{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/goal-index-modern.css?v=20260214d') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container mt-4 goals-page goals-page-modern">
+    {% set totalGoals = goals|length %}
+    {% set totalProgress = 0 %}
+    {% set highPriorityCount = 0 %}
+    {% set draftCount = 0 %}
+    {% for goal in goals %}
+        {% set totalProgress = totalProgress + (goal.progressGoa|default(0)) %}
+        {% if goal.priorityGoa == 'HAUTE' %}
+            {% set highPriorityCount = highPriorityCount + 1 %}
+        {% endif %}
+        {% if goal.statusGoa|default('')|lower == 'brouillon' %}
+            {% set draftCount = draftCount + 1 %}
+        {% endif %}
+    {% endfor %}
+    {% set avgProgress = totalGoals > 0 ? (totalProgress / totalGoals)|round : 0 %}
+
+    <div class="goals-modern-header">
+        <div>
+            <h1>NEXA Goals</h1>
+            <p>Gestion intelligente de vos objectifs</p>
+        </div>
+        <div class="goals-modern-header-actions">
+            <a href="{{ path('app_milestones_index') }}" class="goals-modern-btn goals-modern-btn-ghost">
+                <i class="fas fa-flag"></i> Jalons
+            </a>
+            {% if not is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_goal_new') }}" class="goals-modern-btn goals-modern-btn-primary">
+                    <i class="fas fa-plus"></i> Nouvel objectif
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="goals-modern-kpis">
+        <article class="goals-modern-kpi">
+            <span>Total objectifs</span>
+            <strong>{{ totalGoals }}</strong>
+        </article>
+        <article class="goals-modern-kpi">
+            <span>Progression moyenne</span>
+            <strong>{{ avgProgress }}%</strong>
+        </article>
+        <article class="goals-modern-kpi">
+            <span>Priorité haute</span>
+            <strong>{{ highPriorityCount }}</strong>
+        </article>
+        <article class="goals-modern-kpi">
+            <span>Brouillons</span>
+            <strong>{{ draftCount }}</strong>
+        </article>
+    </div>
+
+    <form method="get" action="{{ path('app_goal_index') }}" class="goals-modern-toolbar goals-modern-toolbar-v2">
+        <div class="goals-modern-field goals-modern-search">
+            <i class="fas fa-search"></i>
+            <input
+                id="goalsSearchInput"
+                type="text"
+                name="q"
+                value="{{ search|default('') }}"
+                placeholder="Rechercher un objectif..."
+                list="goals-search-hints"
+            >
+            <datalist id="goals-search-hints">
+                {% for goal in goals %}
+                    <option value="{{ goal.titleGoa }}">{{ goal.categoryGoa|default('Objectif') }}</option>
+                {% endfor %}
+            </datalist>
+        </div>
+
+        <div class="goals-modern-toolbar-actions">
+            <div class="goals-modern-field goals-modern-sort">
+                <label for="goals-sort-select">Trier par :</label>
+                <select id="goals-sort-select" name="sort" onchange="this.form.submit()">
+                    <option value="progress_desc" {{ (sort|default('progress_desc')) == 'progress_desc' ? 'selected' : '' }}>🔥 Progression (haute)</option>
+                    <option value="progress_asc" {{ (sort|default('progress_desc')) == 'progress_asc' ? 'selected' : '' }}>🌱 Progression (basse)</option>
+                    <option value="status" {{ (sort|default('progress_desc')) == 'status' ? 'selected' : '' }}>📌 Statut</option>
+                </select>
+            </div>
+
+            <button type="submit" class="goals-modern-btn goals-modern-btn-primary goals-modern-filter">
+                <i class="fas fa-filter"></i> Filtrer
+            </button>
+
+            <a href="{{ path('app_goal_index') }}" class="goals-modern-btn goals-modern-btn-reset">
+                Réinitialiser
+            </a>
+        </div>
+    </form>
+
+    {% if search is defined and search is not empty %}
+        <div class="goals-search-feedback">
+            <i class="fas fa-star"></i>
+            Résultats pour: <strong>{{ search }}</strong> ({{ goals|length }})
+        </div>
+    {% endif %}
+
+    {% if goals is empty %}
+        <div class="empty-state goals-empty">
+            <div class="empty-state-icon">
+                <i class="fas fa-bullseye"></i>
+            </div>
+            <h3>Aucun objectif trouvé</h3>
+            <p>Vous n'avez pas encore créé d'objectifs. Commencez par en créer un pour suivre votre progression.</p>
+            {% if not is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_goal_new') }}" class="goals-modern-btn goals-modern-btn-primary goals-cta-large">
+                    <i class="fas fa-plus"></i> Créer votre premier objectif
+                </a>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="goals-modern-table-wrap">
+            <table class="goals-modern-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Objectif</th>
+                    <th>Statut</th>
+                    <th>Priorité</th>
+                    <th>Progression</th>
+                    <th>Échéance</th>
+                    <th class="goals-modern-actions-head">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for goal in goals %}
+                    {% set p = goal.progressGoa|default(0) %}
+                    <tr>
+                        <td class="goals-modern-id">#{{ goal.idGoa }}</td>
+
+                        <td>
+                            <div class="goals-modern-title-wrap">
+                                <strong>{{ goal.titleGoa }}</strong>
+                                <small>{{ goal.descriptionGoa|default('—')|slice(0, 60) }}{{ goal.descriptionGoa|length > 60 ? '...' : '' }}</small>
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="goals-modern-pill">{{ goal.statusGoa|default('En cours') }}</span>
+                        </td>
+
+                        <td>
+                            <span class="goals-modern-pill {{ goal.priorityGoa == 'HAUTE' ? 'is-high' : (goal.priorityGoa == 'MOYENNE' ? 'is-mid' : 'is-low') }}">
+                                {{ goal.priorityGoa|default('Normale') }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="goals-modern-progress-row">
+                                {% if not is_granted('ROLE_ADMIN') %}
+                                    <div class="goals-modern-progress-controls">
+                                        <form method="post" action="{{ path('app_goal_progress_up', {'id': goal.idGoa}) }}">
+                                            <button type="submit" class="goals-modern-mini" title="Augmenter"><i class="fas fa-chevron-up"></i></button>
+                                        </form>
+                                        <form method="post" action="{{ path('app_goal_progress_down', {'id': goal.idGoa}) }}">
+                                            <button type="submit" class="goals-modern-mini" title="Réduire"><i class="fas fa-chevron-down"></i></button>
+                                        </form>
+                                    </div>
+                                {% endif %}
+                                <div class="goals-modern-progress-track">
+                                    <span style="width: {{ p }}%"></span>
+                                </div>
+                                <span class="goals-modern-progress-label">{{ p }}%</span>
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="goals-modern-dates">
+                                <span>{{ goal.dateDebutGoa ? goal.dateDebutGoa|date('d/m/Y') : '—' }}</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <span>{{ goal.dateFinalGoa ? goal.dateFinalGoa|date('d/m/Y') : '—' }}</span>
+                            </div>
+                        </td>
+
+                        <td class="goals-modern-actions-cell">
+                            <a href="{{ path('app_goal_show', {'id_g': goal.idGoa}) }}" class="goals-modern-icon view" title="Voir">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {% if not is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path('app_goal_edit', {'id_g': goal.idGoa}) }}" class="goals-modern-icon edit" title="Modifier">
+                                    <i class="fas fa-pen"></i>
+                                </a>
+
+                                <form action="{{ path('app_goal_delete', {'id_g': goal.idGoa}) }}" method="post" onsubmit="return confirm('Supprimer cet objectif ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ goal.idGoa) }}">
+                                    <button type="submit" class="goals-modern-icon delete" title="Supprimer">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('goalsSearchInput');
+    if (!searchInput || !searchInput.form) return;
+
+    searchInput.addEventListener('change', function () {
+        if (this.value && this.value.trim().length > 0) {
+            this.form.submit();
+        }
+    });
+});
+</script>
+{% endblock %}

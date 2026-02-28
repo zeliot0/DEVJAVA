@@ -1,33 +1,29 @@
-﻿{% extends 'theme/base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
-{% block title %}Nouveau Produit - NEXA{% endblock %}
+{% set body_class = 'conscience-page' %}
+
+{% block title %}NOUVELLE RÉFÉRENCE — NEXA Intelligence{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/product-form-modern.css?v=20260214a') }}">
+    <link rel="stylesheet" href="{{ asset('css/conscience-modern-proo.css?v=' ~ 'now'|date('U')) }}">
 {% endblock %}
 
 {% block body %}
+<div class="conscience-modern-page">
+    <header class="conscience-page-header">
+        <h1>Instanciation de Produit</h1>
+        <p>Enregistrement d'un nouveau vecteur logistique dans la matrice opérationnelle.</p>
+    </header>
 
-<div class="page-header product-form-modern-page-header">
-    <div>
-        <div class="product-kicker">Stock manager</div>
-        <h1>Créer un nouveau produit</h1>
-        <p>Définissez les informations du produit</p>
+    <div class="conscience-header-actions" style="margin-bottom: 48px;">
+        <div class="page-actions">
+            <a href="{{ path('app_produit_index') }}" class="btn">
+                ← Retour au Répertoire
+            </a>
+        </div>
     </div>
 
-    <a href="{{ path('app_produit_index') }}" class="btn product-back-btn">
-        <i class="fa-solid fa-arrow-left"></i> Retour à la liste
-    </a>
+    {{ include('produit/_form.html.twig', {'button_label': 'Confirmer l\'Instanciation'}) }}
 </div>
-
-<div class="form-shell product-form-modern-shell">
-    <div class="form-card product-form-modern-card">
-        {{ include('produit/_form.html.twig', {'button_label': 'Créer le produit'}) }}
-    </div>
-</div>
-
 {% endblock %}

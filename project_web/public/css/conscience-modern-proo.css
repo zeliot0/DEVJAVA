@@ -1,0 +1,1514 @@
+/* Conscience Ultra Premium - High Performance Aesthetic */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+
+:root {
+    --nexa-blue: #3b82f6;
+    --nexa-indigo: #6366f1;
+    --nexa-violet: #8b5cf6;
+    --notion-text: #1a1b23;
+    --notion-text-muted: #6b7280;
+    --notion-border: rgba(0, 0, 0, 0.05);
+    --notion-bg: #ffffff;
+    --nexa-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    --card-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+}
+
+body.conscience-page {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    font-family: 'Inter', sans-serif;
+    color: var(--notion-text);
+}
+
+.conscience-modern-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 40px 100px;
+    animation: cFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes cFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.conscience-page-header {
+    margin-bottom: 54px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--notion-border);
+}
+
+.conscience-page-header h1 {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    margin: 0;
+    background: var(--nexa-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+.conscience-page-header p {
+    font-size: 18px;
+    color: var(--notion-text-muted);
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+/* Compact Stat Cards with Soft Tint */
+.command-stat-card {
+    border: 1px solid #efefef !important;
+    padding: 10px 14px !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+    border-radius: 6px !important;
+}
+
+.command-stat-card:nth-child(1) {
+    border-top-color: #8b5cf6;
+    background: linear-gradient(to bottom, #faf8ff, #ffffff);
+}
+
+.command-stat-card:nth-child(2) {
+    border-top-color: #3b82f6;
+    background: linear-gradient(to bottom, #f5faff, #ffffff);
+}
+
+.command-stat-card:nth-child(3) {
+    border-top-color: #f59e0b;
+    background: linear-gradient(to bottom, #fffdf2, #ffffff);
+}
+
+.command-stat-card:nth-child(4) {
+    border-top-color: #10b981;
+    background: linear-gradient(to bottom, #f2fff9, #ffffff);
+}
+
+.command-stat-card .card-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--theme-color, #2383e2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+    opacity: 0.7;
+}
+
+.command-stat-card .card-main-val {
+    font-family: 'Inter', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--notion-text);
+}
+
+.command-stat-card .card-sub-val {
+    font-size: 10px;
+    color: var(--notion-text-muted);
+    margin-top: 2px;
+}
+
+/* Simple Callouts with Color Accents */
+.conscience-premium-callout {
+    background: #f7f7f5 !important;
+    border: 1px solid #e9e9e7 !important;
+    border-left: 3px solid var(--nexa-violet) !important;
+    border-radius: 4px !important;
+    padding: 12px 16px !important;
+}
+
+.callout-inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.callout-icon {
+    font-size: 20px;
+}
+
+.callout-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--notion-text);
+}
+
+.callout-text small {
+    display: block;
+    font-size: 13px;
+    color: var(--notion-text-muted);
+}
+
+/* Custom Scrollbar for Conscience */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #e5e7eb;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #d1d5db;
+}
+
+.btn {
+    border: 1px solid #efefef;
+    border-radius: 4px;
+    background: #ffffff;
+    color: var(--notion-text);
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.btn:hover {
+    background: #f7f7f5;
+    border-color: #e5e5e5;
+}
+
+.btn.primary {
+    border-color: transparent;
+    background: linear-gradient(135deg, #2383e2, #2eaadc);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(35, 131, 226, 0.3);
+}
+
+.btn.primary:hover {
+    filter: brightness(1.05);
+    box-shadow: 0 3px 8px rgba(35, 131, 226, 0.4);
+}
+
+.btn.ghost {
+    background: transparent;
+    border-color: transparent;
+    color: var(--notion-text-muted);
+}
+
+.btn.ghost:hover {
+    background: #efefef;
+    color: var(--notion-text);
+}
+
+.search-bar.conscience-toolbar {
+    margin-bottom: 24px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 0;
+    background: transparent;
+    border: none;
+}
+
+.conscience-search-box {
+    height: 32px;
+    border: 1px solid #efefef;
+    border-radius: 4px;
+    background: #fff;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.conscience-search-box input {
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    width: 100%;
+    outline: none;
+}
+
+.conscience-search-box i {
+    color: var(--ink-500);
+    font-size: 0.88rem;
+}
+
+.conscience-search-box input::placeholder {
+    color: #8f86a6;
+}
+
+.conscience-search-box:focus-within {
+    border-color: rgba(111, 62, 192, 0.44);
+    box-shadow: 0 0 0 4px rgba(111, 62, 192, 0.14);
+}
+
+.conscience-voice-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(111, 62, 192, 0.12);
+    color: var(--mauve-800);
+    border-radius: 10px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+}
+
+.conscience-voice-btn:hover {
+    background: rgba(111, 62, 192, 0.22);
+}
+
+.conscience-filter-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.conscience-filter-box label {
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--ink-700);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.conscience-filter-box select {
+    appearance: none;
+    height: 32px;
+    border: 1px solid #efefef;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: var(--notion-text);
+    padding: 0 24px 0 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='6' fill='none'%3E%3Cpath d='M1 1l3 3 3-3' stroke='%2337352f' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+}
+
+.conscience-filter-box select:hover {
+    background-color: #f7f7f5;
+}
+
+.conscience-toggles {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+/* Minimalist Toggle Support */
+.toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.toggle input {
+    display: none;
+}
+
+.toggle-track {
+    width: 28px;
+    height: 16px;
+    background: #e5e5e5;
+    border-radius: 20px;
+    position: relative;
+    transition: background 0.2s;
+}
+
+.toggle-track::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+}
+
+.toggle input:checked+.toggle-track {
+    background: #2383e2;
+}
+
+.toggle input:checked+.toggle-track::after {
+    transform: translateX(12px);
+}
+
+.toggle-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--notion-text-muted);
+}
+
+.conscience-notif-wrap {
+    position: relative;
+    display: inline-flex;
+}
+
+/* Cleaned Notifications */
+.conscience-notif-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    border: 1px solid #efefef;
+    background: #ffffff;
+    color: var(--notion-text);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.conscience-notif-btn:hover {
+    background: #f7f7f5;
+}
+
+.conscience-notif-btn .badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #eb5757;
+    color: #fff;
+    border: 1.5px solid #fff;
+    font-size: 9px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.conscience-notif-panel {
+    position: fixed;
+    top: 56px;
+    right: 24px;
+    width: 300px;
+    background: #ffffff;
+    border: 1px solid #efefef;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 1000;
+    padding: 12px;
+}
+
+.conscience-notif-panel strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--notion-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.conscience-notif-panel p {
+    margin: 0 0 10px;
+    color: var(--ink-900);
+    font-weight: 600;
+}
+
+.conscience-notif-panel .actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.toggle-track {
+    width: 28px;
+    height: 16px;
+    background: #e1e1e1;
+    border-radius: 20px;
+    position: relative;
+    transition: background 0.2s;
+}
+
+.toggle-track::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+}
+
+.toggle input:checked+.toggle-track {
+    background: #2383e2;
+}
+
+.toggle input:checked+.toggle-track::after {
+    transform: translateX(12px);
+}
+
+.toggle-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--notion-text-muted);
+}
+
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+    /* Reduced gap */
+    margin-bottom: 8px;
+}
+
+.kpi-overview-grid {
+    margin-bottom: 12px;
+}
+
+.kpi-card {
+    border-radius: 4px;
+    border: 1px solid #efefef;
+    background: #ffffff;
+    padding: 12px 16px;
+    transition: all 0.2s;
+}
+
+.kpi-stat-card strong {
+    display: block;
+    margin-top: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--notion-text);
+}
+
+.kpi-focus-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.kpi-focus-card {
+    background: #ffffff !important;
+    border: 1px solid #efefef !important;
+    border-top: 2px solid var(--nexa-violet) !important;
+    border-radius: 4px !important;
+    padding: 12px 14px !important;
+    box-shadow: none !important;
+}
+
+.kpi-focus-card:nth-child(1) {
+    border-top-color: #8b5cf6 !important;
+    background: #fafaff !important;
+}
+
+.kpi-focus-card:nth-child(2) {
+    border-top-color: #3b82f6 !important;
+    background: #f8fbff !important;
+}
+
+.kpi-focus-card:nth-child(3) {
+    border-top-color: #10b981 !important;
+    background: #f7fffb !important;
+}
+
+.kpi-focus-card span {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--notion-text-muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.kpi-focus-card strong {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--notion-text);
+}
+
+.kpi-focus-card small {
+    display: block;
+    margin-top: 2px;
+    font-size: 11px;
+    color: var(--notion-text-muted);
+}
+
+/* Cleaned Focus styles above */
+
+.conscience-feedback-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.conscience-feedback-title {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--notion-text);
+    margin-bottom: 4px;
+}
+
+.conscience-feedback-top small {
+    color: var(--notion-text-muted);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.themes-grid {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.theme-card.conscience-theme-card {
+    border-radius: 4px;
+    border: 1px solid #efefef;
+    border-left: 2px solid var(--theme-color, #efefef);
+    background: #ffffff;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: background 0.1s, transform 0.1s;
+}
+
+.theme-card.conscience-theme-card:hover {
+    background: #fdfdfd;
+    transform: translateX(2px);
+}
+
+.conscience-card-top {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 16px;
+}
+
+.conscience-card-main {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.conscience-theme-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: var(--theme-color, #f7f7f5);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.conscience-theme-icon i {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+/* If the color is too light, we could also do: */
+.conscience-theme-icon i {
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.1));
+}
+
+.conscience-theme-info {
+    min-width: 0;
+}
+
+.conscience-theme-info h3 {
+    margin: 0;
+    font-size: 13px;
+    /* Smaller */
+    font-weight: 600;
+    color: var(--notion-text);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.conscience-theme-info span {
+    display: inline-block;
+    margin-top: 2px;
+    font-size: 11px;
+    /* Smaller */
+    color: var(--notion-text-muted);
+}
+
+.conscience-card-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.conscience-fav-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    border: none;
+    background: transparent;
+    color: #e5e5e5;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: color 0.2s;
+}
+
+.conscience-voice-btn {
+    border: none;
+    background: transparent;
+    color: #8b5cf6;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px;
+    transition: transform 0.2s;
+    display: grid;
+    place-items: center;
+}
+
+.conscience-fav-btn:hover,
+.conscience-fav-btn.active {
+    color: #f19f31;
+}
+
+.theme-status {
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 2px 4px;
+    background: #f1f1f5;
+    color: #6b7280;
+}
+
+.theme-status.active {
+    background: #e6f3ed;
+    color: #27ae60;
+}
+
+.theme-status.inactive {
+    background: rgba(118, 108, 143, 0.16);
+    color: #6e6486;
+}
+
+.conscience-theme-text {
+    margin: 0;
+    color: #5a4f74;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    font-weight: 600;
+}
+
+.conscience-card-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.conscience-meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.conscience-meta-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 6px;
+    background: #f3f4f6;
+    border: 1px solid var(--notion-border);
+    color: var(--notion-text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 8px;
+}
+
+.conscience-meta-pill strong {
+    font-weight: 800;
+}
+
+.conscience-meta-pill em {
+    font-style: normal;
+    font-weight: 700;
+    margin-left: 3px;
+}
+
+.conscience-priority.critical {
+    color: #eb5757;
+    font-weight: 700;
+}
+
+.conscience-priority.high {
+    color: #f2994a;
+    font-weight: 700;
+}
+
+.conscience-priority.medium {
+    color: #2f80ed;
+    font-weight: 700;
+}
+
+.conscience-priority.low {
+    color: #27ae60;
+    font-weight: 700;
+}
+
+.conscience-progress {
+    width: 120px;
+}
+
+.conscience-progress-head {
+    display: none;
+}
+
+.conscience-progress-head strong {
+    color: var(--mauve-800);
+    font-size: 0.92rem;
+}
+
+.conscience-progress-bar {
+    height: 6px;
+    width: 100%;
+    border-radius: 999px;
+    background: #f1f1f5;
+    overflow: hidden;
+}
+
+.conscience-progress-bar>span {
+    display: block;
+    height: 100%;
+    background: #2383e2;
+}
+
+.conscience-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.conscience-action {
+    width: auto;
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 4px;
+    background: #f7f7f5;
+    color: var(--notion-text-muted);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.conscience-action.start {
+    background: #e1f0ff;
+    color: #2383e2;
+}
+
+.conscience-action:hover {
+    background: #efefef;
+    color: var(--notion-text);
+}
+
+.conscience-action.start:hover {
+    background: #2383e2;
+    color: #fff;
+}
+
+.conscience-action.manage {
+    color: #a06011;
+    background: rgba(255, 238, 210, 0.92);
+    border-color: rgba(226, 145, 44, 0.38);
+}
+
+.conscience-chat-fab {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    width: 48px;
+    height: 48px;
+    border: 1px solid #efefef;
+    border-radius: 50%;
+    background: #ffffff;
+    color: var(--notion-text);
+    cursor: pointer;
+    font-size: 18px;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    z-index: 90;
+    transition: background 0.2s;
+}
+
+.conscience-chat-fab:hover {
+    background: #f7f7f5;
+}
+
+.conscience-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    display: none;
+    z-index: 2000;
+}
+
+.conscience-modal-overlay.open {
+    display: block;
+}
+
+.conscience-modal {
+    position: fixed;
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%);
+    width: min(520px, calc(100vw - 32px));
+    max-height: 90vh;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    overflow: hidden;
+    z-index: 2001;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.conscience-modal.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.conscience-chat-modal {
+    width: min(700px, calc(100vw - 26px));
+}
+
+.conscience-modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px 24px;
+    border-bottom: 1px solid #efefef;
+}
+
+.conscience-modal-head h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--notion-text);
+    letter-spacing: -0.01em;
+}
+
+.conscience-modal-head p {
+    margin: 4px 0 0;
+    color: var(--notion-text-muted);
+    font-size: 12px;
+}
+
+.conscience-modal-close {
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--notion-text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.conscience-modal-close:hover {
+    background: #efefef;
+    color: var(--notion-text);
+}
+
+.conscience-modal-body {
+    padding: 24px;
+}
+
+.conscience-feedback-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.conscience-feedback-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.conscience-feedback-form label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--nexa-violet);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+}
+
+.conscience-feedback-form .conscience-input,
+.conscience-feedback-form .conscience-select,
+.conscience-chat-form .conscience-input {
+    /* Styles are already defined globally for these classes */
+    margin-bottom: 12px;
+}
+
+.conscience-feedback-form textarea {
+    resize: vertical;
+    min-height: 96px;
+}
+
+.conscience-feedback-form input[type='text']:focus,
+.conscience-feedback-form select:focus,
+.conscience-feedback-form textarea:focus,
+.conscience-chat-form input:focus {
+    border-color: rgba(111, 62, 192, 0.5);
+    box-shadow: 0 0 0 4px rgba(111, 62, 192, 0.14);
+}
+
+.conscience-feedback-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.quick-theme-chip {
+    border-radius: 999px;
+    font-size: 0.8rem;
+    padding: 7px 12px;
+}
+
+.conscience-chatbot-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.conscience-chatbot-title {
+    font-size: 0.94rem;
+    font-weight: 800;
+    color: var(--ink-900);
+}
+
+.conscience-chatbot-head small {
+    color: var(--ink-700);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.conscience-chat-messages {
+    min-height: 250px;
+    max-height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 0;
+}
+
+.conscience-chat-message {
+    max-width: 85%;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+.conscience-chat-message.user {
+    align-self: flex-end;
+    background: #2383e2;
+    color: #fff;
+    border-bottom-right-radius: 2px;
+}
+
+.conscience-chat-message.bot {
+    align-self: flex-start;
+    background: #f7f7f5;
+    border: 1px solid #efefef;
+    color: var(--notion-text);
+    border-bottom-left-radius: 2px;
+}
+
+.conscience-chat-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+    margin-bottom: 20px;
+}
+
+.conscience-chat-chip {
+    border-radius: 4px;
+    font-size: 11px;
+    padding: 6px 10px;
+    background: #ffffff;
+    border: 1px solid #efefef;
+    color: var(--notion-text-muted);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.conscience-chat-chip:hover {
+    background: #f7f7f5;
+    border-color: #e5e5e5;
+    color: var(--notion-text);
+}
+
+.conscience-chat-form {
+    display: flex;
+    gap: 8px;
+}
+
+.conscience-chat-form .btn.primary {
+    flex-shrink: 0;
+}
+
+.conscience-toast-stack {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 200;
+    display: grid;
+    gap: 10px;
+    width: min(370px, calc(100vw - 22px));
+}
+
+.conscience-toast {
+    border-radius: 6px;
+    border: 1px solid #efefef;
+    background: #ffffff;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+    display: grid;
+    grid-template-columns: 32px 1fr auto;
+    align-items: start;
+    gap: 12px;
+    padding: 12px;
+    animation: toast-in 0.2s ease;
+}
+
+.conscience-toast i {
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: var(--nexa-violet);
+}
+
+.conscience-toast-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--notion-text-muted);
+    font-weight: 700;
+}
+
+.conscience-toast p {
+    margin: 0;
+    color: var(--notion-text);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.conscience-toast-close {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    border: none;
+    background: transparent;
+    color: var(--notion-text-muted);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+}
+
+.conscience-toast-close:hover {
+    background: #efefef;
+    color: var(--notion-text);
+}
+
+@keyframes toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+body.conscience-modal-open {
+    overflow: hidden;
+}
+
+:focus-visible {
+    outline: 2px solid rgba(111, 62, 192, 0.62);
+    outline-offset: 2px;
+}
+
+/* End of main styles */
+
+@media (max-width: 1024px) {
+    .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 780px) {
+    .conscience-modern-page {
+        padding: 18px 12px 80px;
+    }
+
+    .search-bar.conscience-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .conscience-search-box {
+        min-width: 100%;
+    }
+
+    .conscience-filter-box {
+        justify-content: space-between;
+    }
+
+    .conscience-toggles {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .themes-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .conscience-feedback-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .conscience-modal {
+        width: min(680px, calc(100vw - 14px));
+        border-radius: 18px;
+    }
+
+    .conscience-modal-head,
+    .conscience-modal-body {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+}
+
+@media (max-width: 560px) {
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .kpi-overview-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .page-actions {
+        width: 100%;
+    }
+
+    .page-actions .btn {
+        flex: 1;
+        justify-content: center;
+        min-width: 0;
+    }
+
+    .conscience-toast-stack {
+        right: 8px;
+        left: 8px;
+        width: auto;
+    }
+
+    .conscience-card-meta {
+        margin-top: 10px;
+        margin-bottom: 22px;
+    }
+
+    .conscience-chat-fab {
+        right: 12px;
+        bottom: 12px;
+        width: 52px;
+        height: 52px;
+    }
+}
+
+/* Conscience Form Elements */
+.conscience-input,
+.conscience-select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #efefef;
+    border-radius: 4px;
+    background: #ffffff;
+    color: var(--notion-text);
+    font-size: 13px;
+    font-family: inherit;
+    transition: all 0.2s;
+    outline: none;
+}
+
+.conscience-input:focus,
+.conscience-select:focus {
+    border-color: var(--nexa-violet);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.conscience-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='6' fill='none'%3E%3Cpath d='M1 1l3 3 3-3' stroke='%2337352f' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+}
+
+/* Icon Grid Selection */
+.icon-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.icon-option input {
+    display: none;
+}
+
+.icon-box {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #f0f0f0;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #fff;
+    color: var(--notion-text-muted);
+}
+
+.icon-option:hover .icon-box {
+    background: #f7f7f5;
+    border-color: #e5e5e5;
+}
+
+.icon-option input:checked+.icon-box {
+    background: var(--nexa-violet);
+    color: #fff;
+    border-color: var(--nexa-violet);
+    box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3);
+}
+
+.form-two-columns {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 32px;
+    margin-top: 24px;
+}
+
+.form-actions {
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid #efefef;
+    display: flex;
+    gap: 12px;
+}
+
+@media (max-width: 768px) {
+    .form-two-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ================= PREMIUM FORM SYSTEM ================= */
+.form-container-inner {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.form-section-card {
+    background: white;
+    border: 1px solid #efefef;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.section-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.section-badge.highlight {
+    background: #eff6ff;
+    color: #3b82f6;
+}
+
+.section-badge.info {
+    background: #f0fdf4;
+    color: #166534;
+}
+
+.section-badge.timeline {
+    background: #f5f3ff;
+    color: #7c3aed;
+}
+
+.section-badge.visual {
+    background: #fff7ed;
+    color: #c2410c;
+}
+
+.section-description {
+    font-size: 13px;
+    color: var(--notion-text-muted);
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.pg-field {
+    margin-bottom: 20px;
+}
+
+.pg-field:last-child {
+    margin-bottom: 0;
+}
+
+.pg-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--notion-text);
+    margin-bottom: 8px;
+}
+
+.pg-input,
+.pg-select,
+.pg-textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #efefef;
+    border-radius: 6px;
+    background: #fdfdfd;
+    color: var(--notion-text);
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+
+.pg-input:focus,
+.pg-select:focus,
+.pg-textarea:focus {
+    background: #fff;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+.pg-input-file {
+    width: 100%;
+    padding: 8px;
+    border: 1px dashed #e2e8f0;
+    border-radius: 6px;
+    background: #f8fafc;
+    font-size: 13px;
+    color: var(--notion-text-muted);
+}
+
+.form-help-text {
+    font-size: 11px;
+    color: var(--notion-text-muted);
+    margin-top: 6px;
+    font-style: italic;
+}
+
+.form-persistence-bar {
+    margin-top: 48px;
+    padding: 24px;
+    background: #fcfcfc;
+    border: 1px solid #efefef;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.form-error-summary {
+    background: #fff1f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 600;
+}

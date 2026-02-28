@@ -1,74 +1,118 @@
-{% extends 'theme/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Statistiques Produits - NEXA{% endblock %}
+{% set body_class = 'conscience-page' %}
+
+{% block title %}Statistiques - NEXA Workspace{% endblock %}
+
+{% block breadcrumb_current %}Analyses Stock{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/product-stats-modern.css?v=20260214c') }}">
+    <link rel="stylesheet" href="{{ asset('css/nexa-conscience-notion.css?v=' ~ 'now'|date('U')) }}">
+    <style>
+        .stats-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .dist-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--notion-border);
+        }
+        .dist-label {
+            width: 140px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--notion-text);
+        }
+        .dist-progress-box {
+            flex: 1;
+            height: 8px;
+            background: #f1f1ef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .dist-progress-fill {
+            height: 100%;
+            background: var(--notion-accent);
+            border-radius: 4px;
+        }
+        .dist-value {
+            width: 100px;
+            text-align: right;
+            font-size: 13px;
+            color: var(--notion-text-muted);
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
-
-<div class="product-stats-modern-page">
-    <div class="page-header">
-        <div>
-            <h1>Statistiques produits</h1>
-            <p>Repartition par categorie</p>
+<div class="stats-container">
+    <header class="conscience-header" style="margin-bottom: 48px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+                <h1 style="font-size: 32px; font-weight: 700; margin: 0;">Analyse de l'inventaire</h1>
+                <p style="color: var(--notion-text-muted); margin-top: 8px;">Répartition et volumes par catégorie.</p>
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <a href="{{ path('app_produit_index') }}" class="btn">
+                    <i class="fa-solid fa-arrow-left"></i> Retour
+                </a>
+                <a href="{{ path('app_produit_pdf') }}" class="btn primary">
+                    <i class="fa-solid fa-file-pdf"></i> Exporter
+                </a>
+            </div>
         </div>
+    </header>
 
-        <div class="stats-actions">
-            <a href="{{ path('app_produit_index') }}" class="btn">
-                Retour
-            </a>
-            <a href="{{ path('app_produit_pdf') }}" class="btn primary">
-                Export PDF
-            </a>
+    <!-- Global KPI -->
+    <div class="produit-stats-grid" style="margin-bottom: 64px;">
+        <div class="stat-card">
+            <span class="label">Total produits</span>
+            <div class="value">{{ totalProduits }}</div>
+            <div class="detail">Références uniques</div>
+        </div>
+        <div class="stat-card">
+            <span class="label">Volume total</span>
+            <div class="value">{{ totalStock }}</div>
+            <div class="detail">Unités cumulées</div>
         </div>
     </div>
 
-    <div class="form-shell">
-        <div class="form-card">
-
-            <div class="form-section">
-                <div class="form-grid-2">
-                    <div class="info-box">
-                        <span class="info-label">Total produits</span>
-                        <span class="info-value">{{ totalProduits }}</span>
-                    </div>
-
-                    <div class="info-box">
-                        <span class="info-label">Stock total</span>
-                        <span class="info-value">{{ totalStock }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <h3 class="stats-chart-title">Histogramme (stock total)</h3>
-
-                <div class="histo">
-                    {% for row in stats %}
-                        {% set value = row.totalStock|default(0) %}
-                        {% set percent = maxTotalStock > 0 ? (value / maxTotalStock * 100) : 0 %}
-
-                        <div class="histo-row">
-                            <div class="histo-label">{{ row.categorie ?: '-' }}</div>
-                            <div class="histo-track">
-                                <div class="histo-fill" style="width: {{ percent }}%"></div>
-                            </div>
-                            <div class="histo-value">{{ value }} ({{ row.totalProduits }})</div>
-                        </div>
-                    {% else %}
-                        <div class="warning">Aucune donnee</div>
-                    {% endfor %}
-                </div>
-                <div class="stats-chart-help">
-                    Valeur = stock total, ( ) = nombre de produits.
-                </div>
-            </div>
-
+    <!-- Category Distribution -->
+    <section>
+        <div class="notion-section-title" style="margin-bottom: 24px;">
+            <i class="fa-solid fa-chart-bar"></i> Répartition par catégorie
         </div>
-    </div>
+
+        <div style="background: #fff; border: 1px solid var(--notion-border); border-radius: 12px; padding: 24px;">
+            {% for row in stats %}
+                {% set value = row.totalStock|default(0) %}
+                {% set percent = maxTotalStock > 0 ? (value / maxTotalStock * 100) : 0 %}
+                
+                <div class="dist-row">
+                    <div class="dist-label">{{ row.categorie ?: 'Sans catégorie' }}</div>
+                    <div class="dist-progress-box">
+                        <div class="dist-progress-fill" style="width: {{ percent }}%"></div>
+                    </div>
+                    <div class="dist-value">
+                        <strong>{{ value }}</strong> <span style="font-size: 11px;">({{ row.totalProduits }} prod.)</span>
+                    </div>
+                </div>
+            {% else %}
+                <div style="text-align: center; color: var(--notion-text-muted); padding: 40px;">
+                    Aucune donnée disponible.
+                </div>
+            {% endfor %}
+        </div>
+        
+        <p style="margin-top: 16px; font-size: 12px; color: var(--notion-text-muted); font-style: italic;">
+            * Le volume total correspond à la somme des quantités en stock pour chaque catégorie.
+        </p>
+    </section>
 </div>
-
 {% endblock %}
+

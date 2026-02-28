@@ -1,518 +1,529 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}NEXA Focus Mode{% endblock %}
+{% block title %}NEXA Focus Ultra{% endblock %}
 
 {% block stylesheets %}
-  {{ parent() }}
-  <link rel="stylesheet" href="{{ asset('css/task-suite.css?v=20260216a') }}">
-  <style>
-    /* Premium Focus Mode - Blitzit Vibe */
-    /* Premium Focus Mode - Blitzit Vibe */
-    body.focus-mode-active {
-        overflow: hidden;
-        background: #020205 !important;
-    }
+    {{ parent() }}
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --focus-primary: #6366f1;
+            --focus-secondary: #8b5cf6;
+            --focus-bg: #030303;
+            --focus-surface: rgba(255, 255, 255, 0.03);
+            --focus-border: rgba(255, 255, 255, 0.08);
+            --focus-text: #ffffff;
+            --focus-text-muted: rgba(255, 255, 255, 0.5);
+            --font-jakarta: 'Plus Jakarta Sans', sans-serif;
+        }
 
-    .focus-blitz-container {
-        display: grid;
-        grid-template-columns: 340px 1fr;
-        height: 100vh;
-        background: #020205;
-        color: #fff;
-        font-family: 'Inter', sans-serif;
-    }
+        /* Reset immersive mode to 'Floating Pod' style */
+        .focus-ultra {
+            height: 820px;
+            max-width: 1300px;
+            margin: 40px auto;
+            display: flex;
+            position: relative;
+            background: radial-gradient(circle at 50% 50%, #111 0%, #000 100%);
+            color: #fff;
+            font-family: var(--font-jakarta);
+            border-radius: 32px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+        }
 
-    /* Sidebar: Task Queue */
-    .focus-queue-sidebar {
-        background: rgba(8, 8, 12, 0.95);
-        border-right: 1px solid rgba(255, 255, 255, 0.08);
-        padding: 32px 24px;
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-        backdrop-filter: blur(40px);
-        z-index: 20;
-    }
+        .biome-bg {
+            border-radius: 32px;
+        }
 
-    .queue-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-bottom: 12px;
-    }
+        /* Ambient Backgrounds */
+        .biome-bg {
+            position: absolute;
+            inset: 0;
+            opacity: 0.5;
+            transition: all 1s ease;
+            z-index: 1;
+            pointer-events: none;
+        }
 
-    .queue-head h2 {
-        font-size: 0.8rem;
-        font-weight: 900;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.4);
-        margin: 0;
-    }
+        .scene-space { background: radial-gradient(circle at 20% 30%, #1e1b4b 0%, transparent 60%), radial-gradient(circle at 80% 70%, #312e81 0%, transparent 60%); }
+        .scene-forest { background: radial-gradient(circle at 20% 30%, #064e3b 0%, transparent 60%), radial-gradient(circle at 80% 70%, #065f46 0%, transparent 60%); }
+        .scene-cyber { background: radial-gradient(circle at 20% 30%, #4c1d95 0%, transparent 60%), radial-gradient(circle at 80% 70%, #701a75 0%, transparent 60%); }
 
-    .task-list-focus {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        overflow-y: auto;
-        flex: 1;
-        padding-right: 4px;
-    }
+        /* Left Sidebar - Task Orbit */
+        .focus-orbit {
+            width: 300px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(30px);
+            border-right: 1px solid var(--focus-border);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            padding: 40px 24px;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-    .task-list-focus::-webkit-scrollbar { width: 4px; }
-    .task-list-focus::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        .orbit-header h2 {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: rgba(255,255,255,0.4);
+            margin: 0 0 40px 0;
+        }
 
-    .focus-task-item {
-        padding: 18px;
-        border-radius: 16px;
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid rgba(255, 255, 255, 0.04);
-        margin-bottom: 14px;
-        cursor: pointer;
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        position: relative;
-    }
+        /* Center Stage */
+        .focus-stage {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 5;
+            padding-bottom: 80px; /* Spacer for bottom dock */
+        }
 
-    .focus-task-item:hover {
-        background: rgba(255, 255, 255, 0.06);
-        border-color: rgba(255, 255, 255, 0.1);
-        transform: translateY(-2px);
-    }
+        .timer-portal {
+            position: relative;
+            width: 420px;
+            height: 420px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
 
-    .focus-task-item.active {
-        background: rgba(91, 92, 240, 0.1);
-        border-color: rgba(91, 92, 240, 0.4);
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-    }
+        .portal-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.05);
+            z-index: 1;
+        }
 
-    .focus-task-item.active::before {
-        content: "";
-        position: absolute;
-        left: 0; top: 18px; bottom: 18px;
-        width: 4px;
-        background: #5b5cf0;
-        border-radius: 0 4px 4px 0;
-    }
+        .portal-progress {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    .focus-task-item h4 {
-        margin: 0 0 8px;
-        font-size: 0.92rem;
-        font-weight: 700;
-        line-height: 1.4;
-        color: rgba(255, 255, 255, 0.9);
-    }
+        .portal-progress svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
 
-    .focus-task-item .meta {
-        font-size: 0.72rem;
-        color: rgba(255, 255, 255, 0.35);
-        display: flex;
-        gap: 12px;
-        font-weight: 600;
-    }
+        .portal-progress circle {
+            fill: none;
+            stroke: var(--focus-primary);
+            stroke-width: 3;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear;
+            filter: drop-shadow(0 0 12px var(--focus-primary));
+        }
 
-    /* Main Focus Area */
-    .focus-main-area {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 40px;
-        background: #020205;
-        overflow: hidden;
-    }
+        .timer-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            width: 80%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
 
-    .mesh-bg {
-        position: absolute;
-        inset: 0;
-        background: 
-            radial-gradient(circle at 20% 30%, rgba(91, 92, 240, 0.08) 0%, transparent 40%),
-            radial-gradient(circle at 80% 70%, rgba(159, 122, 234, 0.07) 0%, transparent 40%),
-            radial-gradient(circle at 50% 50%, rgba(2, 2, 5, 1) 0%, transparent 100%);
-        pointer-events: none;
-        z-index: 1;
-    }
+        #timerDisplay {
+            font-size: 100px;
+            font-weight: 800;
+            letter-spacing: -4px;
+            line-height: 0.9;
+            margin: 0;
+            font-variant-numeric: tabular-nums;
+        }
 
-    .focus-nav-top {
-        position: absolute;
-        top: 32px;
-        right: 32px;
-        display: flex;
-        gap: 14px;
-        z-index: 30;
-    }
+        .timer-status {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: rgba(255,255,255,0.4);
+            margin-top: 15px;
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        /* Controls Area */
+        .focus-controls {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            position: relative;
+        }
 
-    .btn-glass {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        color: #fff;
-        padding: 10px 20px;
-        border-radius: 14px;
-        text-decoration: none;
-        font-size: 0.8rem;
-        font-weight: 700;
-        backdrop-filter: blur(12px);
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
+        .btn-core {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            outline: none;
+        }
 
-    .btn-glass:hover {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.2);
-        transform: translateY(-2px);
-    }
+        .btn-core:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        }
 
-    .current-task-hero {
-        text-align: center;
-        margin-bottom: 24px;
-        max-width: 800px;
-        position: relative;
-        z-index: 10;
-        animation: heroIn 1s cubic-bezier(0.16, 1, 0.3, 1);
-    }
+        .btn-core.primary {
+            width: 80px;
+            height: 80px;
+            background: #fff;
+            color: #000;
+            font-size: 24px;
+            border: none;
+            box-shadow: 0 0 40px rgba(255,255,255,0.2);
+        }
 
-    @keyframes heroIn {
-        from { opacity: 0; transform: translateY(30px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+        .btn-core.primary:hover {
+            background: #f0f0f0;
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(255,255,255,0.3);
+        }
 
-    .current-task-hero span {
-        text-transform: uppercase;
-        font-size: 0.7rem;
-        letter-spacing: 0.3em;
-        color: #5b5cf0;
-        font-weight: 900;
-        display: block;
-        margin-bottom: 16px;
-        opacity: 0.8;
-    }
+        .task-stack {
+            flex: 1;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+        .task-stack::-webkit-scrollbar { display: none; }
 
-    .current-task-hero h1 {
-        font-size: 3.2rem;
-        font-weight: 900;
-        margin: 0;
-        letter-spacing: -0.03em;
-        line-height: 1.1;
-        background: linear-gradient(to bottom, #fff, rgba(255,255,255,0.7));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
+        .orb-task {
+            padding: 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
 
-    /* The Huge Timer */
-    .timer-grand {
-        position: relative;
-        width: 440px;
-        height: 440px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 20px 0;
-        z-index: 10;
-    }
+        .orb-task:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(5px);
+        }
 
-    .timer-svg {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        transform: rotate(-90deg);
-    }
+        .orb-task.active {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--focus-primary);
+        }
 
-    .timer-track {
-        fill: none;
-        stroke: rgba(255, 255, 255, 0.03);
-        stroke-width: 12;
-    }
+        .orb-task h4 { margin: 0 0 5px 0; font-size: 14px; font-weight: 600; }
+        .orb-task p { margin: 0; font-size: 11px; color: rgba(255,255,255,0.4); }
 
-    .timer-progress {
-        fill: none;
-        stroke: #5b5cf0;
-        stroke-width: 12;
-        stroke-linecap: round;
-        transition: stroke-dashoffset 1s linear;
-        filter: drop-shadow(0 0 15px rgba(91, 92, 240, 0.4));
-    }
+        .dock-sep {
+            width: 1px;
+            height: 16px;
+            background: rgba(255,255,255,0.1);
+        }
 
-    .timer-numbers {
-        font-family: 'Inter', sans-serif;
-        font-variant-numeric: tabular-nums;
-        font-size: 7rem;
-        font-weight: 900;
-        letter-spacing: -0.04em;
-        z-index: 1;
-        text-shadow: 0 0 30px rgba(0,0,0,0.5);
-    }
+        /* Refined Dock */
+        .focus-dock {
+            position: absolute;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(10, 10, 10, 0.85);
+            -webkit-backdrop-filter: blur(24px);
+            backdrop-filter: blur(24px);
+            padding: 12px 32px;
+            border-radius: 100px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            z-index: 200;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
 
-    /* Blitz Controls */
-    .focus-controls-blitz {
-        display: flex;
-        gap: 24px;
-        margin-top: 32px;
-        z-index: 10;
-    }
+        .dock-item {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            letter-spacing: 0.02em;
+        }
 
-    .blitz-btn {
-        width: 68px;
-        height: 68px;
-        border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        background: rgba(255, 255, 255, 0.04);
-        color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.3rem;
-        cursor: pointer;
-        backdrop-filter: blur(14px);
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
+        .dock-item i {
+            font-size: 14px;
+        }
 
-    .blitz-btn:hover {
-        background: rgba(255, 255, 255, 1);
-        color: #000;
-        transform: translateY(-4px) scale(1.05);
-        box-shadow: 0 15px 35px rgba(255, 255, 255, 0.15);
-    }
+        .dock-item:hover, .dock-item.active {
+            color: #fff;
+            transform: translateY(-1px);
+        }
 
-    .blitz-btn.primary {
-        background: #fff;
-        color: #000;
-        width: 84px;
-        height: 84px;
-        border-radius: 24px;
-        font-size: 1.8rem;
-    }
+        .dock-item.active {
+            color: var(--focus-primary);
+        }
 
-    .blitz-btn.active {
-        background: #5b5cf0;
-        color: #fff;
-        border-color: #5b5cf0;
-    }
+        /* Exit button - more subtle */
+        .focus-exit {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 1000;
+        }
 
-    /* Minimal Player */
-    .minimal-player {
-        position: absolute;
-        bottom: 32px;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 8px 10px 8px 18px;
-        border-radius: 999px;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        backdrop-filter: blur(20px);
-        z-index: 30;
-    }
+        .btn-exit {
+            color: rgba(255,255,255,0.3);
+            text-decoration: none;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
 
-    .minimal-player i.main-ico {
-        color: #5b5cf0;
-        font-size: 0.9rem;
-        animation: floatA 2s ease-in-out infinite;
-    }
-
-    .minimal-player span {
-        font-size: 0.8rem;
-        font-weight: 700;
-        color: rgba(255, 255, 255, 0.7);
-        letter-spacing: 0.02em;
-    }
-
-    .music-play-mini {
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.1);
-        border: none;
-        color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: 0.2s;
-    }
-
-    .music-play-mini:hover {
-        background: #fff;
-        color: #000;
-    }
-
-    @keyframes floatA {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-3px); }
-    }
-
-    /* Stats Dashboard Overlay */
-    .focus-top-stats {
-        position: absolute;
-        top: 32px;
-        left: 372px;
-        display: flex;
-        gap: 32px;
-        z-index: 30;
-    }
-
-    .stat-mini {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .stat-mini label {
-        font-size: 0.6rem;
-        color: rgba(255, 255, 255, 0.3);
-        text-transform: uppercase;
-        font-weight: 900;
-        letter-spacing: 0.2em;
-        margin-bottom: 2px;
-    }
-
-    .stat-mini span {
-        font-size: 1.2rem;
-        font-weight: 900;
-        color: #fff;
-    }
-
-    .sidebar-footer {
-        margin-top: auto;
-        padding: 24px;
-        border-radius: 20px;
-        background: rgba(255,255,255,0.03);
-        border: 1px solid rgba(255,255,255,0.06);
-    }
-
-    /* Break Mode */
-    .focus-blitz-container.break-mode {
-        background: #020604;
-    }
-    .focus-blitz-container.break-mode .mesh-bg {
-        background: radial-gradient(circle at center, rgba(16, 185, 129, 0.05) 0%, transparent 70%);
-    }
-    .focus-blitz-container.break-mode .timer-progress {
-        stroke: #10b981;
-        filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.4));
-    }
-    .focus-blitz-container.break-mode .stat-mini label { color: rgba(16, 185, 129, 0.4); }
-  </style>
+        .btn-exit:hover {
+            color: #ff4b4b;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
-<div class="focus-blitz-container" id="focusBlitzContainer" data-suite-page="focus">
-    
-    <!-- Left Sidebar: Task Queue -->
-    <aside class="focus-queue-sidebar">
-        <div class="queue-head">
-            <h2>Up Next</h2>
-            <button id="refreshTasksBtn" style="background:none; border:none; color:rgba(255,255,255,0.3); cursor:pointer;"><i class="fa-solid fa-rotate"></i></button>
-        </div>
-        
-        <ul class="task-list-focus" id="focusTaskList">
-            {% for task in tasks %}
-            <li class="focus-task-item {{ loop.first ? 'active' : '' }}" 
-                data-task-id="{{ task.id }}" 
-                data-task-title="{{ task.title }}">
-                <h4>{{ task.title }}</h4>
-                <div class="meta">
-                    <span><i class="fa-solid fa-flag"></i> {{ task.priority }}</span>
-                    {% if task.category %}<span><i class="fa-solid fa-layer-group"></i> {{ task.category.name }}</span>{% endif %}
-                </div>
-            </li>
+    <div class="focus-ultra" id="focusRoot">
+        <div class="biome-bg scene-space" id="biomeBg"></div>
+
+        <div class="focus-exit">
+            {% if app.request.query.get('embed') == '1' %}
+                <a href="#" class="btn-exit" onclick="window.parent.postMessage({type: 'nexa-focus-inline-close'}, '*')">
+                   QUITTER <i class="fa-solid fa-xmark"></i>
+                </a>
             {% else %}
-            <li class="muted" style="padding:20px; text-align:center; color:rgba(255,255,255,0.3);">No active tasks</li>
-            {% endfor %}
-        </ul>
+                <a href="{{ path('app_task_index') }}" class="btn-exit">
+                   RETOUR <i class="fa-solid fa-arrow-left"></i>
+                </a>
+            {% endif %}
+        </div>
 
-        <div class="sidebar-footer">
-            <div class="stat-mini">
-                <label>Weekly Momentum</label>
-                <span>{{ tasks|length }} Tasks remain</span>
+        <!-- Left: Task Orbit -->
+        <aside class="focus-orbit">
+            <div class="orbit-header">
+                <h2>Votre Mission</h2>
             </div>
-        </div>
-    </aside>
-
-    <!-- Main Focus View -->
-    <main class="focus-main-area">
-        <div class="mesh-bg"></div>
-
-        <div class="focus-nav-top">
-            <button class="btn-glass" id="btnSettingsToggle"><i class="fa-solid fa-sliders"></i> Settings</button>
-            <a href="{{ path('app_task_suite_hub') }}" class="btn-glass"><i class="fa-solid fa-arrow-right-from-bracket"></i> Exit</a>
-        </div>
-
-        <div class="focus-top-stats">
-            <div class="stat-mini">
-                <label>Sessions</label>
-                <span id="focusSessionsCount">0</span>
+            <div class="task-stack" id="focusTaskList">
+                {% for task in tasks %}
+                    <div class="orb-task {{ loop.first ? 'active' : '' }}" data-id="{{ task.id }}" data-title="{{ task.title }}">
+                        <h4>{{ task.title }}</h4>
+                        <p>{{ task.category ? task.category.name : 'No category' }}</p>
+                    </div>
+                {% endfor %}
             </div>
-            <div class="stat-mini">
-                <label>Focus Time</label>
-                <span id="focusTimeTotal">0m</span>
+        </aside>
+
+        <!-- Main Stage -->
+        <section class="focus-stage">
+            <div class="timer-portal" id="timerPortal">
+                <div class="portal-ring"></div>
+                <div class="portal-progress">
+                    <svg viewBox="0 0 420 420">
+                        <circle id="timerCircle" cx="210" cy="210" r="208" 
+                                stroke-dasharray="1306" stroke-dashoffset="0"></circle>
+                    </svg>
+                </div>
+                <div class="timer-content">
+                    <div id="timerDisplay">25:00</div>
+                    <div class="timer-status" id="timerStatus">FOCUS TIME</div>
+                </div>
             </div>
-            <div class="stat-mini">
-                <label>Streak</label>
-                <span id="focusStreakDays">0d</span>
+
+            <div class="focus-controls">
+                <button class="btn-core" id="btnReset"><i class="fa-solid fa-rotate-right"></i></button>
+                <button class="btn-core primary" id="btnPlayPause"><i class="fa-solid fa-play"></i></button>
+                <button class="btn-core" id="btnSkip"><i class="fa-solid fa-forward"></i></button>
             </div>
+        </section>
+
+        <!-- Dock -->
+        <div class="focus-dock">
+            <div class="dock-item active" data-scene="space"><i class="fa-solid fa-user-astronaut"></i> <span>Espace</span></div>
+            <div class="dock-item" data-scene="forest"><i class="fa-solid fa-tree"></i> <span>Forêt</span></div>
+            <div class="dock-item" data-scene="cyber"><i class="fa-solid fa-microchip"></i> <span>Cyber</span></div>
+            <div class="dock-sep"></div>
+            <div class="dock-item" id="btnSoundToggle"><i class="fa-solid fa-volume-high"></i> <span>Audio</span></div>
+            <div class="dock-item" id="btnFaceGuard"><i class="fa-solid fa-eye-slash"></i> <span>Face Guard</span></div>
+            <div class="dock-sep"></div>
+            <div class="dock-item" id="btnZen"><i class="fa-solid fa-expand"></i> <span>Focus Pro</span></div>
         </div>
 
-        <div class="current-task-hero">
-            <span id="focusStatusLabel">Deep Work Session</span>
-            <h1 id="currentTaskTitle">{% if tasks|length > 0 %}{{ tasks[0].title }}{% else %}Ready to Start?{% endif %}</h1>
-        </div>
+        <audio id="focusAudio" loop>
+            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
+        </audio>
 
-        <div class="timer-grand">
-            <svg class="timer-svg" viewBox="0 0 200 200">
-                <circle class="timer-track" cx="100" cy="100" r="90"></circle>
-                <circle class="timer-progress" id="timerProgressCircle" cx="100" cy="100" r="90" 
-                    stroke-dasharray="565.48" stroke-dashoffset="0"></circle>
-            </svg>
-            <div class="timer-numbers" id="timerDisplay">25:00</div>
-        </div>
-
-        <div class="focus-controls-blitz">
-            <button class="blitz-btn" id="blitzReset" title="Reset"><i class="fa-solid fa-rotate-left"></i></button>
-            <button class="blitz-btn primary" id="blitzToggle" title="Start/Pause"><i class="fa-solid fa-play"></i></button>
-            <button class="blitz-btn" id="blitzDone" title="Mark as Done" style="background:rgba(16,185,129,0.08); border-color:rgba(16,185,129,0.2); color:#10b981;"><i class="fa-solid fa-check"></i></button>
-            <button class="blitz-btn" id="blitzSkip" title="Break/Skip"><i class="fa-solid fa-angles-right"></i></button>
-        </div>
-
-        <div class="minimal-player" id="minimalPlayer">
-            <i class="fa-solid fa-volume-high main-ico"></i>
-            <span id="nowPlayingLabel">Silent Focus</span>
-            <button class="music-play-mini" id="toggleMusicFocus"><i class="fa-solid fa-play" style="font-size:0.7rem;"></i></button>
-        </div>
-
-        <div class="focus-settings-btn" id="focusSettingsIcon">
-            <i class="fa-solid fa-sliders"></i>
-        </div>
-    </main>
-
-    <!-- Hidden audio element -->
-    <audio id="focusAmbientAudio" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
-    </audio>
-    
-    <!-- Settings Panel (Hidden Initially) -->
-    <div id="focusSettingsPanel" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:100; backdrop-filter:blur(20px);">
-        <div style="max-width:400px; margin: 100px auto; background:#111; padding:30px; border-radius:24px; border:1px solid rgba(255,255,255,0.1);">
-            <h2 style="margin-top:0;">Focus Settings</h2>
-            <div style="display:grid; gap:20px;">
-                <label style="display:grid; gap:8px; font-weight:700;">Focus Duration (min)
-                    <input type="number" id="inputFocusTime" value="25" style="background:#222; border:1px solid #333; color:#fff; padding:10px; border-radius:8px;">
-                </label>
-                <label style="display:grid; gap:8px; font-weight:700;">Break Duration (min)
-                    <input type="number" id="inputBreakTime" value="5" style="background:#222; border:1px solid #333; color:#fff; padding:10px; border-radius:8px;">
-                </label>
-                <button class="suite-btn" id="saveSettingsFocus" style="width:100%; margin-top:20px;">Save Defaults</button>
-                <button class="btn-exit" id="closeSettingsFocus" style="text-align:center;">Close</button>
-            </div>
-        </div>
+        <video id="faceVideo" style="display:none;" autoplay muted playsinline></video>
     </div>
-
-</div>
 {% endblock %}
 
 {% block javascripts %}
-  {{ parent() }}
-  <script src="{{ asset('js/task-suite.js?v=20260216a') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const timerDisplay = document.getElementById('timerDisplay');
+    const timerCircle = document.getElementById('timerCircle');
+    const timerPortal = document.getElementById('timerPortal');
+    const btnPlayPause = document.getElementById('btnPlayPause');
+    const btnReset = document.getElementById('btnReset');
+    const btnSkip = document.getElementById('btnSkip');
+    const biomeBg = document.getElementById('biomeBg');
+    const audio = document.getElementById('focusAudio');
+    const soundToggle = document.getElementById('btnSoundToggle');
+    const zenBtn = document.getElementById('btnZen');
+    const faceBtn = document.getElementById('btnFaceGuard');
+    const faceVideo = document.getElementById('faceVideo');
+    const taskItems = document.querySelectorAll('.orb-task');
+
+    let timeLeft = 25 * 60;
+    let totalTime = 25 * 60;
+    let timerId = null;
+    let isRunning = false;
+    let phase = 'focus'; 
+    let faceGuardActive = false;
+    let stream = null;
+
+    const updateUI = () => {
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        
+        const circumference = 1306;
+        const offset = circumference - (timeLeft / totalTime) * circumference;
+        timerCircle.style.strokeDashoffset = isNaN(offset) ? 0 : offset;
+    };
+
+    const toggleTimer = () => {
+        if (isRunning) {
+            clearInterval(timerId);
+            btnPlayPause.innerHTML = '<i class="fa-solid fa-play"></i>';
+            timerPortal.classList.remove('active');
+        } else {
+            timerId = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    updateUI();
+                } else {
+                    switchPhase();
+                }
+            }, 1000);
+            btnPlayPause.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            timerPortal.classList.add('active');
+        }
+        isRunning = !isRunning;
+    };
+
+    const switchPhase = () => {
+        clearInterval(timerId);
+        isRunning = false;
+        if (phase === 'focus') {
+            phase = 'break';
+            timeLeft = 5 * 60;
+            totalTime = 5 * 60;
+            document.getElementById('timerStatus').textContent = 'TIME FOR BREAK';
+            document.documentElement.style.setProperty('--focus-primary', '#10b981');
+        } else {
+            phase = 'focus';
+            timeLeft = 25 * 60;
+            totalTime = 25 * 60;
+            document.getElementById('timerStatus').textContent = 'BACK TO FOCUS';
+            document.documentElement.style.setProperty('--focus-primary', '#6366f1');
+        }
+        updateUI();
+        btnPlayPause.innerHTML = '<i class="fa-solid fa-play"></i>';
+    };
+
+    btnPlayPause.onclick = toggleTimer;
+    btnReset.onclick = () => {
+        clearInterval(timerId);
+        isRunning = false;
+        timeLeft = (phase === 'focus' ? 25 : 5) * 60;
+        updateUI();
+        btnPlayPause.innerHTML = '<i class="fa-solid fa-play"></i>';
+    };
+    btnSkip.onclick = switchPhase;
+
+    // Biomes
+    document.querySelectorAll('[data-scene]').forEach(item => {
+        item.onclick = () => {
+            document.querySelectorAll('[data-scene]').forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            biomeBg.className = `biome-bg scene-${item.dataset.scene}`;
+        };
+    });
+
+    soundToggle.onclick = () => {
+        if (audio.paused) {
+            audio.play();
+            soundToggle.innerHTML = '<i class="fa-solid fa-volume-high"></i> <span>Audio</span>';
+        } else {
+            audio.pause();
+            soundToggle.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> <span>Audio</span>';
+        }
+    };
+
+    faceBtn.onclick = async () => {
+        if (!faceGuardActive) {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                faceVideo.srcObject = stream;
+                faceGuardActive = true;
+                faceBtn.innerHTML = '<i class="fa-solid fa-eye" style="color:#6366f1"></i> <span>Face On</span>';
+                faceBtn.classList.add('active');
+            } catch (e) {
+                alert("Camera access required for Face Guard");
+            }
+        } else {
+            if (stream) stream.getTracks().forEach(t => t.stop());
+            faceGuardActive = false;
+            faceBtn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> <span>Face Guard</span>';
+            faceBtn.classList.remove('active');
+        }
+    };
+
+    zenBtn.onclick = () => {
+        const orbit = document.querySelector('.focus-orbit');
+        const isHidden = orbit.style.display === 'none';
+        orbit.style.display = isHidden ? 'flex' : 'none';
+        zenBtn.classList.toggle('active');
+        zenBtn.querySelector('span').textContent = isHidden ? 'Focus Pro' : 'Zen View';
+    };
+
+    taskItems.forEach(task => {
+        task.onclick = () => {
+            taskItems.forEach(t => t.classList.remove('active'));
+            task.classList.add('active');
+            document.getElementById('timerStatus').textContent = task.dataset.title;
+        };
+    });
+
+    updateUI();
+});
+</script>
 {% endblock %}

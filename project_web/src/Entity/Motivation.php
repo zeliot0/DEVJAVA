@@ -77,4 +77,14 @@ class Motivation
         return $this;
     }
 
+    /**
+     * Compatibility getter for templates expecting a creation date.
+     * The database currently doesn't store a createdAt for motivations;
+     * return null so templates can safely handle absence.
+     */
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return null;
+    }
+
 }

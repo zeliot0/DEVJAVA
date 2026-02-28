@@ -1,0 +1,147 @@
+﻿{% extends 'base.html.twig' %}
+
+{% set body_class = 'conscience-page' %}
+
+{% block title %}Écrire au {{ type == 'future' ? 'Futur' : 'Passé' }} — NEXA{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/time-message-modern.css?v=' ~ 'now'|date('U')) }}">
+{% endblock %}
+
+{% block body %}
+<div class="tm-page">
+
+    <header class="tm-header">
+        <div>
+            <h1 class="tm-title">
+                {% if type == 'future' %}
+                    <i class="fas fa-rocket"></i> Capsule Temporelle
+                {% else %}
+                    <i class="fas fa-history"></i> Echo du Passé
+                {% endif %}
+            </h1>
+            <p class="tm-subtitle">Figez un fragment de pensée pour une redécouverte ultérieure.</p>
+        </div>
+        <div class="tm-actions">
+            <a href="{{ path('app_time_message_index') }}" class="tm-btn">
+                <i class="fas fa-arrow-left"></i> Retour
+            </a>
+        </div>
+    </header>
+
+    <div class="tm-form-card">
+        <div class="tm-form-note" id="promptContainer">
+            <div style="display: flex; align-items: flex-start; gap: 16px;">
+                <div style="font-size: 24px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1));">✨</div>
+                <div style="flex: 1;">
+                    <div style="font-size: 10px; font-weight: 800; color: #6366f1; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;">Suggestion IA de Réflexion</div>
+                    <div id="reflectionPrompt" style="font-size: 14px; color: #4b5563; line-height: 1.6; font-weight: 500;">Sélectionnez une humeur pour débloquer un axe de résonance.</div>
+                </div>
+                <button type="button" class="tm-btn" id="generatePrompt" style="display: none; padding: 8px 12px; font-size: 12px; border-radius: 8px;">
+                    <i class="fas fa-sync-alt"></i> Autre
+                </button>
+            </div>
+        </div>
+
+        {{ form_start(form, {'attr': {'id': 'timeMessageForm', 'novalidate': 'novalidate'}}) }}
+
+        <div class="tm-field">
+            <label class="tm-label">Objet de la correspondance</label>
+            {{ form_widget(form.titleMsg, {'attr': {'class': 'tm-input', 'placeholder': 'Titre de votre capsule...'}}) }}
+            {{ form_errors(form.titleMsg) }}
+        </div>
+
+        <div class="tm-field">
+            <label class="tm-label">Contenu de la lettre</label>
+            {{ form_widget(form.contentMsg, {'attr': {'class': 'tm-input', 'placeholder': 'Commencez à écrire votre histoire...'}}) }}
+            {{ form_errors(form.contentMsg) }}
+        </div>
+
+        <div class="tm-form-grid">
+            <div class="tm-field">
+                <label class="tm-label">Humeur actuelle</label>
+                {{ form_widget(form.moodAtCreation, {'attr': {'class': 'tm-input', 'id': 'moodSelect'}}) }}
+                {{ form_errors(form.moodAtCreation) }}
+            </div>
+
+            {% if type == 'future' %}
+                <div class="tm-field">
+                    <label class="tm-label">Moment de la livraison</label>
+                    {{ form_widget(form.deliveryDateMsg, {'attr': {'class': 'tm-input'}}) }}
+                    {{ form_errors(form.deliveryDateMsg) }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+            {% if goals|length > 0 %}
+                <div class="tm-field">
+                    <label class="tm-label">Lier à un objectif</label>
+                    <select name="goal_id" class="tm-input">
+                        <option value="">-- Aucun lien --</option>
+                        {% for goal in goals %}
+                            <option value="{{ goal.idGoa }}">{{ goal.titleGoa }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endif %}
+
+            <div class="tm-field">
+                <label class="tm-label">Capsule Vidéo</label>
+                {{ form_widget(form.video, {'attr': {'class': 'tm-input'}}) }}
+                {{ form_errors(form.video) }}
+            </div>
+        </div>
+
+        <div style="margin-top: 50px; display: flex; justify-content: flex-end; align-items: center; gap: 20px;">
+            <a href="{{ path('app_time_message_index') }}" style="font-size: 14px; font-weight: 700; color: #9ca3af; text-decoration: none;">Abandonner</a>
+            <button type="submit" class="tm-btn tm-btn-primary" style="padding: 16px 40px; font-size: 15px;">
+                {% if type == 'future' %}
+                    <i class="fas fa-paper-plane"></i> Lancer dans le Temps
+                {% else %}
+                    <i class="fas fa-save"></i> Archiver
+                {% endif %}
+            </button>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const moodSelect = document.getElementById('moodSelect');
+    const promptContainer = document.getElementById('reflectionPrompt');
+    const generateBtn = document.getElementById('generatePrompt');
+
+    const updatePrompt = (mood) => {
+        if (mood) {
+            fetch(`/time-message/api/reflection-prompt/${mood}`)
+                .then(response => response.json())
+                .then(data => {
+                    promptContainer.textContent = data.prompt;
+                    generateBtn.style.display = 'inline-flex';
+                })
+                .catch(() => {
+                    promptContainer.textContent = 'Impossible de charger une suggestion.';
+                });
+        }
+    };
+
+    if (moodSelect) {
+        moodSelect.addEventListener('change', function() {
+            updatePrompt(this.value);
+        });
+        if (moodSelect.value) updatePrompt(moodSelect.value);
+    }
+
+    if (generateBtn) {
+        generateBtn.addEventListener('click', function() {
+            updatePrompt(moodSelect.value);
+        });
+    }
+});
+</script>
+{% endblock %}

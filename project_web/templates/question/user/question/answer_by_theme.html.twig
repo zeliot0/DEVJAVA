@@ -1,367 +1,285 @@
-{% extends 'theme/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Repondre - {{ theme.nom }}{% endblock %}
+{% set body_class = 'conscience-page' %}
 
-{% block body %}
-<div class="wrap stepper-wrap modern-answer-wrap">
+{% block title %}SESSION D'ANALYSE — {{ theme.nom }} — NEXA Intelligence{% endblock %}
 
-  <section class="page-header center answer-hero">
-    <div class="header-actions">
-      <a href="{{ path('user_theme_index') }}" class="btn ghost">
-        Retour aux themes
-      </a>
-
-      <a href="{{ path('app_theme_rapport', { id: theme.idT }) }}" class="btn primary">
-        Voir mon rapport
-      </a>
-    </div>
-
-    <h1><i class="fa-solid fa-clipboard-check"></i> {{ theme.nom }}</h1>
-    <p class="muted">
-      {{ answeredCount|default(0) }} repondues, {{ pendingCount|default(questions|length) }} en attente pour cette periode.
-    </p>
-  </section>
-
-  {% if questions is not empty %}
-    <div class="stepper-progress modern-progress">
-      <div class="bar">
-        <div class="bar-fill" id="progressBar"></div>
-      </div>
-      <span id="progressText"></span>
-    </div>
-  {% endif %}
-
-  {% if questions is empty %}
-    <div class="report-empty">
-      <i class="fa-regular fa-folder-open"></i>
-      <h3>Aucune question active</h3>
-      <p>Ce theme ne contient aucune question active pour le moment.</p>
-    </div>
-  {% else %}
-    <form method="post"
-          action="{{ path('app_theme_answer', { id: theme.idT }) }}"
-          class="answers-form modern-answers-form"
-          id="stepperForm"
-          novalidate>
-
-    {% for question in questions %}
-      {% set answered = answers[question.id] is defined %}
-      {% set response = answered ? answers[question.id].valeur : null %}
-
-      <article class="question-step modern-question-step {{ answered ? 'answered' : '' }}"
-               data-step="{{ loop.index0 }}">
-
-        <div class="question-head">
-          <h3 class="question-title">{{ question.texte }}</h3>
-          {% if answered %}
-            <span class="badge-done">Deja repondu</span>
-          {% endif %}
-        </div>
-
-        {% if question.typeReponse == 'boolean' %}
-          <div class="choices modern-choices">
-            <label class="choice modern-choice">
-              <input type="radio"
-                     name="q{{ question.id }}"
-                     value="1"
-                     {{ answered ? 'disabled' : '' }}
-                     {{ response == '1' ? 'checked' : '' }}>
-              <span class="choice-label">
-                <i class="fa-solid fa-circle-check"></i>
-                Oui
-              </span>
-            </label>
-
-            <label class="choice modern-choice">
-              <input type="radio"
-                     name="q{{ question.id }}"
-                     value="0"
-                     {{ answered ? 'disabled' : '' }}
-                     {{ response == '0' ? 'checked' : '' }}>
-              <span class="choice-label">
-                <i class="fa-solid fa-circle-xmark"></i>
-                Non
-              </span>
-            </label>
-          </div>
-
-        {% elseif question.typeReponse == 'number' %}
-          <input type="number"
-                 name="q{{ question.id }}"
-                 class="field"
-                 value="{{ response }}"
-                 placeholder="Valeur {{ question.unite ? '(' ~ question.unite ~ ')' : '' }}"
-                 {{ answered ? 'readonly' : '' }}>
-
-        {% elseif question.typeReponse == 'text' %}
-          <div class="text-answer-wrap">
-            <textarea id="qtext{{ question.id }}"
-                      name="q{{ question.id }}"
-                      class="text-answer"
-                      rows="5"
-                      placeholder="Ecris ta reponse ici..."
-                      {{ answered ? 'readonly' : '' }}>{{ response }}</textarea>
-            <div style="margin-top:8px;">
-              <button type="button"
-                      class="btn ghost voice-answer-btn"
-                      data-target="qtext{{ question.id }}"
-                      {{ answered ? 'disabled' : '' }}>
-                <i class="fa-solid fa-microphone"></i> Dicter la reponse
-              </button>
-            </div>
-          </div>
-        {% endif %}
-      </article>
-    {% endfor %}
-
-    <p id="stepError" class="step-error" role="alert" aria-live="polite"></p>
-
-    <div class="stepper-actions modern-stepper-actions">
-      <button type="button" class="btn ghost" id="prevBtn">Precedent</button>
-      <button type="button" class="btn primary" id="nextBtn">Suivant</button>
-      <button type="submit" class="btn primary" id="submitBtn">Enregistrer mes reponses</button>
-    </div>
-
-    </form>
-  {% endif %}
-</div>
-
-<div id="bravoBox" class="bravo-box">
-  <div class="bravo-content">
-    <h2>Bravo</h2>
-    <p>Vous avez complete toutes les questions.</p>
-    <a href="{{ path('app_theme_rapport', { id: theme.idT }) }}" class="btn primary">Voir mon rapport</a>
-  </div>
-</div>
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/conscience-modern-proo.css?v=' ~ 'now'|date('U')) }}">
+    <style>
+        .answer-stepper-wrap { max-width: 800px; margin: 0 auto; }
+        .choice-pill-v2 { cursor: pointer; display: block; }
+        .pill-box { 
+            padding: 24px; border-radius: 16px; border: 2px solid #f3f4f6; background: white; 
+            text-align: center; font-weight: 700; transition: all 0.3s; color: #6b7280;
+        }
+        .choice-pill-v2 input:checked + .pill-box {
+            border-color: {{ theme.couleur|default('#6366f1') }};
+            background: {{ theme.couleur|default('#6366f1') }}08;
+            color: {{ theme.couleur|default('#6366f1') }};
+            box-shadow: 0 10px 20px -10px {{ theme.couleur|default('#6366f1') }}44;
+        }
+        .question-card-premium {
+            background: white; border-radius: 28px; padding: 48px; border: 1px solid var(--notion-border);
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.12); animation: cFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .loading-dots span {
+            width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; display: inline-block;
+            animation: bounce 0.6s infinite alternate;
+        }
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce { to { transform: translateY(-8px); opacity: 0.5; } }
+    </style>
 {% endblock %}
 
-{% block javascripts %}
-  {{ parent() }}
-  <script>
+{% block body %}
+<div class="conscience-modern-page">
+
+    <header class="conscience-page-header">
+        <div>
+            <div style="font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 8px;">Session d'Engagement</div>
+            <h1 style="font-family: 'Space Grotesk', sans-serif;">{{ theme.nom }}</h1>
+            <p>Phase active d'extraction de données pour le module d'intelligence.</p>
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 24px;">
+            <a href="{{ path('app_conscience_index') }}" class="btn">
+                <i class="fas fa-times"></i> Abandonner la session
+            </a>
+            <a href="{{ path('app_theme_rapport', { id: theme.idT }) }}" class="btn">
+                <i class="fas fa-chart-line"></i> Consulter le dernier rapport
+            </a>
+        </div>
+    </header>
+
+    {% if questions is not empty %}
+        <div class="answer-stepper-wrap">
+            <div style="margin-bottom: 40px;">
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
+                    <span id="progressText" style="font-size: 11px; font-weight: 800; color: var(--nexa-indigo); text-transform: uppercase; letter-spacing: 0.1em;">INITIATION ANALYSE</span>
+                    <strong id="progressPercent" style="font-size: 24px; font-weight: 800; font-family: 'Space Grotesk', sans-serif;">0%</strong>
+                </div>
+                <div style="height: 6px; background: #f3f4f6; border-radius: 10px; overflow: hidden;">
+                    <div id="progressBar" style="width: 0%; height: 100%; background: var(--nexa-gradient); transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);"></div>
+                </div>
+            </div>
+
+            <form method="post" action="{{ path('app_theme_answer', { id: theme.idT }) }}" id="stepperForm" novalidate>
+                {% for question in questions %}
+                    {% set answered = answers[question.id] is defined %}
+                    {% set response = answered ? answers[question.id].valeur : null %}
+
+                    <article class="question-step question-card-premium" data-step="{{ loop.index0 }}" style="display: none;">
+                        <div style="margin-bottom: 40px;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                                <span style="font-size: 10px; font-weight: 800; color: white; background: #1a1b23; padding: 4px 10px; border-radius: 6px;">{{ loop.index }} / {{ questions|length }}</span>
+                                <span style="font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.1em;">Vecteur d'analyse</span>
+                            </div>
+                            <h3 style="font-size: 24px; font-weight: 700; color: #1a1b23; line-height: 1.4; font-family: 'Space Grotesk', sans-serif;">{{ question.texte }}</h3>
+                            {% if answered %}
+                                <div style="margin-top: 16px; display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; background: #f0fdf4; color: #166534; border-radius: 10px; font-size: 12px; font-weight: 700; border: 1px solid #dcfce7;">
+                                    <i class="fa-solid fa-check-double"></i> Donnée déjà capturée pour ce cycle
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="question-input-wrap">
+                            {% if question.typeReponse == 'boolean' %}
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                                    <label class="choice-pill-v2">
+                                        <input type="radio" name="q{{ question.id }}" value="1" {{ answered ? 'disabled' : '' }} {{ response == '1' ? 'checked' : '' }} style="display: none;">
+                                        <div class="pill-box">OUI</div>
+                                    </label>
+                                    <label class="choice-pill-v2">
+                                        <input type="radio" name="q{{ question.id }}" value="0" {{ answered ? 'disabled' : '' }} {{ response == '0' ? 'checked' : '' }} style="display: none;">
+                                        <div class="pill-box">NON</div>
+                                    </label>
+                                </div>
+
+                            {% elseif question.typeReponse == 'number' %}
+                                <div style="position: relative;">
+                                    <input type="number" name="q{{ question.id }}" class="pg-input" value="{{ response }}" placeholder="Saisir la métrique..." {{ answered ? 'readonly' : '' }} style="width: 100%; padding: 24px; font-size: 20px; font-weight: 700; border-radius: 16px; border: 2px solid #f3f4f6; background: #f9fafb; outline: none; transition: all 0.3s;">
+                                    {% if question.unite %}
+                                        <span style="position: absolute; right: 24px; top: 50%; transform: translateY(-50%); font-size: 14px; font-weight: 800; color: #9ca3af; text-transform: uppercase;">{{ question.unite }}</span>
+                                    {% endif %}
+                                </div>
+
+                            {% elseif question.typeReponse == 'text' %}
+                                <div class="text-answer-wrap">
+                                    <textarea id="qtext{{ question.id }}" name="q{{ question.id }}" class="pg-textarea" rows="8" placeholder="Développez votre observation systémique..." {{ answered ? 'readonly' : '' }} style="width: 100%; padding: 24px; font-size: 16px; font-weight: 500; border-radius: 16px; border: 2px solid #f3f4f6; background: #f9fafb; outline: none; transition: all 0.3s; line-height: 1.6;">{{ response }}</textarea>
+                                    {% if not answered %}
+                                        <button type="button" class="btn ghost voice-answer-btn" data-target="qtext{{ question.id }}" style="margin-top: 16px; border-radius: 10px; padding: 10px 16px;">
+                                            <i class="fa-solid fa-microphone"></i> Transcription vocale AI
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </article>
+                {% endfor %}
+
+                <div id="stepError" style="color: #ef4444; font-size: 13px; margin-top: 24px; min-height: 20px; font-weight: 700; text-align: center;"></div>
+
+                <div class="form-actions" style="margin-top: 48px; display: flex; justify-content: space-between; align-items: center; padding: 32px; background: #f9fafb; border-radius: 20px; border: 1px solid var(--notion-border);">
+                    <button type="button" class="btn" id="prevBtn" style="padding: 12px 24px; font-weight: 700; border-radius: 10px;">
+                        <i class="fas fa-chevron-left"></i> Précédent
+                    </button>
+                    <div style="flex: 1;"></div>
+                    <button type="button" class="btn primary" id="nextBtn" style="padding: 14px 32px; font-weight: 700; border: none; background: #1a1b23; color: white; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
+                        Suivant <i class="fas fa-chevron-right" style="margin-left: 8px;"></i>
+                    </button>
+                    <button type="submit" class="btn primary" id="submitBtn" style="display: none; padding: 14px 40px; font-weight: 800; border: none; background: var(--nexa-gradient); color: white; border-radius: 10px; box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);">
+                        FINALISER L'ANALYSE <i class="fa-solid fa-cloud-upload" style="margin-left: 10px;"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+
+</div>
+
+<div id="bravoBox" style="position: fixed; inset: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); z-index: 10000; display: none; align-items: center; justify-content: center; text-align: center; padding: 40px;">
+    <div style="animation: cFadeIn 0.8s ease-out;">
+        <div style="font-size: 64px; margin-bottom: 32px;">🧬</div>
+        <h2 style="font-size: 32px; font-weight: 800; color: #1a1b23; margin-bottom: 16px; font-family: 'Space Grotesk', sans-serif;">CALCUL DE RÉSONANCE</h2>
+        <p style="color: #6b7280; font-size: 18px; margin-bottom: 40px; font-weight: 500;">Le système consolide vos observations pour générer le rapport d'intelligence.</p>
+        <div class="loading-dots">
+            <span></span> <span></span> <span></span>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
     const steps = document.querySelectorAll('.question-step');
     const nextBtn = document.getElementById('nextBtn');
     const prevBtn = document.getElementById('prevBtn');
     const submitBtn = document.getElementById('submitBtn');
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
+    const progressPercent = document.getElementById('progressPercent');
     const bravoBox = document.getElementById('bravoBox');
     const form = document.getElementById('stepperForm');
     const stepError = document.getElementById('stepError');
     const storageKey = 'nexa_conscience_draft_theme_{{ theme.idT }}';
 
-    if (form && steps.length > 0) {
-      let current = 0;
-      const total = steps.length || 1;
+    if (!form || steps.length === 0) return;
 
-      function getStepField(stepEl) {
-        return stepEl?.querySelector('input[type="number"], textarea');
-      }
+    let current = 0;
+    const total = steps.length;
 
-      function isStepAnswered(stepEl) {
-        if (!stepEl) return false;
-        const radios = stepEl.querySelectorAll('input[type="radio"]');
-        if (radios.length > 0) {
-          return Boolean(stepEl.querySelector('input[type="radio"]:checked'));
-        }
-        const field = getStepField(stepEl);
-        if (!field) return false;
-        return (field.value || '').toString().trim() !== '';
-      }
+    function isStepAnswered(index) {
+        const step = steps[index];
+        const radios = step.querySelectorAll('input[type="radio"]');
+        if (radios.length > 0) return Array.from(radios).some(r => r.checked);
+        const field = step.querySelector('.pg-input, .pg-textarea');
+        return field && (field.value || '').trim() !== '';
+    }
 
-      function findFirstUnansweredStepIndex() {
-        for (let i = 0; i < steps.length; i++) {
-          if (!isStepAnswered(steps[i])) return i;
-        }
-        return 0;
-      }
-
-      function saveDraft() {
-        const draft = {};
-        steps.forEach((step) => {
-          const textareas = step.querySelectorAll('textarea[name^="q"]');
-          textareas.forEach((ta) => {
-            if (!ta.readOnly && !ta.disabled) {
-              draft[ta.name] = ta.value || '';
-            }
-          });
-          const numbers = step.querySelectorAll('input[type="number"][name^="q"]');
-          numbers.forEach((input) => {
-            if (!input.readOnly && !input.disabled) {
-              draft[input.name] = input.value || '';
-            }
-          });
+    function updateUI() {
+        steps.forEach((s, i) => {
+            s.style.display = i === current ? 'block' : 'none';
         });
-        localStorage.setItem(storageKey, JSON.stringify(draft));
-      }
+        
+        const pct = Math.round(((current + 1) / total) * 100);
+        progressBar.style.width = pct + '%';
+        progressText.textContent = `VECTEUR ${current + 1} / ${total}`;
+        progressPercent.textContent = pct + '%';
 
-      function loadDraft() {
-        let draft = null;
-        try {
-          draft = JSON.parse(localStorage.getItem(storageKey) || '{}');
-        } catch (_) {
-          draft = {};
-        }
-        if (!draft || typeof draft !== 'object') return;
-
-        Object.entries(draft).forEach(([name, value]) => {
-          const field = form.querySelector(`[name="${name}"]`);
-          if (!field || field.readOnly || field.disabled) return;
-          if (field.type === 'radio') return;
-          if ((field.value || '').trim() !== '') return;
-          field.value = (value ?? '').toString();
-        });
-      }
-
-      function validateCurrentStep() {
-        const activeStep = steps[current];
-        if (!activeStep) return true;
-        const radios = activeStep.querySelectorAll('input[type="radio"]');
-        if (radios.length > 0) {
-          const checked = activeStep.querySelector('input[type="radio"]:checked');
-          return Boolean(checked);
-        }
-        const field = activeStep.querySelector('input[type="number"], textarea');
-        if (!field || field.readOnly || field.disabled) return true;
-        return (field.value || '').toString().trim() !== '';
-      }
-
-      function updateStep() {
-        steps.forEach((step, index) => {
-          const active = index === current;
-          step.classList.toggle('active', active);
-        });
-
-        const percent = ((current + 1) / total) * 100;
-        progressBar.style.width = percent + '%';
-        progressText.textContent = `Question ${current + 1} / ${total}`;
-
-        prevBtn.style.display = current === 0 ? 'none' : 'inline-flex';
+        prevBtn.style.visibility = current === 0 ? 'hidden' : 'visible';
         nextBtn.style.display = current === total - 1 ? 'none' : 'inline-flex';
         submitBtn.style.display = current === total - 1 ? 'inline-flex' : 'none';
         stepError.textContent = '';
-      }
+    }
 
-      nextBtn.onclick = () => {
-        if (!validateCurrentStep()) {
-          stepError.textContent = 'Veuillez repondre a cette question avant de continuer.';
-          return;
+    function saveDraft() {
+        const data = {};
+        steps.forEach(step => {
+            const fields = step.querySelectorAll('.pg-input, .pg-textarea, input[type="radio"]:checked');
+            fields.forEach(f => {
+                if (!f.disabled && !f.readOnly) data[f.name] = f.value;
+            });
+        });
+        localStorage.setItem(storageKey, JSON.stringify(data));
+    }
+
+    function loadDraft() {
+        try {
+            const data = JSON.parse(localStorage.getItem(storageKey) || '{}');
+            Object.entries(data).forEach(([name, val]) => {
+                const field = form.querySelector(`[name="${name}"]`);
+                if (field && !field.disabled && !field.readOnly) {
+                    if (field.type === 'radio') {
+                         const radio = form.querySelector(`[name="${name}"][value="${val}"]`);
+                         if (radio) radio.checked = true;
+                    } else field.value = val;
+                }
+            });
+        } catch(e) {}
+    }
+
+    nextBtn.onclick = () => {
+        if (!isStepAnswered(current)) {
+            stepError.textContent = 'SYSTEM LOCK: Veuillez compléter l\'analyse avant de progresser.';
+            return;
         }
         saveDraft();
         if (current < total - 1) {
-          current++;
-          updateStep();
+            current++;
+            updateUI();
         }
-      };
+    };
 
-      prevBtn.onclick = () => {
+    prevBtn.onclick = () => {
         if (current > 0) {
-          current--;
-          updateStep();
+            current--;
+            updateUI();
         }
-      };
+    };
 
-      form.addEventListener('submit', function (e) {
-        if (!validateCurrentStep()) {
-          e.preventDefault();
-          stepError.textContent = 'Veuillez repondre a cette question avant de valider.';
-          return;
+    form.onsubmit = (e) => {
+        if (!isStepAnswered(current)) {
+            e.preventDefault();
+            stepError.textContent = 'SYSTEM LOCK: Analyse incomplète.';
+            return;
         }
-
         e.preventDefault();
         localStorage.removeItem(storageKey);
-        bravoBox.classList.add('show');
-        setTimeout(() => form.submit(), 1200);
-      });
+        bravoBox.style.display = 'flex';
+        setTimeout(() => form.submit(), 1500);
+    };
 
-      form.addEventListener('input', (event) => {
-        const target = event.target;
-        if (!target || !target.name || !target.name.startsWith('q')) return;
-        saveDraft();
-      });
-
-      form.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' && event.target && event.target.tagName !== 'TEXTAREA') {
-          event.preventDefault();
-          nextBtn.click();
-          return;
-        }
-
-        if ((event.ctrlKey || event.metaKey) && event.key === 'Enter' && current === total - 1) {
-          event.preventDefault();
-          submitBtn.click();
-        }
-      });
-
-      const voiceBtns = document.querySelectorAll('.voice-answer-btn');
-      if (voiceBtns.length > 0) {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-        if (!SpeechRecognition) {
-          voiceBtns.forEach((btn) => {
-            btn.disabled = true;
-            btn.title = 'Saisie vocale non supportee sur ce navigateur.';
-          });
-        } else {
-          const recognition = new SpeechRecognition();
-          recognition.lang = document.documentElement.lang === 'en' ? 'en-US' : 'fr-FR';
-          recognition.interimResults = false;
-          recognition.maxAlternatives = 1;
-
-          let activeBtn = null;
-          let activeField = null;
-
-          voiceBtns.forEach((btn) => {
-            btn.addEventListener('click', () => {
-              const targetId = btn.getAttribute('data-target');
-              if (!targetId) return;
-
-              const field = document.getElementById(targetId);
-              if (!field || field.readOnly || field.disabled) return;
-
-              activeBtn = btn;
-              activeField = field;
-              stepError.textContent = '';
-              btn.innerHTML = '<i class="fa-solid fa-microphone-lines"></i> Ecoute...';
-
-              try {
+    const voiceBtns = document.querySelectorAll('.voice-answer-btn');
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition && voiceBtns.length > 0) {
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'fr-FR';
+        voiceBtns.forEach(btn => {
+            btn.onclick = () => {
+                const target = document.getElementById(btn.dataset.target);
+                btn.innerHTML = '<i class="fa-solid fa-microphone-lines pulse"></i> Écoute active...';
                 recognition.start();
-              } catch (_) {
-                btn.innerHTML = '<i class="fa-solid fa-microphone"></i> Dicter la reponse';
-              }
-            });
-          });
-
-          recognition.addEventListener('result', (event) => {
-            const transcript = event.results?.[0]?.[0]?.transcript || '';
-            if (!transcript || !activeField) return;
-
-            const currentValue = (activeField.value || '').trim();
-            activeField.value = currentValue ? `${currentValue} ${transcript}` : transcript;
-            saveDraft();
-          });
-
-          const resetVoiceBtn = () => {
-            if (!activeBtn) return;
-            activeBtn.innerHTML = '<i class="fa-solid fa-microphone"></i> Dicter la reponse';
-            activeBtn = null;
-          };
-
-          recognition.addEventListener('error', () => {
-            stepError.textContent = 'Impossible de capturer la voix. Reessayez.';
-            resetVoiceBtn();
-          });
-
-          recognition.addEventListener('end', () => {
-            resetVoiceBtn();
-            activeField = null;
-          });
-        }
-      }
-
-      loadDraft();
-      current = findFirstUnansweredStepIndex();
-      updateStep();
+                recognition.onresult = (e) => {
+                    const transcript = e.results[0][0].transcript;
+                    target.value = (target.value + ' ' + transcript).trim();
+                    saveDraft();
+                };
+                recognition.onend = () => {
+                    btn.innerHTML = '<i class="fa-solid fa-microphone"></i> Transcription vocale AI';
+                };
+            };
+        });
     }
-  </script>
-{% endblock %}
 
+    loadDraft();
+    for(let i=0; i<total; i++) {
+        if(!isStepAnswered(i)) {
+            current = i;
+            break;
+        }
+    }
+    updateUI();
+});
+</script>
+{% endblock %}

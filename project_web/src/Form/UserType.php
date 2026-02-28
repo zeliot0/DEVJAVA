@@ -15,7 +15,7 @@ class UserType extends AbstractType
         $builder
             ->add('email')
             ->add('nom_user')
-
+            ->add('birthDate', null, ['widget' => 'single_text', 'required' => false])
             ->add('password')
             ->add('save', SubmitType::class, [
                 'label' => 'Enregistrer'

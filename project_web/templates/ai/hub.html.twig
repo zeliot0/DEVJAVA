@@ -1,0 +1,384 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nexa AI - Ultra Modern Hub{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --ai-bg: #ffffff;
+            --ai-sidebar-bg: #fcfcfc;
+            --ai-accent: #0066ff;
+            --ai-text-main: #0a0a0a;
+            --ai-text-muted: #737373;
+            --ai-border: rgba(0, 0, 0, 0.04);
+        }
+
+        /* Full height override for the hub */
+        .notion-main {
+            height: 100vh !important;
+            overflow: hidden !important;
+        }
+
+        .notion-content {
+            padding: 0 !important;
+            max-width: none !important;
+            height: calc(100vh - 56px) !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        /* Pill toolbar ultra-clean */
+        .pill-tools {
+            background: #ffffff;
+            border: 1px solid var(--ai-border);
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        }
+
+        .tool-icon {
+            color: var(--ai-text-muted);
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .tool-icon:hover {
+            color: var(--ai-text-main);
+            background: #f5f5f5;
+        }
+
+        /* Input High-End */
+        .modern-input-wrapper {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.02);
+            transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
+            width: 100%;
+        }
+
+        .modern-input-wrapper:focus-within {
+            box-shadow: 0 30px 70px rgba(0, 102, 255, 0.08), 0 0 0 1px rgba(0, 102, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Bento Grid 2.0 */
+        .bento-item {
+            background: #f9f9f9;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            border-radius: 20px;
+            transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 24px;
+            cursor: pointer;
+        }
+
+        .bento-item:hover {
+            background: #ffffff;
+            border-color: rgba(0, 102, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            transform: scale(1.04);
+        }
+
+        /* Sidebar Snappy */
+        .sidebar-ghost {
+            background: var(--ai-sidebar-bg);
+            border-left: 1px solid var(--ai-border);
+            width: 320px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+            overflow-y: auto;
+        }
+
+        .section-title {
+            font-size: 10px;
+            font-weight: 800;
+            color: #a3a3a3;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 32px;
+        }
+
+        /* Animations */
+        .reveal { opacity: 0; transform: translateY(15px); }
+
+        /* AI Output area */
+        #aiChatOutput {
+            width: 100%;
+            margin-top: 24px;
+            padding: 24px;
+            background: #f8fafc;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 102, 255, 0.05);
+            display: none;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .ai-loading {
+            display: none;
+            margin: 20px 0;
+            color: #0066ff;
+        }
+
+        /* Hide global sidebar scroll if needed, but standard is fine */
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="flex-1 flex overflow-hidden w-full h-full">
+    
+    <!-- ZONE CENTRALE -->
+    <main class="flex-1 flex flex-col items-center justify-center px-12 pb-24 relative overflow-y-auto no-scrollbar">
+        
+        <div class="max-w-2xl w-full flex flex-col items-center">
+            
+            <!-- Avatar Nexa (Minimaliste) -->
+            <div class="reveal mb-10">
+                <div id="ai-core" class="w-20 h-20 bg-white rounded-[24px] shadow-2xl flex items-center justify-center border border-gray-50">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="text-black">
+                        <circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>
+                    </svg>
+                </div>
+            </div>
+
+            <h1 class="reveal text-4xl font-extrabold tracking-tight text-gray-900 mb-4 text-center">
+                Comment puis-je vous aider ?
+            </h1>
+            <p class="reveal text-gray-400 text-sm font-medium mb-12 text-center">
+                Entrez une commande, posez une question ou analysez vos données.
+            </p>
+
+            <!-- Floating Input Card -->
+            <div class="reveal w-full mb-8">
+                <div class="modern-input-wrapper p-5">
+                    <textarea id="aiPrompt"
+                        class="w-full bg-transparent border-none focus:ring-0 text-lg font-medium resize-none placeholder-gray-300 min-h-[100px] text-gray-800 outline-none"
+                        placeholder="Écrivez ici..."
+                    ></textarea>
+                    
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-50">
+                        <div class="flex items-center gap-2">
+                            <button class="p-2 rounded-xl hover:bg-gray-50 text-gray-400 transition-colors">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            </button>
+                            <button class="p-2 rounded-xl hover:bg-gray-50 text-gray-400 transition-colors">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="text-[9px] font-extrabold text-gray-300 tracking-widest uppercase">Agent Prêt</span>
+                            <button id="sendBtn" onclick="askAI()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-2xl font-bold text-sm transition-all shadow-lg shadow-blue-100 active:scale-95">
+                                Lancer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Response & Loading Area -->
+            <div id="aiLoading" class="ai-loading">
+                <div class="flex items-center gap-3 font-bold text-blue-600">
+                    <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Nexa réfléchit...
+                </div>
+            </div>
+            <div id="aiChatOutput" class="reveal"></div>
+
+            <!-- Bento Actions -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full mt-12">
+                <div class="reveal bento-item group" onclick="setPrompt('Quel temps fait-il normalement en février ?')">
+                    <div class="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-blue-600 transition-transform group-hover:scale-110">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+                    </div>
+                    <span class="text-[11px] font-extrabold text-gray-600 uppercase tracking-tight">Météo</span>
+                </div>
+                
+                <div class="reveal bento-item group" onclick="setPrompt('Quelle est la date et l\'heure actuelle ?')">
+                    <div class="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-gray-400 transition-transform group-hover:scale-110">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/></svg>
+                    </div>
+                    <span class="text-[11px] font-extrabold text-gray-600 uppercase tracking-tight">Heure</span>
+                </div>
+
+                <div class="reveal bento-item group" onclick="setPrompt('Analyse mes tâches récentes et suggère des priorités.')">
+                    <div class="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-emerald-500 transition-transform group-hover:scale-110">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/></svg>
+                    </div>
+                    <span class="text-[11px] font-extrabold text-gray-600 uppercase tracking-tight">Tâches</span>
+                </div>
+
+                <div class="reveal bento-item group" onclick="setPrompt('Comment optimiser mon planning cette semaine ?')">
+                    <div class="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-purple-600 transition-transform group-hover:scale-110">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="2"/></svg>
+                    </div>
+                    <span class="text-[11px] font-extrabold text-gray-600 uppercase tracking-tight">Planning</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- SIDEBAR GHOST -->
+    <aside class="sidebar-ghost hidden xl:flex">
+        
+        <div class="reveal">
+            <h2 class="section-title">Contexte Récent</h2>
+            <div class="space-y-6">
+                {% for task in recentTasks|slice(0, 3) %}
+                    <div class="flex items-start gap-4 group cursor-pointer" onclick="window.location.href='{{ path('app_task_show', {id: task.id}) }}'">
+                        <div class="w-1.5 h-10 {{ task.priority == 'high' ? 'bg-red-500' : 'bg-blue-600' }} rounded-full group-hover:w-2 transition-all"></div>
+                        <div>
+                            <h3 class="text-xs font-bold text-gray-900 mb-1 truncate w-40">{{ task.title }}</h3>
+                            <span class="text-[10px] font-bold text-gray-400 uppercase">{{ task.status }} • {{ task.priority }}</span>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-xs text-gray-400 font-medium italic">Aucun contexte récent.</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="reveal">
+            <h2 class="section-title">Objectifs Hub</h2>
+            <div class="space-y-6">
+                {% for goal in recentGoals|slice(0, 2) %}
+                    <div>
+                        <div class="flex justify-between text-[10px] font-extrabold mb-3">
+                            <span class="text-gray-400 uppercase truncate w-40">{{ goal.titleGoa }}</span>
+                            <span class="text-gray-900">{{ goal.progressGoa }}%</span>
+                        </div>
+                        <div class="w-full h-1 bg-gray-100 rounded-full overflow-hidden">
+                            <div class="bg-black h-full rounded-full" style="width: {{ goal.progressGoa }}%"></div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="reveal mt-auto">
+            <h2 class="section-title">Inventaire</h2>
+            <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                {% for prod in recentProds|slice(0, 3) %}
+                    <div class="flex justify-between items-center mb-4 last:mb-0">
+                        <span class="text-[11px] font-bold text-gray-400 uppercase tracking-tighter truncate w-32">{{ prod.nomP }}</span>
+                        <span class="text-xs font-black {{ prod.quantiteStock < 5 ? 'text-red-500' : 'text-gray-900' }}">{{ prod.quantiteStock }}{{ prod.uniteP }}</span>
+                    </div>
+                {% else %}
+                    <div class="text-[11px] text-gray-400 font-bold uppercase">Stock vide</div>
+                {% endfor %}
+            </div>
+        </div>
+    </aside>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tl = gsap.timeline({ defaults: { ease: "expo.out", duration: 1 } });
+
+            // Séquence d'entrée fluide
+            tl.to(".reveal", {
+                opacity: 1,
+                y: 0,
+                stagger: 0.08,
+                duration: 1.2
+            });
+
+            // Flottement de l'avatar
+            gsap.to("#ai-core", {
+                y: -6,
+                duration: 2.5,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut"
+            });
+
+            const promptArea = document.getElementById('aiPrompt');
+            const sendBtn = document.getElementById('sendBtn');
+            const chatOutput = document.getElementById('aiChatOutput');
+            const loading = document.getElementById('aiLoading');
+
+            window.setPrompt = (text) => {
+                promptArea.value = text;
+                promptArea.focus();
+                // Simuler de l'input pour activer d'éventuels états
+            };
+
+            window.askAI = async () => {
+                const prompt = promptArea.value.trim();
+                if (!prompt) return;
+
+                loading.style.display = 'block';
+                chatOutput.style.display = 'none';
+                sendBtn.disabled = true;
+
+                try {
+                    const response = await fetch('/api/ai/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ prompt })
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.ok) {
+                        chatOutput.innerHTML = `<div class="mb-3 pb-3 border-b border-gray-100 font-bold text-blue-600">NEXA Agent :</div>` + 
+                                               result.text.replace(/\n/g, '<br>');
+                        
+                        if (result.action_performed && result.actions_list) {
+                            let actionHtml = `<div class="mt-5 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                                <div class="font-bold text-emerald-700 text-xs mb-2 flex items-center gap-2">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    OPÉRATIONS EXÉCUTÉES
+                                </div>`;
+                            
+                            result.actions_list.forEach(act => {
+                                actionHtml += `<div class="text-xs text-emerald-600 font-medium mb-1 last:mb-0">• ${act}</div>`;
+                            });
+                            
+                            actionHtml += `</div>`;
+                            chatOutput.innerHTML += actionHtml;
+                            
+                            setTimeout(() => window.location.reload(), 2500);
+                        }
+                    } else {
+                        let errorHtml = `<div class="text-red-500 font-bold mb-2">Erreur :</div>`;
+                        errorHtml += `<div class="text-sm text-red-600">${result.text}</div>`;
+                        chatOutput.innerHTML = errorHtml;
+                    }
+                    
+                    chatOutput.style.display = 'block';
+                    gsap.from(chatOutput, { opacity: 0, scale: 0.95, y: 10, duration: 0.4 });
+                    
+                } catch (err) {
+                    console.error(err);
+                    chatOutput.innerHTML = `<div class="text-red-500 font-medium">Erreur lors de la communication avec l'IA.</div>`;
+                    chatOutput.style.display = 'block';
+                } finally {
+                    loading.style.display = 'none';
+                    sendBtn.disabled = false;
+                }
+            };
+
+            promptArea.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    askAI();
+                }
+            });
+        });
+    </script>
+{% endblock %}

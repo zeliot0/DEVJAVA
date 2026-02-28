@@ -1,0 +1,210 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block title %}Analyse Phoenix #{{ phoenix_goal.id }} — NEXA Intelligence{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/phoenix-goal-modern.css?v=' ~ 'now'|date('U')) }}">
+    <style>
+        .pg-show-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; align-items: start; }
+        .pg-card-premium { background: white; border: 1px solid var(--pg-border); border-radius: 32px; padding: 48px; box-shadow: var(--pg-card-shadow); margin-bottom: 40px; }
+        .pg-list { list-style: none; padding: 0; margin: 0; }
+        .pg-list-item { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 20px; padding: 20px; background: #fafafa; border-radius: 20px; border: 1px solid #f0f0f0; transition: all 0.2s; }
+        .pg-list-item:hover { transform: translateX(8px); background: white; border-color: var(--pg-blue); }
+        .pg-list-item i { margin-top: 4px; font-size: 18px; }
+        .pg-phase-step { padding: 32px; border-radius: 24px; border: 1px solid #eee; background: #fdfdfd; margin-bottom: 24px; position: relative; overflow: hidden; }
+        .pg-phase-step.active { border-color: var(--pg-violet); background: white; box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.1); }
+        .pg-phase-step.active::after { content: 'ACTIF'; position: absolute; top: 20px; right: 20px; font-size: 10px; font-weight: 800; color: white; background: var(--pg-violet); padding: 4px 10px; border-radius: 6px; }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="pg-page">
+
+    <header class="pg-header">
+        <div class="pg-header-left">
+            <h1>Instance #{{ phoenix_goal.id }}</h1>
+            <p>Renaissance de : <strong>{{ phoenix_goal.originalGoal ? phoenix_goal.originalGoal.titleGoa : 'Inconnu' }}</strong></p>
+        </div>
+        <div class="pg-header-right">
+            <a href="{{ path('app_phoenix_goal_index') }}" class="pg-btn pg-btn-secondary">
+                <i class="fas fa-arrow-left"></i> Retour
+            </a>
+            <a href="{{ path('app_phoenix_goal_edit', {'id': phoenix_goal.id}) }}" class="pg-btn pg-btn-secondary">
+                <i class="fas fa-pen"></i> Modifier
+            </a>
+        </div>
+    </header>
+
+    <div class="pg-show-grid">
+        <div class="pg-main">
+            <div class="pg-card-premium">
+                <div class="pg-section-header">
+                    <div class="pg-section-bar"></div>
+                    <div class="pg-section-title">Analyse Post-Mortem</div>
+                </div>
+                <div style="background: #fdfbf7; border: 1px solid #f3ebe1; border-radius: 24px; padding: 40px; margin-top: 24px; line-height: 1.8; color: #4b5563; font-size: 16px;">
+                    {{ phoenix_goal.deathAnalysis|default('Aucune analyse de décès documentée.')|nl2br }}
+                </div>
+            </div>
+
+            <div class="pg-card-premium">
+                <div class="pg-section-header">
+                    <div class="pg-section-bar" style="background: var(--pg-orange);"></div>
+                    <div class="pg-section-title" style="color: var(--pg-orange);">Cendres & Apprentissages</div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 32px;">
+                    <div>
+                        <h4 style="font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase; margin-bottom: 24px; letter-spacing: 0.1em;">VESTIGES (ASHES)</h4>
+                        <ul class="pg-list">
+                            {% for item in phoenix_goal.ashesData.ashes|default([]) %}
+                                <li class="pg-list-item">
+                                    <i class="fa-solid fa-wind" style="color: #94a3b8;"></i>
+                                    <span style="font-size: 14px; font-weight: 500;">{{ item }}</span>
+                                </li>
+                            {% else %}
+                                <p style="font-size: 14px; color: #9ca3af; font-style: italic;">Aucun vestige listé.</p>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="font-size: 11px; font-weight: 800; color: var(--pg-yellow); text-transform: uppercase; margin-bottom: 24px; letter-spacing: 0.1em;">LEÇONS (LESSONS)</h4>
+                        <ul class="pg-list">
+                            {% for item in phoenix_goal.ashesData.lessons|default([]) %}
+                                <li class="pg-list-item" style="border-color: #fef3c7; background: #fffcf0;">
+                                    <i class="fa-solid fa-lightbulb" style="color: var(--pg-yellow);"></i>
+                                    <span style="font-size: 14px; font-weight: 500;">{{ item }}</span>
+                                </li>
+                            {% else %}
+                                <p style="font-size: 14px; color: #9ca3af; font-style: italic;">Aucune leçon extraite.</p>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pg-card-premium">
+                <div class="pg-section-header">
+                    <div class="pg-section-bar" style="background: var(--pg-violet);"></div>
+                    <div class="pg-section-title" style="color: var(--pg-violet);">Plan de Résurrection</div>
+                </div>
+                <div style="margin-top: 32px;">
+                    {% set phaseOrder = ['ashes', 'spark', 'flame', 'risen'] %}
+                    {% set currentPhase = phoenix_goal.phoenixPhase|default('ashes')|lower %}
+                    
+                    {% for phase in phaseOrder %}
+                        {% set phaseData = attribute(phoenix_goal.resurrectionPlan, phase)|default(null) %}
+                        {% if phaseData is not null %}
+                            <div class="pg-phase-step {% if phase == currentPhase %}active{% endif %}">
+                                <h5 style="font-size: 14px; font-weight: 800; color: var(--pg-text); margin-bottom: 16px; text-transform: uppercase;">
+                                    {{ phase }}
+                                    {% if phaseData.duration is defined %}<span style="color: #9ca3af; margin-left: 12px; font-weight: 500;">[{{ phaseData.duration }}]</span>{% endif %}
+                                </h5>
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    {% set actions = phaseData.actions is defined ? phaseData.actions : phaseData %}
+                                    {% if actions is iterable %}
+                                        {% for action in actions %}
+                                            <div style="display: flex; gap: 12px; font-size: 14px; color: #4b5563;">
+                                                <i class="fa-solid fa-check" style="color: {% if phase == currentPhase %}var(--pg-violet){% else %}#d1d5db{% endif %}; font-size: 12px; margin-top: 4px;"></i>
+                                                {{ action }}
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <p style="font-size: 14px; color: #4b5563; margin: 0;">{{ actions }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <aside class="pg-sidebar">
+            <div class="pg-card-premium" style="padding: 32px;">
+                <h4 style="font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase; margin-bottom: 24px; letter-spacing: 0.1em;">MÉTRIQUES SYSTÉMIQUES</h4>
+                
+                <div style="margin-bottom: 32px;">
+                    <div style="font-size: 12px; font-weight: 700; color: #6b7280; margin-bottom: 12px;">PHASE OPÉRATIONNELLE</div>
+                    <span style="display: inline-block; padding: 8px 16px; border-radius: 12px; font-size: 13px; font-weight: 800; background: #f3f4f6; color: #374151; text-transform: uppercase;">
+                        {{ phoenix_goal.phoenixPhase|default('ashes') }}
+                    </span>
+                </div>
+
+                <div style="margin-bottom: 32px;">
+                    <div style="font-size: 12px; font-weight: 700; color: #6b7280; margin-bottom: 12px;">NIVEAU DE RÉSONANCE</div>
+                    <div style="font-size: 32px; font-weight: 800; font-family: 'Space Grotesk', sans-serif;">Lv.{{ phoenix_goal.phoenixLevel }}</div>
+                </div>
+
+                <div style="margin-bottom: 40px;">
+                    <div style="font-size: 12px; font-weight: 700; color: #6b7280; margin-bottom: 12px;">ÉCHÉANCIER</div>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                            <span style="color: #9ca3af;">Échec :</span>
+                            <span style="font-weight: 700;">{{ phoenix_goal.deathDate ? phoenix_goal.deathDate|date('d/m/y') : 'N/A' }}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                            <span style="color: #9ca3af;">Renaissance :</span>
+                            <span style="font-weight: 700;">{{ phoenix_goal.rebirthDate ? phoenix_goal.rebirthDate|date('d/m/y') : 'En cours' }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    {% if not phoenix_goal.rebornGoal %}
+                        <form method="post" action="{{ path('app_phoenix_begin_rebirth', {'id': phoenix_goal.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('phoenix_begin_rebirth_' ~ phoenix_goal.id) }}">
+                            <button type="submit" class="pg-btn pg-btn-primary" style="justify-content: center; padding: 16px; width: 100%;">
+                                <i class="fa-solid fa-fire"></i> BEGIN REBIRTH
+                            </button>
+                        </form>
+                    {% endif %}
+                    {% if not phoenix_goal.immortalityEnabled %}
+                        <form method="post" action="{{ path('app_phoenix_enable_immortality', {'id': phoenix_goal.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('phoenix_enable_immortality_' ~ phoenix_goal.id) }}">
+                            <button type="submit" class="pg-btn pg-btn-secondary" style="justify-content: center; padding: 16px; width: 100%; border-color: #e5e7eb; color: #6366f1;">
+                                <i class="fa-solid fa-infinity"></i> IMMORTALITE
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if phoenix_goal.rebornGoal %}
+                <div class="pg-card-premium" style="padding: 32px; background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);">
+                    <h4 style="font-size: 11px; font-weight: 800; color: var(--pg-green); text-transform: uppercase; margin-bottom: 16px; letter-spacing: 0.1em;">OBJECTIF DE RENAISSANCE</h4>
+                    <div style="font-weight: 800; font-size: 18px; color: var(--pg-text); line-height: 1.4;">{{ phoenix_goal.rebornGoal.titleGoa }}</div>
+                    <div style="margin-top: 16px;">
+                        <a href="{{ path('app_goal_show', {id_g: phoenix_goal.rebornGoal.idGoa}) }}" style="font-size: 12px; font-weight: 700; color: var(--pg-blue); text-decoration: none;">Voir l'objectif →</a>
+                    </div>
+                </div>
+            {% endif %}
+
+            {# wisdom share prompt #}
+            {% if phoenix_goal.rebornGoal and phoenix_goal.rebornGoal.calculatedProgress is defined and phoenix_goal.rebornGoal.calculatedProgress >= 100 %}
+                <div class="pg-card-premium" style="padding: 32px; background: #fefcf3;">
+                    <h4 style="font-size: 11px; font-weight: 800; color: #d97706; text-transform: uppercase; margin-bottom: 16px;">PARTAGER VOTRE SAGESSE</h4>
+                    <form method="post" action="{{ path('app_phoenix_share_wisdom', {'id': phoenix_goal.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('phoenix_share_wisdom_' ~ phoenix_goal.id) }}">
+                        <div style="margin-bottom:16px;">
+                            <label for="lesson" style="display:block;font-size:14px;font-weight:600;">Leçon apprise</label>
+                            <textarea id="lesson" name="lesson" rows="4" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px;"></textarea>
+                        </div>
+                        <button type="submit" class="pg-btn pg-btn-primary" style="justify-content:center;padding:12px 24px;">
+                            <i class="fa-solid fa-feather-pointed"></i> Partager
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+
+            {# network link #}
+            <div class="pg-card-premium" style="padding: 24px; text-align:center;">
+                <a href="{{ path('app_phoenix_network_index') }}" class="pg-btn pg-btn-secondary" style="width:100%;">
+                    <i class="fa-solid fa-users"></i> Mon réseau Phoenix
+                </a>
+            </div>
+        </aside>
+    </div>
+
+</div>
+{% endblock %}

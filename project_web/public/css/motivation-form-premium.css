@@ -1,0 +1,201 @@
+:root {
+    --nexa-bg: #f8fafc;
+    --nexa-card: #ffffff;
+    --nexa-border: #e2e8f0;
+    --nexa-text: #0f172a;
+    --nexa-text-muted: #64748b;
+    --nexa-accent: #8b5cf6;
+    --nexa-accent-soft: rgba(139, 92, 246, 0.08);
+    --nexa-radius: 16px;
+    --nexa-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.motivation-form-page {
+    background-color: var(--nexa-bg);
+    min-height: 100vh;
+    padding: 80px 20px;
+    font-family: 'Inter', sans-serif;
+}
+
+.motivation-form-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.motivation-form-header {
+    background: var(--nexa-card);
+    border: 1px solid var(--nexa-border);
+    border-radius: var(--nexa-radius);
+    padding: 40px;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+    text-align: left;
+}
+
+.motivation-kicker {
+    display: inline-block;
+    padding: 6px 16px;
+    background: var(--nexa-accent-soft);
+    color: var(--nexa-accent);
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 24px;
+}
+
+.motivation-form-header h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin: 0 0 12px 0;
+    letter-spacing: -0.04em;
+    color: var(--nexa-text);
+}
+
+.motivation-form-header p {
+    font-size: 1.125rem;
+    color: var(--nexa-text-muted);
+    margin: 0;
+}
+
+.motivation-form-section {
+    background: var(--nexa-card);
+    border: 1px solid var(--nexa-border);
+    border-radius: var(--nexa-radius);
+    padding: 40px;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+}
+
+.motivation-section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 32px;
+    color: var(--nexa-text);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.motivation-section-title i {
+    color: var(--nexa-accent);
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--nexa-text);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.form-control,
+.form-select {
+    width: 100%;
+    padding: 14px 18px;
+    background: #fff;
+    border: 1px solid var(--nexa-border);
+    border-radius: 12px;
+    font-size: 1rem;
+    color: var(--nexa-text);
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--nexa-accent);
+    box-shadow: 0 0 0 4px var(--nexa-accent-soft);
+}
+
+.nexa-form-help {
+    font-size: 0.85rem;
+    color: var(--nexa-text-muted);
+    margin-top: 8px;
+}
+
+.motivation-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    margin-top: 40px;
+}
+
+.goals-btn {
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.goals-btn-secondary {
+    background: transparent;
+    color: var(--nexa-text-muted);
+    border: 1px solid var(--nexa-border);
+}
+
+.goals-btn-secondary:hover {
+    background: #f1f5f9;
+    color: var(--nexa-text);
+}
+
+.goals-btn-primary {
+    background: var(--nexa-accent);
+    color: #fff;
+    border: none;
+    box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.3);
+}
+
+.goals-btn-primary:hover {
+    background: #7c3aed;
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.4);
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: -12px;
+}
+
+.col-lg-7,
+.col-lg-5 {
+    padding: 12px;
+}
+
+.col-lg-7 {
+    flex: 0 0 58.333333%;
+    max-width: 58.333333%;
+}
+
+.col-lg-5 {
+    flex: 0 0 41.666667%;
+    max-width: 41.666667%;
+}
+
+@media (max-width: 768px) {
+
+    .col-lg-7,
+    .col-lg-5 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .motivation-form-actions {
+        flex-direction: column;
+    }
+
+    .goals-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

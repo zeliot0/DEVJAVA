@@ -1,0 +1,230 @@
+﻿{# templates/goal/show.html.twig - Version avec Phoenix Resurrection #}
+{% extends 'theme/base.html.twig' %}
+
+{% block title %}Détails de l'objectif - {{ goal.titleGoa }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4 goals-form-page goal-show-form-page">
+    <div class="d-flex justify-content-between align-items-center mb-4 goals-form-header">
+        <div>
+            <h1 class="h2 mb-1"><i class="fas fa-bullseye me-2"></i>{{ goal.titleGoa }}</h1>
+            <p class="mb-0">Détails de l'objectif</p>
+        </div>
+        <div class="goals-inline-actions">
+            <a href="{{ path('app_milestones_index') }}" class="btn btn-outline-secondary goals-btn goals-btn-secondary">
+                <i class="fas fa-flag me-1"></i> Jalons
+            </a>
+            <a href="{{ path('app_goal_index') }}" class="btn btn-outline-secondary goals-btn goals-btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+            </a>
+        </div>
+    </div>
+
+    {# 🔥 PHOENIX STATUS BANNER - Show if goal is a phoenix or can be resurrected #}
+    {% if goal.phoenixGoal is defined and goal.phoenixGoal %}
+        {% set phoenix = goal.phoenixGoal %}
+        <div class="alert alert-{% if phoenix.phoenixPhase == 'risen' %}success{% elseif phoenix.phoenixPhase == 'flame' %}danger{% elseif phoenix.phoenixPhase == 'spark' %}warning{% else %}secondary{% endif %} mb-4">
+            <div class="d-flex align-items-center">
+                <div class="me-3">
+                    {% if phoenix.phoenixPhase == 'risen' %}
+                        <span class="display-6">🦅</span>
+                    {% elseif phoenix.phoenixPhase == 'flame' %}
+                        <span class="display-6">🔥</span>
+                    {% elseif phoenix.phoenixPhase == 'spark' %}
+                        <span class="display-6">✨</span>
+                    {% else %}
+                        <span class="display-6">🌑</span>
+                    {% endif %}
+                </div>
+                <div class="flex-grow-1">
+                    <h4 class="alert-heading">
+                        {% if phoenix.phoenixPhase == 'risen' %}
+                            🦅 Phoenix Ressuscité !
+                        {% elseif phoenix.phoenixPhase == 'flame' %}
+                            🔥 En Pleine Renaissance
+                        {% elseif phoenix.phoenixPhase == 'spark' %}
+                            ✨ L'Étincelle Reprend
+                        {% else %}
+                            🌑 Dans les Cendres
+                        {% endif %}
+                    </h4>
+                    <p class="mb-0">
+                            {% if phoenix.rebornGoal %}
+                            <i class="fas fa-fire"></i> Reborn as: 
+                            <a href="{{ path('app_goal_show', {'id_g': phoenix.rebornGoal.getIdGoa()}) }}" class="alert-link">
+                                {{ phoenix.rebornGoal.titleGoa }}
+                            </a>
+                        {% else %}
+                            Niveau Phoenix: 🔥 {{ phoenix.phoenixLevel }} | Phase: {{ phoenix.phoenixPhase|capitalize }}
+                        {% endif %}
+                    </p>
+                </div>
+                <div>
+                    <a href="{{ path('app_phoenix_goal_show', {'id': phoenix.id}) }}" 
+                       class="btn btn-{% if phoenix.phoenixPhase == 'risen' %}success{% elseif phoenix.phoenixPhase == 'flame' %}danger{% elseif phoenix.phoenixPhase == 'spark' %}warning{% else %}secondary{% endif %} btn-sm">
+                        Voir le Voyage Phoenix <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                    <a href="{{ path('app_phoenix_network_new') }}?sharedGoal={{ phoenix.id }}" 
+                       class="btn btn-outline-primary btn-sm ms-2">
+                        <i class="fas fa-users"></i> Ajouter au réseau
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="card border-0 shadow-sm goals-form-card">
+        <div class="card-body">
+            <div class="goals-form-layout">
+                <div class="goals-form-main">
+                    <section class="goals-section">
+                        <h3 class="goals-section-title"><i class="fas fa-pen"></i> Informations principales</h3>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Titre</label>
+                            <div class="goal-readonly-field">{{ goal.titleGoa }}</div>
+                        </div>
+                        <div class="mb-0">
+                            <label class="form-label fw-semibold">Description</label>
+                            <div class="goal-readonly-field goal-readonly-multiline">{{ goal.descriptionGoa ?: 'Aucune description' }}</div>
+                        </div>
+                    </section>
+
+                    <section class="goals-section">
+                        <h3 class="goals-section-title"><i class="fas fa-calendar-alt"></i> Planification</h3>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Date de début</label>
+                                <div class="goal-readonly-field">{{ goal.dateDebutGoa ? goal.dateDebutGoa|date('d/m/Y') : 'Non définie' }}</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Date de fin</label>
+                                <div class="goal-readonly-field">{{ goal.dateFinalGoa ? goal.dateFinalGoa|date('d/m/Y') : 'Non définie' }}</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="goals-section">
+                        <h3 class="goals-section-title"><i class="fas fa-chart-line"></i> Suivi</h3>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-semibold">Catégorie</label>
+                                <div class="goal-readonly-field">{{ goal.categoryGoa ?: 'N/A' }}</div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-semibold">Statut</label>
+                                <div class="goal-readonly-field">
+                                    {{ goal.statusGoa ?: 'N/A' }}
+                                    {% if goal.isDead() is defined and goal.isDead() %}
+                                        <span class="badge bg-danger ms-2">💀 Abandonné</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-semibold">Priorité</label>
+                                <div class="goal-readonly-field">{{ goal.priorityGoa ?: 'N/A' }}</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Progression</label>
+                            <div class="goal-readonly-progress">
+                               {% set progress = goal.calculatedProgress %}
+<div class="goal-readonly-progress-fill" style="width: {{ progress }}%;"></div>
+<div class="goal-readonly-progress-text">{{ progress }}% complété</div>
+
+                        <div class="mb-0">
+                            <label class="form-label fw-semibold">Notes</label>
+                            <div class="goal-readonly-field goal-readonly-multiline">{{ goal.notesGoa ?: 'Aucune note' }}</div>
+                        </div>
+                    </section>
+
+                    {# 🔥 PHOENIX ACTION BUTTONS #}
+                    {% if goal.canBeResurrected is defined and goal.canBeResurrected() %}
+                        <div class="alert alert-warning mt-4">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <span class="display-6">🪷</span>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="alert-heading">Cet objectif peut renaître de ses cendres !</h5>
+                                    <p class="mb-0">Le système Phoenix peut analyser l'échec et créer un plan de résurrection.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-2 justify-content-between align-items-center mt-3">
+                            <div class="d-flex gap-2">
+                                  <form action="{{ path('app_phoenix_resurrect_from_goal', {'goalId': goal.getIdGoa()}) }}" 
+                                      method="post" 
+                                      onsubmit="return confirm('🔥 Lancer la résurrection Phoenix ? Cette action va analyser votre échec et créer un plan de renaissance.')">
+                                    <button type="submit" class="btn btn-danger goals-btn">
+                                        <i class="fas fa-fire me-1"></i> Résurrection Phoenix 🔥
+                                    </button>
+                                </form>
+                            </div>
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle"></i> L'IA va analyser pourquoi cet objectif a échoué
+                            </small>
+                        </div>
+                    {% endif %}
+
+                    {% if not is_granted('ROLE_ADMIN') %}
+                        <div class="d-flex gap-2 justify-content-end mt-4 pt-3 border-top goals-form-actions">
+                            <a href="{{ path('app_goal_edit', {'id_g': goal.getIdGoa()}) }}"
+                               class="btn btn-primary goals-btn goals-btn-primary">
+                                <i class="fas fa-edit me-1"></i> Modifier
+                            </a>
+                            {{ include('goal/_delete_form.html.twig') }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <aside class="goals-form-aside" aria-label="Aperçu">
+                    <div class="goals-aside-card">
+                        <h3><i class="fas fa-info-circle"></i> Aperçu</h3>
+                        <ul>
+                            <li><strong>ID:</strong> {{ goal.getIdGoa() }}</li>
+                            <li><strong>Couleur:</strong> <span class="goal-color-chip" style="background: {{ goal.colorGoa ?: '#7c3aed' }};"></span></li>
+                            <li><strong>Début:</strong> {{ goal.dateDebutGoa ? goal.dateDebutGoa|date('d/m/Y') : 'N/A' }}</li>
+                            <li><strong>Fin:</strong> {{ goal.dateFinalGoa ? goal.dateFinalGoa|date('d/m/Y') : 'N/A' }}</li>
+                        </ul>
+                        
+                        {# 🔥 PHOENIX STATS IN SIDEBAR #}
+                        {% if goal.phoenixGoal is defined and goal.phoenixGoal %}
+                            {% set phoenix = goal.phoenixGoal %}
+                            <hr>
+                            <h4 class="h6"><i class="fas fa-dove"></i> Stats Phoenix</h4>
+                            <ul class="small">
+                                <li><strong>Niveau:</strong> 🔥 {{ phoenix.phoenixLevel }}</li>
+                                <li><strong>Phase:</strong> 
+                                    <span class="badge {% if phoenix.phoenixPhase == 'risen' %}bg-success
+                                                      {% elseif phoenix.phoenixPhase == 'flame' %}bg-danger
+                                                      {% elseif phoenix.phoenixPhase == 'spark' %}bg-warning
+                                                      {% else %}bg-secondary{% endif %}">
+                                        {{ phoenix.phoenixPhase|capitalize }}
+                                    </span>
+                                </li>
+                                {% if phoenix.immortalityEnabled %}
+                                    <li><strong>Immortalité:</strong> <span class="text-success">✨ Active</span></li>
+                                {% endif %}
+                                {% if phoenix.rebirthDate %}
+                                    <li><strong>Renaissance:</strong> {{ phoenix.rebirthDate|date('d/m/Y') }}</li>
+                                {% endif %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="phoenix-call">
+    <form action="{{ path('app_phoenix_resurrect_from_goal', {'goalId': goal.getIdGoa()}) }}" method="post">
+        <button type="submit" class="phoenix-call-btn" title="Ressusciter cet objectif">
+            🔥
+        </button>
+    </form>
+</div>
+
+{% endblock %}

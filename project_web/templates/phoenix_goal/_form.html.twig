@@ -1,0 +1,93 @@
+﻿{{ form_start(form, { attr: { novalidate: 'novalidate', class: 'pg-modern-form' } }) }}
+
+<div class="pg-form-container" style="display: flex; flex-direction: column; gap: 40px;">
+    
+    <!-- Section 1 : Matrice -->
+    <div class="pg-card-premium" style="margin-bottom: 0; padding: 40px;">
+        <div class="pg-section-header">
+            <div class="pg-section-bar" style="background: var(--pg-violet);"></div>
+            <div class="pg-section-title" style="color: var(--pg-violet);">Matrice de Renaissance</div>
+        </div>
+        <p style="font-size: 14px; color: var(--pg-text-muted); margin-bottom: 32px;">Configurez les vecteurs de transfert entre l'instance échouée et la nouvelle cible.</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div class="pg-field">
+                {{ form_label(form.originalGoal, 'Objectif Source (échec past)', {'label_attr': {'class': 'pg-label'}}) }}
+                {{ form_widget(form.originalGoal, {'attr': {'class': 'pg-select'}}) }}
+                {{ form_errors(form.originalGoal) }}
+            </div>
+
+            <div class="pg-field">
+                {{ form_label(form.rebornGoal, 'Objectif Reborn (futur)', {'label_attr': {'class': 'pg-label'}}) }}
+                {{ form_widget(form.rebornGoal, {'attr': {'class': 'pg-select'}}) }}
+                {{ form_errors(form.rebornGoal) }}
+            </div>
+        </div>
+
+        <div class="pg-field" style="margin-bottom: 0;">
+            {{ form_label(form.deathAnalysis, 'Analyse de Substance (Post-Mortem)', {'label_attr': {'class': 'pg-label'}}) }}
+            {{ form_widget(form.deathAnalysis, {'attr': {'class': 'pg-textarea', 'placeholder': 'Détaillez les raisons systémiques de l\'échec...'}}) }}
+            {{ form_errors(form.deathAnalysis) }}
+        </div>
+    </div>
+
+    <!-- Section 2 : Paramètres -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+        <div class="pg-card-premium" style="margin-bottom: 0; padding: 40px;">
+            <div class="pg-section-header">
+                <div class="pg-section-bar" style="background: var(--pg-orange);"></div>
+                <div class="pg-section-title" style="color: var(--pg-orange);">Chronologie</div>
+            </div>
+            
+            <div class="pg-field">
+                {{ form_label(form.deathDate, 'Point de Rupture', {'label_attr': {'class': 'pg-label'}}) }}
+                {{ form_widget(form.deathDate, {'attr': {'class': 'pg-input'}}) }}
+                {{ form_errors(form.deathDate) }}
+            </div>
+
+            <div class="pg-field" style="margin-bottom: 0;">
+                {{ form_label(form.rebirthDate, 'Horizon de Renaissance', {'label_attr': {'class': 'pg-label'}}) }}
+                {{ form_widget(form.rebirthDate, {'attr': {'class': 'pg-input'}}) }}
+                {{ form_errors(form.rebirthDate) }}
+            </div>
+        </div>
+
+        <div class="pg-card-premium" style="margin-bottom: 0; padding: 40px;">
+            <div class="pg-section-header">
+                <div class="pg-section-bar" style="background: var(--pg-green);"></div>
+                <div class="pg-section-title" style="color: var(--pg-green);">Vecteurs Phoenix</div>
+            </div>
+            
+            <div class="pg-field">
+                {{ form_label(form.phoenixPhase, 'Phase Actuelle', {'label_attr': {'class': 'pg-label'}}) }}
+                {{ form_widget(form.phoenixPhase, {'attr': {'class': 'pg-select'}}) }}
+                {{ form_errors(form.phoenixPhase) }}
+            </div>
+
+            <div class="pg-field">
+                {{ form_label(form.phoenixLevel, 'Indice de Force (1-10)', {'label_attr': {'class': 'pg-label'}}) }}
+                {{ form_widget(form.phoenixLevel, {'attr': {'class': 'pg-input'}}) }}
+                {{ form_errors(form.phoenixLevel) }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3 : Protocoles -->
+    <div class="pg-card-premium" style="padding: 32px; background: #fafafa; border-style: dashed;">
+        <label class="custom-toggle-container">
+            {{ form_widget(form.immortalityEnabled) }}
+            <span class="custom-toggle-text">ACTIVER LE HUB D'IMMORTALITÉ SYSTÉMIQUE</span>
+        </label>
+        <p style="font-size: 13px; color: var(--pg-text-muted); margin-top: 12px; margin-left: 36px;">Le protocole d'immortalité préserve l'essence de l'objectif malgré les cycles d'échec répétés.</p>
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; gap: 16px;">
+        <a href="{{ path('app_phoenix_goal_index') }}" class="pg-btn pg-btn-secondary">Annuler</a>
+        <button type="submit" class="pg-btn pg-btn-primary" style="padding: 14px 40px; font-weight: 800;">
+            {{ button_label|default('INITIALISER LE PHOENIX') }}
+        </button>
+    </div>
+
+</div>
+
+{{ form_end(form) }}

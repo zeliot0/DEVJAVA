@@ -1,112 +1,212 @@
-﻿{# templates/goal/show.html.twig - Version corrigée #}
-{% extends 'theme/base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
-{% block title %}Détails de l'objectif - {{ goal.titleGoa }}{% endblock %}
+{% set body_class = 'conscience-page' %}
 
-{% block body %}
-<div class="container-fluid mt-4 goals-form-page goal-show-form-page">
-    <div class="d-flex justify-content-between align-items-center mb-4 goals-form-header">
-        <div>
-            <h1 class="h2 mb-1"><i class="fas fa-bullseye me-2"></i>{{ goal.titleGoa }}</h1>
-            <p class="mb-0">Détails de l'objectif</p>
-        </div>
-        <div class="goals-inline-actions">
-            <a href="{{ path('app_milestones_index') }}" class="btn btn-outline-secondary goals-btn goals-btn-secondary">
-                <i class="fas fa-flag me-1"></i> Jalons
-            </a>
-            <a href="{{ path('app_goal_index') }}" class="btn btn-outline-secondary goals-btn goals-btn-secondary">
-                <i class="fas fa-arrow-left me-1"></i> Retour à la liste
-            </a>
-        </div>
-    </div>
+{% block title %}DÉTAILS OBJECTIF : {{ goal.titleGoa }} — NEXA{% endblock %}
 
-    <div class="card border-0 shadow-sm goals-form-card">
-        <div class="card-body">
-            <div class="goals-form-layout">
-                <div class="goals-form-main">
-                    <section class="goals-section">
-                        <h3 class="goals-section-title"><i class="fas fa-pen"></i> Informations principales</h3>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Titre</label>
-                            <div class="goal-readonly-field">{{ goal.titleGoa }}</div>
-                        </div>
-                        <div class="mb-0">
-                            <label class="form-label fw-semibold">Description</label>
-                            <div class="goal-readonly-field goal-readonly-multiline">{{ goal.descriptionGoa ?: 'Aucune description' }}</div>
-                        </div>
-                    </section>
-
-                    <section class="goals-section">
-                        <h3 class="goals-section-title"><i class="fas fa-calendar-alt"></i> Planification</h3>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">Date de début</label>
-                                <div class="goal-readonly-field">{{ goal.dateDebutGoa ? goal.dateDebutGoa|date('d/m/Y') : 'Non définie' }}</div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">Date de fin</label>
-                                <div class="goal-readonly-field">{{ goal.dateFinalGoa ? goal.dateFinalGoa|date('d/m/Y') : 'Non définie' }}</div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section class="goals-section">
-                        <h3 class="goals-section-title"><i class="fas fa-chart-line"></i> Suivi</h3>
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label fw-semibold">Catégorie</label>
-                                <div class="goal-readonly-field">{{ goal.categoryGoa ?: 'N/A' }}</div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label fw-semibold">Statut</label>
-                                <div class="goal-readonly-field">{{ goal.statusGoa ?: 'N/A' }}</div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label fw-semibold">Priorité</label>
-                                <div class="goal-readonly-field">{{ goal.priorityGoa ?: 'N/A' }}</div>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Progression</label>
-                            <div class="goal-readonly-progress">
-                                <div class="goal-readonly-progress-fill" style="width: {{ goal.progressGoa|default(0) }}%;"></div>
-                            </div>
-                            <div class="goal-readonly-progress-text">{{ goal.progressGoa|default(0) }}% complété</div>
-                        </div>
-
-                        <div class="mb-0">
-                            <label class="form-label fw-semibold">Notes</label>
-                            <div class="goal-readonly-field goal-readonly-multiline">{{ goal.notesGoa ?: 'Aucune note' }}</div>
-                        </div>
-                    </section>
-
-                    {% if not is_granted('ROLE_ADMIN') %}
-                        <div class="d-flex gap-2 justify-content-end mt-4 pt-3 border-top goals-form-actions">
-                            <a href="{{ path('app_goal_edit', {'id_g': goal.getIdGoa()}) }}"
-                               class="btn btn-primary goals-btn goals-btn-primary">
-                                <i class="fas fa-edit me-1"></i> Modifier
-                            </a>
-                            {{ include('goal/_delete_form.html.twig') }}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <aside class="goals-form-aside" aria-label="Aperçu">
-                    <div class="goals-aside-card">
-                        <h3><i class="fas fa-info-circle"></i> Aperçu</h3>
-                        <ul>
-                            <li><strong>ID:</strong> {{ goal.getIdGoa() }}</li>
-                            <li><strong>Couleur:</strong> <span class="goal-color-chip" style="background: {{ goal.colorGoa ?: '#7c3aed' }};"></span></li>
-                            <li><strong>Début:</strong> {{ goal.dateDebutGoa ? goal.dateDebutGoa|date('d/m/Y') : 'N/A' }}</li>
-                            <li><strong>Fin:</strong> {{ goal.dateFinalGoa ? goal.dateFinalGoa|date('d/m/Y') : 'N/A' }}</li>
-                        </ul>
-                    </div>
-                </aside>
-            </div>
-        </div>
-    </div>
-</div>
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/conscience-modern-proo.css?v=' ~ 'now'|date('U')) }}">
+    <style>
+        .goal-property-item { display: flex; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid #f1f5f9; }
+        .goal-property-item:last-child { border-bottom: none; }
+        .property-key { width: 140px; font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em; }
+        .property-val { font-size: 15px; font-weight: 700; color: #1f2937; }
+        .description-box { background: white; border: 1px solid #f1f5f9; border-radius: 12px; padding: 24px; font-size: 15px; line-height: 1.6; color: #4b5563; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+        .goal-success-score {
+            margin-top: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid #e0e7ff;
+            background: #eef2ff;
+        }
+        .goal-success-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #4b5563;
+            letter-spacing: 0.02em;
+        }
+        .goal-success-value {
+            font-size: 14px;
+            font-weight: 800;
+            color: #4338ca;
+            line-height: 1;
+        }
+    </style>
 {% endblock %}
 
+{% block body %}
+<div class="conscience-modern-page" style="max-width: 1000px; margin: 0 auto; padding: 60px 20px;">
 
+    <header class="conscience-page-header" style="margin-bottom: 48px;">
+        <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: 42px; font-weight: 800; color: #6366f1; letter-spacing: -0.04em; margin-bottom: 12px;">Analyse d'Objectif : {{ goal.titleGoa }}</h1>
+        <p style="font-size: 18px; color: #6b7280; font-weight: 500;">Vecteur de performance ID #{{ goal.idGoa }} • Statut : <strong>{{ goal.statusGoa|default('ACTIF')|upper }}</strong></p>
+    </header>
+
+    <div class="conscience-header-actions" style="margin-bottom: 48px; border-bottom: 1px solid #f1f5f9; padding-bottom: 24px;">
+        <div class="page-actions" style="display: flex; gap: 12px;">
+            <a href="{{ path('app_goal_index') }}" class="btn" style="background: white; border-radius: 8px; font-size: 12px; font-weight: 700; padding: 8px 16px; border: 1px solid #f1f5f9; box-shadow: 0 1px 2px rgba(0,0,0,0.05); color: #374151; text-decoration: none;">
+                ← Retour au Répertoire
+            </a>
+            <a href="{{ path('app_milestones_index') }}" class="btn" style="background: white; border-radius: 8px; font-size: 12px; font-weight: 700; padding: 8px 16px; border: 1px solid #f1f5f9; box-shadow: 0 1px 2px rgba(0,0,0,0.05); color: #374151; text-decoration: none;">
+                Gérer les Jalons
+            </a>
+            {% if not is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_goal_edit', {'id_g': goal.idGoa}) }}" class="btn" style="background: #f8fafc; border-radius: 8px; font-size: 12px; font-weight: 700; padding: 8px 16px; border: 1px solid #e2e8f0; color: #374151; text-decoration: none; margin-left: auto;">
+                    Modifier les Paramètres
+                </a>
+                <a href="{{ path('app_goal_analysis', {'id_g': goal.idGoa}) }}" class="btn" style="background: #eef2ff; border-radius: 8px; font-size: 12px; font-weight: 700; padding: 8px 16px; border: 1px solid #c7d2fe; color: #4338ca; text-decoration: none; margin-left: 8px;">
+                    Analyse IA
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="form-two-columns" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px;">
+        <div class="form-column-left">
+            <div class="form-section">
+                <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; font-weight: 800; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 24px; padding-left: 12px; border-left: 4px solid #3b82f6;">
+                    MÉTADONNÉES DE PLANIFICATION
+                </div>
+                
+                <div class="goal-property-item">
+                    <div class="property-key">Initialisation</div>
+                    <div class="property-val">{{ goal.dateDebutGoa ? goal.dateDebutGoa|date('d F Y') : 'Non définie' }}</div>
+                </div>
+                <div class="goal-property-item">
+                    <div class="property-key">Échéance Cible</div>
+                    <div class="property-val">{{ goal.dateFinalGoa ? goal.dateFinalGoa|date('d F Y') : 'Non définie' }}</div>
+                </div>
+                <div class="goal-property-item">
+                    <div class="property-key">Catégorie</div>
+                    <div class="property-val">{{ goal.categoryGoa ?: 'Générique' }}</div>
+                </div>
+                <div class="goal-property-item">
+                    <div class="property-key">Priorité</div>
+                    <div class="property-val">
+                        <span style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 8px; height: 8px; border-radius: 50%; background: {{ goal.priorityGoa == 'HAUTE' ? '#ef4444' : (goal.priorityGoa == 'MOYENNE' ? '#f59e0b' : '#10b981') }};"></div>
+                            {{ goal.priorityGoa }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section" style="margin-top: 48px;">
+                <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; font-weight: 800; color: #8b5cf6; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 24px; padding-left: 12px; border-left: 4px solid #8b5cf6;">
+                    TAUX DE COMPLÉTION
+                </div>
+                
+                {% set p = goal.progressGoa|default(0) %}
+                <div style="display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 16px;">
+                    <div style="font-size: 36px; font-weight: 800; color: #1f2937;">{{ p }}%</div>
+                    <div style="font-size: 11px; font-weight: 800; color: #94a3b8; letter-spacing: 0.05em;">SCORE DE RÉUSSITE</div>
+                </div>
+                <div style="height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden; width: 100%;">
+                    <div style="width: {{ p }}%; height: 100%; background: #6366f1; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);"></div>
+                </div>
+                {% if goal.successScore is not null %}
+                    <div class="goal-success-score" aria-live="polite">
+                        <span class="goal-success-label">Succès calculé</span>
+                        <span class="goal-success-value">{{ goal.successScore|round }} %</span>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-section" style="margin-top: 48px;">
+                <div style="font-size: 14px; font-weight: 700; margin-bottom: 12px;">Risques associés</div>
+                {% if goal.risks|length > 0 %}
+                    <ul style="list-style: none; padding:0;">
+                        {% for risk in goal.risks %}
+                            <li style="margin-bottom:8px;">
+                                <strong>{{ risk.description }}</strong>
+                                {% if risk.aiScore is not null %}
+                                    – score {{ risk.aiScore }}%
+                                {% else %}
+                                    – en attente d'analyse
+                                {% endif %}
+                                {% if risk.aiAdvice %}
+                                    <br><small>{{ risk.aiAdvice }}</small>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p style="font-size:14px;color:#9ca3af;">Aucun risque déclaré.</p>
+                {% endif %}
+
+                <div style="margin-top:24px;">
+                    {{ form_start(riskForm) }}
+                    {{ form_widget(riskForm) }}
+                    <button type="submit" class="btn" style="margin-top:12px;">Ajouter un risque</button>
+                    {{ form_end(riskForm) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-column-right">
+            <div class="form-section">
+                <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 24px; padding-left: 12px; border-left: 4px solid #10b981;">
+                    DOCUMENTATION STRATÉGIQUE
+                </div>
+                
+                <h4 style="font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-align-left" style="color: #64748b;"></i> Énoncé de Mission
+                </h4>
+                <div class="description-box" style="margin-bottom: 32px;">
+                    {{ goal.descriptionGoa ?: 'Aucune description stratégique n\'a été formulée pour cet objectif.' }}
+                </div>
+
+                {% if goal.notesGoa %}
+                    <h4 style="font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-sticky-note" style="color: #64748b;"></i> Notes Tactiques
+                    </h4>
+                    <div class="description-box" style="background: #fffcf0; border-color: #fef3c7;">
+                        {{ goal.notesGoa }}
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if not is_granted('ROLE_ADMIN') %}
+                <div style="margin-top: 48px; padding-top: 24px; border-top: 1px solid #f1f5f9; text-align: right;">
+                    <form action="{{ path('app_goal_delete', { 'id_g': goal.idGoa }) }}" method="post" onsubmit="return confirm('La suppression d\'un objectif stratégique est irréversible. Confirmer ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ goal.idGoa) }}">
+                        <button type="submit" style="background: none; border: none; font-size: 12px; font-weight: 700; color: #ef4444; cursor: pointer; text-decoration: underline;">
+                            Archiver l'Objectif
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // periodically check for goal success updates and risk analysis results
+        (function(){
+            const goalId = {{ goal.idGoa }};
+            const successValueElem = document.querySelector('.goal-success-value');
+            const checkInterval = 5000;
+            function refresh() {
+                fetch(`/api/ai/goal/${goalId}/success`)
+                    .then(r=>r.json())
+                    .then(data=>{
+                        if(data.ok && data.data.score!==undefined && successValueElem){
+                            successValueElem.textContent = Math.round(data.data.score) + ' %';
+                        }
+                    });
+                // if any risk still waiting, request again for progress
+                const pending = Array.from(document.querySelectorAll('li')).some(li=>li.textContent.includes('en attente'));
+                if(pending) {
+                    setTimeout(refresh, checkInterval);
+                }
+            }
+            if(successValueElem) {
+                setTimeout(refresh, checkInterval);
+            }
+        })();
+    </script>
+</div>
+{% endblock %}

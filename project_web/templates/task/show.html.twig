@@ -1,50 +1,102 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Task{% endblock %}
+{% set body_class = 'conscience-page' %}
+
+{% block title %}FICHE DE TÂCHE : {{ task.title }} — NEXA Intelligence{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/conscience-modern-proo.css?v=' ~ 'now'|date('U')) }}">
+    <style>
+        .t-detail-card { background: white; border: 1px solid #efefef; border-radius: 12px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); position: relative; }
+        .t-priority-indicator { position: absolute; top: 0; right: 0; width: 60px; height: 60px; border-radius: 0 12px 0 60px; display: flex; align-items: flex-start; justify-content: flex-end; padding: 12px; color: white; font-size: 14px; }
+        .prio-high { background: #ef4444; }
+        .prio-med { background: #8b5cf6; }
+        .prio-low { background: #10b981; }
+        
+        .t-prop-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-bottom: 40px; background: #fcfcfc; border-radius: 8px; padding: 24px; border: 1px solid #f8fafc; }
+        .t-prop-item { display: flex; flex-direction: column; gap: 4px; }
+        .t-prop-k { font-size: 10px; font-weight: 700; color: var(--notion-text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .t-prop-v { font-size: 14px; font-weight: 700; color: var(--notion-text); }
+        
+        .t-desc { font-size: 16px; line-height: 1.8; color: var(--notion-text); white-space: pre-wrap; margin-bottom: 48px; }
+        .t-status-large { font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .status-todo { background: #f1f1ef; color: #5f5e5b; }
+        .status-doing { background: #eff6ff; color: #3b82f6; }
+        .status-done { background: #dcfce7; color: #166534; }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Task</h1>
+<div class="conscience-modern-page">
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ task.id }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ task.title }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ task.description }}</td>
-            </tr>
-            <tr>
-                <th>Status</th>
-                <td>{{ task.status }}</td>
-            </tr>
-            <tr>
-                <th>Priority</th>
-                <td>{{ task.priority }}</td>
-            </tr>
-            <tr>
-                <th>DueAt</th>
-                <td>{{ task.dueAt ? task.dueAt|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>CreateAt</th>
-                <td>{{ task.createAt ? task.createAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>UpdateAt</th>
-                <td>{{ task.updateAt ? task.updateAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <header class="conscience-page-header">
+        <h1>Analyse de Tâche</h1>
+        <p>Spécifications opérationnelles du vecteur de travail <strong>#{{ task.id }}</strong></p>
+    </header>
 
-    <a href="{{ path('app_task_index') }}">back to list</a>
+    <div class="conscience-header-actions" style="margin-bottom: 32px;">
+        <div class="page-actions">
+            <a href="{{ path('app_task_index') }}" class="btn">
+                ← Retour au Tableau de Bord
+            </a>
+            {% if not is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_task_edit', {'id': task.id}) }}" class="btn">
+                    Éditer les Paramètres
+                </a>
+            {% endif %}
+        </div>
+    </div>
 
-    <a href="{{ path('app_task_edit', {'id': task.id}) }}">edit</a>
+    <div class="t-detail-card">
+        <div class="t-priority-indicator {{ task.priority|lower == 'haute' ? 'prio-high' : (task.priority|lower == 'moyenne' ? 'prio-med' : 'prio-low') }}" title="Priorité : {{ task.priority }}">
+            <i class="fa-solid {{ task.priority|lower == 'haute' ? 'fa-fire' : (task.priority|lower == 'moyenne' ? 'fa-bolt' : 'fa-leaf') }}"></i>
+        </div>
 
-    {{ include('task/_delete_form.html.twig') }}
+        <div style="margin-bottom: 32px; display: flex; align-items: center; gap: 16px;">
+            <span class="t-status-large status-{{ task.status|lower == 'à faire' ? 'todo' : (task.status|lower == 'en cours' ? 'doing' : 'done') }}">
+                {{ task.status|upper }}
+            </span>
+            <h2 style="font-size: 28px; font-weight: 800; color: var(--notion-text); margin: 0;">{{ task.title }}</h2>
+        </div>
+
+        <div class="t-prop-group">
+            <div class="t-prop-item">
+                <div class="t-prop-k">Échéance</div>
+                <div class="t-prop-v">{{ task.dueAt ? task.dueAt|date('d F Y') : 'Non définie' }}</div>
+            </div>
+            <div class="t-prop-item">
+                <div class="t-prop-k">Priorité Système</div>
+                <div class="t-prop-v">{{ task.priority }}</div>
+            </div>
+            <div class="t-prop-item">
+                <div class="t-prop-k">Initialisation</div>
+                <div class="t-prop-v">{{ task.createAt ? task.createAt|date('d/m/Y H:i') : 'N/A' }}</div>
+            </div>
+            {% if task.updateAt %}
+                <div class="t-prop-item">
+                    <div class="t-prop-k">Dernière Pulsation</div>
+                    <div class="t-prop-v">{{ task.updateAt|date('d/m/Y H:i') }}</div>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="section-title" style="margin-bottom: 24px; font-size: 11px; font-weight: 700; color: #8b5cf6; text-transform: uppercase;">Directives Opérationnelles</div>
+        <div class="t-desc">
+            {{ task.description ?: 'Aucune directive détaillée n\'a été formulée pour cette tâche.' }}
+        </div>
+
+        {% if not is_granted('ROLE_ADMIN') %}
+            <div style="margin-top: 64px; padding-top: 32px; border-top: 1px solid #efefef; text-align: right;">
+                 <form method="post" action="{{ path('app_task_delete', {'id': task.id}) }}" onsubmit="return confirm('La suppression de cette tâche est irréversible. Confirmer ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ task.id) }}">
+                    <button type="submit" class="btn" style="background: #fef2f2; border-color: #fecaca; color: #ef4444; font-weight: 700; padding: 8px 16px;">
+                        Supprimer la Tâche
+                    </button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
 {% endblock %}

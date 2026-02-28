@@ -1,130 +1,91 @@
-﻿{# templates/goal/_form.html.twig #}
-{{ form_start(form) }}
+{{ form_start(form, { attr: { novalidate: 'novalidate', class: 'goal-modern-form' } }) }}
 
-    {# Titre #}
-    <div class="mb-3">
-        {{ form_label(form.titleGoa, 'Titre *') }}
-        {{ form_widget(form.titleGoa, {'attr': {'class': 'form-control' ~ (form.titleGoa.vars.errors|length ? ' is-invalid' : '')}}) }}
-        
-        {% if form.titleGoa.vars.errors|length > 0 %}
-            <div class="invalid-feedback d-block">
-                {% for error in form.titleGoa.vars.errors %}
-                    <span class="text-danger">{{ error.message }}</span><br>
-                {% endfor %}
+<div class="goal-form-stack">
+
+    <section class="goal-card">
+        <div class="goal-section-head">
+            <span class="goal-section-bar goal-section-bar-orange"></span>
+            <h2 class="goal-section-title">Identité stratégique</h2>
+        </div>
+
+        <div class="goal-field">
+            {{ form_label(form.titleGoa, 'Désignation de l\'objectif *', {'label_attr': {'class': 'goal-label'}}) }}
+            {{ form_widget(form.titleGoa, {'attr': {'class': 'goal-input', 'placeholder': 'Ex: Expansion du marché EU-27'}}) }}
+            {{ form_errors(form.titleGoa) }}
+        </div>
+
+        <div class="goal-field">
+            {{ form_label(form.descriptionGoa, 'Énoncé de vision *', {'label_attr': {'class': 'goal-label'}}) }}
+            {{ form_widget(form.descriptionGoa, {'attr': {'class': 'goal-textarea', 'placeholder': 'Définissez la finalité de cet objectif...'}}) }}
+            {{ form_errors(form.descriptionGoa) }}
+        </div>
+
+        <div class="goal-grid-two">
+            <div class="goal-field">
+                {{ form_label(form.categoryGoa, 'Domaine d\'influence *', {'label_attr': {'class': 'goal-label'}}) }}
+                {{ form_widget(form.categoryGoa, {'attr': {'class': 'goal-input', 'placeholder': 'Ex: Infrastructure, Recherche...'}}) }}
+                {{ form_errors(form.categoryGoa) }}
             </div>
-        {% endif %}
-    </div>
-
-    {# Description #}
-    <div class="mb-3">
-        {{ form_label(form.descriptionGoa, 'Description *') }}
-        {{ form_widget(form.descriptionGoa, {'attr': {'class': 'form-control' ~ (form.descriptionGoa.vars.errors|length ? ' is-invalid' : ''), 'rows': 4}}) }}
-        
-        {% if form.descriptionGoa.vars.errors|length > 0 %}
-            <div class="invalid-feedback d-block">
-                {% for error in form.descriptionGoa.vars.errors %}
-                    <span class="text-danger">{{ error.message }}</span><br>
-                {% endfor %}
+            <div class="goal-field">
+                {{ form_label(form.priorityGoa, 'Niveau de priorité *', {'label_attr': {'class': 'goal-label'}}) }}
+                {{ form_widget(form.priorityGoa, {'attr': {'class': 'goal-select'}}) }}
+                {{ form_errors(form.priorityGoa) }}
             </div>
-        {% endif %}
-    </div>
+        </div>
+    </section>
 
-    {# Date de début #}
-    <div class="mb-3">
-        {{ form_label(form.dateDebutGoa, 'Date de début') }}
-        {{ form_widget(form.dateDebutGoa, {'attr': {'class': 'form-control' ~ (form.dateDebutGoa.vars.errors|length ? ' is-invalid' : '')}}) }}
-        
-        {% if form.dateDebutGoa.vars.errors|length > 0 %}
-            <div class="invalid-feedback d-block">
-                {% for error in form.dateDebutGoa.vars.errors %}
-                    <span class="text-danger">{{ error.message }}</span><br>
-                {% endfor %}
+    <section class="goal-card">
+        <div class="goal-section-head">
+            <span class="goal-section-bar goal-section-bar-violet"></span>
+            <h2 class="goal-section-title">Chronologie et flux</h2>
+        </div>
+
+        <div class="goal-grid-two">
+            <div class="goal-field">
+                {{ form_label(form.dateDebutGoa, 'Point d\'origine', {'label_attr': {'class': 'goal-label'}}) }}
+                {{ form_widget(form.dateDebutGoa, {'attr': {'class': 'goal-input'}}) }}
+                {{ form_errors(form.dateDebutGoa) }}
             </div>
-        {% endif %}
-    </div>
-
-    {# Date de fin #}
-    <div class="mb-3">
-        {{ form_label(form.dateFinalGoa, 'Date de fin') }}
-        {{ form_widget(form.dateFinalGoa, {'attr': {'class': 'form-control' ~ (form.dateFinalGoa.vars.errors|length ? ' is-invalid' : '')}}) }}
-        
-        {% if form.dateFinalGoa.vars.errors|length > 0 %}
-            <div class="invalid-feedback d-block">
-                {% for error in form.dateFinalGoa.vars.errors %}
-                    <span class="text-danger">{{ error.message }}</span><br>
-                {% endfor %}
+            <div class="goal-field">
+                {{ form_label(form.dateFinalGoa, 'Horizon cible', {'label_attr': {'class': 'goal-label'}}) }}
+                {{ form_widget(form.dateFinalGoa, {'attr': {'class': 'goal-input'}}) }}
+                {{ form_errors(form.dateFinalGoa) }}
             </div>
-        {% endif %}
-    </div>
+        </div>
 
-    {# Statut #}
-    <div class="mb-3">
-        {{ form_label(form.statusGoa, 'Statut *') }}
-        {{ form_widget(form.statusGoa, {'attr': {'class': 'form-select' ~ (form.statusGoa.vars.errors|length ? ' is-invalid' : '')}}) }}
-        
-        {% if form.statusGoa.vars.errors|length > 0 %}
-            <div class="invalid-feedback d-block">
-                {% for error in form.statusGoa.vars.errors %}
-                    <span class="text-danger">{{ error.message }}</span><br>
-                {% endfor %}
+        <div class="goal-grid-two">
+            <div class="goal-field">
+                {{ form_label(form.statusGoa, 'État de synchronisation *', {'label_attr': {'class': 'goal-label'}}) }}
+                {{ form_widget(form.statusGoa, {'attr': {'class': 'goal-select'}}) }}
+                {{ form_errors(form.statusGoa) }}
             </div>
-        {% endif %}
-    </div>
-
-    {# Progression #}
-    <div class="mb-3">
-        {{ form_label(form.progressGoa, 'Progression (%)') }}
-        {{ form_widget(form.progressGoa, {'attr': {'class': 'form-control' ~ (form.progressGoa.vars.errors|length ? ' is-invalid' : '')}}) }}
-        
-        {% if form.progressGoa.vars.errors|length > 0 %}
-            <div class="invalid-feedback d-block">
-                {% for error in form.progressGoa.vars.errors %}
-                    <span class="text-danger">{{ error.message }}</span><br>
-                {% endfor %}
+            <div class="goal-field">
+                {{ form_label(form.progressGoa, 'Quota de complétion (%)', {'label_attr': {'class': 'goal-label'}}) }}
+                {{ form_widget(form.progressGoa, {'attr': {'class': 'goal-input'}}) }}
+                {{ form_errors(form.progressGoa) }}
             </div>
-        {% endif %}
-    </div>
+        </div>
+    </section>
 
-    {# Catégorie #}
-    <div class="mb-3">
-        {{ form_label(form.categoryGoa, 'Catégorie *') }}
-        {{ form_widget(form.categoryGoa, {'attr': {'class': 'form-control' ~ (form.categoryGoa.vars.errors|length ? ' is-invalid' : '')}}) }}
-        
-        {% if form.categoryGoa.vars.errors|length > 0 %}
-            <div class="invalid-feedback d-block">
-                {% for error in form.categoryGoa.vars.errors %}
-                    <span class="text-danger">{{ error.message }}</span><br>
-                {% endfor %}
-            </div>
-        {% endif %}
-    </div>
+    <section class="goal-card">
+        <div class="goal-section-head">
+            <span class="goal-section-bar goal-section-bar-green"></span>
+            <h2 class="goal-section-title">Archives et attributs</h2>
+        </div>
 
-    {# Priorité #}
-    <div class="mb-3">
-        {{ form_label(form.priorityGoa, 'Priorité *') }}
-        {{ form_widget(form.priorityGoa, {'attr': {'class': 'form-select' ~ (form.priorityGoa.vars.errors|length ? ' is-invalid' : '')}}) }}
-        
-        {% if form.priorityGoa.vars.errors|length > 0 %}
-            <div class="invalid-feedback d-block">
-                {% for error in form.priorityGoa.vars.errors %}
-                    <span class="text-danger">{{ error.message }}</span><br>
-                {% endfor %}
-            </div>
-        {% endif %}
-    </div>
+        <div class="goal-field goal-field-last">
+            {{ form_label(form.notesGoa, 'Notes de commandement', {'label_attr': {'class': 'goal-label'}}) }}
+            {{ form_widget(form.notesGoa, {'attr': {'class': 'goal-textarea goal-textarea-sm', 'placeholder': 'Observations tactiques...'}}) }}
+            {{ form_errors(form.notesGoa) }}
+        </div>
+    </section>
 
-    {# Notes #}
-    <div class="mb-3">
-        {{ form_label(form.notesGoa, 'Notes') }}
-        {{ form_widget(form.notesGoa, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+    <div class="goal-form-actions">
+        <a href="{{ path('app_goal_index') }}" class="goal-new-btn goal-new-btn-secondary">Annuler</a>
+        <button type="submit" class="goal-new-btn goal-new-btn-primary">
+            {{ button_label|default('Valider la stratégie') }}
+        </button>
     </div>
-
-    {# Couleur #}
-    <div class="mb-3">
-        {{ form_label(form.colorGoa, 'Couleur') }}
-        {{ form_widget(form.colorGoa, {'attr': {'class': 'form-control form-control-color'}}) }}
-    </div>
-
-    <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+</div>
 
 {{ form_end(form) }}

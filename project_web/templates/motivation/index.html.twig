@@ -1,185 +1,133 @@
-﻿{% extends 'theme/base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
+
+{% set body_class = 'conscience-page' %}
+
+{% block title %}Résonance Interne — NEXA Intelligence{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/conscience-modern-proo.css?v=' ~ 'now'|date('U')) }}">
+    <style>
+        .motivation-verse-card { background: white; border: 1px solid #efefef; border-radius: 16px; padding: 48px; position: relative; overflow: hidden; margin-bottom: 48px; }
+        .arabic-text { font-family: "Amiri", serif; font-size: 36px; line-height: 1.8; text-align: center; color: #1a1a1a; margin-bottom: 32px; }
+        .translation { font-size: 18px; line-height: 1.6; text-align: center; font-style: italic; color: var(--notion-text-muted); max-width: 800px; margin: 0 auto; }
+        
+        .mood-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-bottom: 48px; }
+        .mood-btn { background: white; border: 1px solid #efefef; border-radius: 12px; padding: 16px; text-align: center; text-decoration: none; transition: all 0.2s; }
+        .mood-btn:hover, .mood-btn.active { border-color: #3b82f6; background: #eff6ff; }
+        .mood-emoji { font-size: 24px; display: block; margin-bottom: 8px; }
+        .mood-name { font-size: 11px; font-weight: 700; color: var(--notion-text); text-transform: uppercase; }
+        
+        .m-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+        .m-card { background: white; border: 1px solid #efefef; border-radius: 12px; padding: 24px; transition: all 0.2s; display: flex; flex-direction: column; }
+        .m-card:hover { border-color: #3b82f6; transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.03); }
+        .m-type { font-size: 9px; font-weight: 800; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+
+        .motivation-stats-wrap { margin-top: 48px; }
+        .motivation-stats-title { font-size: 11px; font-weight: 700; color: var(--notion-text-muted); text-transform: uppercase; margin-bottom: 16px; }
+        .motivation-stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+        .motivation-stat-card { background: white; border: 1px solid #efefef; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+        .motivation-stat-head { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; color: var(--notion-text-muted); text-transform: uppercase; }
+        .motivation-stat-value { font-size: 26px; font-weight: 800; color: var(--notion-text); line-height: 1; }
+        .motivation-stat-label { font-size: 11px; color: var(--notion-text-muted); }
+    </style>
+{% endblock %}
 
 {% block body %}
-<div class="motivation-container">
-    <!-- Éléments décoratifs -->
-    <div class="decorative-element decorative-1">&#10024;</div>
-    <div class="decorative-element decorative-2">&#127775;</div>
-    <div class="decorative-element decorative-3">&#128171;</div>
-    
-    <!-- En-tête -->
-    <div class="page-header">
-        <div>
-            <h1>Mes Motivations</h1>
-            <p><i class="bi bi-heart-fill text-danger"></i> Messages inspirants pour chaque humeur</p>
-        </div>
+<div class="conscience-modern-page">
+
+    <header class="conscience-page-header">
+        <h1>Centre de Résonance</h1>
+        <p>Architectures d'inspiration et protocoles de renforcement psychologique.</p>
+    </header>
+
+    <div class="conscience-header-actions" style="margin-bottom: 40px;">
         <div class="page-actions">
             {% if not is_granted('ROLE_ADMIN') %}
-            <a href="{{ path('app_motivation_new') }}" class="btn primary">
-                <i class="bi bi-plus-circle"></i> Créer une motivation
-            </a>
+                <a href="{{ path('app_motivation_new') }}" class="btn primary">
+                    Nouvelle Inspiration
+                </a>
             {% endif %}
         </div>
     </div>
-    
-    <!-- Section : Messages inspirants du Coran -->
+
+    <!-- Quranic Inspiration Section -->
     {% if not is_granted('ROLE_ADMIN') and inspirational_message %}
-    <div class="inspirational-message-container">
-        <div class="card motivation-verse-card">
-            <div class="card-body">
-                <h5 class="card-title">
-                    <i class="bi bi-book text-primary"></i>
-                    Verset du Coran pour votre humeur
-                    {% if current_mood %}
-                    <span class="badge bg-primary">{{ current_mood|capitalize }}</span>
-                    {% endif %}
-                </h5>
-                
-                <!-- Texte arabe -->
-                <div class="arabic-text text-end fs-4 mb-3" dir="rtl" style="font-family: 'Traditional Arabic', 'Arial', sans-serif;">
-                    {{ inspirational_message.arabic }}
-                </div>
-                
-                <!-- Traduction Française -->
-                <div class="translation mb-2">
-                    <strong>Français :</strong> 
-                    <p class="mb-1">{{ inspirational_message.french }}</p>
-                </div>
-                
-                <!-- Traduction anglaise -->
-                <div class="translation mb-3">
-                    <strong>English :</strong> 
-                    <p class="mb-1">{{ inspirational_message.english }}</p>
-                </div>
-                
-                <!-- Source -->
-                <div class="source text-muted">
-                    <i class="bi bi-info-circle"></i> {{ inspirational_message.source }}
-                </div>
-            </div>
+    <section class="motivation-verse-card">
+        <div style="position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #3b82f6;"></div>
+        <div style="font-size: 11px; font-weight: 700; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 32px; text-align: center;">
+            <i class="fa-solid fa-moon" style="margin-right: 8px;"></i> VECTEUR DE SÉRÉNITÉ
         </div>
-    </div>
+        
+        <div class="arabic-text" dir="rtl">{{ inspirational_message.arabic }}</div>
+        
+        <div class="translation">" {{ inspirational_message.french }} "</div>
+        
+        <div style="margin-top: 32px; text-align: center; font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">
+            {{ inspirational_message.source }}
+        </div>
+    </section>
     {% endif %}
-    
-    <!-- Filtres d'humeur -->
+
+    <!-- Mood Matrix -->
     {% if not is_granted('ROLE_ADMIN') %}
-    <div class="search-bar" style="flex-direction: column; align-items: flex-start;">
-        <h2 style="font-size: 1.2rem; font-weight: 800; margin: 0 0 15px 0; color: var(--primary);">
-            <i class="bi bi-funnel"></i> Filtrer par humeur
-        </h2>
-        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
-            <a href="{{ path('app_motivation_index') }}" 
-               class="mood-badge {{ not app.request.get('mood') ? 'active' : '' }}" style="text-decoration: none;">
-                <i class="bi bi-star-fill"></i> Toutes
-            </a>
+    <div class="section-title" style="margin-bottom: 24px; font-size: 11px; font-weight: 700; color: var(--notion-text-muted); text-transform: uppercase;">Matrice des États d'Esprit</div>
+    <div class="mood-grid">
+        {% set emoji_map = {
+            'motivated': '🚀', 'happy': '😊', 'sad': '😢', 'stressed': '😵',
+            'tired': '😴', 'determined': '😎', 'optimistic': '🌈'
+        } %}
+        
+        <a href="{{ path('app_motivation_index') }}" class="mood-btn {{ not app.request.get('mood') ? 'active' : '' }}">
+            <span class="mood-emoji">💠</span>
+            <span class="mood-name">GLOBAL</span>
+        </a>
 
-            {% set emoji_map = {
-                'motivated': '🚀',
-                'happy': '😊',
-                'sad': '😢',
-                'stressed': '😵',
-                'tired': '😴',
-                'determined': '😎',
-                'optimistic': '🌈'
-            } %}
-
-            {% for mood in moods %}
-            <a href="{{ path('app_motivation_by_mood', {'mood': mood}) }}" 
-               class="mood-badge mood-{{ mood }} {{ current_mood == mood ? 'active' : '' }}" style="text-decoration: none;">
+        {% for mood in moods %}
+            <a href="{{ path('app_motivation_by_mood', {'mood': mood}) }}" class="mood-btn {{ current_mood == mood ? 'active' : '' }}">
                 <span class="mood-emoji">{{ emoji_map[mood]|default('🙂') }}</span>
-                {{ mood|capitalize }}
+                <span class="mood-name">{{ mood }}</span>
             </a>
-            {% endfor %}
-        </div>
+        {% endfor %}
     </div>
     {% endif %}
+
+    <!-- Motivation Assets -->
+    <div class="section-title" style="margin-bottom: 24px; font-size: 11px; font-weight: 700; color: var(--notion-text-muted); text-transform: uppercase;">Dépôt d'Inspiration ({{ motivations|length }})</div>
     
-    <!-- Grille des motivations -->
-    {% if not is_granted('ROLE_ADMIN') and motivations is empty %}
-        <div class="motivation-empty-state">
-            <div class="empty-state-icon">&#128522;</div>
-            <h2 class="empty-state-title">Pas de motivations pour le moment</h2>
-            <p class="empty-state-text">
-                Créez des messages motivationnels pour inspirer vos journées 
-                et atteindre vos objectifs avec le sourire !
-            </p>
-            <a href="{{ path('app_motivation_new') }}" class="empty-state-btn pulse-on-hover">
-                <i class="bi bi-plus-circle"></i> Créer ma première motivation
-            </a>
-        </div>
-    {% elseif not is_granted('ROLE_ADMIN') %}
-        <div class="motivation-grid">
-            {% for motivation in motivations %}
-            <article class="pack-card">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                    <div style="display: flex; gap: 12px; align-items: center;">
-                        <div style="width: 40px; height: 40px; border-radius: 10px; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                            <span class="mood-emoji">{{ emoji_map[motivation.mood]|default('🙂') }}</span>
-                        </div>
-                        <div>
-                            <h3 style="margin: 0; font-size: 1.1rem; font-weight: 850; color: var(--text-main);">{{ motivation.title }}</h3>
-                            <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">{{ motivation.mood|upper }}</span>
-                        </div>
-                    </div>
+    <div class="m-grid">
+        {% for motivation in motivations %}
+            <article class="m-card">
+                <div class="m-type">
+                    <span>{{ emoji_map[motivation.mood]|default('🙂') }}</span>
+                    {{ motivation.mood }}
                 </div>
-
-                <p style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.4; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                    {{ motivation.description }}
+                
+                <h3 style="font-size: 16px; font-weight: 800; color: var(--notion-text); margin-bottom: 12px;">{{ motivation.title }}</h3>
+                
+                <p style="font-size: 14px; color: var(--notion-text-muted); line-height: 1.6; flex: 1; margin-bottom: 24px;">
+                    {{ (motivation.description|striptags)|slice(0, 150) }}{{ motivation.description|striptags|length > 150 ? '...' : '' }}
                 </p>
-
-                <div class="nexa-actions-cell" style="border-top: 1px solid var(--border-color); padding-top: 15px;">
-                    <a href="{{ path('app_motivation_show', {'id': motivation.id}) }}" class="nexa-btn-icon view" title="Lire">
-                        <i class="fas fa-eye"></i>
-                    </a>
-                    <a href="{{ path('app_motivation_edit', {'id': motivation.id}) }}" class="nexa-btn-icon edit" title="Modifier">
-                        <i class="fas fa-pen"></i>
-                    </a>
-                    <form method="post" action="{{ path('app_motivation_delete', {'id': motivation.id}) }}" onsubmit="return confirm('Supprimer ?');" style="display: inline;">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ motivation.id) }}">
-                        <button class="nexa-btn-icon delete" title="Supprimer">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </form>
+                
+                <div style="display: flex; gap: 8px; border-top: 1px solid #f8fafc; padding-top: 16px;">
+                    <a href="{{ path('app_motivation_show', {'id': motivation.id}) }}" class="btn" style="flex: 1; font-size: 11px; font-weight: 700; background: #f8fafc; border-color: #e2e8f0; color: var(--notion-text);">DÉTAILS</a>
+                    {% if not is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_motivation_edit', {'id': motivation.id}) }}" class="btn" style="padding: 6px 10px; background: #f8fafc;"><i class="fa-solid fa-pen" style="font-size: 10px;"></i></a>
+                    {% endif %}
                 </div>
             </article>
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    {% set mood_messages = all_messages[current_mood]|default([]) %}
-    {% if not is_granted('ROLE_ADMIN') and current_mood and mood_messages|length > 1 %}
-    <div class="more-verses-container mt-5">
-        <h3 class="section-title">
-            <i class="bi bi-collection"></i> Plus de versets pour l'humeur "{{ current_mood|capitalize }}"
-        </h3>
-        <div class="row">
-            {% for message in mood_messages|slice(0, 5) %}
-            <div class="col-md-6 col-lg-4 mb-3">
-                <div class="card h-100 motivation-verse-card">
-                    <div class="card-body">
-                        <div class="arabic-text text-end mb-2" dir="rtl" style="font-family: 'Traditional Arabic', 'Arial', sans-serif;">
-                            {{ message.arabic }}
-                        </div>
-                        <p class="card-text">
-                            <small>{{ message.french }}</small>
-                        </p>
-                        <div class="source text-muted">
-                            <small><i class="bi bi-book"></i> {{ message.source }}</small>
-                        </div>
-                    </div>
-                </div>
+        {% else %}
+            <div style="grid-column: 1/-1; text-align: center; padding: 100px; background: white; border-radius: 12px; border: 1px dashed #efefef;">
+                <div style="font-size: 48px; margin-bottom: 24px; opacity: 0.2;">✨</div>
+                <h3 style="font-size: 16px; font-weight: 700; color: var(--notion-text-muted);">Rémanence Nulle</h3>
+                <p style="font-size: 13px; color: var(--notion-text-muted); margin-bottom: 24px;">Aucun module d'inspiration n'a été configuré.</p>
+                <a href="{{ path('app_motivation_new') }}" class="btn primary">Créer un actif d'inspiration</a>
             </div>
-            {% endfor %}
-        </div>
+        {% endfor %}
     </div>
-    {% endif %}
 
-    
-    <!-- Statistiques -->
-    <div class="motivation-stats-container">
-        <h2 class="motivation-stats-title">
-            <i class="bi bi-bar-chart"></i> Statistiques des motivations
-        </h2>
+    <section class="motivation-stats-wrap">
+        <h2 class="motivation-stats-title">Statistiques des motivations</h2>
         {% set mood_labels = {
             'motivated': 'Motivé',
             'happy': 'Heureux',
@@ -189,63 +137,22 @@
             'determined': 'Déterminé',
             'optimistic': 'Optimiste'
         } %}
-        <div class="stats-grid motivation-stats-grid-pro">
+
+        <div class="motivation-stats-grid">
             {% for mood in moods %}
                 {% set mood_key = mood|lower %}
                 {% set mood_count = mood_click_stats[mood_key]|default(0) %}
-                <div class="stat-item {{ mood_key }} motivation-stat-card">
-                    <div class="motivation-stat-top">
+                <article class="motivation-stat-card">
+                    <div class="motivation-stat-head">
                         <span class="mood-emoji">{{ emoji_map[mood_key]|default('🙂') }}</span>
-                        <span class="motivation-stat-title">{{ mood_labels[mood_key]|default(mood|capitalize) }}</span>
+                        <span>{{ mood_labels[mood_key]|default(mood|capitalize) }}</span>
                     </div>
-                    <span class="stat-value">{{ mood_count }}</span>
-                    <span class="stat-label">motivation(s)</span>
-                </div>
+                    <span class="motivation-stat-value">{{ mood_count }}</span>
+                    <span class="motivation-stat-label">clic(s) humeur</span>
+                </article>
             {% endfor %}
         </div>
-    </div>
-</div> {# Close the motivation-container div #}
+    </section>
+
+</div>
 {% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-        // Animation au chargement
-        document.addEventListener('DOMContentLoaded', function() {
-            // Effet de vague sur les cartes
-            const cards = document.querySelectorAll('.motivation-card');
-            cards.forEach((card, index) => {
-                card.style.animationDelay = (index * 0.1) + 's';
-            });
-            
-            // Effet de brillance sur les boutons
-            const buttons = document.querySelectorAll('.motivation-primary-btn, .empty-state-btn');
-            buttons.forEach(btn => {
-                btn.addEventListener('mouseenter', function() {
-                    this.style.animation = 'pulse 0.5s';
-                });
-                btn.addEventListener('animationend', function() {
-                    this.style.animation = '';
-                });
-            });
-            
-            // Effet de survol sur les badges d'humeur
-            const moodBadges = document.querySelectorAll('.mood-badge');
-            moodBadges.forEach(badge => {
-                badge.addEventListener('mouseenter', function() {
-                    const mood = this.classList[1];
-                    document.querySelectorAll('.mood-badge').forEach(b => {
-                        if (b !== this) b.style.opacity = '0.7';
-                    });
-                });
-                badge.addEventListener('mouseleave', function() {
-                    document.querySelectorAll('.mood-badge').forEach(b => {
-                        b.style.opacity = '1';
-                    });
-                });
-            });
-        });
-    </script>
-{% endblock %}
-
-

@@ -1,0 +1,272 @@
+:root {
+    --motivation-bg: #f8fafc;
+    --motivation-card: #ffffff;
+    --motivation-border: #e2e8f0;
+    --motivation-text: #0f172a;
+    --motivation-text-muted: #64748b;
+    --motivation-primary: #8b5cf6;
+    --motivation-primary-soft: rgba(139, 92, 246, 0.08);
+    --motivation-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --motivation-radius: 16px;
+}
+
+.motivation-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 40px;
+    color: var(--motivation-text);
+    font-family: 'Inter', sans-serif;
+}
+
+/* Header Section */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 60px;
+}
+
+.page-header h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin: 0 0 10px 0;
+    letter-spacing: -0.04em;
+    background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.page-header p {
+    font-size: 1.25rem;
+    color: var(--motivation-text-muted);
+}
+
+/* Featured Verse Card */
+.motivation-verse-card {
+    background: var(--motivation-card);
+    border: 1px solid var(--motivation-border);
+    border-radius: var(--motivation-radius);
+    padding: 40px;
+    margin-bottom: 60px;
+    box-shadow: var(--motivation-shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.motivation-verse-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--motivation-primary);
+}
+
+.arabic-text {
+    font-size: 2.5rem !important;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    color: #1e293b;
+}
+
+.translation p {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: #475569;
+}
+
+/* Filter Section */
+.mood-filter-section {
+    margin-bottom: 60px;
+}
+
+.mood-filter-section h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--motivation-text-muted);
+    margin-bottom: 24px;
+}
+
+.mood-badges-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.mood-badge {
+    padding: 10px 20px;
+    border-radius: 12px;
+    background: var(--motivation-card);
+    border: 1px solid var(--motivation-border);
+    color: var(--motivation-text);
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mood-badge:hover {
+    border-color: var(--motivation-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.mood-badge.active {
+    background: var(--motivation-primary);
+    color: #fff;
+    border-color: var(--motivation-primary);
+}
+
+/* Motivation Cards Grid */
+.motivation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 32px;
+    margin-bottom: 80px;
+}
+
+.motivation-card {
+    background: var(--motivation-card);
+    border: 1px solid var(--motivation-border);
+    border-radius: var(--motivation-radius);
+    padding: 30px;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.motivation-card:hover {
+    border-color: var(--motivation-primary);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+    transform: translateY(-4px);
+}
+
+.motivation-card h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+    color: var(--motivation-text);
+}
+
+.motivation-card p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--motivation-text-muted);
+    margin-bottom: 24px;
+    flex-grow: 1;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid var(--motivation-border);
+}
+
+/* Stats Section */
+.stats-section {
+    background: #0f172a;
+    border-radius: 24px;
+    padding: 60px;
+    color: #fff;
+    margin-top: 80px;
+}
+
+.stats-section h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 48px;
+    letter-spacing: -0.02em;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 32px;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 24px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.stat-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: scale(1.05);
+}
+
+.stat-card .mood-emoji {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+.stat-card b {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.stat-card span {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 100px 0;
+}
+
+.empty-state-icon {
+    font-size: 5rem;
+    margin-bottom: 32px;
+}
+
+.empty-state h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 16px;
+}
+
+.empty-state p {
+    color: var(--motivation-text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+}
+
+/* Decorative elements */
+.decorative-element {
+    position: fixed;
+    font-size: 4rem;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.1;
+    filter: blur(2px);
+}
+
+.decorative-1 {
+    top: 10%;
+    right: 5%;
+    transform: rotate(15deg);
+}
+
+.decorative-2 {
+    bottom: 20%;
+    left: 5%;
+    transform: rotate(-15deg);
+}

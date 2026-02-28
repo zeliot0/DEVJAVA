@@ -1,0 +1,142 @@
+/* Shared embedded shell style for dashboard-loaded pages */
+
+body.dashboard-embedded {
+    --dash-bg: #05041a;
+    --dash-surface: #0f0d2e;
+    --dash-surface-soft: #121038;
+    --dash-border: rgba(124, 94, 255, 0.25);
+    --dash-text: #edf0ff;
+    --dash-muted: #8f92bb;
+    --dash-accent: #8f38ff;
+    --dash-accent-2: #6f31e8;
+    --dash-good: #34d399;
+    --dash-bad: #ff7b99;
+    background: var(--dash-bg) !important;
+    color: var(--dash-text) !important;
+    font-family: 'Sora', 'Inter', sans-serif !important;
+}
+
+body.dashboard-embedded::before {
+    background:
+        radial-gradient(1200px 520px at 0% -10%, rgba(139, 92, 246, 0.2), transparent 70%),
+        radial-gradient(1050px 460px at 100% 8%, rgba(76, 29, 149, 0.24), transparent 68%),
+        #05041a !important;
+}
+
+body.dashboard-embedded .global-bubbles-bg,
+body.dashboard-embedded .adm-sidebar,
+body.dashboard-embedded .sidebar {
+    display: none !important;
+}
+
+body.dashboard-embedded .layout {
+    display: block !important;
+    min-height: 100vh;
+}
+
+body.dashboard-embedded .main {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 14px !important;
+    box-sizing: border-box;
+}
+
+body.dashboard-embedded .adm-main {
+    margin-left: 0 !important;
+    padding: 14px !important;
+    min-height: 100vh !important;
+}
+
+body.dashboard-embedded .adm-wrapper {
+    width: 100%;
+    max-width: none !important;
+    margin: 0 !important;
+}
+
+body.dashboard-embedded .page-header {
+    display: none !important;
+}
+
+body.dashboard-embedded .flash-wrap {
+    margin: 0 0 12px !important;
+    padding: 0 !important;
+}
+
+body.dashboard-embedded .panel,
+body.dashboard-embedded .kpi-card {
+    background: linear-gradient(180deg, rgba(17, 14, 50, 0.9), rgba(11, 9, 34, 0.93)) !important;
+    border: 1px solid var(--dash-border) !important;
+    border-radius: 16px !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+    color: var(--dash-text) !important;
+}
+
+body.dashboard-embedded .panel-title,
+body.dashboard-embedded .kpi-label,
+body.dashboard-embedded .kpi-sub,
+body.dashboard-embedded .page-hint {
+    color: var(--dash-muted) !important;
+}
+
+body.dashboard-embedded .kpi-value,
+body.dashboard-embedded .page-title,
+body.dashboard-embedded strong,
+body.dashboard-embedded h1,
+body.dashboard-embedded h2,
+body.dashboard-embedded h3 {
+    color: var(--dash-text);
+}
+
+body.dashboard-embedded .adm-table {
+    border-spacing: 0 10px !important;
+}
+
+body.dashboard-embedded .adm-table th {
+    color: var(--dash-muted) !important;
+}
+
+body.dashboard-embedded .adm-table td {
+    background: rgba(15, 13, 43, 0.92) !important;
+    color: var(--dash-text) !important;
+    border: 1px solid rgba(124, 94, 255, 0.2);
+}
+
+body.dashboard-embedded .badge {
+    background: linear-gradient(130deg, var(--dash-accent), var(--dash-accent-2)) !important;
+    color: #ffffff !important;
+}
+
+body.dashboard-embedded .btn-adm,
+body.dashboard-embedded .btn-link,
+body.dashboard-embedded button,
+body.dashboard-embedded input[type="submit"] {
+    border: 1px solid rgba(124, 94, 255, 0.35);
+    background: rgba(22, 17, 60, 0.92);
+    color: #d4d7f0;
+}
+
+body.dashboard-embedded .btn-adm:hover,
+body.dashboard-embedded .btn-link:hover,
+body.dashboard-embedded button:hover,
+body.dashboard-embedded input[type="submit"]:hover {
+    color: #ffffff;
+    border-color: rgba(162, 122, 255, 0.6);
+}
+
+body.dashboard-embedded input,
+body.dashboard-embedded select,
+body.dashboard-embedded textarea {
+    background: rgba(13, 11, 39, 0.95) !important;
+    border: 1px solid rgba(124, 94, 255, 0.26) !important;
+    color: var(--dash-text) !important;
+}
+
+body.dashboard-embedded a {
+    color: #d0b8ff;
+}
+
+body.dashboard-embedded a:hover {
+    color: #f4ecff;
+}
+

@@ -1,174 +1,378 @@
 ﻿<!DOCTYPE html>
-<html lang="fr" data-theme="dark">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}NEXA Task Hub{% endblock %}</title>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    {# Font + Icons #}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-    {# âœ… NEXA CSS (doit Ãªtre dans public/assets/NEXAstyle.css) #}
-    <link rel="stylesheet" href="{{ asset('assets/NEXAAstyle.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/stylee.css?v=20260213b') }}">
-    <link rel="stylesheet" href="{{ asset('css/global-bubbles-bg.css?v=20260214a') }}">
-    {% block stylesheets %}{% endblock %}
+    <title>{% block title %}NEXA Workspace{% endblock %}</title>
     
-    {% set currentRoute = app.request.attributes.get('_route')|default('') %}
-    {% set isMusicLounge = currentRoute == 'app_task_suite_music_lounge' %}
+    <link rel="stylesheet" href="{{ asset('css/notion-core.css?v=' ~ 'now'|date('U')) }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
     
-    {% if not isMusicLounge %}
-        <link rel="stylesheet" href="{{ asset('css/page-white-bg-overrides.css?v=20260214f') }}">
-    {% endif %}
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
-    {# SEAMLESS NAVIGATION ENGINE (Hotwire Turbo) #}
-    <script src="https://unpkg.com/@hotwired/turbo@8.0.0-beta.1/dist/turbo.es2017-umd.js"></script>
-
-    {# GOBAL AUDIO ENGINE #}
-    <audio id="globalAudioEngine" data-turbo-permanent preload="auto"></audio>
-
-</head>
-<body class="has-global-bubbles {{ isMusicLounge ? 'music-lounge-body' : '' }} {{ (currentRoute starts with 'app_task_' and not isMusicLounge) ? 'task-page-theme' : '' }}">
-    {{ include('_global_bubbles_bg.html.twig') }}
-    
-    <div id="mainContentBlock">
-        {% block body %}{% endblock %}
-    </div>
-
-    {# GLOBAL PERSISTENT PLAYER - ULTRA SLIM RIBBON #}
-    <div id="globalPlayerShell" class="global-persistent-player hidden" data-turbo-permanent>
-        <div class="global-player-left">
-            <div class="global-player-cover" id="gpCover" style="background-image: url('https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=100&auto=format&fit=crop');"></div>
-            <div class="global-player-info">
-                <h4 id="gpTitle">Song Name</h4>
-                <p id="gpArtist">Artist</p>
-            </div>
-        </div>
-
-        <div class="global-player-center">
-            <div class="global-player-controls">
-                <button id="gpPrev" style="opacity: 0.5;"><i class="fa-solid fa-step-backward"></i></button>
-                <button id="gpPlayPause" class="global-player-play"><i class="fa-solid fa-play"></i></button>
-                <button id="gpNext" style="opacity: 0.5;"><i class="fa-solid fa-step-forward"></i></button>
-            </div>
-            <div class="global-progress-container">
-                <span id="gpCurrentTime" style="font-size: 0.6rem; opacity: 0.6; min-width: 25px;">0:00</span>
-                <div class="global-progress-bar" id="gpProgressBase">
-                    <div class="global-progress-fill" id="gpProgressFill" style="width: 0%"></div>
-                </div>
-                <span id="gpTotalTime" style="font-size: 0.6rem; opacity: 0.6; min-width: 25px;">0:00</span>
-            </div>
-        </div>
-
-        <div class="global-player-right">
-            <div class="energetic-visualizer" id="gpVisualizer" style="transform: scale(0.8);">
-                <div class="v-bar" style="animation-delay: 0s"></div>
-                <div class="v-bar" style="animation-delay: 0.2s"></div>
-                <div class="v-bar" style="animation-delay: 0.4s"></div>
-            </div>
-            <button id="gpClose" style="background:none; border:none; color:rgba(255,255,255,0.3); cursor:pointer; font-size: 0.8rem; margin-left: 10px;"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-    </div>
-
-    <script src="{{ asset('js/global-bubbles-bg.js?v=20260214a') }}"></script>
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // GLOBAL AUDIO CONTROLLER
-        document.addEventListener('turbo:load', () => {
-            const ga = document.getElementById('globalAudioEngine');
-            const ps = document.getElementById('globalPlayerShell');
-            const pb = document.getElementById('gpPlayPause');
-            const pc = document.getElementById('gpClose');
-            const pNext = document.getElementById('gpNext');
-            const pPrev = document.getElementById('gpPrev');
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+
+    <style>
+        body { background-color: var(--nexa-bg); color: var(--nexa-text); transition: background-color 0.3s, color 0.3s; }
+        .notion-header { background: var(--nexa-header-bg) !important; border-bottom-color: var(--nexa-border) !important; color: var(--nexa-text) !important; }
+        .global-accessibility-bar { background: var(--nexa-bg) !important; border-color: var(--nexa-border) !important; }
+        .notion-sidebar { background: var(--nexa-sidebar-bg) !important; border-right-color: var(--nexa-border) !important; }
+        .notion-icon-button, .global-accessibility-bar button { color: var(--nexa-muted) !important; }
+        .nexa-dark .global-accessibility-bar { background: var(--nexa-card) !important; }
+        .nexa-dark .notion-breadcrumb div { color: var(--nexa-text) !important; }
+    </style>
+    {% block stylesheets %}{% endblock %}
+
+    <!-- DALTONISM SVG FILTERS -->
+    <svg style="display:none">
+        <defs>
+            <filter id="protanopia"><feColorMatrix values="0.567,0.433,0,0,0 0.558,0.442,0,0,0 0,0.242,0.758,0,0 0,0,0,1,0"/></filter>
+            <filter id="deuteranopia"><feColorMatrix values="0.625,0.375,0,0,0 0.7,0.3,0,0,0 0,0.3,0.7,0,0 0,0,0,1,0"/></filter>
+            <filter id="tritanopia"><feColorMatrix values="0.95,0.05,0,0,0 0,0.433,0.567,0,0 0,0.475,0.525,0,0 0,0,0,1,0"/></filter>
+        </defs>
+    </svg>
+</head>
+
+<body class="notion-app {{ body_class|default('') }} {% if app.request.query.get('embed') == '1' %}is-embedded{% endif %}">
+    
+    {% if app.request.query.get('embed') != '1' %}
+    {% block sidebar %}
+        {% include 'layout/sidebar.html.twig' %}
+    {% endblock %}
+    {% endif %}
+
+    <main class="notion-main">
+        {% if app.request.query.get('embed') != '1' %}
+        <header class="notion-header" style="position: sticky; top: 0; z-index: 1000; background: var(--nexa-header-bg); backdrop-filter: blur(20px); border-bottom: 1px solid var(--nexa-border); display: flex; justify-content: space-between; padding: 0 24px; height: 56px; align-items: center;">
+            <div class="notion-breadcrumb" style="display: flex; align-items: center; gap: 12px;">
+                <div class="notion-icon-button" id="sidebarToggle" title="Basculer la barre latérale">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <div style="font-size: 14px; font-weight: 600; color: var(--nexa-text);">NEXA</div>
+                <span style="color: #ccc;">/</span>
+                <div style="font-size: 14px; color: var(--nexa-text-muted);">{% block breadcrumb_current %}{{ app.request.attributes.get('_route')|replace({'app_': '', '_index': ''})|capitalize }}{% endblock %}</div>
+            </div>
             
-            if(!ga || !ps) return;
+            <!-- GLOBAL ACCESSIBILITY MISSION CONTROL -->
+            <div class="global-accessibility-bar" style="display: flex; align-items: center; gap: 8px; padding: 4px; background: var(--nexa-hover); border-radius: 12px; border: 1px solid var(--nexa-border);">
+                <button onclick="window.nexaSpeakPage()" id="btnGlobalVoice" title="Lire la page" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer; transition: 0.2s;">
+                    <i class="fa-solid fa-volume-high"></i>
+                </button>
+                <button onclick="window.nexaVoiceNav()" id="btnVoiceNav" title="Navigation Vocale (Commandes)" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer; transition: 0.2s;">
+                    <i class="fa-solid fa-microphone-lines"></i>
+                </button>
+                <div style="width: 1px; height: 16px; background: #e4e4e7;"></div>
+                <button onclick="window.nexaChangeFont(1)" title="Agrandir le texte" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer;">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+                <button onclick="window.nexaChangeFont(-1)" title="Réduire le texte" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer;">
+                    <i class="fa-solid fa-minus"></i>
+                </button>
+                <div style="width: 1px; height: 16px; background: #e4e4e7;"></div>
+                <button onclick="window.nexaToggleDyslexia()" id="btnDyslexia" title="Police Dyslexie" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer;">
+                    <i class="fa-solid fa-font"></i>
+                </button>
+                <button onclick="window.nexaToggleReadingGuide()" id="btnGuide" title="Guide de lecture (Ligne)" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer;">
+                    <i class="fa-solid fa-grip-lines"></i>
+                </button>
+                <button onclick="window.nexaToggleAura()" id="btnAura" title="Masque de lecture (Aura)" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer;">
+                    <i class="fa-solid fa-mask"></i>
+                </button>
+                <button onclick="window.nexaToggleLinks()" id="btnLinks" title="Souligner les éléments cliquables" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer;">
+                    <i class="fa-solid fa-link"></i>
+                </button>
+                <button onclick="window.nexaToggleMagnifier()" id="btnLoupe" title="Loupe interactive" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer;">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+                <div style="width: 1px; height: 16px; background: #e4e4e7;"></div>
+                <button onclick="window.nexaToggleDaltonism()" id="btnDalton" title="Filtres Daltonisme (Protan/Deuter/Tritan)" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer;">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+                <button onclick="window.nexaToggleSaturation()" id="btnSat" title="Saturation Boost" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer;">
+                    <i class="fa-solid fa-palette"></i>
+                </button>
+                <button onclick="window.nexaToggleCursor()" id="btnCursor" title="Curseur Géant" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer;">
+                    <i class="fa-solid fa-arrow-pointer"></i>
+                </button>
+                <div style="width: 1px; height: 16px; background: var(--nexa-border);"></div>
+                <button onclick="window.nexaToggleContrast()" id="btnContrast" title="Cycles de contrastes" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: #1a1a1a; color: #fff; cursor: pointer;">
+                    <i class="fa-solid fa-circle-half-stroke"></i>
+                </button>
+            </div>
 
-            // DRAGGABLE LOGIC
-            let isDragging = false;
-            let offset = { x: 0, y: 0 };
+            <div class="notion-header-actions" style="display: flex; gap: 8px; align-items: center;">
+                <div class="notion-icon-button" onclick="window.nexaToggleDark()" id="btnThemeHeader" title="Changer le thème (Sombre/Clair)">
+                    <i class="fa-solid fa-moon"></i>
+                </div>
+                <div style="width: 1px; height: 16px; background: var(--nexa-border);"></div>
+                <div class="notion-icon-button" title="Partager"><i class="fa-solid fa-share-nodes"></i></div>
+                <div class="notion-icon-button" title="Historique"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                <div class="notion-icon-button" title="Plus d'options"><i class="fa-solid fa-ellipsis-h"></i></div>
+            </div>
+        </header>
+        {% endif %}
 
-            ps.onmousedown = (e) => {
-                if (e.target.closest('button') || e.target.closest('.global-progress-bar')) return;
-                isDragging = true;
-                offset.x = e.clientX - ps.offsetLeft;
-                offset.y = e.clientY - ps.offsetTop;
-                ps.style.transition = 'none';
-            };
+        <div class="notion-content" id="nexaGlobalContent" style="transition: font-size 0.2s ease; {% if app.request.query.get('embed') == '1' %}padding: 0; max-width: none; margin: 0; transition: none;{% endif %}">
+            {% block body %}{% endblock %}
+        </div>
+    </main>
 
-            document.onmousemove = (e) => {
-                if (!isDragging) return;
-                ps.style.left = (e.clientX - offset.x) + (ps.offsetWidth/2) + 'px';
-                ps.style.top = (e.clientY - offset.y) + (ps.offsetHeight/2) + 'px';
-                ps.style.bottom = 'auto';
-                ps.style.transform = 'translateX(-50%)';
-            };
+    <script>
+        // GLOBAL ACCESSIBILITY ENGINE
+        window.nexaFontSize = 16;
+        window.nexaVoiceActive = false;
+        window.nexaDyslexia = false;
+        window.nexaGuide = false;
+        window.nexaAura = false;
+        window.nexaLinks = false;
+        window.nexaLoupe = false;
+        window.nexaBigCursor = false;
+        window.nexaSaturation = false;
+        window.nexaDaltonMode = 0; // 0:None, 1:Protan, 2:Deuter, 3:Tritan
+        window.nexaContrastLevel = 0;
 
-            document.onmouseup = () => {
-                isDragging = false;
-                ps.style.transition = 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
-            };
-
-            const sync = () => {
-                if(!ga.duration) return;
-                const pct = (ga.currentTime / ga.duration) * 100;
-                const fill = document.getElementById('gpProgressFill');
-                if(fill) fill.style.width = pct + '%';
-                
-                const fmt = (s) => (isNaN(s) ? '0:00' : `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`);
-                const cur = document.getElementById('gpCurrentTime');
-                const tot = document.getElementById('gpTotalTime');
-                if(cur) cur.innerText = fmt(ga.currentTime);
-                if(tot) tot.innerText = fmt(ga.duration);
-            };
-
-            const refresh = () => {
-                const icon = ga.paused ? 'fa-play' : 'fa-pause';
-                if(pb) {
-                    pb.innerHTML = `<i class="fa-solid ${icon}"></i>`;
-                    ga.paused ? pb.classList.remove('playing') : pb.classList.add('playing');
-                }
-                const viz = document.getElementById('gpVisualizer');
-                if(viz) {
-                    viz.style.opacity = ga.paused ? '0.2' : '1';
-                    viz.querySelectorAll('.v-bar').forEach(b => b.style.animationPlayState = ga.paused ? 'paused' : 'running');
-                }
-                if (ga.src && ga.src !== window.location.href) ps.classList.remove('hidden');
-                else ps.classList.add('hidden');
-                
-                // Update Lounge UI if present
-                const lPlay = document.getElementById('loungePlayPause');
-                if (lPlay) {
-                    lPlay.innerHTML = `<i class="fa-solid ${icon}"></i>`;
-                    ga.paused ? lPlay.classList.remove('playing') : lPlay.classList.add('playing');
-                }
-            };
-
-            if(pb) pb.onclick = (e) => { e.preventDefault(); ga.paused ? ga.play() : ga.pause(); refresh(); };
-            if(pc) pc.onclick = (e) => { e.preventDefault(); ga.pause(); ga.src = ""; ps.classList.add('hidden'); };
-            if(pNext) pNext.onclick = (e) => { e.preventDefault(); if(window.globalNext) window.globalNext(); };
-            if(pPrev) pPrev.onclick = (e) => { e.preventDefault(); if(window.globalPrev) window.globalPrev(); };
-
-            ga.onplay = refresh; ga.onpause = refresh;
-            ga.onended = () => { if(window.globalNext) window.globalNext(); else if(pc) pc.click(); };
+        window.nexaToggleDaltonism = () => {
+            window.nexaDaltonMode = (window.nexaDaltonMode + 1) % 4;
+            const btn = document.getElementById('btnDalton');
+            const b = document.body;
+            b.style.filter = b.style.filter.replace(/url\(#.*?\)/g, "").trim();
             
-            setInterval(sync, 500);
-            refresh();
+            if (window.nexaDaltonMode === 1) b.style.filter += " url(#protanopia)";
+            else if (window.nexaDaltonMode === 2) b.style.filter += " url(#deuteranopia)";
+            else if (window.nexaDaltonMode === 3) b.style.filter += " url(#tritanopia)";
+            
+            if (btn) {
+                btn.style.background = window.nexaDaltonMode > 0 ? '#3b82f6' : 'transparent';
+                btn.style.color = window.nexaDaltonMode > 0 ? '#fff' : '#71717a';
+            }
+        };
 
-            window.playGlobalTrack = (src, title, artist, cover) => {
-                if(!src) return;
-                ga.src = src; ga.play().catch(() => {});
-                document.getElementById('gpTitle').innerText = title || 'Unknown';
-                document.getElementById('gpArtist').innerText = artist || 'Unknown';
-                if(cover) document.getElementById('gpCover').style.backgroundImage = `url(${cover})`;
-                ps.classList.remove('hidden');
-                refresh();
+        window.nexaToggleSaturation = () => {
+            window.nexaSaturation = !window.nexaSaturation;
+            const b = document.body;
+            b.style.filter = b.style.filter.replace(/saturate\(.*?\)/g, "").trim();
+            if (window.nexaSaturation) b.style.filter += " saturate(2.5)";
+            
+            const btn = document.getElementById('btnSat');
+            if (btn) {
+                btn.style.background = window.nexaSaturation ? '#3b82f6' : 'transparent';
+                btn.style.color = window.nexaSaturation ? '#fff' : '#71717a';
+            }
+        };
+
+        window.nexaToggleCursor = () => {
+            window.nexaBigCursor = !window.nexaBigCursor;
+            document.body.classList.toggle('nexa-big-cursor');
+            if (window.nexaBigCursor) {
+                const style = document.createElement('style');
+                style.id = 'nexaCursorStyle';
+                style.innerHTML = "* { cursor: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' stroke='%23fff' stroke-width='2' d='M7 2l12 11.2l-5.8 0.5l3.3 5.3l-2.2 1.4L11 15.1l-4 3.5V2z'/%3E%3C/svg%3E\"), auto !important; }";
+                document.head.appendChild(style);
+            } else {
+                const s = document.getElementById('nexaCursorStyle');
+                if (s) s.remove();
+            }
+            const btn = document.getElementById('btnCursor');
+            if (btn) {
+                btn.style.background = window.nexaBigCursor ? '#3b82f6' : 'transparent';
+                btn.style.color = window.nexaBigCursor ? '#fff' : '#71717a';
+            }
+        };
+
+        window.nexaToggleAura = () => {
+            window.nexaAura = !window.nexaAura;
+            let auraTop = document.getElementById('nexaAuraTop');
+            let auraBot = document.getElementById('nexaAuraBot');
+            const btn = document.getElementById('btnAura');
+            if (btn) {
+                btn.style.background = window.nexaAura ? '#3b82f6' : 'transparent';
+                btn.style.color = window.nexaAura ? '#fff' : '#71717a';
+            }
+
+            if (window.nexaAura) {
+                if (!auraTop) {
+                    auraTop = document.createElement('div'); auraTop.id = 'nexaAuraTop';
+                    auraBot = document.createElement('div'); auraBot.id = 'nexaAuraBot';
+                    const css = "position:fixed; left:0; width:100%; background:rgba(0,0,0,0.8); z-index:9998; pointer-events:none;";
+                    auraTop.style.cssText = css + " top:0; height:calc(50vh - 60px);";
+                    auraBot.style.cssText = css + " bottom:0; height:calc(50vh - 60px);";
+                    document.body.appendChild(auraTop);
+                    document.body.appendChild(auraBot);
+                    
+                    document.addEventListener('mousemove', (e) => {
+                        if (window.nexaAura) {
+                            auraTop.style.height = (e.clientY - 60) + 'px';
+                            auraBot.style.height = (window.innerHeight - e.clientY - 60) + 'px';
+                        }
+                    });
+                }
+                auraTop.style.display = auraBot.style.display = 'block';
+            } else if (auraTop) {
+                auraTop.style.display = auraBot.style.display = 'none';
+            }
+        };
+
+        window.nexaToggleContrast = () => {
+            window.nexaContrastLevel = (window.nexaContrastLevel + 1) % 4;
+            const btn = document.getElementById('btnContrast');
+            const b = document.body;
+            b.style.filter = "none"; b.style.backgroundColor = ""; b.style.color = "";
+            
+            if (window.nexaContrastLevel === 1) { // High Contrast
+                b.style.filter = "contrast(1.5) brightness(1.1)";
+            } else if (window.nexaContrastLevel === 2) { // Monochrome
+                b.style.filter = "grayscale(1)";
+            } else if (window.nexaContrastLevel === 3) { // Night
+                b.style.backgroundColor = "#000"; b.style.color = "#fff";
+                b.style.filter = "invert(1) hue-rotate(180deg)";
+            }
+        };
+
+        window.nexaSpeakPage = () => {
+            window.nexaVoiceActive = !window.nexaVoiceActive;
+            const btn = document.getElementById('btnGlobalVoice');
+            if (btn) {
+                btn.style.background = window.nexaVoiceActive ? '#3b82f6' : 'transparent';
+                btn.style.color = window.nexaVoiceActive ? '#fff' : '#71717a';
+            }
+            if (window.nexaVoiceActive) {
+                const content = document.getElementById('nexaGlobalContent');
+                const textToRead = content ? content.innerText : "";
+                const utterance = new SpeechSynthesisUtterance(textToRead);
+                utterance.lang = 'fr-FR';
+                utterance.onend = () => {
+                    window.nexaVoiceActive = false;
+                    if (btn) { btn.style.background = 'transparent'; btn.style.color = '#71717a'; }
+                };
+                window.speechSynthesis.speak(utterance);
+            } else {
+                window.speechSynthesis.cancel();
+            }
+        };
+
+        window.nexaVoiceNav = () => {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) { alert("Désolé, votre navigateur ne supporte pas la navigation vocale."); return; }
+            
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'fr-FR';
+            const btn = document.getElementById('btnVoiceNav');
+            btn.style.background = '#ef4444';
+            btn.style.color = '#fff';
+
+            recognition.onresult = (event) => {
+                const command = event.results[0][0].transcript.toLowerCase();
+                console.log("Voice Command:", command);
+                
+                if (command.includes('tâche') || command.includes('task')) window.location.href = '/task/';
+                else if (command.includes('objectif') || command.includes('goal')) window.location.href = '/goal/';
+                else if (command.includes('assistant') || command.includes('hub') || command.includes('ia')) window.location.href = '/ai/hub';
+                else if (command.includes('produit') || command.includes('stock')) window.location.href = '/produit/';
+                else if (command.includes('motivation')) window.location.href = '/motivation/';
+                else if (command.includes('accueil') || command.includes('home')) window.location.href = '/';
+                
+                btn.style.background = 'transparent';
+                btn.style.color = '#71717a';
             };
+
+            recognition.onerror = () => {
+                btn.style.background = 'transparent';
+                btn.style.color = '#71717a';
+            };
+
+            recognition.start();
+        };
+
+        window.nexaToggleDark = () => {
+            const isDark = document.body.classList.toggle('nexa-dark');
+            localStorage.setItem('nexa_theme', isDark ? 'dark' : 'light');
+            
+            // Update all theme icons
+            const icons = document.querySelectorAll('#btnThemeHeader i, #btnThemeSidebar i');
+            icons.forEach(icon => {
+                icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            });
+        };
+
+        // Persistence Restore
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('nexa_theme') === 'dark') {
+                window.nexaToggleDark();
+            }
+            const savedSize = localStorage.getItem('nexa_font_size');
+            if (savedSize) window.nexaChangeFont(0);
+            
+            const sidebar = document.getElementById('notionSidebar');
+            const toggle = document.getElementById('sidebarToggle');
+            if (toggle && sidebar) {
+                toggle.addEventListener('click', () => sidebar.classList.toggle('collapsed'));
+            }
         });
     </script>
+
+    <!-- GLOBAL BACKGROUND AUDIO ENGINE -->
+    <audio id="globalAudioEngine" hidden preload="auto"></audio>
+
+    <!-- MINI MUSIC HUD (Visible when music is playing and not on Lounge page) -->
+    <div id="cyberMiniHud" class="cyber-mini-hud" style="display: none;">
+        <div class="mini-hud-cover" id="miniHudCover"></div>
+        <div class="mini-hud-info">
+            <div class="mini-hud-title" id="miniHudTitle">Not Playing</div>
+            <div class="mini-hud-artist" id="miniHudArtist">Select a track</div>
+        </div>
+        <div class="mini-hud-actions">
+            <button onclick="window.nexusAction('prev')"><i class="fa-solid fa-backward-step"></i></button>
+            <button onclick="window.nexusAction('toggle')" id="miniHudPlay"><i class="fa-solid fa-play"></i></button>
+            <button onclick="window.nexusAction('next')"><i class="fa-solid fa-forward-step"></i></button>
+            <button onclick="window.nexusAction('close')" style="margin-left: 8px; opacity: 0.5;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
+
+    <style>
+        .cyber-mini-hud {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0,0,0,0.1);
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            z-index: 10000;
+            width: 320px;
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nexa-dark .cyber-mini-hud {
+            background: rgba(17, 24, 39, 0.9);
+            border-color: rgba(255,255,255,0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .mini-hud-cover { width: 44px; height: 44px; border-radius: 8px; background-size: cover; background-position: center; flex-shrink: 0; }
+        .mini-hud-info { flex: 1; min-width: 0; }
+        .mini-hud-title { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--nexa-text); }
+        .mini-hud-artist { font-size: 11px; color: var(--nexa-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mini-hud-actions { display: flex; align-items: center; gap: 12px; }
+        .mini-hud-actions button { border: none; background: transparent; color: var(--nexa-text); cursor: pointer; font-size: 14px; padding: 4px; transition: 0.2s; }
+        .mini-hud-actions button:hover { transform: scale(1.1); color: var(--nexa-accent); }
+    </style>
+
     {% block javascripts %}{% endblock %}
+    <!-- GLOBAL SUITE JS -->
+    <script src="{{ asset('js/task-suite.js?v=' ~ 'now'|date('U')) }}"></script>
 </body>
 </html>
-
-

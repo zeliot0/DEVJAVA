@@ -1,0 +1,243 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Clés API - Paramètres NEXA{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .api-keys-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 40px;
+            color: #fff;
+        }
+
+        .api-keys-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 48px;
+        }
+
+        .api-keys-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
+        }
+
+        .api-keys-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            font-size: 14px;
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .toolbar-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .toolbar-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .toolbar-btn.active {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .api-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .api-table th {
+            text-align: left;
+            padding: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.5);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .api-table td {
+            padding: 20px 12px;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            vertical-align: middle;
+        }
+
+        .api-key-code {
+            font-family: 'Courier New', Courier, monospace;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .api-project {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+
+        .api-project:hover {
+            text-decoration: underline;
+        }
+
+        .api-quota-link {
+            color: #3b82f6;
+            text-decoration: none;
+            display: block;
+        }
+
+        .api-quota-link:hover {
+            text-decoration: underline;
+        }
+
+        .quota-info {
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+            margin-top: 4px;
+        }
+
+        .action-icons {
+            display: flex;
+            gap: 16px;
+            color: rgba(255,255,255,0.4);
+            font-size: 16px;
+        }
+
+        .action-icons i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .action-icons i:hover {
+            color: #fff;
+        }
+
+        .api-keys-footer {
+            margin-top: 48px;
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 14px;
+        }
+
+        .api-keys-footer a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+
+        /* Override base theme if needed to match screenshot's dark mode */
+        .notion-main {
+            background: #111 !important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="api-keys-container">
+    <div class="api-keys-header">
+        <h1>Clés API</h1>
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <a href="#" style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 14px;">
+                <i class="fa-solid fa-file-lines"></i> Guide de démarrage rapide des API
+            </a>
+            <button class="btn primary" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff;">
+                <i class="fa-solid fa-key"></i> Créer une clé API
+            </button>
+        </div>
+    </div>
+
+    <div class="api-keys-toolbar">
+        <div class="toolbar-group">
+            <span style="color: rgba(255,255,255,0.5);">Grouper par</span>
+            <button class="toolbar-btn active">● Clé API</button>
+            <button class="toolbar-btn">Projet</button>
+        </div>
+        <div class="toolbar-group">
+            <span style="color: rgba(255,255,255,0.5);">Filtrer par</span>
+            <select style="background: transparent; color: #fff; border: none; font-size: 14px; cursor: pointer;">
+                <option>Tous les projets</option>
+            </select>
+        </div>
+    </div>
+
+    <table class="api-table">
+        <thead>
+            <tr>
+                <th style="width: 30%;">Clé</th>
+                <th style="width: 30%;">Projet</th>
+                <th style="width: 15%;">Date de création</th>
+                <th style="width: 15%;">Niveau de quota</th>
+                <th style="width: 10%;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div class="api-key-code">...XyzY</div>
+                    <div style="font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 4px;">Gemini API Key</div>
+                </td>
+                <td>
+                    <a href="#" class="api-project">Default Gemini Project</a>
+                    <div style="font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 4px;">gen-lang-client-0037182648</div>
+                </td>
+                <td>21 févr. 2026</td>
+                <td>
+                    <a href="#" class="api-quota-link">Configurer la facturation</a>
+                    <div class="quota-info">Niveau sans frais</div>
+                </td>
+                <td>
+                    <div class="action-icons">
+                        <i class="fa-regular fa-copy"></i>
+                        <i class="fa-solid fa-calculator"></i>
+                        <i class="fa-solid fa-chart-simple"></i>
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="api-key-code">...LPWs</div>
+                    <div style="font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 4px;">Default Gemini API Key</div>
+                </td>
+                <td>
+                    <a href="#" class="api-project">Default Gemini Project</a>
+                    <div style="font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 4px;">gen-lang-client-0037182648</div>
+                </td>
+                <td>21 févr. 2026</td>
+                <td>
+                    <a href="#" class="api-quota-link">Configurer la facturation</a>
+                    <div class="quota-info">Niveau sans frais</div>
+                </td>
+                <td>
+                    <div class="action-icons">
+                        <i class="fa-regular fa-copy"></i>
+                        <i class="fa-solid fa-calculator"></i>
+                        <i class="fa-solid fa-chart-simple"></i>
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="api-keys-footer">
+        Vous ne trouvez pas vos clés API ici ? <a href="#">Consultez l'aide.</a>
+    </div>
+</div>
+{% endblock %}

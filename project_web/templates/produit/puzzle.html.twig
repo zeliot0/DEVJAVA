@@ -1,0 +1,468 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nexa AI - Puzzle Produits{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --pz-bg: #f8fafc;
+            --pz-card: #ffffff;
+            --pz-border: #e2e8f0;
+            --pz-text: #0f172a;
+            --pz-muted: #475569;
+            --pz-primary: #0f766e;
+            --pz-primary-soft: #ccfbf1;
+        }
+
+        .puzzle-shell {
+            background: radial-gradient(circle at 0% 0%, #e2e8f0 0, transparent 50%),
+                        radial-gradient(circle at 100% 100%, #bae6fd 0, transparent 40%),
+                        var(--pz-bg);
+            min-height: calc(100vh - 5rem);
+        }
+
+        .puzzle-panel {
+            background: var(--pz-card);
+            border: 1px solid var(--pz-border);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.05);
+        }
+
+        .puzzle-board {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(64px, 1fr));
+            gap: 12px;
+        }
+
+        .puzzle-card {
+            position: relative;
+            height: 130px;
+            border: 1px solid var(--pz-border);
+            border-radius: 16px;
+            background: #f8fafc;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .puzzle-card:hover {
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+        }
+
+        .puzzle-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .puzzle-face {
+            position: absolute;
+            inset: 0;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            overflow: hidden;
+        }
+
+        .puzzle-face.front {
+            background: linear-gradient(145deg, #ecfeff, #f0fdfa);
+            color: #0f766e;
+            border: 1px dashed #99f6e4;
+        }
+
+        .front-symbol {
+            font-size: 26px;
+            line-height: 1;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .puzzle-face.back {
+            transform: rotateY(180deg);
+            background: #ffffff;
+            color: var(--pz-text);
+            border: 1px solid #d1fae5;
+            padding: 0;
+        }
+
+        .puzzle-card.matched .puzzle-face.back {
+            background: #ecfdf5;
+            border-color: #86efac;
+        }
+
+        .puzzle-media {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .puzzle-back-overlay {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 8px 9px;
+            font-size: 10px;
+            line-height: 1.25;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+            color: #ffffff;
+            text-shadow: 0 1px 2px rgba(2, 6, 23, 0.45);
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.72), rgba(15, 23, 42, 0.08));
+        }
+
+        .generated-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 10px;
+        }
+
+        .generated-item {
+            border: 1px solid #dbeafe;
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .generated-item img {
+            width: 100%;
+            height: 90px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .generated-item-body {
+            padding: 8px;
+            font-size: 11px;
+            line-height: 1.35;
+            color: #0f172a;
+        }
+
+        .generated-item-body b {
+            display: block;
+            font-size: 11px;
+            margin-bottom: 2px;
+        }
+
+        @media (max-width: 640px) {
+            .puzzle-board {
+                grid-template-columns: repeat(4, minmax(55px, 1fr));
+                gap: 8px;
+            }
+
+            .puzzle-card {
+                height: 98px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <main class="puzzle-shell w-full py-12 px-4">
+        <section class="max-w-5xl mx-auto puzzle-panel p-6 md:p-8">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-black text-slate-900">Puzzle Produits</h1>
+                    <p class="text-sm md:text-base text-slate-500 mt-2">
+                        Mini-jeu de memoire. Les cartes utilisent des produits aleatoires avec images.
+                    </p>
+                </div>
+                <div class="flex gap-2">
+                    <a href="{{ path('app_produit_index') }}" class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 no-underline hover:bg-slate-50">Retour Produits</a>
+                    <button id="newGameBtn" type="button" class="px-4 py-2 bg-teal-700 text-white rounded-xl text-xs font-bold hover:bg-teal-800">
+                        Nouveau puzzle
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+                <div class="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                    <p class="text-[11px] uppercase font-black tracking-wide text-slate-400 mb-1">Mouvements</p>
+                    <p id="moveCount" class="text-2xl font-black text-slate-900">0</p>
+                </div>
+                <div class="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                    <p class="text-[11px] uppercase font-black tracking-wide text-slate-400 mb-1">Temps</p>
+                    <p id="timeCount" class="text-2xl font-black text-slate-900">00:00</p>
+                </div>
+                <div class="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                    <p class="text-[11px] uppercase font-black tracking-wide text-slate-400 mb-1">Paires trouvees</p>
+                    <p id="matchCount" class="text-2xl font-black text-slate-900">0 / 8</p>
+                </div>
+            </div>
+
+            <div id="statusMessage" class="mb-5 text-sm font-semibold text-slate-600"></div>
+            <div id="puzzleBoard" class="puzzle-board mb-6"></div>
+
+            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <h2 class="text-sm font-black text-slate-800 mb-2">Produits de cette partie</h2>
+                <div id="generatedProducts"></div>
+            </div>
+        </section>
+    </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const boardEl = document.getElementById('puzzleBoard');
+            const generatedEl = document.getElementById('generatedProducts');
+            const statusEl = document.getElementById('statusMessage');
+            const moveEl = document.getElementById('moveCount');
+            const timeEl = document.getElementById('timeCount');
+            const matchEl = document.getElementById('matchCount');
+            const newGameBtn = document.getElementById('newGameBtn');
+            const prefixes = ['Eco', 'Fresh', 'Smart', 'Ultra', 'Prime', 'Bio', 'Mini', 'Max'];
+            const names = ['Riz', 'Pates', 'Huile', 'Savon', 'The', 'Lait', 'Farine', 'Cafe', 'Sucre', 'Sel', 'Shampooing', 'Detergent'];
+            const categories = ['Alimentation', 'Cuisine', 'Maison', 'Hygiene'];
+            const totalPairs = 8;
+            const fallbackByCategory = {
+                Alimentation: '{{ asset('images/articles/alimentation.svg') }}',
+                Cuisine: '{{ asset('images/articles/cuisine.svg') }}',
+                Maison: '{{ asset('images/articles/maison.svg') }}',
+                Hygiene: '{{ asset('images/articles/salle-de-bain.svg') }}'
+            };
+
+            let cards = [];
+            let openedIndex = null;
+            let lockBoard = false;
+            let moves = 0;
+            let matches = 0;
+            let seconds = 0;
+            let timerId = null;
+            
+
+            function rand(list) {
+                return list[Math.floor(Math.random() * list.length)];
+            }
+
+            function shuffle(array) {
+                const copy = array.slice();
+                for (let i = copy.length - 1; i > 0; i -= 1) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [copy[i], copy[j]] = [copy[j], copy[i]];
+                }
+                return copy;
+            }
+
+            function formatTime(totalSeconds) {
+                const min = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+                const sec = String(totalSeconds % 60).padStart(2, '0');
+                return min + ':' + sec;
+            }
+
+            function buildImageUrl(productName, category) {
+                const seed = encodeURIComponent((productName + '-' + category).toLowerCase().replace(/\s+/g, '-'));
+                return 'https://picsum.photos/seed/' + seed + '/480/320';
+            }
+
+            function bindImageFallback(img, fallbackUrl) {
+                img.onerror = () => {
+                    if (img.dataset.fallbackApplied === '1') {
+                        return;
+                    }
+                    img.dataset.fallbackApplied = '1';
+                    img.src = fallbackUrl;
+                };
+            }
+
+            function generateProducts(pairCount) {
+                const used = new Set();
+                const products = [];
+
+                while (products.length < pairCount) {
+                    const productName = rand(prefixes) + ' ' + rand(names);
+                    if (used.has(productName)) {
+                        continue;
+                    }
+
+                    used.add(productName);
+                    const category = rand(categories);
+                    products.push({
+                        id: products.length + 1,
+                        name: productName,
+                        category: category,
+                        stock: Math.floor(Math.random() * 70) + 1,
+                        imageUrl: buildImageUrl(productName, category),
+                        fallbackImage: fallbackByCategory[category] || fallbackByCategory.Maison
+                    });
+                }
+
+                return products;
+            }
+
+            function buildDeck(products) {
+                let id = 1;
+                const deck = [];
+
+                products.forEach((product) => {
+                    deck.push({ id: id++, pairKey: product.name, product, flipped: false, matched: false });
+                    deck.push({ id: id++, pairKey: product.name, product, flipped: false, matched: false });
+                });
+
+                return shuffle(deck);
+            }
+
+            function renderGeneratedProducts(products) {
+                generatedEl.innerHTML = '';
+                const grid = document.createElement('div');
+                grid.className = 'generated-grid';
+
+                products.forEach((product) => {
+                    const item = document.createElement('article');
+                    item.className = 'generated-item';
+
+                    const img = document.createElement('img');
+                    img.src = product.imageUrl;
+                    img.alt = product.name;
+                    img.loading = 'lazy';
+                    bindImageFallback(img, product.fallbackImage);
+
+                    const body = document.createElement('div');
+                    body.className = 'generated-item-body';
+                    body.innerHTML = '<b>' + product.name + '</b>' + product.category + ' | Stock ' + product.stock;
+
+                    item.appendChild(img);
+                    item.appendChild(body);
+                    grid.appendChild(item);
+                });
+
+                generatedEl.appendChild(grid);
+            }
+
+            function renderStats() {
+                moveEl.textContent = String(moves);
+                timeEl.textContent = formatTime(seconds);
+                matchEl.textContent = matches + ' / ' + totalPairs;
+            }
+
+            function renderBoard() {
+                boardEl.innerHTML = '';
+
+                cards.forEach((card, index) => {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'puzzle-card' + (card.flipped ? ' flipped' : '') + (card.matched ? ' matched' : '');
+
+                    const front = document.createElement('div');
+                    front.className = 'puzzle-face front';
+                    front.innerHTML = '<span class="front-symbol">&#x1F9E9;</span><span>Produit</span>';
+
+                    const back = document.createElement('div');
+                    back.className = 'puzzle-face back';
+
+                    const img = document.createElement('img');
+                    img.className = 'puzzle-media';
+                    img.src = card.product.imageUrl;
+                    img.alt = card.product.name;
+                    img.loading = 'lazy';
+                    bindImageFallback(img, card.product.fallbackImage);
+
+                    const overlay = document.createElement('div');
+                    overlay.className = 'puzzle-back-overlay';
+                    overlay.textContent = card.product.name;
+
+                    back.appendChild(img);
+                    back.appendChild(overlay);
+
+                    button.appendChild(front);
+                    button.appendChild(back);
+                    button.addEventListener('click', () => flipCard(index));
+
+                    boardEl.appendChild(button);
+                });
+            }
+
+            function finishGame() {
+                clearInterval(timerId);
+                timerId = null;
+                statusEl.textContent = 'Partie terminee en ' + formatTime(seconds) + ' avec ' + moves + ' mouvements.';
+            }
+
+            function resetSelection() {
+                openedIndex = null;
+                lockBoard = false;
+            }
+
+            function flipCard(index) {
+                if (lockBoard) {
+                    return;
+                }
+
+                const current = cards[index];
+                if (current.flipped || current.matched) {
+                    return;
+                }
+
+                current.flipped = true;
+                renderBoard();
+
+                if (openedIndex === null) {
+                    openedIndex = index;
+                    return;
+                }
+
+                moves += 1;
+                const previous = cards[openedIndex];
+
+                if (previous.pairKey === current.pairKey) {
+                    previous.matched = true;
+                    current.matched = true;
+                    matches += 1;
+                    renderStats();
+                    resetSelection();
+
+                    if (matches === totalPairs) {
+                        finishGame();
+                    }
+                    return;
+                }
+
+                lockBoard = true;
+                renderStats();
+                const firstIndex = openedIndex;
+
+                setTimeout(() => {
+                    cards[firstIndex].flipped = false;
+                    cards[index].flipped = false;
+                    renderBoard();
+                    resetSelection();
+                }, 650);
+            }
+
+            function startGame() {
+                clearInterval(timerId);
+                timerId = null;
+
+                openedIndex = null;
+                lockBoard = false;
+                moves = 0;
+                matches = 0;
+                seconds = 0;
+
+                const products = generateProducts(totalPairs);
+                cards = buildDeck(products);
+
+                renderGeneratedProducts(products);
+                renderStats();
+                renderBoard();
+                statusEl.textContent = 'Trouvez toutes les paires de produits aleatoires.';
+
+                timerId = setInterval(() => {
+                    seconds += 1;
+                    timeEl.textContent = formatTime(seconds);
+                }, 1000);
+            }
+
+            newGameBtn.addEventListener('click', startGame);
+            startGame();
+        });
+    </script>
+{% endblock %}

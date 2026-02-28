@@ -1,4 +1,49 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_start(form, { attr: { novalidate: 'novalidate', class: 'conscience-modern-form' } }) }}
+
+<div class="form-container-inner">
+    <div class="form-grid">
+        <div class="form-section-card">
+            <div class="section-badge highlight" style="background: #ecfdf5; color: #059669;">DÉFINITION DU PROCESSUS</div>
+            
+            <div class="pg-field">
+                {{ form_label(form.titleExe, 'Titre de l\'Exécution *', {'label_attr': {'class': 'pg-label'}}) }}
+                {{ form_widget(form.titleExe, {'attr': {'class': 'pg-input', 'placeholder': 'Ex: Synchronisation API Alpha'}}) }}
+                {{ form_errors(form.titleExe) }}
+            </div>
+
+            <div class="pg-field">
+                {{ form_label(form.statusExe, 'État du Flux *', {'label_attr': {'class': 'pg-label'}}) }}
+                {{ form_widget(form.statusExe, {'attr': {'class': 'pg-input', 'placeholder': 'Running, Success, Failed...'}}) }}
+                {{ form_errors(form.statusExe) }}
+            </div>
+        </div>
+
+        <div class="form-section-card">
+            <div class="section-badge info">MÉTADONNÉES ET SORTIE</div>
+            
+            <div class="pg-field">
+                {{ form_label(form.descExe, 'Données de Sortie (Logs) *', {'label_attr': {'class': 'pg-label'}}) }}
+                {{ form_widget(form.descExe, {'attr': {'class': 'pg-textarea', 'placeholder': 'Insérez les logs ou la description technique...', 'style': 'min-height: 150px; font-family: monospace;'}}) }}
+                {{ form_errors(form.descExe) }}
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="pg-field">
+                    {{ form_label(form.createAtExe, 'Date de Création', {'label_attr': {'class': 'pg-label'}}) }}
+                    {{ form_widget(form.createAtExe, {'attr': {'class': 'pg-input'}}) }}
+                </div>
+                <div class="pg-field">
+                    {{ form_label(form.updateATExe, 'Dernière Mise à Jour', {'label_attr': {'class': 'pg-label'}}) }}
+                    {{ form_widget(form.updateATExe, {'attr': {'class': 'pg-input'}}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-persistence-bar">
+        <a href="{{ path('app_execution_index') }}" class="btn">Annuler</a>
+        <button type="submit" class="btn primary" style="background: #10b981; border: none;">{{ button_label|default('Enregistrer le Processus') }}</button>
+    </div>
+</div>
+
 {{ form_end(form) }}

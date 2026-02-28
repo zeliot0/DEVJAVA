@@ -1,0 +1,36 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block title %}INITIER RENAISSANCE — NEXA Intelligence{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/phoenix-goal-modern.css?v=' ~ 'now'|date('U')) }}">
+{% endblock %}
+
+{% block body %}
+<div class="pg-page">
+
+    <header class="pg-header">
+        <div class="pg-header-title-wrap">
+            <div class="pg-header-logo">
+                <i class="fas fa-fire"></i>
+                <h1>Phoenix Goals</h1>
+            </div>
+            <p class="pg-header-subtitle">Système de résurrection et d'analyse post-mortem des objectifs.</p>
+        </div>
+        <div class="pg-header-actions">
+            <a href="{{ path('app_phoenix_goal_index') }}" class="pg-btn pg-btn-secondary">
+                <i class="fas fa-crosshairs"></i> Répertoire Goals
+            </a>
+            <a href="#phoenix-form" class="pg-btn pg-btn-primary">
+                <i class="fas fa-plus"></i> Nouveau Phoenix
+            </a>
+        </div>
+    </header>
+
+    <div class="pg-form-wrap" id="phoenix-form">
+        {{ include('phoenix_goal/_form.html.twig') }}
+    </div>
+
+</div>
+{% endblock %}

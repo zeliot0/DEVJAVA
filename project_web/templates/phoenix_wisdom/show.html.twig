@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% set body_class = 'conscience-page' %}
+
+{% block title %}LEÇON X-{{ phoenix_wisdom.id }} — NEXA Intelligence{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/phoenix-wisdom-premium.css?v=' ~ 'now'|date('U')) }}">
+{% endblock %}
+
+{% block body %}
+<div class="wisdom-page">
+
+    <header class="wisdom-header">
+        <div>
+            <div style="font-size: 11px; font-weight: 800; color: var(--notion-text-muted); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 8px;">Analyse Morphologique</div>
+            <h1 class="wisdom-title"><i class="fa-solid fa-scroll"></i> Leçon X-{{ phoenix_wisdom.id }}</h1>
+            <p style="margin: 8px 0 0; font-size: 16px; color: var(--notion-text-muted);">Instance enregistrée dans la structure cognitive le {{ phoenix_wisdom.createdAt ? phoenix_wisdom.createdAt|date('d F Y') : 'Date indéterminée' }}</p>
+        </div>
+        <div style="display: flex; gap: 12px;">
+            <a href="{{ path('app_phoenix_wisdom_index') }}" class="btn">
+                <i class="fas fa-arrow-left"></i> Retour
+            </a>
+            <a href="{{ path('app_phoenix_wisdom_edit', {'id': phoenix_wisdom.id}) }}" class="btn">
+                <i class="fas fa-pen"></i> Modifier
+            </a>
+        </div>
+    </header>
+
+    <div class="wisdom-detail-card">
+        <div class="wisdom-metadata">
+            <div class="meta-item">
+                <label>Classification</label>
+                <div class="val">{{ phoenix_wisdom.category|default('Sagesse Transversale') }}</div>
+            </div>
+            <div class="meta-item">
+                <label>Cycle de Vie</label>
+                <div class="val">{{ phoenix_wisdom.successCount|default(0) }} Validations</div>
+            </div>
+            <div class="meta-item">
+                <label>Etiquettes</label>
+                <div class="wisdom-tags">
+                    {% if phoenix_wisdom.tags is iterable %}
+                        {% for tag in phoenix_wisdom.tags %}
+                            <span class="wisdom-tag" style="background: var(--wisdom-bg); color: var(--wisdom-spark); border: 1px solid rgba(249, 115, 22, 0.1);">{{ tag }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span style="color: var(--notion-text-muted); font-size: 13px;">Aucune étiquette</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="wisdom-full-lesson">
+            {{ phoenix_wisdom.lesson|nl2br }}
+        </div>
+
+        <div style="margin-top: 80px; padding-top: 40px; border-top: 1px solid #f3f4f6; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <div style="width: 48px; height: 48px; border-radius: 12px; background: var(--wisdom-bg); color: var(--wisdom-gold); display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                    <i class="fa-solid fa-certificate"></i>
+                </div>
+                <div>
+                    <div style="font-size: 13px; font-weight: 800; color: #111827;">Intégrité du Savoir</div>
+                    <div style="font-size: 12px; color: var(--notion-text-muted);">Cette extraction est certifiée par le protocole Phoenix.</div>
+                </div>
+            </div>
+            
+            {{ include('phoenix_wisdom/_delete_form.html.twig') }}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

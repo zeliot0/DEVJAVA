@@ -1,70 +1,54 @@
-﻿{# templates/milestones/_form.html.twig #}
-{{ form_start(form) }}
+﻿{{ form_start(form, { attr: { novalidate: 'novalidate', class: 'conscience-modern-form' } }) }}
 
-    {# Titre #}
-    <div class="mb-3">
-        {{ form_label(form.title) }}
-        {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
-        
-        {% if form.title.vars.errors|length > 0 %}
-            <div class="alert alert-danger mt-2">
-                {% for error in form.title.vars.errors %}
-                    <div class="text-danger">{{ error.message }}</div>
-                {% endfor %}
+<div class="form-container-inner">
+    <div class="form-grid">
+        <!-- Section 1 : Definition du Jalon -->
+        <div class="form-section-card">
+            <div class="section-badge highlight">OBJECTIF TACTIQUE</div>
+            <div class="section-description">Définition de l'étape intermédiaire et de son rôle dans la mission.</div>
+            
+            <div class="pg-field">
+                {{ form_label(form.title, 'Désignation du Jalon *', {'label_attr': {'class': 'pg-label'}}) }}
+                {{ form_widget(form.title, {'attr': {'class': 'pg-input', 'placeholder': 'Ex: Livraison du Prototype Alpha'}}) }}
+                {{ form_errors(form.title) }}
+                <div class="form-help-text">Soyez précis et mesurable.</div>
             </div>
-        {% endif %}
-        <small class="form-text text-muted">Minimum 3 caractères, maximum 100 caractères</small>
-    </div>
 
-    {# Description #}
-    <div class="mb-3">
-        {{ form_label(form.description) }}
-        {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
-        
-        {% if form.description.vars.errors|length > 0 %}
-            <div class="alert alert-danger mt-2">
-                {% for error in form.description.vars.errors %}
-                    <div class="text-danger">{{ error.message }}</div>
-                {% endfor %}
+            <div class="pg-field">
+                {{ form_label(form.description, 'Analyse de l\'Étape *', {'label_attr': {'class': 'pg-label'}}) }}
+                {{ form_widget(form.description, {'attr': {'class': 'pg-textarea', 'placeholder': 'Détaillez les pré-requis et les livrables...'}}) }}
+                {{ form_errors(form.description) }}
             </div>
-        {% endif %}
-        <small class="form-text text-muted">Minimum 10 caractères, maximum 255 caractères</small>
-    </div>
+        </div>
 
-    {# Date d'échéance #}
-    <div class="mb-3">
-        {{ form_label(form.dueDate) }}
-        {{ form_widget(form.dueDate, {'attr': {'class': 'form-control'}}) }}
-        
-        {% if form.dueDate.vars.errors|length > 0 %}
-            <div class="alert alert-danger mt-2">
-                {% for error in form.dueDate.vars.errors %}
-                    <div class="text-danger">{{ error.message }}</div>
-                {% endfor %}
+        <!-- Section 2 : Planning & Alignement -->
+        <div class="form-section-card">
+            <div class="section-badge info">SYNCHRONISATION</div>
+            
+            <div class="pg-field">
+                {{ form_label(form.goalGoa, 'Objectif Stratégique Associé *', {'label_attr': {'class': 'pg-label'}}) }}
+                {{ form_widget(form.goalGoa, {'attr': {'class': 'pg-select'}}) }}
+                {{ form_errors(form.goalGoa) }}
             </div>
-        {% endif %}
-    </div>
 
-    {# Date de complétion #}
-    <div class="mb-3">
-        {{ form_label(form.completedDate) }}
-        {{ form_widget(form.completedDate, {'attr': {'class': 'form-control'}}) }}
-    </div>
-
-    {# Objectif associé #}
-    <div class="mb-3">
-        {{ form_label(form.goalGoa) }}
-        {{ form_widget(form.goalGoa, {'attr': {'class': 'form-select'}}) }}
-        
-        {% if form.goalGoa.vars.errors|length > 0 %}
-            <div class="alert alert-danger mt-2">
-                {% for error in form.goalGoa.vars.errors %}
-                    <div class="text-danger">{{ error.message }}</div>
-                {% endfor %}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="pg-field">
+                    {{ form_label(form.dueDate, 'Échéance Tactique', {'label_attr': {'class': 'pg-label'}}) }}
+                    {{ form_widget(form.dueDate, {'attr': {'class': 'pg-input'}}) }}
+                    {{ form_errors(form.dueDate) }}
+                </div>
+                <div class="pg-field">
+                    {{ form_label(form.completedDate, 'Date de Complétion Eff.', {'label_attr': {'class': 'pg-label'}}) }}
+                    {{ form_widget(form.completedDate, {'attr': {'class': 'pg-input'}}) }}
+                </div>
             </div>
-        {% endif %}
+        </div>
     </div>
 
-    <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+    <div class="form-persistence-bar">
+        <a href="{{ path('app_milestones_index') }}" class="btn">Annuler</a>
+        <button type="submit" class="btn primary">{{ button_label|default('Enregistrer le Jalon') }}</button>
+    </div>
+</div>
 
 {{ form_end(form) }}

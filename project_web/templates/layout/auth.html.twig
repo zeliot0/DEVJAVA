@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}NEXA{% endblock %}</title>
+    
+    <link rel="stylesheet" href="{{ asset('css/notion-core.css?v=' ~ 'now'|date('U')) }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    
+    <style>
+        .auth-container {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--nexa-bg);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.nexa-dark {
+            --nexa-bg: #09090b;
+            --nexa-text: #f4f4f5;
+            --nexa-text-muted: rgba(244, 244, 245, 0.65);
+            --nexa-border: rgba(255, 255, 255, 0.1);
+            --nexa-card: #18181b;
+        }
+
+        body.nexa-dark .auth-input {
+            background-color: var(--nexa-card);
+            color: var(--nexa-text);
+        }
+
+        body.nexa-dark .auth-title,
+        body.nexa-dark .auth-logo {
+            color: var(--nexa-text);
+        }
+
+        body.nexa-dark .auth-switch a {
+            color: var(--nexa-text);
+        }
+        
+        .auth-card {
+            width: 100%;
+            max-width: 320px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .auth-logo {
+            font-size: 32px;
+            margin-bottom: 32px;
+            color: var(--notion-text);
+        }
+        
+        .auth-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+        
+        .auth-subtitle {
+            font-size: 14px;
+            color: var(--notion-text-muted);
+            margin-bottom: 32px;
+        }
+        
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: left;
+        }
+        
+        .auth-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--notion-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: -4px;
+        }
+        
+        .auth-input {
+            padding: 8px 12px;
+            border: 1px solid var(--notion-border);
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+        
+        .auth-input:focus {
+            outline: none;
+            border-color: var(--notion-accent);
+        }
+        
+        .auth-submit {
+            margin-top: 8px;
+            padding: 10px;
+            background: var(--notion-accent);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        .auth-submit:hover {
+            opacity: 0.9;
+        }
+        
+        .auth-switch {
+            margin-top: 24px;
+            font-size: 14px;
+            color: var(--notion-text-muted);
+        }
+        
+        .auth-switch a {
+            color: var(--notion-text);
+            text-decoration: underline;
+        }
+        
+        .error-box {
+            background: #faebec;
+            border: 1px solid #eb5757;
+            color: #eb5757;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .success-box {
+            background: #eaf2ed;
+            border: 1px solid #448361;
+            color: #448361;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+    </style>
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo"><i class="fa-solid fa-cube"></i></div>
+            {% block auth_content %}{% endblock %}
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('nexa_theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('nexa-dark');
+            }
+        });
+    </script>
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,45 @@
+{{ form_start(form, { attr: { novalidate: 'novalidate', class: 'conscience-modern-form' } }) }}
+
+<div class="form-container-inner">
+    <div class="form-grid">
+        <div class="form-section-card">
+            <div class="section-badge highlight" style="background: var(--wisdom-bg); color: var(--wisdom-spark);">EXTRACTION DE SUBSTANCE</div>
+            
+            <div class="pg-field">
+                {{ form_label(form.category, 'Domaine de Sagesse *', {'label_attr': {'class': 'pg-label'}}) }}
+                {{ form_widget(form.category, {'attr': {'class': 'pg-input', 'placeholder': 'Ex: Management, Algorithmique...'}}) }}
+                {{ form_errors(form.category) }}
+            </div>
+
+            <div class="pg-field">
+                {{ form_label(form.lesson, 'Énoncé de la Leçon *', {'label_attr': {'class': 'pg-label'}}) }}
+                {{ form_widget(form.lesson, {'attr': {'class': 'pg-textarea', 'placeholder': 'Décrivez la vérité extraite des cendres de l\'échec...', 'style': 'min-height: 200px;'}}) }}
+                {{ form_errors(form.lesson) }}
+            </div>
+        </div>
+
+        <div class="form-section-card">
+            <div class="section-badge info" style="background: #f0f9ff; color: #0369a1;">PARAMÈTRES DE VALIDATION</div>
+            
+            <div class="pg-field">
+                {{ form_label(form.successCount, 'Cycles de Validation (Succès)', {'label_attr': {'class': 'pg-label'}}) }}
+                {{ form_widget(form.successCount, {'attr': {'class': 'pg-input', 'type': 'number'}}) }}
+                {{ form_errors(form.successCount) }}
+            </div>
+
+            <div class="pg-field">
+                {{ form_label(form.tags, 'Étiquettes (JSON)', {'label_attr': {'class': 'pg-label'}}) }}
+                {{ form_widget(form.tags, {'attr': {'class': 'pg-textarea', 'placeholder': '["stratégie", "technique"]', 'rows': 2}}) }}
+                {{ form_errors(form.tags) }}
+                <div class="form-help-text">Format attendu : tableau JSON, ex: ["tag1", "tag2"]</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-persistence-bar">
+        <a href="{{ path('app_phoenix_wisdom_index') }}" class="btn">Annuler</a>
+        <button type="submit" class="btn primary" style="background: var(--wisdom-gradient); border: none;">{{ button_label|default('Enregistrer la Sagesse') }}</button>
+    </div>
+</div>
+
+{{ form_end(form) }}

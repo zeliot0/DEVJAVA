@@ -1,0 +1,13 @@
+<div style="font-family:Arial,sans-serif;line-height:1.6;color:#0f172a;">
+  <h2 style="margin:0 0 12px;">Verification de votre compte NEXA</h2>
+  <p>Bonjour {{ user.nom ?? 'utilisateur' }},</p>
+  <p>Merci pour votre inscription. Cliquez sur le lien ci-dessous pour activer votre compte :</p>
+  <p>
+    <a href="{{ verify_url }}" style="display:inline-block;padding:10px 14px;background:#5b5cf0;color:#ffffff;text-decoration:none;border-radius:8px;">
+      Verifier mon compte
+    </a>
+  </p>
+  <p>Si le bouton ne marche pas, copiez ce lien dans votre navigateur :</p>
+  <p><a href="{{ verify_url }}">{{ verify_url }}</a></p>
+  <p>Si vous n'avez pas cree ce compte, ignorez cet email.</p>
+</div>

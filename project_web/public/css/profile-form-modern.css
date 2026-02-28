@@ -1,5 +1,6 @@
 .profile-modern-panel {
     max-width: 860px;
+    margin-inline: auto;
     border: 1px solid #d7e4f6;
     border-radius: 26px;
     background:
@@ -22,6 +23,119 @@
 .profile-modern-form {
     display: grid;
     gap: 12px;
+}
+
+.profile-modern-head {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 16px;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid #d7e4f6;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.72);
+    margin-bottom: 4px;
+}
+
+.profile-modern-avatar {
+    width: 108px;
+    height: 108px;
+    border-radius: 50%;
+    border: 3px solid #d9e7fb;
+    background: linear-gradient(135deg, #0f766e, #0284c7);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font: 800 2rem/1 "Space Grotesk", "Inter", sans-serif;
+    box-shadow: 0 12px 26px rgba(2, 132, 199, 0.2);
+    overflow: hidden;
+}
+
+.profile-modern-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.profile-modern-head-text {
+    display: grid;
+    gap: 6px;
+}
+
+.profile-modern-name {
+    font: 700 1.15rem/1.2 "Space Grotesk", "Inter", sans-serif;
+    color: #14355a;
+}
+
+.profile-modern-email {
+    color: #587393;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.profile-modern-upload-label {
+    width: fit-content;
+    min-height: 38px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid #c0d5ee;
+    background: #f8fcff;
+    color: #1e4671;
+    font: 700 0.92rem/1.2 "Space Grotesk", "Inter", sans-serif;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-modern-upload-label:hover {
+    border-color: #9ec1e8;
+    background: #f0f8ff;
+}
+
+.profile-modern-remove-photo-btn {
+    width: fit-content;
+    min-height: 38px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid #efc1c1;
+    background: #fff6f6;
+    color: #9f1d1d;
+    font: 700 0.9rem/1.2 "Space Grotesk", "Inter", sans-serif;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-modern-remove-photo-btn:hover {
+    border-color: #e89b9b;
+    background: #ffecec;
+}
+
+.profile-modern-file-input {
+    display: none;
+}
+
+.profile-modern-upload-help {
+    color: #6f84a2;
+    font-size: 0.84rem;
+    font-weight: 500;
+}
+
+.profile-modern-upload-name {
+    color: #1f4f7b;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.profile-modern-error {
+    color: #dc2626;
+    font-size: 0.84rem;
+    font-weight: 700;
+    margin-top: -4px;
 }
 
 .profile-modern-label {
@@ -81,15 +195,46 @@
     font-weight: 700;
 }
 
+.face-profile-panel {
+    border: 1px solid #d7e4f6;
+    border-radius: 14px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.72);
+    display: grid;
+    gap: 10px;
+}
+
+.face-profile-panel .face-video {
+    width: 100%;
+    max-width: 360px;
+    height: 210px;
+    border-radius: 12px;
+    object-fit: cover;
+    background: #0f172a;
+    border: 1px solid #cad9ed;
+}
+
+.face-profile-panel .face-status {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #385c82;
+}
+
+.face-profile-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
 .profile-modern-btn-primary {
     border: none !important;
-    background: linear-gradient(135deg, #0f766e, #0284c7) !important;
+    background: linear-gradient(135deg, #5b5cf0, #8b5cf6) !important;
     color: #f8fffe !important;
-    box-shadow: 0 10px 24px rgba(8, 47, 73, 0.24);
+    box-shadow: 0 12px 28px rgba(91, 92, 240, 0.28);
 }
 
 .profile-modern-btn-primary:hover {
-    background: linear-gradient(135deg, #0f766e, #0369a1) !important;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
 }
 
 .profile-modern-btn-secondary {
@@ -108,8 +253,20 @@
         padding: 18px;
     }
 
+    .profile-modern-head {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+    }
+
     .profile-modern-actions .btn-adm {
         width: 100%;
         justify-content: center;
+    }
+
+    .profile-modern-avatar {
+        width: 88px;
+        height: 88px;
+        font-size: 1.6rem;
     }
 }

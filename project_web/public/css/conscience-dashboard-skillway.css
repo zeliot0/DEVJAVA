@@ -1,0 +1,383 @@
+/* Conscience dashboard redesign inspired by the provided "Skillway" style. */
+
+body.conscience-page .conscience-modern-page {
+  max-width: 1520px !important;
+  margin: 0 auto !important;
+  padding: 20px 18px 34px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  column-gap: 0 !important;
+  row-gap: 16px !important;
+  gap: 16px !important;
+}
+
+body.conscience-page .conscience-modern-page > .page-header,
+body.conscience-page .conscience-modern-page > .search-bar.conscience-toolbar,
+body.conscience-page .conscience-modern-page > section,
+body.conscience-page .conscience-modern-page > #themes-container.themes-grid {
+  grid-column: 1 / -1 !important;
+  grid-row: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+}
+
+body.conscience-page .conscience-modern-page .page-header {
+  position: relative !important;
+  overflow: hidden !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 164px !important;
+  border-radius: 24px !important;
+  border: 1px solid rgba(148, 163, 184, 0.26) !important;
+  background:
+    radial-gradient(620px 220px at 0% 100%, rgba(59, 130, 246, 0.18), transparent 72%),
+    radial-gradient(620px 240px at 100% 0%, rgba(139, 92, 246, 0.16), transparent 72%),
+    linear-gradient(150deg, rgba(6, 18, 48, 0.93), rgba(8, 23, 57, 0.9)) !important;
+  box-shadow: 0 18px 36px rgba(2, 6, 23, 0.34) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding: 28px 30px !important;
+}
+
+body.conscience-page .conscience-modern-page .page-header h1 {
+  margin: 0 !important;
+  font-size: clamp(2.6rem, 4.2vw, 4rem) !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.03em !important;
+  color: #dbe6ff !important;
+}
+
+body.conscience-page .conscience-modern-page .page-header p {
+  margin: 10px 0 0 !important;
+  color: #97a9ca !important;
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+}
+
+body.conscience-page .conscience-modern-page .page-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+}
+
+body.conscience-page .conscience-modern-page .page-actions .btn {
+  min-height: 50px !important;
+  border-radius: 15px !important;
+  border: 1px solid rgba(148, 163, 184, 0.28) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #e7efff !important;
+  font-weight: 800 !important;
+  box-shadow: none !important;
+}
+
+body.conscience-page .conscience-modern-page .page-actions .btn.primary {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+  color: #f8fbff !important;
+  border-color: rgba(196, 181, 253, 0.5) !important;
+  box-shadow: 0 12px 24px rgba(99, 102, 241, 0.34) !important;
+}
+
+body.conscience-page .conscience-modern-page > .search-bar.conscience-toolbar {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  border-radius: 22px !important;
+  border: 1px solid rgba(148, 163, 184, 0.3) !important;
+  background: linear-gradient(160deg, rgba(8, 22, 54, 0.9), rgba(10, 24, 58, 0.84)) !important;
+  box-shadow: 0 16px 30px rgba(2, 6, 23, 0.34) !important;
+  padding: 14px !important;
+  display: grid !important;
+  grid-template-columns: minmax(260px, 1.2fr) minmax(250px, 0.85fr) minmax(300px, 1fr) !important;
+  gap: 12px !important;
+  align-items: center !important;
+}
+
+body.conscience-page .conscience-modern-page .conscience-search-box,
+body.conscience-page .conscience-modern-page .conscience-filter-box {
+  min-height: 58px !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(148, 163, 184, 0.34) !important;
+  background: rgba(6, 17, 44, 0.86) !important;
+  color: #dbe7ff !important;
+  box-shadow: none !important;
+}
+
+body.conscience-page .conscience-modern-page .conscience-search-box i {
+  color: #aabbe0 !important;
+}
+
+body.conscience-page .conscience-modern-page .conscience-search-box input,
+body.conscience-page .conscience-modern-page .conscience-filter-box select,
+body.conscience-page .conscience-modern-page .conscience-filter-box label {
+  color: #dbe7ff !important;
+}
+
+body.conscience-page .conscience-modern-page .conscience-search-box input::placeholder {
+  color: rgba(168, 187, 224, 0.76) !important;
+}
+
+body.conscience-page .conscience-modern-page .conscience-voice-btn {
+  border-radius: 12px !important;
+  border: 1px solid rgba(148, 163, 184, 0.36) !important;
+  background: rgba(16, 32, 70, 0.9) !important;
+  color: #dbe7ff !important;
+}
+
+body.conscience-page .conscience-modern-page .conscience-toggles {
+  min-height: 58px !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(148, 163, 184, 0.3) !important;
+  background: rgba(8, 22, 54, 0.78) !important;
+  padding: 8px 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+}
+
+body.conscience-page .conscience-modern-page .conscience-notif-btn {
+  border: 1px solid rgba(148, 163, 184, 0.34) !important;
+  background: rgba(13, 29, 62, 0.9) !important;
+  color: #dbe7ff !important;
+}
+
+body.conscience-page .conscience-modern-page .conscience-notif-panel {
+  border: 1px solid rgba(148, 163, 184, 0.3) !important;
+  background: linear-gradient(160deg, rgba(8, 22, 54, 0.97), rgba(10, 24, 58, 0.95)) !important;
+  color: #dbe7ff !important;
+}
+
+body.conscience-page .conscience-modern-page .conscience-notif-panel strong,
+body.conscience-page .conscience-modern-page .conscience-notif-panel p {
+  color: #dbe7ff !important;
+}
+
+body.conscience-page .conscience-modern-page .toggle-label {
+  color: #b5c5e6 !important;
+  font-weight: 800 !important;
+}
+
+body.conscience-page .conscience-modern-page .toggle-track {
+  border: 1px solid rgba(148, 163, 184, 0.4) !important;
+  background: rgba(13, 29, 62, 0.9) !important;
+}
+
+body.conscience-page .conscience-modern-page .toggle-track::after {
+  background: #9fb2d8 !important;
+}
+
+body.conscience-page .conscience-modern-page .toggle input:checked + .toggle-track {
+  border-color: rgba(196, 181, 253, 0.56) !important;
+  background: rgba(99, 102, 241, 0.32) !important;
+}
+
+body.conscience-page .conscience-modern-page .toggle input:checked + .toggle-track::after {
+  background: #eef3ff !important;
+}
+
+body.conscience-page .conscience-modern-page .kpi-overview-grid {
+  margin-top: 2px !important;
+  display: grid !important;
+  width: 100% !important;
+  grid-template-columns: repeat(4, minmax(170px, 1fr)) !important;
+  gap: 12px !important;
+}
+
+body.conscience-page .conscience-modern-page .kpi-focus-grid {
+  display: grid !important;
+  width: 100% !important;
+  grid-template-columns: repeat(3, minmax(180px, 1fr)) !important;
+  gap: 12px !important;
+}
+
+body.conscience-page .conscience-modern-page .kpi-focus-grid .kpi-focus-card {
+  min-height: 112px !important;
+  border: 1px solid rgba(148, 163, 184, 0.3) !important;
+  border-radius: 18px !important;
+  background: linear-gradient(145deg, #cad6ff, #b8c9f4) !important;
+  box-shadow: 0 10px 20px rgba(2, 6, 23, 0.2) !important;
+}
+
+body.conscience-page .conscience-modern-page .kpi-focus-grid .kpi-focus-card span,
+body.conscience-page .conscience-modern-page .kpi-focus-grid .kpi-focus-card small {
+  color: rgba(15, 23, 42, 0.68) !important;
+}
+
+body.conscience-page .conscience-modern-page .kpi-focus-grid .kpi-focus-card strong {
+  color: #0f172a !important;
+}
+
+body.conscience-page .conscience-modern-page .kpi-overview-grid .kpi-stat-card {
+  border: 1px solid rgba(148, 163, 184, 0.3) !important;
+  border-radius: 18px !important;
+  padding: 16px !important;
+  box-shadow: 0 12px 22px rgba(2, 6, 23, 0.32) !important;
+}
+
+body.conscience-page .conscience-modern-page .kpi-overview-grid .kpi-stat-card:nth-child(1) {
+  background: linear-gradient(145deg, #bed7ff, #a9c9ff) !important;
+}
+
+body.conscience-page .conscience-modern-page .kpi-overview-grid .kpi-stat-card:nth-child(2) {
+  background: linear-gradient(145deg, #ffd6df, #f8bcc9) !important;
+}
+
+body.conscience-page .conscience-modern-page .kpi-overview-grid .kpi-stat-card:nth-child(3) {
+  background: linear-gradient(145deg, #ffeeb4, #f5dd88) !important;
+}
+
+body.conscience-page .conscience-modern-page .kpi-overview-grid .kpi-stat-card:nth-child(4) {
+  background: linear-gradient(145deg, #cbf4da, #b0ebc5) !important;
+}
+
+body.conscience-page .conscience-modern-page .kpi-overview-grid .kpi-stat-card span {
+  color: rgba(15, 23, 42, 0.62) !important;
+  font-size: 0.76rem !important;
+  letter-spacing: 0.08em !important;
+}
+
+body.conscience-page .conscience-modern-page .kpi-overview-grid .kpi-stat-card strong {
+  color: #0f172a !important;
+  font-size: 3.25rem !important;
+  line-height: 1 !important;
+  margin-top: 6px !important;
+}
+
+body.conscience-page .conscience-modern-page > #themes-container.themes-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+body.conscience-page .conscience-modern-page #themes-container .theme-card.conscience-theme-card {
+  border: 1px solid rgba(148, 163, 184, 0.28) !important;
+  border-radius: 20px !important;
+  background:
+    radial-gradient(280px 120px at 100% 0%, rgba(139, 92, 246, 0.14), transparent 72%),
+    linear-gradient(165deg, rgba(7, 18, 48, 0.94), rgba(10, 24, 58, 0.9)) !important;
+  box-shadow: 0 16px 30px rgba(2, 6, 23, 0.36) !important;
+  padding: 18px !important;
+}
+
+body.conscience-page .conscience-modern-page #themes-container .conscience-theme-info h3 {
+  color: #eef3ff !important;
+  font-size: clamp(1.9rem, 2.4vw, 2.4rem) !important;
+  letter-spacing: -0.02em !important;
+}
+
+body.conscience-page .conscience-modern-page #themes-container .conscience-theme-info span,
+body.conscience-page .conscience-modern-page #themes-container .conscience-theme-text {
+  color: #9fb2d8 !important;
+}
+
+body.conscience-page .conscience-modern-page #themes-container .conscience-card-actions .theme-status {
+  border-radius: 999px !important;
+  border: 1px solid rgba(148, 163, 184, 0.35) !important;
+  background: rgba(13, 29, 62, 0.9) !important;
+  color: #dce7fb !important;
+  font-weight: 800 !important;
+  padding: 8px 14px !important;
+}
+
+body.conscience-page .conscience-modern-page #themes-container .conscience-fav-btn,
+body.conscience-page .conscience-modern-page #themes-container .conscience-follow-btn,
+body.conscience-page .conscience-modern-page #themes-container .conscience-action {
+  border: 1px solid rgba(148, 163, 184, 0.36) !important;
+  background: rgba(13, 29, 62, 0.9) !important;
+  color: #dce7fb !important;
+  box-shadow: none !important;
+}
+
+body.conscience-page .conscience-modern-page #themes-container .conscience-action.start {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+  border-color: rgba(196, 181, 253, 0.5) !important;
+  color: #f8fbff !important;
+}
+
+body.conscience-page .conscience-modern-page #themes-container .conscience-card-bottom {
+  border: 1px solid rgba(148, 163, 184, 0.24) !important;
+  border-radius: 14px !important;
+  background: rgba(10, 24, 58, 0.7) !important;
+  padding: 12px !important;
+}
+
+body.conscience-page .conscience-modern-page #themes-container .conscience-meta-pill {
+  border: 1px solid rgba(148, 163, 184, 0.3) !important;
+  background: rgba(13, 29, 62, 0.9) !important;
+  color: #dce7fb !important;
+}
+
+body.conscience-page .conscience-modern-page #themes-container .conscience-progress-head {
+  color: #c8d7f3 !important;
+}
+
+body.conscience-page .conscience-modern-page #themes-container .conscience-progress-bar {
+  border: 1px solid rgba(148, 163, 184, 0.26) !important;
+  background: rgba(13, 29, 62, 0.88) !important;
+}
+
+body.conscience-page .conscience-modern-page #themes-container .conscience-progress-bar span {
+  background: linear-gradient(90deg, #6366f1, #8b5cf6) !important;
+}
+
+body.conscience-page .conscience-modern-page .conscience-feedback-card,
+body.conscience-page .conscience-modern-page .conscience-suggest-card {
+  border: 1px solid rgba(148, 163, 184, 0.3) !important;
+  border-radius: 16px !important;
+  background: linear-gradient(160deg, rgba(8, 22, 54, 0.9), rgba(10, 24, 58, 0.86)) !important;
+  box-shadow: 0 12px 26px rgba(2, 6, 23, 0.28) !important;
+}
+
+body.conscience-page .conscience-modern-page .conscience-feedback-card .conscience-feedback-title,
+body.conscience-page .conscience-modern-page .conscience-suggest-card .conscience-feedback-title {
+  color: #dbe7ff !important;
+}
+
+body.conscience-page .conscience-modern-page .conscience-feedback-card small,
+body.conscience-page .conscience-modern-page .conscience-suggest-card small {
+  color: #a9bcdf !important;
+}
+
+@media (max-width: 1180px) {
+  body.conscience-page .conscience-modern-page > .search-bar.conscience-toolbar {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.conscience-page .conscience-modern-page .kpi-focus-grid {
+    grid-template-columns: repeat(2, minmax(170px, 1fr)) !important;
+  }
+
+  body.conscience-page .conscience-modern-page > #themes-container.themes-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.conscience-page .conscience-modern-page .kpi-overview-grid {
+    grid-template-columns: repeat(2, minmax(170px, 1fr)) !important;
+  }
+}
+
+@media (max-width: 720px) {
+  body.conscience-page .conscience-modern-page .kpi-focus-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.conscience-page .conscience-modern-page .kpi-overview-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.conscience-page .conscience-modern-page .page-header {
+    min-height: auto !important;
+    padding: 20px 18px !important;
+  }
+
+  body.conscience-page .conscience-modern-page .page-header h1 {
+    font-size: clamp(2rem, 9vw, 2.6rem) !important;
+  }
+}

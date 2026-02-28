@@ -4,8 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Question;
 use App\Entity\Theme;
+use App\Entity\User;
 use App\Entity\UserResponse;
+use App\Repository\ThemeFollowRepository;
 use App\Repository\ThemeRepository;
+use App\Repository\UserNotificationRepository;
+use App\Service\NewsFocusService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +22,10 @@ final class ConscienceController extends AbstractController
     public function index(
         Request $request,
         ThemeRepository $themeRepository,
-        EntityManagerInterface $em
+        ThemeFollowRepository $themeFollowRepository,
+        UserNotificationRepository $userNotificationRepository,
+        EntityManagerInterface $em,
+        NewsFocusService $newsFocusService
     ): Response {
         $search = trim((string) $request->query->get('q', ''));
         $sort = (string) $request->query->get('sort', 'smart');
@@ -30,13 +37,39 @@ final class ConscienceController extends AbstractController
         }
 
         $themes = $themeRepository->findForConscience($search, $sort, $isAdmin);
+        $followingIds = [];
+        $unreadNotifications = 0;
+        $user = $this->getUser();
+        if ($user instanceof User) {
+            $followingIds = $themeFollowRepository->findThemeIdsByUser($user);
+            $unreadNotifications = (int) $userNotificationRepository->count([
+                'user' => $user,
+                'isRead' => false,
+            ]);
+        }
         $themeStats = $this->buildThemeStats($themes, $em, new \DateTimeImmutable());
+        $newsByTheme = $newsFocusService->buildForThemes($themes, 2);
         $focusThemes = $this->buildFocusThemes($themes, $themeStats);
+        $pendingFollowedCount = 0;
+        if ($followingIds !== []) {
+            $followedThemes = $themeRepository->createQueryBuilder('t')
+                ->andWhere('t.id_t IN (:ids)')
+                ->setParameter('ids', $followingIds)
+                ->getQuery()
+                ->getResult();
+
+            $followedStats = $this->buildThemeStats($followedThemes, $em, new \DateTimeImmutable());
+            foreach ($followedStats as $stats) {
+                $pendingFollowedCount += (int) ($stats['pending'] ?? 0);
+            }
+        }
 
         if ($request->isXmlHttpRequest()) {
             return $this->render('conscience/_themes_list.html.twig', [
                 'themes' => $themes,
                 'themeStats' => $themeStats,
+                'followingIds' => $followingIds,
+                'newsByTheme' => $newsByTheme,
             ]);
         }
 
@@ -56,12 +89,17 @@ final class ConscienceController extends AbstractController
         return $this->render('conscience/index.html.twig', [
             'themes' => $themes,
             'themeStats' => $themeStats,
+            'newsByTheme' => $newsByTheme,
+            'followingIds' => $followingIds,
             'focusThemes' => $focusThemes,
             'search' => $search,
             'sort' => $sort,
             'totalActiveQuestions' => $totalActiveQuestions,
             'totalPending' => $totalPending,
             'globalProgress' => $globalProgress,
+            'pendingFollowedCount' => $pendingFollowedCount,
+            'pendingPopupCount' => $pendingFollowedCount > 0 ? $pendingFollowedCount : $totalPending,
+            'unreadNotifications' => $unreadNotifications,
         ]);
     }
 

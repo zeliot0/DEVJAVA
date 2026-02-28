@@ -1,0 +1,28 @@
+{{ form_start(form, { attr: { novalidate: 'novalidate', class: 'conscience-modern-form' } }) }}
+
+<div class="form-container-inner">
+    <div class="form-grid">
+        <div class="form-section-card">
+            <div class="section-badge highlight" style="background: var(--net-bg); color: var(--net-blue);">PARAMÈTRES DE LIAISON</div>
+            
+            <div class="pg-field">
+                {{ form_label(form.networkType, 'Type de Réseau / Interface *', {'label_attr': {'class': 'pg-label'}}) }}
+                {{ form_widget(form.networkType, {'attr': {'class': 'pg-input', 'placeholder': 'Ex: Social Connect, API Hub, Database...'}}) }}
+                {{ form_errors(form.networkType) }}
+            </div>
+
+            <div class="pg-field">
+                {{ form_label(form.connectedAt, 'Date d\'Activation', {'label_attr': {'class': 'pg-label'}}) }}
+                {{ form_widget(form.connectedAt, {'attr': {'class': 'pg-input'}}) }}
+                {{ form_errors(form.connectedAt) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="form-persistence-bar">
+        <a href="{{ path('app_phoenix_network_index') }}" class="btn">Abandonner</a>
+        <button type="submit" class="btn primary" style="background: var(--net-gradient); border: none;">{{ button_label|default('Établir la Connexion') }}</button>
+    </div>
+</div>
+
+{{ form_end(form) }}

@@ -1,0 +1,149 @@
+/* Modern gradient background shared by all main interfaces. */
+
+:root {
+  --modern-bg-dark: #060924;
+  --modern-bg-light: #eaf1ff;
+}
+
+body.has-global-bubbles {
+  background-color: var(--modern-bg-dark) !important;
+  background-image: none !important;
+  isolation: isolate;
+}
+
+body.has-global-bubbles::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -4;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 520px at 50% 38%, rgba(252, 211, 77, 0.34), rgba(252, 211, 77, 0) 62%),
+    radial-gradient(760px 520px at 62% 66%, rgba(236, 72, 153, 0.3), rgba(236, 72, 153, 0) 66%),
+    radial-gradient(820px 560px at 22% 24%, rgba(34, 211, 238, 0.2), rgba(34, 211, 238, 0) 64%),
+    radial-gradient(860px 540px at 84% 14%, rgba(99, 102, 241, 0.24), rgba(99, 102, 241, 0) 60%),
+    linear-gradient(140deg, #05081f 0%, #0b1437 46%, #060920 100%);
+}
+
+body.has-global-bubbles::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+  background:
+    radial-gradient(1200px 640px at 50% 45%, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 72%),
+    radial-gradient(1100px 500px at 50% 108%, rgba(251, 146, 60, 0.1), rgba(251, 146, 60, 0) 70%);
+  mix-blend-mode: screen;
+  opacity: 0.82;
+}
+
+.global-bubbles-bg {
+  --gb-c1: 52, 211, 153;
+  --gb-c2: 244, 114, 182;
+  --gb-c3: 56, 189, 248;
+  --gb-c4: 251, 191, 36;
+  --gb-c5: 129, 140, 248;
+  --gb-ci: 248, 113, 113;
+  --gb-size: 92%;
+  --gb-blend: screen;
+  z-index: -2;
+}
+
+.global-bubbles-gradients {
+  filter: url(#goo-global) blur(56px);
+  opacity: 0.52;
+}
+
+[data-theme="light"] body.has-global-bubbles {
+  background-color: var(--modern-bg-light) !important;
+}
+
+[data-theme="light"] body.has-global-bubbles::before {
+  background:
+    radial-gradient(900px 520px at 50% 34%, rgba(250, 204, 21, 0.4), rgba(250, 204, 21, 0) 62%),
+    radial-gradient(760px 500px at 64% 62%, rgba(244, 114, 182, 0.32), rgba(244, 114, 182, 0) 66%),
+    radial-gradient(820px 540px at 20% 22%, rgba(56, 189, 248, 0.26), rgba(56, 189, 248, 0) 64%),
+    radial-gradient(840px 520px at 82% 16%, rgba(129, 140, 248, 0.28), rgba(129, 140, 248, 0) 60%),
+    linear-gradient(140deg, #edf4ff 0%, #dbe7ff 48%, #f7f9ff 100%);
+}
+
+[data-theme="light"] body.has-global-bubbles::after {
+  mix-blend-mode: soft-light;
+  opacity: 0.76;
+}
+
+html[data-theme="light"] body.task-page-theme.has-global-bubbles::before,
+html[data-theme="light"] body.conscience-page.has-global-bubbles::before,
+html[data-theme="light"] body.goals-page-theme.has-global-bubbles::before,
+html[data-theme="light"] body.milestones-page-theme.has-global-bubbles::before {
+  background:
+    radial-gradient(900px 520px at 50% 34%, rgba(250, 204, 21, 0.4), rgba(250, 204, 21, 0) 62%),
+    radial-gradient(760px 500px at 64% 62%, rgba(244, 114, 182, 0.32), rgba(244, 114, 182, 0) 66%),
+    radial-gradient(820px 540px at 20% 22%, rgba(56, 189, 248, 0.26), rgba(56, 189, 248, 0) 64%),
+    radial-gradient(840px 520px at 82% 16%, rgba(129, 140, 248, 0.28), rgba(129, 140, 248, 0) 60%),
+    linear-gradient(140deg, #edf4ff 0%, #dbe7ff 48%, #f7f9ff 100%) !important;
+}
+
+html[data-theme="light"] body.task-page-theme.has-global-bubbles::after,
+html[data-theme="light"] body.conscience-page.has-global-bubbles::after,
+html[data-theme="light"] body.goals-page-theme.has-global-bubbles::after,
+html[data-theme="light"] body.milestones-page-theme.has-global-bubbles::after {
+  background:
+    radial-gradient(1200px 640px at 50% 45%, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 72%),
+    radial-gradient(1100px 500px at 50% 108%, rgba(251, 146, 60, 0.1), rgba(251, 146, 60, 0) 70%) !important;
+  mix-blend-mode: soft-light !important;
+  opacity: 0.76 !important;
+}
+
+[data-theme="light"] .global-bubbles-bg {
+  --gb-blend: soft-light;
+}
+
+[data-theme="light"] .global-bubbles-gradients {
+  opacity: 0.58;
+}
+
+/* Cancel old white-only overrides on light mode pages. */
+html[data-theme="light"] body.task-page-theme,
+html[data-theme="light"] body.conscience-page,
+html[data-theme="light"] body.goals-page-theme,
+html[data-theme="light"] body.milestones-page-theme,
+html[data-theme="light"] body.stock-pages {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+html[data-theme="light"] body.task-page-theme .global-bubbles-bg,
+html[data-theme="light"] body.conscience-page .global-bubbles-bg,
+html[data-theme="light"] body.goals-page-theme .global-bubbles-bg,
+html[data-theme="light"] body.milestones-page-theme .global-bubbles-bg,
+html[data-theme="light"] body.stock-pages .global-bubbles-bg {
+  display: block !important;
+}
+
+html[data-theme="light"] body.task-page-theme .layout.layout-pro#appLayout,
+html[data-theme="light"] body.task-page-theme .main.main-pro,
+html[data-theme="light"] body.task-page-theme .content-grid,
+html[data-theme="light"] body.task-page-theme .center,
+html[data-theme="light"] body.conscience-page #appLayout,
+html[data-theme="light"] body.goals-page-theme #appLayout,
+html[data-theme="light"] body.milestones-page-theme #appLayout {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+@media (max-width: 768px) {
+  body.has-global-bubbles::before {
+    background:
+      radial-gradient(680px 420px at 50% 36%, rgba(252, 211, 77, 0.3), rgba(252, 211, 77, 0) 62%),
+      radial-gradient(600px 440px at 62% 66%, rgba(236, 72, 153, 0.24), rgba(236, 72, 153, 0) 66%),
+      radial-gradient(640px 460px at 18% 24%, rgba(56, 189, 248, 0.2), rgba(56, 189, 248, 0) 64%),
+      linear-gradient(140deg, #05081f 0%, #0b1437 46%, #060920 100%);
+  }
+
+  .global-bubbles-gradients {
+    filter: url(#goo-global) blur(46px);
+    opacity: 0.46;
+  }
+}

@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% set body_class = 'conscience-page' %}
+
+{% block title %}NOUVELLE EXTRACTION — NEXA Intelligence{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/phoenix-wisdom-premium.css?v=' ~ 'now'|date('U')) }}">
+{% endblock %}
+
+{% block body %}
+<div class="wisdom-page">
+    <header class="wisdom-header">
+        <div>
+            <h1 class="wisdom-title"><i class="fa-solid fa-plus-circle"></i> Extraction du Phoenix</h1>
+            <p style="margin: 8px 0 0; font-size: 16px; color: var(--notion-text-muted);">Processus de transcription d'un nouvel apprentissage systémique.</p>
+        </div>
+        <div class="tm-actions">
+            <a href="{{ path('app_phoenix_wisdom_index') }}" class="btn">
+                ← Retour
+            </a>
+        </div>
+    </header>
+
+    {{ include('phoenix_wisdom/_form.html.twig', {'button_label': 'Confirmer l\'Extraction'}) }}
+</div>
+{% endblock %}

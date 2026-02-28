@@ -18,6 +18,7 @@ security:
             provider: app_user_provider
             custom_authenticators:
                 - App\Security\UserAuthenticator
+                - App\Security\GoogleAuthenticator
             entry_point: App\Security\UserAuthenticator
             logout:
                 path: app_logout
@@ -28,13 +29,7 @@ security:
                 path: /
 
     access_control:
-        - { path: ^/$, roles: PUBLIC_ACCESS }
-        - { path: ^/login$, roles: PUBLIC_ACCESS }
-        - { path: ^/register$, roles: PUBLIC_ACCESS }
-        - { path: ^/api/password/generate$, roles: PUBLIC_ACCESS }
-        - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/user, roles: ROLE_ADMIN }
-        - { path: ^/, roles: ROLE_USER }
+        - { path: ^/, roles: PUBLIC_ACCESS }
 
 when@test:
     security:

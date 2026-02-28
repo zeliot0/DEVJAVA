@@ -1,115 +1,121 @@
-{% extends 'theme/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Mouvement #{{ mouvement.idMo }}{% endblock %}
+{% set body_class = 'conscience-page' %}
 
-{% block body %}
+{% block title %}ANALYSE FLUX #{{ mouvement.idMo }} — NEXA Intelligence{% endblock %}
 
-<div class="page-header">
-    <div>
-        <h1>Détails du mouvement</h1>
-        <p>Informations complètes</p>
-    </div>
-
-    <div style="display:flex;gap:12px">
-        <a href="{{ path('app_mouvement_index') }}" class="btn">← Retour</a>
-
-        {% if mouvement.produit %}
-            <a href="{{ path('app_produit_show', {'id_p': mouvement.produit.idP}) }}" class="btn">
-                <i class="fa-solid fa-box"></i>
-                Voir produit
-            </a>
-        {% endif %}
-
-        <a href="{{ path('app_mouvement_edit', {'id_mo': mouvement.idMo}) }}" class="btn primary">
-            Modifier
-        </a>
-    </div>
-</div>
-
-<div class="form-shell">
-    <div class="form-card">
-
-        {% if mouvement.produit %}
-            <div class="form-section">
-                <h3>Produit</h3>
-
-                <div style="display:flex; gap:16px; align-items:center; margin-bottom:18px">
-                    <div class="thumb" style="width:60px; height:60px">
-                        {% if mouvement.produit.photoP %}
-                            <img src="{{ asset('uploads/produits/' ~ mouvement.produit.photoP) }}" alt="{{ mouvement.produit.nomP }}">
-                        {% else %}
-                            <span class="thumb-placeholder">{{ mouvement.produit.nomP|slice(0, 1)|upper }}</span>
-                        {% endif %}
-                    </div>
-
-                    <div>
-                        <div style="font-weight:900; font-size:1.05rem">{{ mouvement.produit.nomP }}</div>
-                        <div style="color: var(--muted); font-weight:700">
-                            #{{ mouvement.produit.idP }} • {{ mouvement.produit.categorieP }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-grid-2">
-                    <div class="info-box">
-                        <span class="info-label">Stock actuel</span>
-                        <span class="info-value">{{ mouvement.produit.quantiteStock }}</span>
-                    </div>
-
-                    <div class="info-box">
-                        <span class="info-label">Unité</span>
-                        <span class="info-value">{{ mouvement.produit.uniteP }}</span>
-                    </div>
-
-                    <div class="info-box">
-                        <span class="info-label">Emplacement</span>
-                        <span class="info-value">{{ mouvement.produit.emplacement }}</span>
-                    </div>
-
-                    <div class="info-box">
-                        <span class="info-label">Date d’ajout</span>
-                        <span class="info-value">
-                            {{ mouvement.produit.dateAjout ? mouvement.produit.dateAjout|date('d/m/Y') : '—' }}
-                        </span>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-
-        <div class="form-section">
-            <h3>Informations générales</h3>
-
-            <div class="form-grid-2">
-                <div class="info-box">
-                    <span class="info-label">Type</span>
-                    <span class="info-value">{{ mouvement.typeM }}</span>
-                </div>
-
-                <div class="info-box">
-                    <span class="info-label">Quantité</span>
-                    <span class="info-value">{{ mouvement.quantite }}</span>
-                </div>
-
-                <div class="info-box">
-                    <span class="info-label">Date</span>
-                    <span class="info-value">
-                        {{ mouvement.dateMouvement|date('d/m/Y') }}
-                    </span>
-                </div>
-
-                <div class="info-box">
-                    <span class="info-label">Motif</span>
-                    <span class="info-value">{{ mouvement.motif }}</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-actions">
-            {{ include('mouvement/_delete_form.html.twig') }}
-        </div>
-
-    </div>
-</div>
-
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/conscience-modern-proo.css?v=' ~ 'now'|date('U')) }}">
+    <style>
+        .m-show-card { background: white; border: 1px solid #efefef; border-radius: 12px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
+        .m-prop-item { display: flex; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid #f8fafc; }
+        .m-prop-item:last-child { border-bottom: none; }
+        .m-prop-key { width: 140px; font-size: 11px; font-weight: 700; color: var(--notion-text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .m-prop-val { font-size: 15px; font-weight: 700; color: var(--notion-text); }
+    </style>
 {% endblock %}
 
+{% block body %}
+<div class="conscience-modern-page">
+
+    <header class="conscience-page-header">
+        <h1>Analyse de Flux #{{ mouvement.idMo }}</h1>
+        <p>Traçabilité systémique de l'événement logistique enregistré le {{ mouvement.dateMouvement|date('d F Y') }}</p>
+    </header>
+
+    <div class="conscience-header-actions" style="margin-bottom: 32px;">
+        <div class="page-actions">
+            <a href="{{ path('app_mouvement_index') }}" class="btn">
+                ← Retour au Rapport de Flux
+            </a>
+            {% if not is_granted('ROLE_ADMIN') and mouvement.idMo %}
+                <a href="{{ path('app_mouvement_edit', {id_mo: mouvement.idMo}) }}" class="btn">
+                    Modifier l'Événement
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="form-two-columns">
+        <div class="form-column-left">
+            <div class="m-show-card">
+                <div class="section-title" style="margin-bottom: 24px; font-size: 11px; font-weight: 700; color: #3b82f6; text-transform: uppercase;">Paramètres de l'événement</div>
+                
+                <div class="m-prop-item">
+                    <div class="m-prop-key">Classification</div>
+                    <div class="m-prop-val" style="color: {{ mouvement.typeM == 'ENTREE' ? '#10b981' : '#ef4444' }};">
+                        {{ mouvement.typeM == 'ENTREE' ? 'ACQUISITION (ENTRÉE)' : 'DÉPLOIEMENT (SORTIE)' }}
+                    </div>
+                </div>
+
+                <div class="m-prop-item">
+                    <div class="m-prop-key">Amplitude</div>
+                    <div class="m-prop-val" style="font-size: 20px;">
+                        {{ mouvement.typeM == 'ENTREE' ? '+' : '-' }}{{ mouvement.quantite }}
+                        <span style="font-size: 12px; color: var(--notion-text-muted);">{{ mouvement.produit ? mouvement.produit.uniteP : '' }}</span>
+                    </div>
+                </div>
+
+                <div class="m-prop-item">
+                    <div class="m-prop-key">Chronologie</div>
+                    <div class="m-prop-val">{{ mouvement.dateMouvement|date('d F Y') }}</div>
+                </div>
+
+                <div class="m-prop-item">
+                    <div class="m-prop-key">Motif / Origine</div>
+                    <div class="m-prop-val" style="font-weight: 600; font-style: italic;">"{{ mouvement.motif ?: 'Aucune justification spécifiée' }}"</div>
+                </div>
+            </div>
+            
+            {% if not is_granted('ROLE_ADMIN') %}
+                <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #efefef; text-align: right;">
+                    {{ include('mouvement/_delete_form.html.twig') }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-column-right">
+            <div class="section-title" style="margin-bottom: 24px; font-size: 11px; font-weight: 700; color: var(--notion-text-muted); text-transform: uppercase;">Vecteur Associé</div>
+            {% if mouvement.produit %}
+                <article class="p-card" style="border: 1px solid #efefef; border-radius: 12px; background: white; padding: 24px;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        {% if mouvement.produit.photoP %}
+                            <img src="{{ (mouvement.produit.photoP starts with 'http') ? mouvement.produit.photoP : asset('uploads/produits/' ~ mouvement.produit.photoP) }}" style="width: 120px; height: 120px; border-radius: 12px; object-fit: cover; border: 1px solid #eee;">
+                        {% else %}
+                            <div style="width: 120px; height: 120px; border-radius: 12px; background: #f8fafc; display: flex; align-items: center; justify-content: center; font-size: 48px; color: #cbd5e1; margin: 0 auto; border: 1px solid #eee;">
+                                <i class="fa-solid fa-box-open"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <h3 style="font-size: 18px; font-weight: 800; color: var(--notion-text); text-align: center; margin-bottom: 8px;">{{ mouvement.produit.nomP }}</h3>
+                    <div style="font-size: 12px; color: var(--notion-text-muted); text-align: center; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 24px;">{{ mouvement.produit.categorieP ?: 'Catégorie N/C' }}</div>
+
+                    <div style="background: #fcfcfc; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span style="font-size: 11px; font-weight: 700; color: var(--notion-text-muted);">STOCK ACTUEL</span>
+                            <span style="font-size: 12px; font-weight: 800;">{{ mouvement.produit.quantiteStock }} {{ mouvement.produit.uniteP }}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="font-size: 11px; font-weight: 700; color: var(--notion-text-muted);">ZONE</span>
+                            <span style="font-size: 12px; font-weight: 600;">{{ mouvement.produit.emplacement ?: 'Non définie' }}</span>
+                        </div>
+                    </div>
+
+                    <a href="{{ path('app_produit_show', {id_p: mouvement.produit.idP}) }}" class="btn" style="width: 100%; justify-content: center; font-size: 12px; font-weight: 700; background: #37352f; color: white;">
+                        VOIR FICHE PRODUIT
+                    </a>
+                </article>
+            {% else %}
+                <div style="padding: 32px; text-align: center; border: 1px dashed #efefef; border-radius: 12px; color: #ef4444; background: #fef2f2;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 24px; margin-bottom: 12px;"></i>
+                    <p style="font-size: 13px; font-weight: 600;">VECTEUR INTROUVABLE</p>
+                    <p style="font-size: 11px; opacity: 0.8;">Le produit lié a été supprimé du système.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

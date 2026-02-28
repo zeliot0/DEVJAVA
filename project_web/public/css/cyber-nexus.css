@@ -1,0 +1,246 @@
+:root {
+    --nexa-bg: #f8fafc;
+    --nexa-surface: #ffffff;
+    --nexa-border: #e2e8f0;
+    --nexa-text: #1e293b;
+    --nexa-text-muted: #64748b;
+    --nexa-primary: #6366f1;
+    /* Indigo */
+    --nexa-primary-hover: #4f46e5;
+    --nexa-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+/* Dark mode support if needed */
+.notion-app.dark-mode {
+    --nexa-bg: #0f172a;
+    --nexa-surface: #1e293b;
+    --nexa-border: #334155;
+    --nexa-text: #f1f5f9;
+    --nexa-text-muted: #94a3b8;
+}
+
+.music-lounge-container {
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* Header Area */
+.lounge-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.lounge-title h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--nexa-text);
+    margin: 0;
+}
+
+.lounge-subtitle {
+    font-size: 0.9rem;
+    color: var(--nexa-text-muted);
+}
+
+.quit-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    background: var(--nexa-surface);
+    border: 1px solid var(--nexa-border);
+    color: var(--nexa-text);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.quit-btn:hover {
+    background: #fee2e2;
+    color: #ef4444;
+    border-color: #fecaca;
+}
+
+/* Main Display */
+.lounge-main {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 32px;
+}
+
+.player-card {
+    background: var(--nexa-surface);
+    border: 1px solid var(--nexa-border);
+    border-radius: 16px;
+    padding: 40px;
+    display: flex;
+    gap: 40px;
+    box-shadow: var(--nexa-shadow);
+}
+
+.artwork-box {
+    width: 320px;
+    height: 320px;
+    border-radius: 12px;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    background-color: #f1f5f9;
+}
+
+.player-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+}
+
+.track-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--nexa-text);
+    line-height: 1.2;
+}
+
+.track-artist {
+    font-size: 1.2rem;
+    color: var(--nexa-text-muted);
+    margin-bottom: 24px;
+}
+
+/* Controls */
+.player-controls {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.control-btn {
+    background: none;
+    border: none;
+    color: var(--nexa-text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.control-btn:hover {
+    color: var(--nexa-primary);
+}
+
+.play-pause-btn {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--nexa-primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    transition: transform 0.2s, background 0.2s;
+}
+
+.play-pause-btn:hover {
+    transform: scale(1.05);
+    background: var(--nexa-primary-hover);
+}
+
+/* Search and List */
+.sidebar-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.search-container {
+    position: relative;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--nexa-border);
+    background: var(--nexa-surface);
+    color: var(--nexa-text);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    border-color: var(--nexa-primary);
+}
+
+.track-list {
+    background: var(--nexa-surface);
+    border: 1px solid var(--nexa-border);
+    border-radius: 12px;
+    overflow: hidden;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.track-item {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-bottom: 1px solid var(--nexa-border);
+}
+
+.track-item:last-child {
+    border-bottom: none;
+}
+
+.track-item:hover {
+    background: #f1f5f9;
+}
+
+.track-item.active {
+    background: #eef2ff;
+    border-left: 4px solid var(--nexa-primary);
+}
+
+.track-item-info {
+    flex: 1;
+}
+
+.track-item-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--nexa-text);
+}
+
+.track-item-artist {
+    font-size: 0.8rem;
+    color: var(--nexa-text-muted);
+}
+
+/* Mini HUD Overrides for Professional Style */
+#cyberMiniHud {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #1e293b !important;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1) !important;
+}
+
+#miniHudTitle {
+    color: #1e293b !important;
+}
+
+#miniHudPlay {
+    color: #6366f1 !important;
+}

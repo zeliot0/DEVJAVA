@@ -1,0 +1,109 @@
+<div class="conscience-modal-overlay" id="conscienceFeedbackOverlay" aria-hidden="true"></div>
+<div class="conscience-modal" id="conscienceFeedbackModal" role="dialog" aria-modal="true" aria-labelledby="conscienceFeedbackTitle" aria-hidden="true" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; z-index: 1000; padding: 40px; display: none; width: 90%; max-width: 600px;">
+    <div class="conscience-modal-head flex justify-between items-start mb-8">
+        <div>
+            <h2 id="conscienceFeedbackTitle" class="text-3xl font-black text-slate-900 mb-2">Interaction User/Admin</h2>
+            <p class="text-slate-400 text-sm font-medium">Donnez votre avis: etes-vous satisfait de vos themes?</p>
+        </div>
+        <button type="button" class="text-slate-300 hover:text-slate-900 transition-colors" id="closeFeedbackModal">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    </div>
+
+    <div class="conscience-modal-body">
+        <form method="post" action="{{ path('app_conscience_feedback_submit') }}" class="space-y-6">
+            <input type="hidden" name="_token" value="{{ csrf_token('conscience_feedback') }}">
+
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2" for="satisfaction">Satisfaction (1-5)</label>
+                    <select id="satisfaction" name="satisfaction" class="w-full bg-slate-50 border-none rounded-xl p-3 focus:ring-2 focus:ring-blue-500" required>
+                        <option value="">Choisir...</option>
+                        <option value="5">5 - Très satisfait</option>
+                        <option value="4">4 - Satisfait</option>
+                        <option value="3">3 - Moyen</option>
+                        <option value="2">2 - Peu satisfait</option>
+                        <option value="1">1 - Pas satisfait</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2" for="favorite_theme_id">Thème préféré</label>
+                    <select id="favorite_theme_id" name="favorite_theme_id" class="w-full bg-slate-50 border-none rounded-xl p-3 focus:ring-2 focus:ring-blue-500">
+                        <option value="">Sélectionner</option>
+                        {% for theme in themes %}
+                            <option value="{{ theme.idT }}">{{ theme.nom }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2" for="feedback_comment">Commentaire</label>
+                <textarea id="feedback_comment" name="comment" class="w-full bg-slate-50 border-none rounded-xl p-4 focus:ring-2 focus:ring-blue-500 resize-none" rows="4" placeholder="Ex: J'aime ce thème car..."></textarea>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-4">
+                <button type="button" class="px-6 py-3 text-slate-400 font-bold hover:text-slate-900 transition-all" id="cancelFeedbackModal">Annuler</button>
+                <button type="submit" class="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all">Envoyer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="conscience-modal-overlay" id="conscienceSuggestOverlay" aria-hidden="true"></div>
+<div class="conscience-modal" id="conscienceSuggestModal" role="dialog" aria-modal="true" aria-labelledby="conscienceSuggestTitle" aria-hidden="true" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; z-index: 1000; padding: 40px; display: none; width: 90%; max-width: 600px;">
+    <div class="conscience-modal-head flex justify-between items-start mb-8">
+        <div>
+            <h2 id="conscienceSuggestTitle" class="text-3xl font-black text-slate-900 mb-2">Proposer un theme</h2>
+            <p class="text-slate-400 text-sm font-medium">Partagez une idee creative pour un nouveau module.</p>
+        </div>
+        <button type="button" class="text-slate-300 hover:text-slate-900 transition-colors" id="closeSuggestModal">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    </div>
+
+    <div class="conscience-modal-body">
+        <form method="post" action="{{ path('app_conscience_theme_suggestion_submit') }}" class="space-y-6">
+            <input type="hidden" name="_token" value="{{ csrf_token('conscience_theme_suggestion') }}">
+
+            <div class="flex flex-wrap gap-2 mb-4">
+                <button type="button" class="px-3 py-1.5 bg-slate-50 text-slate-500 rounded-lg text-[10px] font-bold uppercase tracking-tight hover:bg-slate-100 transition-all quick-theme-chip" data-theme-name="Relations & communication">Relations</button>
+                <button type="button" class="px-3 py-1.5 bg-slate-50 text-slate-500 rounded-lg text-[10px] font-bold uppercase tracking-tight hover:bg-slate-100 transition-all quick-theme-chip" data-theme-name="Finance perso smart">Finance</button>
+                <button type="button" class="px-3 py-1.5 bg-slate-50 text-slate-500 rounded-lg text-[10px] font-bold uppercase tracking-tight hover:bg-slate-100 transition-all quick-theme-chip" data-theme-name="Focus et deep work">Deep Work</button>
+                <button type="button" class="px-3 py-1.5 bg-slate-50 text-slate-500 rounded-lg text-[10px] font-bold uppercase tracking-tight hover:bg-slate-100 transition-all quick-theme-chip" data-theme-name="Confiance en soi">Confiance</button>
+                <button type="button" class="px-3 py-1.5 bg-slate-50 text-slate-500 rounded-lg text-[10px] font-bold uppercase tracking-tight hover:bg-slate-100 transition-all quick-theme-chip" data-theme-name="Energie & sommeil">Énergie</button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2" for="suggested_theme_name">Nom du thème</label>
+                    <input id="suggested_theme_name" name="suggested_theme_name" type="text" class="w-full bg-slate-50 border-none rounded-xl p-3 focus:ring-2 focus:ring-blue-500" required placeholder="Ex: Créativité">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2" for="suggested_theme_vibe">Ambiance</label>
+                    <select id="suggested_theme_vibe" name="suggested_theme_vibe" class="w-full bg-slate-50 border-none rounded-xl p-3 focus:ring-2 focus:ring-blue-500">
+                        <option value="">Vibe</option>
+                        <option value="motivation">Motivation</option>
+                        <option value="calme">Calme</option>
+                        <option value="performance">Performance</option>
+                        <option value="bien_etre">Bien-être</option>
+                        <option value="creativite">Créativité</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2" for="suggested_theme_goal">Objectif</label>
+                <textarea id="suggested_theme_goal" name="suggested_theme_goal" class="w-full bg-slate-50 border-none rounded-xl p-4 focus:ring-2 focus:ring-blue-500 resize-none" rows="3" placeholder="Pourquoi ce thème ?"></textarea>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-4">
+                <button type="button" class="px-6 py-3 text-slate-400 font-bold hover:text-slate-900 transition-all" id="cancelSuggestModal">Annuler</button>
+                <button type="submit" class="px-8 py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all">Proposer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{# Placeholder for Chatbot Modal if needed, can be added similarly #}

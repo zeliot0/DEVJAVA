@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% set body_class = 'conscience-page' %}
+
+{% block title %}RÉSEAU PHOENIX — NEXA Intelligence{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/phoenix-network-modern.css?v=' ~ 'now'|date('U')) }}">
+{% endblock %}
+
+{% block body %}
+<div class="net-page">
+
+    <header class="net-header">
+        <div style="font-size: 11px; font-weight: 800; color: var(--net-blue); text-transform: uppercase; letter-spacing: 0.3em; margin-bottom: 16px;">Connectique Neuronale</div>
+        <h1 class="net-title">Matrice Phoenix Network</h1>
+        <p style="font-size: 18px; color: var(--notion-text-muted); font-weight: 500;">Gestion des interconnexions et des flux de données externes.</p>
+        
+        <div style="margin-top: 40px;">
+            <a href="{{ path('app_phoenix_network_new') }}" class="btn primary" style="background: var(--net-gradient); border: none; padding: 14px 28px; border-radius: 16px; font-weight: 800; color: white;">
+                <i class="fas fa-plus"></i> Établir une Connexion
+            </a>
+        </div>
+    </header>
+
+    <div class="net-grid">
+        {% for item in phoenix_networks %}
+            <article class="net-card">
+                <div class="net-icon">
+                    {% if 'social' in item.networkType|lower %}
+                        <i class="fa-solid fa-share-nodes"></i>
+                    {% elseif 'api' in item.networkType|lower %}
+                        <i class="fa-solid fa-plug"></i>
+                    {% else %}
+                        <i class="fa-solid fa-network-wired"></i>
+                    {% endif %}
+                </div>
+                
+                <h2 class="net-type">{{ item.networkType|default('Connexion Standard') }}</h2>
+                <p class="net-date">Activée le {{ item.connectedAt ? item.connectedAt|date('d F Y') : 'N/A' }}</p>
+
+                <div class="net-actions">
+                    <a href="{{ path('app_phoenix_network_show', {'id': item.id}) }}" class="btn" title="Inspecter">
+                        <i class="fa-solid fa-eye"></i>
+                    </a>
+                    <a href="{{ path('app_phoenix_network_edit', {'id': item.id}) }}" class="btn" title="Modifier">
+                        <i class="fa-solid fa-pen"></i>
+                    </a>
+                </div>
+            </article>
+        {% else %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 100px; background: white; border-radius: 32px; border: 1px dashed var(--notion-border);">
+                <div style="font-size: 54px; margin-bottom: 24px; opacity: 0.2;">📡</div>
+                <p style="font-size: 16px; color: var(--notion-text-muted); font-style: italic;">Aucune connexion active détectée dans la matrice.</p>
+                <a href="{{ path('app_phoenix_network_new') }}" class="btn" style="margin-top: 32px;">Initialiser un lien</a>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

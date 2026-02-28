@@ -1,76 +1,101 @@
+{% set followingIds = followingIds|default([]) %}
 {% for theme in themes %}
     {% set pr = theme.priorite ?? 2 %}
-    {% set prClass = pr >= 4 ? 'critical' : (pr == 3 ? 'high' : (pr == 2 ? 'medium' : 'low')) %}
-    {% set prLabel = pr >= 4 ? 'Critique' : (pr == 3 ? 'Elevee' : (pr == 2 ? 'Moyenne' : 'Basse')) %}
     {% set stats = themeStats[theme.idT]|default({}) %}
     {% set activeQuestions = stats.activeQuestions|default(theme.questions|filter(q => q.actif)|length) %}
     {% set pending = stats.pending|default(0) %}
     {% set progress = stats.progress|default(0) %}
+    {% set isFollowing = theme.idT in followingIds %}
+    {% set focusNews = newsByTheme[theme.idT]|default([]) %}
 
-    <article class="theme-card conscience-theme-card">
-        <div class="conscience-card-top">
-            <div class="conscience-card-main">
-                <div class="conscience-theme-icon" style="--theme-color: {{ theme.couleur|default('#8b5cf6') }};">
-                    {% if theme.icone and (theme.icone starts with 'fa') %}
-                        <i class="{{ theme.icone }}"></i>
-                    {% else %}
-                        {{ theme.icone|default('<i class="fa-solid fa-brain"></i>')|raw }}
+    <!-- Module Card -->
+    <div class="module-card mb-8">
+        <div class="flex flex-col md:flex-row gap-10 items-center">
+            <div class="w-20 h-20 rounded-3xl flex items-center justify-center shadow-sm" style="background: {{ theme.couleur|default('#f8fafc') }}15; color: {{ theme.couleur|default('#64748b') }};">
+                {% if theme.icone and (theme.icone starts with 'fa') %}
+                    <i class="{{ theme.icone }} text-4xl"></i>
+                {% else %}
+                    <div class="text-4xl">{{ theme.icone|default('<i class="fa-solid fa-brain"></i>')|raw }}</div>
+                {% endif %}
+            </div>
+            <div class="flex-1 text-center md:text-left">
+                <div class="flex items-center justify-center md:justify-start gap-3 mb-2">
+                    <h3 class="text-3xl font-extrabold text-slate-900">{{ theme.nom }}</h3>
+                    {% if pending > 0 %}
+                        <svg class="text-red-500 animate-pulse" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                     {% endif %}
                 </div>
-                <div class="conscience-theme-info">
-                    <h3>{{ theme.nom }}</h3>
-                    <span>{{ theme.createdAt|date('d/m/Y') }}</span>
+                <p class="text-slate-400 text-sm mb-6 font-medium uppercase tracking-tight">
+                    {{ theme.intention|default(theme.descriptionQ|default('Participez a ce theme pour ameliorer votre conscience.')) }}
+                </p>
+
+                <div class="flex flex-wrap justify-center md:justify-start gap-2 mb-8">
+                    <span class="badge-pill bg-slate-50 text-slate-400">{{ activeQuestions }} Questions</span>
+                    {% if pending > 0 %}
+                        <span class="badge-pill bg-red-50 text-red-500">{{ pending }} en attente</span>
+                    {% endif %}
+                    <span class="badge-pill bg-blue-50 text-blue-600">Priorite {{ pr }}</span>
+                </div>
+
+                <div class="max-w-xs mx-auto md:mx-0">
+                    <div class="flex justify-between text-[10px] font-black text-slate-400 uppercase mb-2">
+                        <span>Progression</span>
+                        <span>{{ progress }}%</span>
+                    </div>
+                    <div class="w-full h-2 bg-slate-50 rounded-full overflow-hidden">
+                        <div class="h-full transition-all duration-1000" style="width: {{ progress }}%; background: {{ theme.couleur|default('#3b82f6') }};"></div>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 bg-slate-50 border border-slate-100 rounded-2xl max-w-2xl">
+                    <div class="text-[10px] font-black uppercase tracking-[0.12em] text-slate-500 mb-2">
+                        Veille mentale / actualite focus
+                    </div>
+                    {% if focusNews is not empty %}
+                        <div class="space-y-2">
+                            {% for article in focusNews %}
+                                <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer" class="block text-xs text-slate-700 hover:text-blue-600 no-underline">
+                                    <span class="font-semibold">{{ article.title }}</span>
+                                    {% if article.source %}
+                                        <span class="text-slate-400"> - {{ article.source }}</span>
+                                    {% endif %}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-xs text-slate-400">
+                            Aucune actualite disponible pour ce theme.
+                        </div>
+                    {% endif %}
                 </div>
             </div>
-            <span class="theme-status {{ theme.actif ? 'active' : 'inactive' }}">
-                {{ theme.actif ? 'Actif' : 'Inactif' }}
-            </span>
-        </div>
-
-        <p class="conscience-theme-text">
-            {{ theme.intention ?? theme.descriptionQ ?? 'Participez a ce theme pour ameliorer votre conscience.' }}
-        </p>
-
-        <div class="conscience-card-bottom">
-            <div class="conscience-meta">
-                <span class="conscience-meta-pill">
-                    <i class="fa-solid fa-circle-question"></i>
-                    <strong>{{ activeQuestions }}</strong> q.
-                </span>
-                <span class="conscience-meta-pill">
-                    <i class="fa-solid fa-hourglass-half"></i>
-                    <strong>{{ pending }}</strong> en attente
-                </span>
-                <span class="conscience-meta-pill conscience-priority {{ prClass }}">
-                    <i class="fa-solid fa-flag"></i>
-                    Priorite <strong>P{{ pr }}</strong>
-                    <em>{{ prLabel }}</em>
-                </span>
-            </div>
-            <div class="conscience-meta" style="margin-top: 8px;">
-                <span class="conscience-meta-pill">
-                    <i class="fa-solid fa-gauge-high"></i>
-                    Progression <strong>{{ progress }}%</strong>
-                </span>
-            </div>
-
-            <div class="conscience-actions">
-                <a href="{{ path('app_theme_answer', { id: theme.idT }) }}" class="conscience-action start" title="Repondre">
-                    <i class="fa-solid fa-play"></i>
-                </a>
-                <a href="{{ path('app_theme_rapport', { id: theme.idT }) }}" class="conscience-action" title="Rapport">
-                    <i class="fa-solid fa-chart-simple"></i>
-                </a>
-                {% if is_granted('ROLE_ADMIN') %}
-                    <a href="{{ path('app_questions_by_theme', { id: theme.idT }) }}" class="conscience-action manage" title="Gerer">
-                        <i class="fa-solid fa-list-check"></i>
-                    </a>
+            <div class="flex gap-4">
+                {% if pending > 0 %}
+                    <a href="{{ path('app_theme_answer', { id: theme.idT }) }}" class="px-8 py-3 bg-red-500 text-white rounded-2xl font-bold text-sm shadow-xl shadow-red-100 hover:bg-red-600 transition-all no-underline">Repondre</a>
+                {% else %}
+                    <a href="{{ path('app_theme_answer', { id: theme.idT }) }}" class="px-8 py-3 bg-slate-900 text-white rounded-2xl font-bold text-sm shadow-xl shadow-slate-200 hover:bg-black transition-all no-underline">Reouvrir</a>
+                {% endif %}
+                <a href="{{ path('app_theme_rapport', { id: theme.idT }) }}" class="px-8 py-3 bg-white border border-slate-100 text-slate-600 rounded-2xl font-bold text-sm hover:bg-gray-50 transition-all no-underline">Rapport</a>
+                {% if is_granted('ROLE_USER') %}
+                    <button
+                        type="button"
+                        class="px-5 py-3 rounded-2xl font-bold text-sm transition-all theme-follow-btn {{ isFollowing ? 'is-following' : '' }}"
+                        data-follow-btn
+                        data-theme-id="{{ theme.idT }}"
+                        data-following="{{ isFollowing ? '1' : '0' }}"
+                        aria-pressed="{{ isFollowing ? 'true' : 'false' }}"
+                    >
+                        <i class="{{ isFollowing ? 'fa-solid fa-star' : 'fa-regular fa-star' }}" data-follow-icon></i>
+                        <span data-follow-label>{{ isFollowing ? 'Favori' : 'Ajouter favori' }}</span>
+                    </button>
                 {% endif %}
             </div>
         </div>
-    </article>
+    </div>
 {% else %}
-    <div style="grid-column: 1/-1; text-align: center; padding: 40px; background: white; border-radius: 20px;">
-        <p>Aucun theme trouve.</p>
+    <div class="text-center py-20 bg-slate-50 rounded-[32px] border border-dashed border-slate-200">
+        <span class="text-6xl mb-6 block"><i class="fa-regular fa-folder-open"></i></span>
+        <h3 class="text-2xl font-black text-slate-900 mb-2">Aucun Module</h3>
+        <p class="text-slate-400 font-medium">Initialisez vos premiers themes de monitoring pour activer l intelligence Nexa.</p>
     </div>
 {% endfor %}

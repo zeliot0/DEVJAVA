@@ -1,0 +1,271 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nexa AI - Catalogue Articles{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --ai-bg: #ffffff;
+            --ai-accent: #0066ff;
+            --ai-text-main: #0a0a0a;
+            --ai-text-muted: #737373;
+            --ai-border: rgba(0, 0, 0, 0.04);
+        }
+
+        /* Orbes de fond */
+        .bg-orb {
+            position: fixed;
+            width: 800px;
+            height: 800px;
+            border-radius: 50%;
+            filter: blur(150px);
+            z-index: -1;
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        /* Catégories Pilules */
+        .filter-pill {
+            background: #ffffff;
+            border: 1px solid var(--ai-border);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ai-text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .filter-pill:hover {
+            border-color: var(--ai-accent);
+            color: var(--ai-accent);
+            background: rgba(0, 102, 255, 0.02);
+        }
+
+        .filter-pill.active {
+            background: #f1f5ff;
+            border-color: var(--ai-accent);
+            color: var(--ai-accent);
+        }
+
+        /* Article Card */
+        .article-card {
+            background: #ffffff;
+            border-radius: 24px;
+            border: 1px solid var(--ai-border);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .article-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+
+        .article-img {
+            height: 220px;
+            background: #f9f9f9;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .article-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .article-card:hover .article-img img {
+            transform: scale(1.05);
+        }
+
+        .btn-view {
+            border-top: 1px solid var(--ai-border);
+            width: 100%;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--ai-text-main);
+            transition: all 0.2s ease;
+            background: transparent;
+            text-decoration: none;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn-view:hover {
+            background: #fafafa;
+            color: var(--ai-accent);
+        }
+
+        /* Animations */
+        .reveal { opacity: 0; transform: translateY(20px); }
+    </style>
+{% endblock %}
+
+{% block body %}
+    {% set currentCat = selectedCat %}
+    {% set baseParams = {'limit': limit} %}
+    {% if targetProduit %}
+        {% set baseParams = baseParams|merge({'id_p': targetProduit.idP}) %}
+    {% endif %}
+
+    <div class="bg-orb top-[-100px] left-[-100px] bg-purple-400"></div>
+    <div class="bg-orb bottom-[-100px] right-[-100px] bg-blue-400"></div>
+
+    <main class="flex-1 px-4 md:px-24 py-16 max-w-[1400px] mx-auto w-full">
+        
+        <!-- SECTION TITRE -->
+        <section class="reveal mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+            <div class="max-w-2xl">
+                <h1 class="text-6xl font-[900] tracking-tight text-slate-900 mb-6 leading-[1.1]">
+                    Catalogue <span class="text-indigo-600">articles</span>
+                </h1>
+                <p class="text-slate-400 font-medium text-xl leading-relaxed">
+                    {% if targetProduit %}
+                        Sélectionnez un visuel pour <strong>{{ targetProduit.nomP }}</strong>
+                    {% else %}
+                        Explorez des suggestions d'articles pour alimenter vos fiches produits.
+                    {% endif %}
+                </p>
+            </div>
+            <a href="{{ targetProduit ? path('app_produit_show', {id_p: targetProduit.idP}) : path('app_produit_index') }}" class="flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-100 text-slate-600 rounded-xl text-xs font-bold hover:bg-gray-50 transition-all shadow-sm no-underline">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                Retour
+            </a>
+        </section>
+
+        <!-- CATEGORIES FILTERS -->
+        <section class="reveal mb-12 flex flex-wrap gap-3">
+            <a href="{{ path('app_produit_articles', baseParams) }}" class="filter-pill {{ not currentCat ? 'active' : '' }}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Tous
+            </a>
+            {% for label, meta in categories %}
+                <a href="{{ path('app_produit_articles', baseParams|merge({'cat': label})) }}" class="filter-pill {{ currentCat == label ? 'active' : '' }}">
+                    <i class="fa-solid {{ meta.icon }}"></i> {{ label }}
+                </a>
+            {% endfor %}
+        </section>
+
+        {% if isFallback %}
+            <div class="reveal mb-12 bg-amber-50 border border-amber-100 rounded-2xl p-6 flex items-center gap-4 text-amber-900">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <div class="text-sm font-semibold">Mode démo : Les résultats API réels ne sont pas disponibles. Affichage de suggestions automatiques.</div>
+            </div>
+        {% endif %}
+
+        <!-- ARTICLES GRID -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            {% for item in items %}
+                <div class="reveal article-card group">
+                    <div class="article-img">
+                        {% set thumb = item.thumbnailUrl ?: item.imageUrl %}
+                        <img src="{{ (thumb starts with 'http') ? thumb : asset(thumb) }}" alt="{{ item.title }}" loading="lazy" referrerpolicy="no-referrer">
+                    </div>
+                    <div class="p-8 flex-1 flex flex-col">
+                        <h3 class="text-lg font-extrabold text-slate-900 mb-2">{{ item.title }}</h3>
+                        <p class="text-[11px] font-bold text-slate-300 uppercase tracking-[0.1em] mb-4">{{ item.displayLink ?: 'Source Nexa' }}</p>
+                        
+                        {% if item.snippet %}
+                            <p class="text-sm text-slate-400 leading-relaxed mb-6 font-medium">
+                                {{ item.snippet|slice(0, 90) }}...
+                            </p>
+                        {% endif %}
+                        
+                        <div class="mt-auto flex flex-col gap-2">
+                             {% if targetProduit and thumb and (thumb starts with 'http') %}
+                                <form method="post" action="{{ path('app_produit_photo_url', {'id_p': targetProduit.idP}) }}" class="w-full">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('photo' ~ targetProduit.idP) }}">
+                                    <input type="hidden" name="url" value="{{ thumb }}">
+                                    <button type="submit" class="w-full py-4 bg-blue-600 text-white rounded-2xl font-bold text-sm hover:bg-blue-700 transition-all flex items-center justify-center gap-2">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                        Utiliser ce visuel
+                                    </button>
+                                </form>
+                            {% endif %}
+                            <a href="{{ item.contextUrl ?: item.imageUrl }}" target="_blank" class="btn-view rounded-2xl">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                                Analyser la source
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="reveal col-span-full text-center py-20 bg-slate-50 rounded-[32px] border border-dashed border-slate-200">
+                    <span class="text-6xl mb-6 block">🔍</span>
+                    <h3 class="text-2xl font-black text-slate-900 mb-2">Aucun article trouvé</h3>
+                    <p class="text-slate-400 font-medium">Essayez une autre catégorie ou modifiez votre recherche.</p>
+                </div>
+            {% endfor %}
+        </section>
+
+        <!-- PAGINATION SECTION -->
+        <section class="reveal flex justify-center gap-4 mb-24">
+            {% set defaultLimit = targetProduit ? 40 : (currentCat ? 60 : 80) %}
+            {% if limit > defaultLimit %}
+                <a href="{{ path('app_produit_articles', baseParams|merge({'limit': defaultLimit, 'cat': currentCat})) }}" class="px-8 py-3 bg-white border border-slate-100 text-slate-600 rounded-xl font-bold text-sm hover:bg-gray-50 transition-all no-underline">
+                    Afficher moins
+                </a>
+            {% endif %}
+            {% if limit < 100 %}
+                <a href="{{ path('app_produit_articles', baseParams|merge({'limit': limit + 20, 'cat': currentCat})) }}" class="px-8 py-3 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-black transition-all no-underline">
+                    Explorer plus d'articles
+                </a>
+            {% endif %}
+        </section>
+
+    </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tl = gsap.timeline({ defaults: { ease: "expo.out", duration: 1.2 } });
+
+            // Séquence de révélation
+            tl.to(".reveal", {
+                opacity: 1,
+                y: 0,
+                stagger: 0.1,
+                duration: 1.4
+            });
+
+            // Mouvement des orbes
+            gsap.to(".bg-orb", {
+                x: "random(-60, 60)",
+                y: "random(-60, 60)",
+                duration: 12,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut"
+            });
+
+            // Micro-interactions
+            document.querySelectorAll('.article-card, button, .filter-pill').forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    gsap.to(el, { scale: 1.01, duration: 0.3 });
+                });
+                el.addEventListener('mouseleave', () => {
+                    gsap.to(el, { scale: 1, duration: 0.3 });
+                });
+            });
+        });
+    </script>
+{% endblock %}

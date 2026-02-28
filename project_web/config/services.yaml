@@ -26,3 +26,30 @@ services:
         autowire: true
         autoconfigure: true
         tags: ['controller.service_arguments']
+
+    App\Service\NewsFocusService:
+        arguments:
+            $cache: '@cache.app'
+            $newsApiKey: '%env(string:NEWSAPI_KEY)%'
+            $mediastackKey: '%env(string:MEDIASTACK_KEY)%'
+
+    # alias so that we can swap provider implementations if needed
+    App\Service\AI\AIProviderInterface: '@App\Service\AI\OpenAIProvider'
+
+    App\EventSubscriber\AIEntitySubscriber:
+        tags: ['doctrine.event_subscriber']
+        arguments:
+            - '@App\Service\AISuccessAnalyzer'
+            - '@App\Service\AIRiskAnalyzer'
+
+    App\Service\EmotionalAssistantService:
+        arguments:
+            $emotionApiUrl: '%env(string:EMOTION_API_URL)%'
+            $emotionApiKey: '%env(string:EMOTION_API_KEY)%'
+            $huggingFaceApiKey: '%env(string:HUGGINGFACE_API_KEY)%'
+            $huggingFaceModel: '%env(string:HUGGINGFACE_MODEL)%'
+
+    App\Service\GoalAnalysisService:
+        arguments:
+            $apiUrl: '%env(string:GOAL_ANALYSIS_API_URL)%'
+            $apiKey: '%env(string:GOAL_ANALYSIS_API_KEY)%'

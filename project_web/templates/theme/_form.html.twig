@@ -1,33 +1,63 @@
-{{ form_start(form, { attr: { class: 'drawer-body' } }) }}
+{{ form_start(form, { attr: { novalidate: 'novalidate', class: 'conscience-modern-form' } }) }}
 
-<div class="field">
-    {{ form_widget(form.nom) }}
-</div>
+<div class="form-container-inner" style="display: flex; flex-direction: column; gap: 32px;">
+    
+    <div class="form-section-card" style="background: white; border: 1px solid var(--notion-border); border-radius: 20px; padding: 32px; box-shadow: var(--card-shadow);">
+        <div style="font-size: 10px; font-weight: 800; color: #6366f1; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 24px; display: inline-block; padding: 4px 12px; border-radius: 6px; background: #eef2ff;">DÉFINITION DU MODULE</div>
+        
+        <div class="pg-field" style="margin-bottom: 24px;">
+            <label class="pg-label" style="display: block; font-size: 11px; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 8px;">Nom de l'Instance *</label>
+            {{ form_widget(form.nom, {'attr': {'class': 'pg-input', 'style': 'width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #e5e7eb; background: #f9fafb;', 'placeholder': 'Ex: Finance Personnelle'}}) }}
+            {{ form_errors(form.nom) }}
+        </div>
 
-<div class="field">
-    {{ form_widget(form.description) }}
-</div>
+        <div class="pg-field" style="margin-bottom: 24px;">
+            <label class="pg-label" style="display: block; font-size: 11px; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 8px;">Intention Stratégique *</label>
+            {{ form_widget(form.intention, {'attr': {'class': 'pg-input', 'style': 'width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #e5e7eb; background: #f9fafb;', 'placeholder': 'Ex: Améliorer la clarté financière'}}) }}
+            {{ form_errors(form.intention) }}
+        </div>
 
-<div class="grid2">
-    <div class="field">
-        {{ form_widget(form.icone) }}
+        <div class="pg-field">
+            <label class="pg-label" style="display: block; font-size: 11px; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 8px;">Description Détaillée *</label>
+            {{ form_widget(form.description_q, {'attr': {'class': 'pg-textarea', 'style': 'width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #e5e7eb; background: #f9fafb; min-height: 100px;', 'placeholder': 'Définissez l\'objectif de ce module...'}}) }}
+            {{ form_errors(form.description_q) }}
+        </div>
     </div>
-    <div class="field">
-        {{ form_widget(form.couleur) }}
+
+    <div class="form-section-card" style="background: white; border: 1px solid var(--notion-border); border-radius: 20px; padding: 32px; box-shadow: var(--card-shadow);">
+        <div style="font-size: 10px; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 24px; display: inline-block; padding: 4px 12px; border-radius: 6px; background: #f0fdf4;">INTERFACE ET PARAMÈTRES</div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+            <div class="pg-field">
+                <label class="pg-label" style="display: block; font-size: 11px; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 8px;">Icône (FontAwesome ou HTML)</label>
+                {{ form_widget(form.icone, {'attr': {'class': 'pg-input', 'style': 'width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #e5e7eb; background: #f9fafb;', 'placeholder': 'fa-solid fa-brain'}}) }}
+                {{ form_errors(form.icone) }}
+            </div>
+            <div class="pg-field">
+                <label class="pg-label" style="display: block; font-size: 11px; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 8px;">Signature Chromatique</label>
+                {{ form_widget(form.couleur, {'attr': {'class': 'pg-input', 'style': 'width: 100%; padding: 8px; border-radius: 10px; border: 1px solid #e5e7eb; background: #f9fafb; height: 50px;', 'type': 'color'}}) }}
+                {{ form_errors(form.couleur) }}
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div class="pg-field">
+                <label class="pg-label" style="display: block; font-size: 11px; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 8px;">Niveau de Priorité (1-5)</label>
+                {{ form_widget(form.priorite, {'attr': {'class': 'pg-input', 'style': 'width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #e5e7eb; background: #f9fafb;'}}) }}
+                {{ form_errors(form.priorite) }}
+            </div>
+            <div class="pg-field" style="display: flex; align-items: center; gap: 12px; padding-top: 28px;">
+                {{ form_widget(form.actif) }}
+                <label class="pg-label" style="font-size: 14px; font-weight: 600; color: #1a1b23;">Module Actif</label>
+            </div>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; gap: 16px; margin-top: 20px; padding: 24px; background: #f9fafb; border-radius: 16px; border: 1px solid var(--notion-border);">
+        <button type="submit" class="btn primary" style="padding: 12px 32px; font-size: 14px; font-weight: 700; border: none; background: var(--nexa-gradient); color: white; border-radius: 10px; cursor: pointer; box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);">
+            {{ button_label|default('Enregistrer les Modifications') }}
+        </button>
     </div>
 </div>
-
-<div class="grid2">
-    <div class="field">
-        {{ form_widget(form.priorite) }}
-    </div>
-    <div class="field">
-        {{ form_widget(form.actif) }}
-    </div>
-</div>
-
-<button class="btn primary">
-    Enregistrer le thème
-</button>
 
 {{ form_end(form) }}

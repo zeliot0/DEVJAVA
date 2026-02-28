@@ -2,56 +2,72 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Mouvements</title>
+    <title>Export Mouvements - NEXA</title>
     <style>
-        @page { margin: 18px; }
-        body { font-family: DejaVu Sans, sans-serif; font-size: 11px; color: #111; }
-        h1 { margin: 0; font-size: 18px; }
-        .meta { margin-top: 4px; color: #555; font-size: 10px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-        th, td { border: 1px solid #ddd; padding: 6px 8px; vertical-align: top; }
-        th { background: #f3f3f3; text-align: left; }
+        @page { margin: 30px; }
+        body { font-family: DejaVu Sans, sans-serif; font-size: 10px; color: #37352f; line-height: 1.5; }
+        .header { border-bottom: 2px solid #37352f; padding-bottom: 10px; margin-bottom: 20px; }
+        h1 { margin: 0; font-size: 24px; font-weight: 700; color: #37352f; }
+        .meta { color: #878682; font-size: 9px; margin-top: 5px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: #f7f6f3; color: #878682; font-weight: 700; text-transform: uppercase; font-size: 8px; letter-spacing: 0.5px; border: 1px solid #e1e1e0; padding: 10px 8px; text-align: left; }
+        td { border: 1px solid #e1e1e0; padding: 10px 8px; vertical-align: middle; }
+        
+        .type-entree { color: #166534; font-weight: 700; }
+        .type-sortie { color: #9f1239; font-weight: 700; }
         .num { text-align: right; }
+        .footer { position: fixed; bottom: 0; width: 100%; text-align: center; color: #878682; font-size: 8px; border-top: 1px solid #e1e1e0; padding-top: 5px; }
     </style>
 </head>
 <body>
-<h1>Historique des mouvements</h1>
-<div class="meta">
-    Généré le {{ generatedAt ? generatedAt|date('d/m/Y H:i') : "now"|date('d/m/Y H:i') }}
-    {% if produit %} — Produit : “{{ produit.nomP }}”{% endif %}
-    {% if q %} — Recherche : “{{ q }}”{% endif %}
-    {% if sort %} — Tri : {{ sort }} {{ dir|upper }}{% endif %}
+<div class="header">
+    <h1>Historique des Flux</h1>
+    <div class="meta">
+        NEXA Workspace • Généré le {{ generatedAt ? generatedAt|date('d/m/Y H:i') : "now"|date('d/m/Y H:i') }}
+        {% if produit %} • Produit : {{ produit.nomP }}{% endif %}
+        {% if q %} • Filtre : "{{ q }}"{% endif %}
+    </div>
 </div>
 
 <table>
     <thead>
     <tr>
-        <th>#</th>
-        <th>Type</th>
+        <th style="width: 40px;">Réf</th>
+        <th style="width: 80px;">Date</th>
         <th>Produit</th>
-        <th class="num">Quantité</th>
-        <th>Date</th>
-        <th>Motif</th>
+        <th style="width: 70px;">Type</th>
+        <th class="num" style="width: 60px;">Quantité</th>
+        <th>Motif / Justification</th>
     </tr>
     </thead>
     <tbody>
     {% for mouvement in mouvements %}
         <tr>
-            <td class="num">{{ mouvement.idMo }}</td>
-            <td>{{ mouvement.typeM }}</td>
-            <td>{{ mouvement.produit ? mouvement.produit.nomP : '—' }}</td>
-            <td class="num">{{ mouvement.quantite }}</td>
+            <td style="color: #878682;">#{{ mouvement.idMo }}</td>
             <td>{{ mouvement.dateMouvement ? mouvement.dateMouvement|date('d/m/Y') : '-' }}</td>
-            <td>{{ mouvement.motif }}</td>
+            <td style="font-weight: 700;">{{ mouvement.produit ? mouvement.produit.nomP : '—' }}</td>
+            <td class="{{ mouvement.typeM == 'ENTREE' ? 'type-entree' : 'type-sortie' }}">
+                {{ mouvement.typeM == 'ENTREE' ? 'ENTRÉE' : 'SORTIE' }}
+            </td>
+            <td class="num" style="font-weight: 700;">
+                {{ mouvement.typeM == 'ENTREE' ? '+' : '-' }}{{ mouvement.quantite }}
+            </td>
+            <td>{{ mouvement.motif ?: '-' }}</td>
         </tr>
     {% else %}
         <tr>
-            <td colspan="6" style="text-align:center; padding:18px; color:#777">
-                Aucun mouvement
+            <td colspan="6" style="text-align:center; padding:40px; color:#878682">
+                Aucun mouvement trouvé dans cette sélection.
             </td>
         </tr>
     {% endfor %}
     </tbody>
 </table>
+
+<div class="footer">
+    Rapport d'inventaire confidentiel — NEXA Management Suite
+</div>
 </body>
 </html>
+

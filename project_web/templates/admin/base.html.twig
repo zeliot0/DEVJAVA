@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="dark">
+<html lang="fr" data-theme="light">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,6 +7,7 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/global-bubbles-bg.css?v=20260214a') }}">
 
     <style>
@@ -929,11 +930,20 @@
         }
     </style>
 
+    <link rel="stylesheet" href="{{ asset('css/modern-background.css?v=20260220b') }}">
+    <link rel="stylesheet" href="{{ asset('css/modern-interface-overrides.css?v=20260220c') }}">
+    <link rel="stylesheet" href="{{ asset('css/dashboard-embedded.css?v=20260221a') }}">
     {% block stylesheets %}{% endblock %}
+    <link rel="stylesheet" href="{{ asset('css/notion-theme.css?v=20260221b') }}">
 </head>
 {% set currentRoute = app.request.get('_route') %}
-<body data-theme="dark" class="has-global-bubbles">
-    {{ include('_global_bubbles_bg.html.twig') }}
+{% set isEmbedded = app.request.query.get('embed') == '1' %}
+<body data-theme="light" class="has-global-bubbles{{ isEmbedded ? ' dashboard-embedded' : '' }}">
+    {% if not isEmbedded %}
+        {{ include('_global_bubbles_bg.html.twig') }}
+    {% endif %}
+    {% if not isEmbedded %}
+    {% block admin_sidebar %}
     <aside class="adm-sidebar" id="adminSidebar">
         <div class="side-rail">
             <div class="rail-brand">
@@ -951,8 +961,14 @@
                     <a href="{{ path('admin_tasks') }}" class="rail-item {% if currentRoute == 'admin_tasks' %}active{% endif %}" title="Moderation" data-tip="Moderation">
                         <i class="fa-solid fa-shield-halved"></i>
                     </a>
+                    <a href="{{ path('admin_registration_attempts') }}" class="rail-item {% if currentRoute == 'admin_registration_attempts' %}active{% endif %}" title="Tentatives" data-tip="Tentatives">
+                        <i class="fa-solid fa-user-clock"></i>
+                    </a>
                     <a href="{{ path('app_admin_conscience_feedback') }}" class="rail-item {% if currentRoute == 'app_admin_conscience_feedback' %}active{% endif %}" title="Feedback Conscience" data-tip="Feedback Conscience">
                         <i class="fa-solid fa-comments"></i>
+                    </a>
+                    <a href="{{ path('admin_motivation_quotes_index') }}" class="rail-item {% if currentRoute starts with 'admin_motivation_quotes' %}active{% endif %}" title="Quotes Motivation" data-tip="Quotes Motivation">
+                        <i class="fa-solid fa-quote-right"></i>
                     </a>
                 {% endif %}
 
@@ -1005,8 +1021,14 @@
                             <a href="{{ path('admin_tasks') }}" class="panel-item {% if currentRoute == 'admin_tasks' %}active{% endif %}">
                                 <i class="fa-solid fa-shield-halved"></i> Moderation
                             </a>
+                            <a href="{{ path('admin_registration_attempts') }}" class="panel-item {% if currentRoute == 'admin_registration_attempts' %}active{% endif %}">
+                                <i class="fa-solid fa-user-clock"></i> Tentatives
+                            </a>
                             <a href="{{ path('app_admin_conscience_feedback') }}" class="panel-item {% if currentRoute == 'app_admin_conscience_feedback' %}active{% endif %}">
                                 <i class="fa-solid fa-comments"></i> Feedback Conscience
+                            </a>
+                            <a href="{{ path('admin_motivation_quotes_index') }}" class="panel-item {% if currentRoute starts with 'admin_motivation_quotes' %}active{% endif %}">
+                                <i class="fa-solid fa-quote-right"></i> Quotes Motivation
                             </a>
                         {% endif %}
                     </nav>
@@ -1048,6 +1070,8 @@
             </div>
         </div>
     </aside>
+    {% endblock %}
+    {% endif %}
 
     <main class="adm-main">
         <div class="adm-wrapper">
@@ -1060,10 +1084,12 @@
                 {% endfor %}
             </div>
 
-            <header class="page-header">
-                <h1 class="page-title">{% block admin_page_title %}Administration{% endblock %}</h1>
-                <p class="page-hint">{% block admin_page_hint %}Gestion et surveillance de NEXA{% endblock %}</p>
-            </header>
+            {% if not isEmbedded %}
+                <header class="page-header">
+                    <h1 class="page-title">{% block admin_page_title %}Administration{% endblock %}</h1>
+                    <p class="page-hint">{% block admin_page_hint %}Gestion et surveillance de NEXA{% endblock %}</p>
+                </header>
+            {% endif %}
 
             {% block admin_content %}{% endblock %}
         </div>
@@ -1077,6 +1103,58 @@
             const sidebar = document.getElementById('adminSidebar');
             const openBtn = document.getElementById('sidebarToggleBtn');
             const closeBtn = document.getElementById('sidebarCloseBtn');
+            const isEmbedded = {{ isEmbedded ? 'true' : 'false' }};
+
+            function getEmbedUrl(rawUrl) {
+                try {
+                    const parsed = new URL(rawUrl, window.location.href);
+                    if (parsed.origin !== window.location.origin) {
+                        return null;
+                    }
+                    parsed.searchParams.set('embed', '1');
+                    return parsed;
+                } catch (error) {
+                    return null;
+                }
+            }
+
+            function enableEmbeddedModeNavigation() {
+                if (!isEmbedded) {
+                    return;
+                }
+
+                document.querySelectorAll('a[href]').forEach((link) => {
+                    if (link.dataset.inlineIgnore === '1') {
+                        return;
+                    }
+
+                    const href = link.getAttribute('href');
+                    if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:') || href.startsWith('tel:')) {
+                        return;
+                    }
+
+                    const embeddedUrl = getEmbedUrl(href);
+                    if (!embeddedUrl || embeddedUrl.pathname === '{{ path('app_logout') }}') {
+                        return;
+                    }
+
+                    link.setAttribute('href', embeddedUrl.pathname + embeddedUrl.search + embeddedUrl.hash);
+                });
+
+                document.querySelectorAll('form[action]').forEach((form) => {
+                    const action = form.getAttribute('action');
+                    if (!action) {
+                        return;
+                    }
+
+                    const embeddedUrl = getEmbedUrl(action);
+                    if (!embeddedUrl || embeddedUrl.pathname === '{{ path('app_logout') }}') {
+                        return;
+                    }
+
+                    form.setAttribute('action', embeddedUrl.pathname + embeddedUrl.search + embeddedUrl.hash);
+                });
+            }
 
             function setTheme(theme) {
                 html.setAttribute('data-theme', theme);
@@ -1096,14 +1174,16 @@
                 localStorage.setItem('adminSidebarExpanded', expanded ? '1' : '0');
             }
 
-            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const savedTheme = isEmbedded ? 'light' : (localStorage.getItem('theme') || 'light');
             setTheme(savedTheme);
 
             const savedSidebar = localStorage.getItem('adminSidebarExpanded') === '1';
             setSidebarExpanded(savedSidebar);
 
+            enableEmbeddedModeNavigation();
+
             btn?.addEventListener('click', () => {
-                const current = html.getAttribute('data-theme') || 'dark';
+                const current = html.getAttribute('data-theme') || 'light';
                 setTheme(current === 'dark' ? 'light' : 'dark');
             });
 

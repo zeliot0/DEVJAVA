@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% set body_class = 'conscience-page' %}
+
+{% block title %}ORACLE DE RENAISSANCE — NEXA Intelligence{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/phoenix-wisdom-premium.css?v=' ~ 'now'|date('U')) }}">
+{% endblock %}
+
+{% block body %}
+<div class="wisdom-page">
+
+    <header class="wisdom-header">
+        <div>
+            <div style="font-size: 11px; font-weight: 800; color: var(--wisdom-spark); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 8px;">Connaissance Post-Critique</div>
+            <h1 class="wisdom-title"><i class="fa-solid fa-feather-pointed"></i> Archivage du Phoenix</h1>
+            <p style="margin: 8px 0 0; font-size: 16px; color: var(--notion-text-muted); font-weight: 500;">Leçons extraites des cendres des itérations passées.</p>
+        </div>
+        <div>
+            <a href="{{ path('app_phoenix_wisdom_new') }}" class="btn primary" style="background: var(--wisdom-gradient); border: none; padding: 12px 24px; border-radius: 12px; font-weight: 700; color: white; display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-plus"></i> Nouvelle Extraction
+            </a>
+        </div>
+    </header>
+
+    <div class="wisdom-grid">
+        {% for item in phoenix_wisdoms %}
+            <article class="wisdom-card">
+                <div class="wisdom-category">
+                    <i class="fa-solid fa-sparkles"></i> {{ item.category|default('Sagesse Transversale') }}
+                </div>
+                
+                <div class="wisdom-lesson">
+                    {{ item.lesson|slice(0, 120) }}{% if item.lesson|length > 120 %}...{% endif %}
+                </div>
+
+                <div class="wisdom-footer">
+                    <div class="wisdom-count">
+                        <i class="fa-solid fa-shield-heart"></i>
+                        <span>{{ item.successCount|default(0) }} Cycles</span>
+                    </div>
+
+                    <div class="wisdom-tags">
+                        {% if item.tags is iterable %}
+                            {% for tag in item.tags %}
+                                <span class="wisdom-tag">{{ tag }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <a href="{{ path('app_phoenix_wisdom_show', {'id': item.id}) }}" style="position: absolute; inset: 0; z-index: 1;"></a>
+            </article>
+        {% else %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 100px; background: white; border-radius: 24px; border: 1px dashed var(--notion-border);">
+                <div style="font-size: 48px; margin-bottom: 24px; opacity: 0.3;">📜</div>
+                <p style="font-size: 16px; color: var(--notion-text-muted); font-style: italic;">Le néant précède souvent la sagesse. Aucune archive n'a été extraite.</p>
+                <a href="{{ path('app_phoenix_wisdom_new') }}" class="btn" style="margin-top: 24px;">Extraire la première leçon</a>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

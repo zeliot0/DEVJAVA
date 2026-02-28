@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Repository\TaskRepository;
+use App\Service\TaskRealtimePublisher;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -80,7 +81,8 @@ final class AdvancedTaskApiController extends AbstractController
     public function batchStatus(
         Request $request,
         TaskRepository $taskRepo,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        TaskRealtimePublisher $taskRealtimePublisher
     ): JsonResponse {
         $payload = json_decode($request->getContent(), true) ?: [];
 
@@ -103,6 +105,11 @@ final class AdvancedTaskApiController extends AbstractController
         }
 
         $em->flush();
+        $taskRealtimePublisher->publish('task.batch_status', [
+            'ids' => $ids,
+            'status' => $status,
+            'updated' => count($tasks),
+        ]);
 
         return $this->json([
             'ok' => true,
@@ -114,7 +121,8 @@ final class AdvancedTaskApiController extends AbstractController
     public function batchDelete(
         Request $request,
         TaskRepository $taskRepo,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        TaskRealtimePublisher $taskRealtimePublisher
     ): JsonResponse {
         $payload = json_decode($request->getContent(), true) ?: [];
         $ids = array_values(array_unique(array_map('intval', (array) ($payload['ids'] ?? []))));
@@ -134,6 +142,10 @@ final class AdvancedTaskApiController extends AbstractController
         }
 
         $em->flush();
+        $taskRealtimePublisher->publish('task.batch_delete', [
+            'ids' => $ids,
+            'deleted' => count($tasks),
+        ]);
 
         return $this->json([
             'ok' => true,
@@ -145,7 +157,8 @@ final class AdvancedTaskApiController extends AbstractController
     public function autoPrioritize(
         Request $request,
         TaskRepository $taskRepo,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        TaskRealtimePublisher $taskRealtimePublisher
     ): JsonResponse {
         $payload = json_decode($request->getContent(), true) ?: [];
         $ids = array_values(array_unique(array_map('intval', (array) ($payload['ids'] ?? []))));
@@ -168,6 +181,13 @@ final class AdvancedTaskApiController extends AbstractController
         }
 
         $em->flush();
+        if ($updated > 0) {
+            $taskRealtimePublisher->publish('task.auto_prioritize', [
+                'ids' => $ids,
+                'updated' => $updated,
+                'totalProcessed' => count($tasks),
+            ]);
+        }
 
         return $this->json([
             'ok' => true,

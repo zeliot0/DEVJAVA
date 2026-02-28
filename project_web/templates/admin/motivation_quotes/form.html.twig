@@ -1,0 +1,50 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block admin_page_title %}{{ mode == 'edit' ? 'Modifier Quote' : 'Nouvelle Quote' }}{% endblock %}
+{% block admin_page_hint %}Edition des citations motivationnelles{% endblock %}
+
+{% block admin_content %}
+<div class="panel" style="max-width:900px;">
+    <form method="post" style="display:grid;gap:14px;">
+        <div style="display:grid;grid-template-columns: 1fr 2fr;gap:12px;">
+            <div>
+                <label style="display:block;font-size:0.78rem;font-weight:800;color:var(--muted);margin-bottom:6px;">Mood</label>
+                <input type="text" name="mood" value="{{ mood|default('') }}" list="mood-list" required class="btn-link" style="width:100%;box-sizing:border-box;justify-content:flex-start;">
+                <datalist id="mood-list">
+                    {% for item in availableMoods %}
+                        <option value="{{ item }}"></option>
+                    {% endfor %}
+                </datalist>
+            </div>
+            <div>
+                <label style="display:block;font-size:0.78rem;font-weight:800;color:var(--muted);margin-bottom:6px;">Source</label>
+                <input type="text" name="source" value="{{ quote.source|default('') }}" required class="btn-link" style="width:100%;box-sizing:border-box;justify-content:flex-start;">
+            </div>
+        </div>
+
+        <div>
+            <label style="display:block;font-size:0.78rem;font-weight:800;color:var(--muted);margin-bottom:6px;">Citation (francais)</label>
+            <textarea name="french" rows="3" required class="btn-link" style="width:100%;box-sizing:border-box;justify-content:flex-start;resize:vertical;">{{ quote.french|default('') }}</textarea>
+        </div>
+
+        <div>
+            <label style="display:block;font-size:0.78rem;font-weight:800;color:var(--muted);margin-bottom:6px;">Citation (english)</label>
+            <textarea name="english" rows="2" class="btn-link" style="width:100%;box-sizing:border-box;justify-content:flex-start;resize:vertical;">{{ quote.english|default('') }}</textarea>
+        </div>
+
+        <div>
+            <label style="display:block;font-size:0.78rem;font-weight:800;color:var(--muted);margin-bottom:6px;">Citation (arabic)</label>
+            <textarea name="arabic" rows="2" class="btn-link" style="width:100%;box-sizing:border-box;justify-content:flex-start;resize:vertical;">{{ quote.arabic|default('') }}</textarea>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end;">
+            <a href="{{ path('admin_motivation_quotes_index') }}" class="btn-adm">
+                <i class="fa-solid fa-arrow-left"></i> Retour
+            </a>
+            <button type="submit" class="btn-adm active">
+                <i class="fa-solid fa-save"></i> {{ mode == 'edit' ? 'Mettre a jour' : 'Ajouter' }}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

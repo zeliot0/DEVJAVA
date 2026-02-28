@@ -144,7 +144,9 @@ final class TaskSuiteController extends AbstractController
     #[Route('/music-lounge', name: 'app_task_suite_music_lounge', methods: ['GET'])]
     public function musicLounge(): Response
     {
-        return $this->render('task_suite/music_lounge.html.twig');
+        return $this->render('task_suite/music_lounge.html.twig', [
+            'body_class' => 'music-lounge-body'
+        ]);
     }
 
     private function scoreTask(Task $task, \DateTimeImmutable $today): int

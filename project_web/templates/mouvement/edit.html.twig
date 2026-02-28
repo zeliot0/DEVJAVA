@@ -1,31 +1,34 @@
-{% extends 'theme/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Modifier Mouvement{% endblock %}
+{% set body_class = 'conscience-page' %}
 
-{% block body %}
+{% block title %}MISE À JOUR : FLUX #{{ mouvement.idMo }} — NEXA Intelligence{% endblock %}
 
-<div class="page-header">
-    <div>
-        <h1>Modifier le mouvement</h1>
-        <p>Mise à jour des informations</p>
-    </div>
-
-    <a href="{{ path('app_mouvement_index') }}" class="btn">
-        ← Retour
-    </a>
-</div>
-
-<div class="form-shell">
-    <div class="form-card">
-
-        {{ include('mouvement/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
-
-        <div class="form-actions">
-            {{ include('mouvement/_delete_form.html.twig') }}
-        </div>
-
-    </div>
-</div>
-
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/conscience-modern-proo.css?v=' ~ 'now'|date('U')) }}">
 {% endblock %}
 
+{% block body %}
+<div class="conscience-modern-page">
+    <header class="conscience-page-header">
+        <h1>Correction de Flux</h1>
+        <p>Ajustement des spécifications de l'événement logistique <strong>#{{ mouvement.idMo }}</strong></p>
+    </header>
+
+    <div class="conscience-header-actions" style="margin-bottom: 48px;">
+        <div class="page-actions">
+            <a href="{{ path('app_mouvement_show', {id_mo: mouvement.idMo}) }}" class="btn">
+                ← Retour à l'Analyse de Flux
+            </a>
+            {% if not is_granted('ROLE_ADMIN') %}
+                <div style="margin-left: auto;">
+                    {{ include('mouvement/_delete_form.html.twig') }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {{ include('mouvement/_form.html.twig', {'button_label': 'Appliquer les Corrections'}) }}
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+﻿{{ form_start(form, { attr: { novalidate: 'novalidate' } }) }}
+    <div class="tm-field">
+        <label class="tm-label">Objet</label>
+        {{ form_widget(form.titleMsg, {'attr': {'class': 'tm-input'}}) }}
+    </div>
+    <div class="tm-field">
+        <label class="tm-label">Message</label>
+        {{ form_widget(form.contentMsg, {'attr': {'class': 'tm-input'}}) }}
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="tm-field">
+            <label class="tm-label">Humeur</label>
+            {{ form_widget(form.moodAtCreation, {'attr': {'class': 'tm-input'}}) }}
+        </div>
+        {% if form.deliveryDateMsg is defined %}
+            <div class="tm-field">
+                <label class="tm-label">Livraison</label>
+                {{ form_widget(form.deliveryDateMsg, {'attr': {'class': 'tm-input'}}) }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="tm-form-actions">
+        <button class="tm-btn tm-btn-primary">{{ button_label|default('Enregistrer') }}</button>
+    </div>
+{{ form_end(form) }}

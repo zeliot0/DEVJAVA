@@ -1,0 +1,454 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block admin_page_title %}Tentatives d'inscription{% endblock %}
+{% block admin_page_hint %}Suivi securite des emails refuses{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<style>
+    .attempts-panel {
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(226, 232, 240, 0.95);
+        border-radius: 30px;
+        padding: 28px;
+        color: #1f2937;
+        box-shadow: 0 16px 32px rgba(15, 23, 42, 0.08);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+
+    body.dashboard-embedded .attempts-panel {
+        background: rgba(255, 255, 255, 0.85) !important;
+        border: 1px solid rgba(226, 232, 240, 0.98) !important;
+        color: #1f2937 !important;
+        box-shadow: 0 16px 30px rgba(15, 23, 42, 0.08) !important;
+    }
+
+    .attempts-panel .panel-title {
+        margin-bottom: 18px;
+        color: #111827;
+    }
+
+    body.dashboard-embedded .attempts-panel .panel-title {
+        color: #111827 !important;
+    }
+
+    .attempts-kpis {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(160px, 1fr));
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .attempts-kpi {
+        border: 1px solid #e2e8f0;
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.92));
+        border-radius: 16px;
+        padding: 14px 16px;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+    }
+
+    .attempts-kpi-label {
+        font-size: 0.74rem;
+        font-weight: 800;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: #64748b;
+    }
+
+    .attempts-kpi-value {
+        margin-top: 6px;
+        font-size: 1.6rem;
+        font-weight: 900;
+        color: #3730a3;
+    }
+
+    .attempts-toolbar {
+        display: grid;
+        grid-template-columns: minmax(280px, 1fr) minmax(220px, 260px) auto;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 14px;
+    }
+
+    .attempts-input {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 52px;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        background: rgba(255, 255, 255, 0.94);
+        padding: 0 16px;
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+    }
+
+    .attempts-input i {
+        color: var(--primary);
+    }
+
+    .attempts-input input,
+    .attempts-input select {
+        width: 100%;
+        border: 0;
+        outline: none;
+        background: transparent;
+        color: #111827;
+        font-size: 0.95rem;
+        font-weight: 700;
+        box-shadow: none;
+        appearance: none;
+        -webkit-appearance: none;
+    }
+
+    .attempts-input input::placeholder {
+        color: #94a3b8;
+    }
+
+    body.dashboard-embedded .attempts-panel .attempts-input input,
+    body.dashboard-embedded .attempts-panel .attempts-input select {
+        background: transparent !important;
+        border: 0 !important;
+        color: #111827 !important;
+        box-shadow: none !important;
+    }
+
+    .attempts-actions {
+        display: inline-flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
+    .attempts-panel .btn-adm,
+    .attempts-actions .btn-adm {
+        min-height: 50px;
+    }
+
+    body.dashboard-embedded .attempts-panel .btn-adm {
+        background: #ffffff !important;
+        border: 1px solid #dbe4ef !important;
+        color: #334155 !important;
+    }
+
+    body.dashboard-embedded .attempts-panel .btn-adm.active {
+        background: linear-gradient(135deg, #5b5cf0 0%, #9f7aea 100%) !important;
+        color: #ffffff !important;
+        border-color: transparent !important;
+    }
+
+    .attempts-wrap {
+        border: 1px solid #e2e8f0;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.94);
+        box-shadow: 0 14px 26px rgba(15, 23, 42, 0.05);
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    body.dashboard-embedded .attempts-panel .attempts-wrap {
+        background: #ffffff !important;
+        border-color: #e2e8f0 !important;
+    }
+
+    .attempts-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 0;
+        min-width: 1300px;
+    }
+
+    .attempts-table th,
+    .attempts-table td {
+        padding: 15px 16px;
+    }
+
+    .attempts-table thead th {
+        font-size: 0.72rem;
+        letter-spacing: 0.06em;
+        color: #64748b;
+        text-transform: uppercase;
+        border-bottom: 1px solid #e2e8f0;
+        background: #f8fafc;
+    }
+
+    .attempts-table tbody td {
+        background: #ffffff;
+        border-bottom: 1px solid #edf2f7;
+        color: #1f2937;
+    }
+
+    .attempts-table tbody td:first-child {
+        font-weight: 900;
+        color: #0f172a;
+    }
+
+    .attempts-table tbody tr:hover td {
+        background: #f8fafc;
+    }
+
+    .status-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 900;
+    }
+
+    .status-rejected {
+        color: #b91c1c;
+        background: rgba(239, 68, 68, 0.12);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .status-accepted {
+        color: #0f766e;
+        background: rgba(16, 185, 129, 0.14);
+        border: 1px solid rgba(16, 185, 129, 0.34);
+    }
+
+    .ip-mono,
+    .date-mono {
+        color: #64748b;
+        font-family: monospace;
+        font-weight: 800;
+    }
+
+    .country-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 900;
+        border: 1px solid transparent;
+    }
+
+    .country-chip.local {
+        color: #475569;
+        background: rgba(148, 163, 184, 0.16);
+        border-color: rgba(148, 163, 184, 0.35);
+    }
+
+    .country-chip.geo {
+        color: #0f766e;
+        background: rgba(16, 185, 129, 0.12);
+        border-color: rgba(16, 185, 129, 0.32);
+    }
+
+    .city-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 800;
+        color: #334155;
+        background: rgba(99, 102, 241, 0.08);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+
+    .map-preview {
+        width: 210px;
+        height: 120px;
+        border-radius: 12px;
+        border: 1px solid #dbe4ef;
+        overflow: hidden;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+    }
+
+    .map-na {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 90px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        background: rgba(148, 163, 184, 0.16);
+        color: #475569;
+        font-size: 0.72rem;
+        font-weight: 800;
+    }
+
+    .attempts-empty {
+        text-align: center;
+        color: #64748b;
+        padding: 30px;
+        font-weight: 700;
+    }
+
+    @media (max-width: 980px) {
+        .attempts-kpis {
+            grid-template-columns: 1fr;
+        }
+
+        .attempts-toolbar {
+            grid-template-columns: 1fr;
+        }
+
+        .attempts-panel {
+            padding: 18px;
+            border-radius: 22px;
+        }
+
+        .map-preview {
+            width: 170px;
+            height: 100px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script>
+        (function () {
+            const mapNodes = document.querySelectorAll('.attempt-map');
+            if (!mapNodes.length || typeof L === 'undefined') {
+                return;
+            }
+
+            mapNodes.forEach((node) => {
+                const lat = parseFloat(node.dataset.lat || '');
+                const lng = parseFloat(node.dataset.lng || '');
+                const label = node.dataset.label || 'Unknown location';
+
+                if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+                    return;
+                }
+
+                const map = L.map(node, {
+                    zoomControl: false,
+                    attributionControl: false,
+                }).setView([lat, lng], 10);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                }).addTo(map);
+
+                L.marker([lat, lng]).addTo(map).bindPopup(label);
+            });
+        })();
+    </script>
+{% endblock %}
+
+{% block admin_content %}
+    {% set rejectedCount = 0 %}
+    {% set uniqueEmailCount = 0 %}
+    {% set uniqueEmails = [] %}
+    {% for a in attempts %}
+        {% if a.status == 'rejected' %}{% set rejectedCount = rejectedCount + 1 %}{% endif %}
+        {% if a.email not in uniqueEmails %}
+            {% set uniqueEmails = uniqueEmails|merge([a.email]) %}
+            {% set uniqueEmailCount = uniqueEmailCount + 1 %}
+        {% endif %}
+    {% endfor %}
+
+    <div class="panel attempts-panel">
+        <div class="attempts-kpis">
+            <div class="attempts-kpi">
+                <div class="attempts-kpi-label">Total Tentatives</div>
+                <div class="attempts-kpi-value">{{ attempts|length }}</div>
+            </div>
+            <div class="attempts-kpi">
+                <div class="attempts-kpi-label">Rejets</div>
+                <div class="attempts-kpi-value">{{ rejectedCount }}</div>
+            </div>
+            <div class="attempts-kpi">
+                <div class="attempts-kpi-label">Emails Distincts</div>
+                <div class="attempts-kpi-value">{{ uniqueEmailCount }}</div>
+            </div>
+        </div>
+
+        <div class="panel-title"><i class="fa-solid fa-user-shield" style="color: var(--primary);"></i> Registration Attempts</div>
+
+        <form method="get" action="{{ path('admin_registration_attempts') }}" class="attempts-toolbar">
+            <div class="attempts-input">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" name="q" value="{{ search|default('') }}" placeholder="Rechercher email, raison, pays ou ville...">
+            </div>
+            <div class="attempts-input">
+                <i class="fa-solid fa-arrow-down-wide-short"></i>
+                <select name="sort">
+                    <option value="newest" {{ (sort|default('newest')) == 'newest' ? 'selected' : '' }}>Plus recents</option>
+                    <option value="oldest" {{ (sort|default('newest')) == 'oldest' ? 'selected' : '' }}>Plus anciens</option>
+                    <option value="email_asc" {{ (sort|default('newest')) == 'email_asc' ? 'selected' : '' }}>Email A-Z</option>
+                    <option value="status_asc" {{ (sort|default('newest')) == 'status_asc' ? 'selected' : '' }}>Status A-Z</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-adm active">
+                <i class="fa-solid fa-filter"></i> Appliquer
+            </button>
+        </form>
+
+        <form method="post" action="{{ path('admin_registration_attempts_test_ipinfo') }}" class="attempts-actions" style="margin: 0 0 12px;">
+            <input type="hidden" name="_token" value="{{ csrf_token('test_ipinfo') }}">
+            <button type="submit" class="btn-adm">
+                <i class="fa-solid fa-location-dot"></i> Test IPInfo
+            </button>
+        </form>
+
+        <div class="attempts-wrap">
+            <table class="attempts-table">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Raison</th>
+                        <th>IP</th>
+                        <th>Pays</th>
+                        <th>Ville</th>
+                        <th>Map</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in attempts %}
+                        {% set country = (a.country ?: 'Unknown')|upper %}
+                        <tr>
+                            <td>{{ a.email }}</td>
+                            <td>
+                                <span class="status-chip {{ a.status == 'accepted' ? 'status-accepted' : 'status-rejected' }}">
+                                    <i class="fa-solid {{ a.status == 'accepted' ? 'fa-circle-check' : 'fa-triangle-exclamation' }}"></i> {{ a.status|upper }}
+                                </span>
+                            </td>
+                            <td>{{ a.reason ?: '-' }}</td>
+                            <td class="ip-mono">{{ a.ipAddress ?: '-' }}</td>
+                            <td>
+                                <span class="country-chip {{ country == 'LOCAL' ? 'local' : 'geo' }}">
+                                    <i class="fa-solid {{ country == 'LOCAL' ? 'fa-network-wired' : 'fa-globe' }}"></i>
+                                    {{ a.country ?: 'Unknown' }}
+                                </span>
+                            </td>
+                            <td><span class="city-chip">{{ a.city ?: 'Unknown' }}</span></td>
+                            <td>
+                                {% if a.latitude is not null and a.longitude is not null %}
+                                    <div
+                                        id="map-{{ a.id }}"
+                                        class="map-preview attempt-map"
+                                        data-lat="{{ a.latitude }}"
+                                        data-lng="{{ a.longitude }}"
+                                        data-label="{{ ((a.city ?: 'Unknown') ~ ', ' ~ (a.country ?: 'Unknown'))|e('html_attr') }}"
+                                    ></div>
+                                {% else %}
+                                    <span class="map-na">No map</span>
+                                {% endif %}
+                            </td>
+                            <td class="date-mono">{{ a.createdAt ? a.createdAt|date('Y-m-d H:i:s') : '-' }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="attempts-empty">Aucune tentative enregistree.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% set body_class = 'conscience-page' %}
+
+{% block title %}MUTATION RÉSEAU — NEXA Intelligence{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/phoenix-network-modern.css?v=' ~ 'now'|date('U')) }}">
+{% endblock %}
+
+{% block body %}
+<div class="net-page">
+    <header class="net-header" style="text-align: left; display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 48px;">
+        <div>
+            <h1 class="net-title">Réglage de Canal</h1>
+            <p style="font-size: 16px; color: var(--notion-text-muted);">Ajustement des protocoles pour la connexion <strong>#{{ phoenix_network.id }}</strong></p>
+        </div>
+        <div>
+            <a href="{{ path('app_phoenix_network_show', {id: phoenix_network.id}) }}" class="btn">
+                ← Fiche Detail
+            </a>
+        </div>
+    </header>
+
+    {{ include('phoenix_network/_form.html.twig', {'button_label': 'Appliquer les Protocoles'}) }}
+</div>
+{% endblock %}

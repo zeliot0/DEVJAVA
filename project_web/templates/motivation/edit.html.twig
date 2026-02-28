@@ -1,15 +1,59 @@
-﻿{% extends 'theme/base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
-{% block title %}Edit Motivation{% endblock %}
+{% block title %}Modifier la Motivation - NEXA{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/motivation-form-premium.css') }}">
+{% endblock %}
 
 {% block body %}
-    <h1>Edit Motivation</h1>
+<div class="motivation-form-page">
+    <div class="motivation-form-container">
+        <header class="motivation-form-header">
+            <div class="motivation-kicker">Inspiration</div>
+            <h1>Affiner la motivation</h1>
+            <p>Ajustez votre message pour qu'il soit toujours aussi percutant.</p>
+        </header>
 
-    {{ include('motivation/_form.html.twig', {'button_label': 'Update'}) }}
+        {{ form_start(form, {'attr': {'class': 'motivation-form'}}) }}
+            <section class="motivation-form-section">
+                <h2 class="motivation-section-title">
+                    <i class="fa-solid fa-pen-nib"></i> Informations de la motivation
+                </h2>
 
-    <a href="{{ path('app_motivation_index') }}">back to list</a>
+                <div class="row">
+                    <div class="col-lg-7">
+                        {{ form_label(form.title, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="col-lg-5">
+                        {{ form_label(form.mood, 'Humeur', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.mood, {'attr': {'class': 'form-select'}}) }}
+                    </div>
+                </div>
 
-    {{ include('motivation/_delete_form.html.twig') }}
+                <div style="margin-top: 24px;">
+                    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 5}}) }}
+                </div>
+
+                <div style="margin-top: 24px;">
+                    {{ form_label(form.image, 'URL de l\'image (optionnel)', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </section>
+
+            <div class="motivation-form-actions">
+                <a href="{{ path('app_motivation_index') }}" class="goals-btn goals-btn-secondary">
+                    Annuler
+                </a>
+                <button type="submit" class="goals-btn goals-btn-primary">
+                    <i class="fa-solid fa-save"></i> Mettre à jour la motivation
+                </button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>
 {% endblock %}
 
 

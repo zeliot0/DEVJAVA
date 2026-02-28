@@ -4,164 +4,490 @@
 {% block admin_page_hint %}Membres et hierarchie du systeme NEXA{% endblock %}
 
 {% block stylesheets %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<link rel="stylesheet" href="{{ asset('css/notion-core.css') }}">
+<link rel="stylesheet" href="{{ asset('css/nexa-performance-hub.css') }}">
 <style>
-    .users-toolbar {
+    .users-page-wrapper {
+        font-family: 'Sora', sans-serif;
+    }
+    
+    .users-kpi-grid {
         display: grid;
-        grid-template-columns: minmax(280px, 1fr) minmax(220px, 280px) auto;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .nexa-toolbar {
+        display: flex;
         gap: 12px;
         align-items: center;
-        margin: 0 0 18px;
+        background: white;
+        padding: 1rem;
+        border-radius: 20px;
+        border: 1px solid var(--nexa-border);
+        box-shadow: var(--nexa-shadow);
+        margin-bottom: 1.5rem;
     }
 
-    .users-search,
-    .users-sort {
+    .nexa-input-group {
+        flex: 1;
+        position: relative;
+    }
+
+    .nexa-input-group i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--nexa-text-muted);
+    }
+
+    .nexa-input-group input, 
+    .nexa-input-group select {
+        width: 100%;
+        padding: 10px 14px 10px 40px;
+        border-radius: 12px;
+        border: 1px solid var(--nexa-border);
+        background: #f9fafb;
+        font-family: 'Sora', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    .nexa-input-group input:focus {
+        background: white;
+        border-color: var(--nexa-primary);
+        box-shadow: 0 0 0 4px var(--nexa-primary-light);
+        outline: none;
+    }
+
+    .nexa-btn-apply {
+        padding: 10px 24px;
+        border-radius: 12px;
+        background: var(--nexa-primary);
+        color: white;
+        border: none;
+        font-weight: 700;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 12px rgba(131, 89, 255, 0.2);
+    }
+
+    .nexa-btn-apply:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(131, 89, 255, 0.3);
+    }
+
+    .nexa-table-card {
+        background: white;
+        border-radius: 24px;
+        border: 1px solid var(--nexa-border);
+        box-shadow: var(--nexa-shadow);
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .nexa-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 1250px;
+    }
+
+    .nexa-table th {
+        text-align: left;
+        padding: 1.2rem 1.5rem;
+        background: #f9fafb;
+        color: var(--nexa-text-muted);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 700;
+        border-bottom: 1px solid var(--nexa-border);
+    }
+
+    .nexa-table td {
+        padding: 1.2rem 1.5rem;
+        border-bottom: 1px solid var(--nexa-border);
+        vertical-align: middle;
+    }
+
+    .nexa-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .user-profile-cell {
         display: flex;
         align-items: center;
-        gap: 10px;
-        min-height: 46px;
-        border-radius: 14px;
-        border: 1px solid var(--border);
-        background: rgba(var(--surface-rgb), 0.55);
-        padding: 0 14px;
+        gap: 1rem;
     }
 
-    .users-search i,
-    .users-sort i { color: var(--accent); opacity: 0.95; }
+    .user-avatar-nexa {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        background: var(--nexa-primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 1.1rem;
+        box-shadow: 0 4px 10px rgba(131, 89, 255, 0.2);
+        flex-shrink: 0;
+    }
 
-    .users-search input,
-    .users-sort select {
+    .user-avatar-nexa img {
         width: 100%;
-        border: 0;
-        outline: none;
-        background: transparent;
-        color: var(--text);
-        font-size: 0.95rem;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 14px;
+    }
+
+    .user-info-nexa .email {
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--nexa-text-main);
+        display: block;
+    }
+
+    .user-info-nexa .name {
+        font-size: 0.75rem;
+        color: var(--nexa-text-muted);
+    }
+
+    .badge-nexa {
+        display: inline-flex;
+        padding: 4px 10px;
+        border-radius: 8px;
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .badge-role {
+        background: var(--nexa-primary-light);
+        color: var(--nexa-primary);
+    }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.7rem;
         font-weight: 700;
     }
 
-    .users-search input::placeholder { color: var(--muted); }
+    .status-active { background: #ecfdf5; color: #10b981; }
+    .status-blocked { background: #fef2f2; color: #f87171; }
 
-    .users-sort select { cursor: pointer; }
-
-    .users-search:focus-within,
-    .users-sort:focus-within {
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(159, 122, 234, 0.16);
-    }
-
-    .users-reset {
-        justify-content: center;
-        min-height: 46px;
-    }
-
-    .adm-table th,
-    .adm-table td {
-        padding: 12px 18px !important;
-    }
-
-    .adm-table .td-user { border-radius: 18px 0 0 18px; }
-    .adm-table .td-action { border-radius: 0 18px 18px 0; text-align: right; }
-    .adm-table .td-id { color: var(--muted); font-family: monospace; }
-    .user-line { display: flex; align-items: center; gap: 14px; }
-    .user-mail { font-weight: 850; font-size: 0.95rem; }
-    .role-list { display: flex; gap: 8px; flex-wrap: wrap; }
-    .users-result-chip {
+    .loc-chip {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        margin-bottom: 12px;
-        padding: 8px 12px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: rgba(var(--surface-rgb), 0.5);
-        font-size: 0.83rem;
-        font-weight: 800;
-        color: var(--muted);
+        gap: 6px;
+        background: #f3f4f6;
+        padding: 4px 10px;
+        border-radius: 8px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--nexa-text-main);
     }
 
-    @media (max-width: 980px) {
-        .users-toolbar {
-            grid-template-columns: 1fr;
-        }
+    .loc-chip i { color: var(--nexa-text-muted); }
 
-        .users-reset {
-            width: 100%;
-        }
+    .action-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--nexa-border);
+        background: white;
+        color: var(--nexa-text-main);
+        transition: all 0.2s;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .action-btn:hover {
+        background: #f9fafb;
+        transform: translateY(-2px);
+    }
+
+    .action-btn.btn-ban { color: var(--nexa-danger); }
+    .action-btn.btn-unlock { color: var(--nexa-success); }
+
+    .nexa-seg-tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 1.5rem;
+    }
+
+    .nexa-tab {
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        background: transparent;
+        border: none;
+        color: var(--nexa-text-muted);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .nexa-tab:hover { background: #f1f3f9; }
+    .nexa-tab.active { background: white; color: var(--nexa-primary); box-shadow: var(--nexa-shadow); }
+
+    .user-map-thumb {
+        width: 120px;
+        height: 60px;
+        border-radius: 8px;
+        margin-top: 8px;
+        border: 1px solid var(--nexa-border);
     }
 </style>
 {% endblock %}
 
 {% block admin_content %}
-    <div class="panel">
-        <div class="panel-title"><i class="fa-solid fa-users-gear" style="color: var(--primary);"></i> Annuaire des Comptes</div>
-        <form method="get" action="{{ path(app.request.get('_route')) }}" class="users-toolbar">
-            <div class="users-search">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" name="q" value="{{ search|default('') }}" placeholder="Rechercher par nom ou email...">
+    {% set blockedCount = 0 %}
+    {% set adminCount = 0 %}
+    {% for t in users %}
+        {% if t.isBlocked %}{% set blockedCount = blockedCount + 1 %}{% endif %}
+        {% if 'ROLE_ADMIN' in t.roles %}{% set adminCount = adminCount + 1 %}{% endif %}
+    {% endfor %}
+
+    <div class="users-page-wrapper">
+        <!-- KPI Row -->
+        <div class="users-kpi-grid">
+            <div class="nexa-card">
+                <div class="nexa-card-head">
+                    <span>Total Users</span>
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div class="nexa-card-value">{{ users|length }}</div>
+                <div class="nexa-card-subtext">Active: <span>{{ users|length - blockedCount }}</span></div>
             </div>
-            <div class="users-sort">
-                <i class="fa-solid fa-arrow-down-wide-short"></i>
+            <div class="nexa-card">
+                <div class="nexa-card-head">
+                    <span>Blocked Accounts</span>
+                    <i class="fa-solid fa-user-slash"></i>
+                </div>
+                <div class="nexa-card-value" style="color: var(--nexa-danger);">{{ blockedCount }}</div>
+                <div class="nexa-card-subtext">Restriction rate: <span>{{ (blockedCount / (users|length ?: 1) * 100)|round }}%</span></div>
+            </div>
+            <div class="nexa-card">
+                <div class="nexa-card-head">
+                    <span>Administrators</span>
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div class="nexa-card-value" style="color: var(--nexa-primary);">{{ adminCount }}</div>
+                <div class="nexa-card-subtext">Privileged access</div>
+            </div>
+        </div>
+
+        <!-- Toolbar -->
+        <form method="get" action="{{ path(app.request.get('_route')) }}" class="nexa-toolbar">
+            <div class="nexa-input-group">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" name="q" value="{{ search|default('') }}" placeholder="Search by name or email...">
+            </div>
+            <div class="nexa-input-group" style="flex: 0 0 220px;">
+                <i class="fa-solid fa-sort"></i>
                 <select name="sort">
-                    <option value="newest" {{ (sort|default('newest')) == 'newest' ? 'selected' : '' }}>🆕 Plus récents</option>
-                    <option value="admin_first" {{ (sort|default('newest')) == 'admin_first' ? 'selected' : '' }}>🛡️ Admin d'abord</option>
-                    <option value="name_asc" {{ (sort|default('newest')) == 'name_asc' ? 'selected' : '' }}>👤 Nom (A-Z)</option>
-                    <option value="email_asc" {{ (sort|default('newest')) == 'email_asc' ? 'selected' : '' }}>✉️ Email (A-Z)</option>
+                    <option value="newest" {{ (sort|default('newest')) == 'newest' ? 'selected' : '' }}>Most Recent</option>
+                    <option value="admin_first" {{ (sort|default('newest')) == 'admin_first' ? 'selected' : '' }}>Admins First</option>
+                    <option value="name_asc" {{ (sort|default('newest')) == 'name_asc' ? 'selected' : '' }}>Name (A-Z)</option>
+                    <option value="email_asc" {{ (sort|default('newest')) == 'email_asc' ? 'selected' : '' }}>Email (A-Z)</option>
                 </select>
             </div>
-            <button type="submit" class="btn-adm active users-reset">
-                <i class="fa-solid fa-filter"></i> Appliquer
+            <button type="submit" class="nexa-btn-apply">
+                <i class="fa-solid fa-filter"></i> Apply
             </button>
         </form>
+
+        <div class="nexa-seg-tabs" id="usersQuickFilter">
+            <button type="button" class="nexa-tab active" data-filter="all">All Members</button>
+            <button type="button" class="nexa-tab" data-filter="active">Active Only</button>
+            <button type="button" class="nexa-tab" data-filter="blocked">Restricted</button>
+            <button type="button" class="nexa-tab" data-filter="admin">Administrators</button>
+        </div>
+
         {% if (search|default('')) is not empty %}
-            <div class="users-result-chip">
-                <i class="fa-solid fa-filter"></i>
-                Resultat pour "{{ search }}" ({{ users|length }})
+            <div style="margin-bottom: 1rem; font-size: 0.8rem; color: var(--nexa-text-muted); font-weight: 700;">
+                <i class="fa-solid fa-search"></i> RESULTS FOR "{{ search }}" ({{ users|length }})
             </div>
         {% endif %}
-        <div class="table-wrap">
-            <table class="adm-table" style="width: 100%;">
+
+        <!-- User Table -->
+        <div class="nexa-table-card">
+            <table class="nexa-table">
                 <thead>
-                    <tr style="text-align: left; color: var(--muted); font-size: 0.8rem; text-transform: uppercase;">
-                        <th>Utilisateur</th>
-                        <th>Identifiant</th>
-                        <th>Permissions</th>
-                        <th style="text-align: right;">Action</th>
+                    <tr>
+                        <th>Member Details</th>
+                        <th>Hierarchy ID</th>
+                        <th>Security Status</th>
+                        <th>Network Node</th>
+                        <th style="text-align: right;">Command</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="usersRows">
                     {% for u in users %}
-                        <tr>
-                            <td class="td-user">
-                                <div class="user-line">
-                                    <div class="brand-badge" style="width: 38px; height: 38px; font-size: 0.9rem; background: rgba(var(--surface-rgb), 0.1); color: var(--primary); border: 1px solid var(--border); box-shadow: none;">
-                                        <i class="fa-solid fa-user"></i>
-                                    </div>
-                                    <div class="user-mail">{{ u.email }}</div>
-                                </div>
-                            </td>
-                            <td class="td-id">#USR-{{ u.id }}</td>
+                        {% set attempt = latest_attempts_by_email[(u.email|lower)] ?? null %}
+                        <tr data-blocked="{{ u.isBlocked ? '1' : '0' }}" data-admin="{{ 'ROLE_ADMIN' in u.roles ? '1' : '0' }}">
                             <td>
-                                <div class="role-list">
-                                    {% for role in u.roles %}
-                                        <span class="badge" style="background: rgba(var(--surface-rgb), 0.2); color: var(--primary); border: 1px solid var(--border); font-size: 0.65rem;">
-                                            {{ role|replace({'ROLE_': ''}) }}
-                                        </span>
-                                    {% endfor %}
+                                <div class="user-profile-cell">
+                                    <div class="user-avatar-nexa">
+                                        {% if u.profilePhoto %}
+                                            <img src="{{ asset('uploads/profiles/' ~ u.profilePhoto) }}" alt="Photo">
+                                        {% else %}
+                                            {{ (u.nom ?? u.email)|first|upper }}
+                                        {% endif %}
+                                    </div>
+                                    <div class="user-info-nexa">
+                                        <span class="email">{{ u.email }}</span>
+                                        <span class="name">{{ u.nom }}</span>
+                                    </div>
                                 </div>
                             </td>
-                            <td class="td-action">
-                                <a href="{{ path('app_user_show', {id: u.id}) }}" class="btn-adm">
-                                    <i class="fa-solid fa-eye"></i> Voir
-                                </a>
+                            <td>
+                                <code style="font-size: 0.75rem; font-weight: 800; color: var(--nexa-text-muted);">#USR-{{ '%03d'|format(u.id) }}</code>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+                                    {% for role in u.roles %}
+                                        <span class="badge-nexa badge-role">{{ role|replace({'ROLE_': ''}) }}</span>
+                                    {% endfor %}
+                                    <span class="status-pill {{ u.isBlocked ? 'status-blocked' : 'status-active' }}">
+                                        <i class="fa-solid {{ u.isBlocked ? 'fa-lock' : 'fa-check-circle' }}"></i>
+                                        {{ u.isBlocked ? 'RESTRICTED' : 'OPERATIONAL' }}
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                {% if attempt %}
+                                    {% set country = attempt.country ?: 'Unknown' %}
+                                    {% set city = attempt.city ?: 'Unknown' %}
+                                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                                        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                            <div class="loc-chip" style="background: #e0f2fe; color: #0369a1;">
+                                                <i class="fa-solid fa-location-dot"></i> {{ city }}
+                                            </div>
+                                            <div class="loc-chip" style="background: #f0fdf4; color: #166534;">
+                                                <i class="fa-solid fa-earth-africa"></i> {{ country }}
+                                            </div>
+                                        </div>
+                                        {% if attempt.latitude is not null and attempt.longitude is not null %}
+                                           <div id="map-{{ u.id }}" class="user-map-thumb user-loc-map" 
+                                                data-lat="{{ attempt.latitude }}" 
+                                                data-lng="{{ attempt.longitude }}"
+                                                data-label="{{ u.email }}"></div>
+                                        {% endif %}
+                                    </div>
+                                {% else %}
+                                    <div class="loc-chip" style="opacity: 0.5;">
+                                        <i class="fa-solid fa-circle-question"></i> No data
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td style="text-align: right;">
+                                <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                                    <a href="{{ path('app_user_show', {id: u.id}) }}" class="action-btn" title="View Profile">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                    <form method="post" action="{{ path('app_user_toggle_block', {id: u.id}) }}" style="display:inline;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('toggle_block_user_' ~ u.id) }}">
+                                        <button type="submit" class="action-btn {{ u.isBlocked ? 'btn-unlock' : 'btn-ban' }}" title="{{ u.isBlocked ? 'Unblock' : 'Restrict' }}">
+                                            <i class="fa-solid {{ u.isBlocked ? 'fa-unlock' : 'fa-ban' }}"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     {% else %}
                         <tr>
-                            <td colspan="4" style="text-align: center; color: var(--muted); padding: 40px;">Aucun membre enregistre.</td>
+                            <td colspan="5" style="text-align: center; padding: 4rem; color: var(--nexa-text-muted);">
+                                <i class="fa-solid fa-user-ghost" style="font-size: 2rem; display: block; margin-bottom: 1rem;"></i>
+                                No members found.
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script>
+        (function () {
+            const filterWrap = document.getElementById('usersQuickFilter');
+            const rowsWrap = document.getElementById('usersRows');
+            if (!filterWrap || !rowsWrap) return;
+
+            const rows = Array.from(rowsWrap.querySelectorAll('tr[data-blocked]'));
+            const tabs = Array.from(filterWrap.querySelectorAll('.nexa-tab'));
+
+            function applyFilter(mode) {
+                let visible = 0;
+                rows.forEach((row) => {
+                    const blocked = row.getAttribute('data-blocked') === '1';
+                    const admin = row.getAttribute('data-admin') === '1';
+                    let show = true;
+
+                    if (mode === 'active') show = !blocked;
+                    if (mode === 'blocked') show = blocked;
+                    if (mode === 'admin') show = admin;
+
+                    row.style.display = show ? '' : 'none';
+                    if (show) visible += 1;
+                });
+            }
+
+            tabs.forEach((tab) => {
+                tab.addEventListener('click', function () {
+                    tabs.forEach((t) => t.classList.remove('active'));
+                    this.classList.add('active');
+                    applyFilter(this.getAttribute('data-filter'));
+                });
+            });
+        })();
+
+        (function () {
+            const mapNodes = document.querySelectorAll('.user-loc-map');
+            if (!mapNodes.length || typeof L === 'undefined') return;
+
+            mapNodes.forEach((node) => {
+                const lat = parseFloat(node.dataset.lat || '');
+                const lng = parseFloat(node.dataset.lng || '');
+                const label = node.dataset.label || 'Node Location';
+                if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+                const map = L.map(node, {
+                    zoomControl: false,
+                    attributionControl: false,
+                }).setView([lat, lng], 10);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+                L.circleMarker([lat, lng], {
+                    radius: 6,
+                    fillColor: "#8359ff",
+                    color: "#fff",
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                }).addTo(map);
+            });
+        })();
+    </script>
 {% endblock %}

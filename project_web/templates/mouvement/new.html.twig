@@ -1,27 +1,29 @@
-{% extends 'theme/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Nouveau Mouvement — NEXA{% endblock %}
+{% set body_class = 'conscience-page' %}
 
-{% block body %}
+{% block title %}NOUVEAU FLUX — NEXA Intelligence{% endblock %}
 
-<div class="page-header">
-    <div>
-        <h1>Nouveau mouvement</h1>
-        <p>Ajouter une entrée ou sortie de stock</p>
-    </div>
-
-    <a href="{{ path('app_mouvement_index') }}" class="btn">
-        ← Retour
-    </a>
-</div>
-
-<div class="form-shell">
-    <div class="form-card">
-
-        {{ include('mouvement/_form.html.twig', {'button_label': 'Créer'}) }}
-
-    </div>
-</div>
-
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/conscience-modern-proo.css?v=' ~ 'now'|date('U')) }}">
 {% endblock %}
 
+{% block body %}
+<div class="conscience-modern-page">
+    <header class="conscience-page-header">
+        <h1>Initialisation de Flux</h1>
+        <p>Définition d'un mouvement de stock pour le maintien de l'équilibre logistique.</p>
+    </header>
+
+    <div class="conscience-header-actions" style="margin-bottom: 48px;">
+        <div class="page-actions">
+            <a href="{{ path('app_mouvement_index') }}" class="btn">
+                ← Retour au Rapport de Flux
+            </a>
+        </div>
+    </div>
+
+    {{ include('mouvement/_form.html.twig', {'button_label': 'Confirmer l\'Opération'}) }}
+</div>
+{% endblock %}

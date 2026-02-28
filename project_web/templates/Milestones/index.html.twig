@@ -1,91 +1,258 @@
-﻿{# templates/Milestones/index.html.twig #}
-{% extends 'theme/base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
-{% block title %}Jalons{% endblock %}
+{% block title %}Nexa AI - Jalons Premium{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/milestones-index-modern.css?v=20260214b') }}">
-    <link rel="stylesheet" href="{{ asset('css/milestones-modern-pro-cards.css?v=20260214a') }}">
+    <style>
+        :root {
+            --ai-bg: #ffffff;
+            --ai-accent: #0066ff;
+            --ai-success: #10b981;
+            --ai-text-main: #0a0a0a;
+            --ai-text-muted: #737373;
+            --ai-border: rgba(0, 0, 0, 0.03);
+        }
+
+        /* Orbes de fond décoratifs */
+        .bg-orb {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        /* Cartes de Jalon Premium */
+        .jalon-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--ai-border);
+            border-radius: 24px;
+            padding: 24px;
+            transition: all 0.5s cubic-bezier(0.2, 0, 0, 1);
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .jalon-card:hover {
+            transform: scale(1.01) translateY(-4px);
+            background: #ffffff;
+            border-color: var(--ai-success);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.04);
+        }
+
+        .success-indicator {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            color: #059669;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 16px rgba(16, 185, 129, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .jalon-card:hover .success-indicator {
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            padding: 5px 12px;
+            border-radius: 8px;
+            text-transform: uppercase;
+        }
+
+        .badge-completed {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .badge-pending {
+            background: #f59e0b;
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+        }
+
+        /* Stats Section */
+        .mini-stat {
+            background: #f9f9f9;
+            border-radius: 20px;
+            padding: 16px 24px;
+            border: 1px solid var(--ai-border);
+        }
+
+        /* Animations */
+        .reveal { opacity: 0; transform: translateY(20px); }
+        .line-reveal { width: 0; }
+    </style>
 {% endblock %}
 
 {% block body %}
-<div class="nexa-milestones-container milestones-page-modern">
-    <div class="page-header">
-        <div>
-            <h1>Jalons</h1>
-            <p>Suivez vos jalons et étapes importantes</p>
-        </div>
-        <div class="page-actions">
+    {% set total = milestones|length %}
+    {% set completedCount = 0 %}
+    {% for m in milestones %}
+        {% if m.status|lower == 'completed' or m.status|lower == 'terminé' %}
+            {% set completedCount = completedCount + 1 %}
+        {% endif %}
+    {% endfor %}
+    {% set percent = total > 0 ? (completedCount / total * 100)|round : 0 %}
+
+    <!-- Arrière-plan décoratif -->
+    <div class="bg-orb top-[-100px] left-[-100px] bg-blue-400"></div>
+    <div class="bg-orb bottom-[-100px] right-[-100px] bg-purple-400"></div>
+
+    <!-- CONTENU PRINCIPAL -->
+    <main class="flex-1 max-w-[1200px] mx-auto w-full py-16">
+        
+        <!-- HEADER DE PAGE -->
+        <section class="reveal mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
+            <div class="max-w-xl">
+                <h1 class="text-6xl font-[900] tracking-tight text-slate-900 mb-6 leading-[1.1]">
+                    Jalons <span class="text-blue-600">Premium</span>
+                </h1>
+                <p class="text-slate-400 font-medium text-xl leading-relaxed">
+                    Orchestration tactique et suivi des jalons critiques pour vos objectifs stratégiques.
+                </p>
+            </div>
+            
+            <!-- Statistiques rapides -->
+            <div class="flex gap-4">
+                <div class="mini-stat">
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Terminé</span>
+                    <span class="text-2xl font-extrabold text-emerald-500">{{ percent }}%</span>
+                </div>
+                <div class="mini-stat">
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Vitesse</span>
+                    <span class="text-2xl font-extrabold text-slate-900">{{ percent > 80 ? 'Elite' : (percent > 40 ? 'High' : 'Normal') }}</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- NAVIGATION & ACTIONS -->
+        <div class="reveal flex flex-wrap gap-4 mb-16 items-center">
+            <a href="{{ path('app_goal_index') }}" class="px-6 py-3 bg-slate-900 text-white rounded-2xl text-sm font-bold shadow-2xl shadow-slate-200 hover:scale-[1.02] transition-all no-underline">
+                Vision stratégique
+            </a>
+            <button class="px-6 py-3 bg-white border border-slate-100 text-slate-600 rounded-2xl text-sm font-bold hover:bg-slate-50 transition-all">
+                Archives
+            </button>
             {% if not is_granted('ROLE_ADMIN') %}
-                <a href="{{ path('app_milestones_new') }}" class="btn primary milestones-add-btn">
-                    <i class="fas fa-plus-circle"></i> Ajouter un jalon
+                <a href="{{ path('app_milestones_new') }}" class="px-6 py-3 bg-blue-600 text-white rounded-2xl text-sm font-bold shadow-xl shadow-blue-100 hover:bg-blue-700 transition-all ml-auto no-underline">
+                    Nouveau Jalon
                 </a>
             {% endif %}
         </div>
-    </div>
 
-    <div class="nexa-milestone-progress">
-        <div class="nexa-milestone-progress-header">
-            <h4 class="nexa-milestone-progress-title">Vos jalons</h4>
-            <span class="nexa-milestone-progress-count">{{ milestones|length }} jalon(s)</span>
-        </div>
-    </div>
-
-    <div class="nexa-milestones-list">
-        {% for milestone in milestones %}
-        <div class="nexa-milestone-card milestones-modern-card">
-            <div class="nexa-milestone-header">
-                <h3 class="nexa-milestone-title">{{ milestone.title }}</h3>
-                <span class="nexa-badge">{{ milestone.getStatus()|upper }}</span>
-            </div>
-            
-            <p class="milestones-modern-description">
-                {{ milestone.description|default('—') }}
-            </p>
-            
-            <div class="milestones-modern-meta">
-                <div class="nexa-meta-item">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>{{ milestone.dueDate ? milestone.dueDate|date('d/m/Y') : '—' }}</span>
-                </div>
-                {% if milestone.goalGoa %}
-                <div class="nexa-meta-item">
-                    <i class="fas fa-bullseye"></i>
-                    <span>{{ milestone.goalGoa.titleGoa|slice(0, 26) }}{{ milestone.goalGoa.titleGoa|length > 26 ? '...' : '' }}</span>
-                </div>
-                {% endif %}
-                {% if milestone.completedDate %}
-                <div class="nexa-meta-item">
-                    <i class="fas fa-check-circle is-success"></i>
-                    <span>{{ milestone.completedDate|date('d/m/Y') }}</span>
-                </div>
-                {% endif %}
+        <!-- TIMELINE SECTION -->
+        <section>
+            <div class="reveal flex items-center gap-4 mb-10">
+                <div class="w-2 h-6 bg-blue-600 rounded-full"></div>
+                <h2 class="text-xs font-black text-slate-900 uppercase tracking-[0.2em]">Séquence de Réussite ({{ total }})</h2>
+                <div class="flex-1 h-[1px] bg-slate-100"></div>
             </div>
 
-            <div class="nexa-table-actions milestones-modern-actions">
-                <a href="{{ path('app_milestones_show', {'id': milestone.id}) }}" class="nexa-btn-action nexa-btn-view" title="Voir">
-                    <i class="fas fa-eye"></i>
-                </a>
-                {% if not is_granted('ROLE_ADMIN') %}
-                <a href="{{ path('app_milestones_edit', {'id': milestone.id}) }}" class="nexa-btn-action nexa-btn-edit" title="Modifier">
-                    <i class="fas fa-pen"></i>
-                </a>
-                <form method="post" action="{{ path('app_milestones_delete', {'id': milestone.id}) }}" onsubmit="return confirm('Supprimer ce jalon ?');">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ milestone.id) }}">
-                    <button type="submit" class="nexa-btn-action nexa-btn-delete" title="Supprimer">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </form>
-                {% endif %}
+            <div class="milestones-container">
+                {% for milestone in milestones %}
+                    {% set isCompleted = milestone.status|lower == 'completed' or milestone.status|lower == 'terminé' %}
+                    <!-- JALON ITEM CARD -->
+                    <div class="reveal jalon-card group">
+                        <!-- Status Icon -->
+                        <div class="success-indicator" style="{{ isCompleted ? '' : 'background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); color: #d97706;' }}">
+                            {% if isCompleted %}
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            {% else %}
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+                            {% endif %}
+                        </div>
+
+                        <!-- Info -->
+                        <div class="flex-1">
+                            <div class="flex items-center gap-4 mb-2">
+                                <span class="status-badge {{ isCompleted ? 'badge-completed' : 'badge-pending' }}">
+                                    {{ milestone.status|default('EN COURS') }}
+                                </span>
+                                <h3 class="text-2xl font-extrabold text-slate-900">{{ milestone.title }}</h3>
+                            </div>
+                            <div class="flex items-center gap-2 text-slate-400">
+                                <div class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 border border-gray-100">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                </div>
+                                <span class="text-sm font-bold text-slate-500">{{ milestone.goalGoa ? milestone.goalGoa.titleGoa : 'Orphelin' }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Date & Actions -->
+                        <div class="flex items-center gap-10">
+                            <div class="text-right">
+                                <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest block mb-1">{{ isCompleted ? 'Échéance réalisée' : 'Échéance cible' }}</span>
+                                <span class="text-lg font-black text-slate-900">{{ milestone.dueDate ? milestone.dueDate|date('d M Y') : 'Libre' }}</span>
+                            </div>
+                            
+                            <div class="flex gap-2">
+                                <a href="{{ path('app_milestones_show', {'id': milestone.id}) }}" class="w-14 h-14 bg-white border border-slate-100 text-slate-400 rounded-2xl hover:bg-slate-900 hover:text-white transition-all shadow-sm flex items-center justify-center group-hover:border-slate-900 no-underline">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                </a>
+                                {% if not is_granted('ROLE_ADMIN') %}
+                                    <a href="{{ path('app_milestones_edit', {'id': milestone.id}) }}" class="w-14 h-14 bg-white border border-slate-100 text-slate-400 rounded-2xl hover:bg-slate-900 hover:text-white transition-all shadow-sm flex items-center justify-center group-hover:border-slate-900 no-underline">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="reveal text-center py-20 bg-white/50 backdrop-blur rounded-[32px] border border-dashed border-slate-200">
+                        <span class="text-6xl mb-6 block">⛳</span>
+                        <h3 class="text-2xl font-black text-slate-900 mb-2">Séquence Vide</h3>
+                        <p class="text-slate-400 font-medium">Initialisez vos premiers jalons pour activer le suivi premium.</p>
+                        {% if not is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('app_milestones_new') }}" class="mt-8 inline-block px-8 py-3 bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-blue-100 no-underline hover:bg-blue-700 transition-all">Créer un Jalon</a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
             </div>
-        </div>
-        {% else %}
-        <div class="nexa-milestones-empty milestones-modern-empty">
-            <p>Aucun jalon trouvé.</p>
-            <a href="{{ path('app_milestones_new') }}" class="btn primary milestones-add-btn">Ajouter un jalon</a>
-        </div>
-        {% endfor %}
-    </div>
-</div>
+        </section>
+
+    </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tl = gsap.timeline({ defaults: { ease: "expo.out", duration: 1.4 } });
+
+            // Séquence de révélation fluide
+            tl.to(".reveal", {
+                opacity: 1,
+                y: 0,
+                stagger: 0.12
+            });
+
+            // Mouvement subtil des orbes
+            gsap.to(".bg-orb", {
+                x: "random(-50, 50)",
+                y: "random(-50, 50)",
+                duration: 10,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut"
+            });
+        });
+    </script>
 {% endblock %}

@@ -1,9 +1,31 @@
 {% extends 'base.html.twig' %}
+{% set body_class = 'auth-login-page' %}
 
 {% block title %}NEXA | Authentification{% endblock %}
 
+{% block sidebar %}{% endblock %}
+
 {% block stylesheets %}
-<link rel="stylesheet" href="{{ asset('css/loginnn.css') }}">
+{{ parent() }}
+<link rel="stylesheet" href="{{ asset('css/loginnn.css?v=20260224i') }}">
+<style>
+  body.auth-login-page .notion-header {
+    display: none !important;
+  }
+
+  /* allow scrolling on the login page as well */
+  body.auth-login-page .notion-main {
+    overflow: auto !important;
+  }
+
+  body.auth-login-page .notion-content {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: auto !important;
+  }
+</style>
 {% endblock %}
 
 {% block body %}
@@ -56,10 +78,10 @@
 </div>
 
 <div class="login-page">
-  <div class="container {% if error is not defined or not error %}right-panel-active{% endif %}" id="container">
+  <div class="container {% if show_signup|default(false) %}right-panel-active{% endif %}" id="container">
 
     <div class="form-container sign-up-container">
-      <form method="post" action="{{ path('app_register') }}">
+      <form method="post" action="{{ path('app_register') }}" enctype="multipart/form-data" novalidate>
         <input type="hidden" name="_csrf_token" value="{{ csrf_token('register') }}">
 
         <h1>Creer un compte</h1>
@@ -69,36 +91,92 @@
           <small class="error-text">{{ errors.csrf }}</small>
         {% endif %}
 
-        <input type="text" name="nom" placeholder="Nom complet" value="{{ old_nom|default('') }}" required>
+        <input type="text" name="nom" placeholder="Nom complet" value="{{ old_nom|default('') }}" autocomplete="off">
         {% if errors.nom is defined %}
           <small class="error-text">{{ errors.nom }}</small>
         {% endif %}
 
-        <input type="email" name="email" placeholder="Email" value="{{ old_email|default('') }}" required>
+        <input type="email" name="email" placeholder="Email" value="{{ old_email|default('') }}" autocomplete="off">
         {% if errors.email is defined %}
           <small class="error-text">{{ errors.email }}</small>
         {% endif %}
 
         <div class="password-wrapper">
-          <input type="password" name="password" id="register-password" placeholder="Mot de passe" required>
-          <span class="toggle-password" id="toggleRegisterPassword">Afficher</span>
+          <input type="password" name="password" id="register-password" placeholder="Mot de passe" autocomplete="new-password" value="{{ old_password|default('') }}">
+          <span class="toggle-password" id="toggleRegisterPassword" role="button" tabindex="0" aria-label="Afficher le mot de passe">
+            <i class="fa-regular fa-eye" aria-hidden="true"></i>
+          </span>
+        </div>
+        <div class="password-strength is-hidden" id="register-password-strength" aria-live="polite">
+          <div class="strength-head">
+            <span>Niveau de securite</span>
+            <strong id="register-password-strength-label"></strong>
+          </div>
         </div>
 
         {% if errors.password is defined %}
           <small class="error-text">{{ errors.password }}</small>
         {% endif %}
 
+        <input type="password" name="confirm_password" id="register-password-confirm" placeholder="Confirmer mot de passe" autocomplete="new-password" value="{{ old_confirm_password|default('') }}">
+        {% if errors.confirm_password is defined %}
+          <small class="error-text">{{ errors.confirm_password }}</small>
+        {% endif %}
+
+        <input type="file" name="profile_photo" accept="image/png,image/jpeg,image/webp">
+        <div class="register-photo-preview" id="register-photo-preview">
+          <img id="register-photo-preview-img" alt="Apercu photo selectionnee">
+          <small id="register-photo-preview-name"></small>
+        </div>
+        {% if errors.profile_photo is defined %}
+          <small class="error-text">{{ errors.profile_photo }}</small>
+        {% endif %}
+
+        <div class="face-register-panel" data-face-auth-register>
+          <video id="face-register-video-signup" class="face-video" autoplay muted playsinline></video>
+          <div id="face-register-status-signup" class="face-status">Capture visage optionnelle.</div>
+          <button type="button" id="face-register-btn-signup" class="face-login-btn">Enregistrer mon visage</button>
+          <input type="hidden" name="face_descriptor" id="register-face-descriptor" value="">
+          {% if errors.face_descriptor is defined %}
+            <small class="error-text">{{ errors.face_descriptor }}</small>
+          {% endif %}
+        </div>
+
+        <input type="hidden" name="geo_lat" id="register-geo-lat">
+        <input type="hidden" name="geo_lng" id="register-geo-lng">
+        <input type="hidden" name="geo_accuracy" id="register-geo-accuracy">
+
+        <div class="recaptcha-wrap">
+          <div
+            class="g-recaptcha"
+            id="register-recaptcha"
+            data-sitekey="{{ recaptcha_site_key|default('') }}"
+            data-type="image"
+            data-callback="onRegisterRecaptchaSuccess"
+            data-expired-callback="onRegisterRecaptchaExpired"
+            data-error-callback="onRegisterRecaptchaError"
+          ></div>
+        </div>
+        <small class="error-text" id="register-recaptcha-client-error" style="display:none;"></small>
+        {% if errors.recaptcha is defined %}
+          <small class="error-text">{{ errors.recaptcha }}</small>
+        {% endif %}
+
         <button type="submit">S'inscrire</button>
+        <a href="{{ path('connect_google_start') }}" class="google-login-btn">S'inscrire avec Google</a>
         <button type="button" class="switch-link" id="goSignIn">J'ai deja un compte</button>
       </form>
     </div>
 
     <div class="form-container sign-in-container">
-      <form method="post" action="{{ path('app_login') }}">
+      <form method="post" action="{{ path('app_login') }}" novalidate>
         <h1>Connexion</h1>
 
         {% for message in app.flashes('success') %}
           <div class="success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+          <div class="error">{{ message }}</div>
         {% endfor %}
 
         <span>Accedez a votre espace</span>
@@ -109,11 +187,19 @@
           </div>
         {% endif %}
 
-        <input type="email" name="email" value="{{ last_username|default('') }}" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Mot de passe" required>
+        <input type="email" name="email" value="{{ last_username|default('') }}" placeholder="Email">
+        <input type="password" name="password" id="login-password" placeholder="Mot de passe" autocomplete="current-password">
         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
         <button type="submit">Se connecter</button>
+        <a href="{{ path('connect_google_start') }}" class="google-login-btn">Continuer avec Google</a>
+        <a href="{{ path('app_forgot_password') }}" class="forgot-password-link">Mot de passe oublie ?</a>
+
+        <div class="face-login-panel" data-face-auth-login>
+          <video id="face-login-video" class="face-video" autoplay muted playsinline></video>
+          <div id="face-login-status" class="face-status">Connexion faciale disponible.</div>
+          <button type="button" id="face-login-btn" class="face-login-btn">Se connecter par visage</button>
+        </div>
         <button type="button" class="switch-link" id="goSignUp">Creer un compte</button>
       </form>
     </div>
@@ -150,5 +236,131 @@
     }
   });
 </script>
-<script src="{{ asset('js/loginn.js') }}"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="{{ asset('js/loginn.js?v=20260224b') }}"></script>
+<script>
+  (function () {
+    let recaptchaValidatedAt = 0;
+
+    const registerForm = document.querySelector('.sign-up-container form');
+    const clientError = document.getElementById('register-recaptcha-client-error');
+
+    const showClientError = (message) => {
+      if (!clientError) return;
+      clientError.textContent = message;
+      clientError.style.display = 'block';
+    };
+
+    const clearClientError = () => {
+      if (!clientError) return;
+      clientError.textContent = '';
+      clientError.style.display = 'none';
+    };
+
+    window.onRegisterRecaptchaSuccess = function () {
+      recaptchaValidatedAt = Date.now();
+      clearClientError();
+    };
+
+    window.onRegisterRecaptchaExpired = function () {
+      recaptchaValidatedAt = 0;
+      showClientError('Le reCAPTCHA a expire. Veuillez refaire la verification (images).');
+    };
+
+    window.onRegisterRecaptchaError = function () {
+      recaptchaValidatedAt = 0;
+      showClientError('Erreur reCAPTCHA. Rechargez la page puis reessayez.');
+    };
+
+    if (!registerForm) {
+      return;
+    }
+
+    registerForm.addEventListener('submit', function (event) {
+      if (typeof grecaptcha === 'undefined') {
+        event.preventDefault();
+        showClientError('reCAPTCHA non charge. Verifiez votre connexion puis reessayez.');
+        return;
+      }
+
+      const token = String(grecaptcha.getResponse() || '').trim();
+      const tokenAgeMs = recaptchaValidatedAt > 0 ? Date.now() - recaptchaValidatedAt : Number.MAX_SAFE_INTEGER;
+
+      if (token === '' || tokenAgeMs > 105000) {
+        event.preventDefault();
+        showClientError('Veuillez confirmer le reCAPTCHA juste avant de vous inscrire.');
+        try {
+          grecaptcha.reset();
+        } catch (e) {}
+      } else {
+        clearClientError();
+      }
+    });
+  })();
+</script>
+<script>
+  (function () {
+    const latInput = document.getElementById('register-geo-lat');
+    const lngInput = document.getElementById('register-geo-lng');
+    const accInput = document.getElementById('register-geo-accuracy');
+
+    if (!latInput || !lngInput || !accInput || !navigator.geolocation) {
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      function (position) {
+        latInput.value = String(position.coords.latitude);
+        lngInput.value = String(position.coords.longitude);
+        accInput.value = String(position.coords.accuracy || '');
+      },
+      function () {},
+      {
+        enableHighAccuracy: true,
+        timeout: 8000,
+        maximumAge: 120000
+      }
+    );
+  })();
+</script>
+<script>
+  (function () {
+    const fileInput = document.querySelector('input[name="profile_photo"]');
+    const preview = document.getElementById('register-photo-preview');
+    const previewImg = document.getElementById('register-photo-preview-img');
+    const previewName = document.getElementById('register-photo-preview-name');
+
+    if (!fileInput || !preview || !previewImg || !previewName) {
+      return;
+    }
+
+    fileInput.addEventListener('change', function () {
+      const file = fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
+      if (!file) {
+        preview.classList.remove('is-visible');
+        previewImg.removeAttribute('src');
+        previewName.textContent = '';
+        return;
+      }
+
+      previewName.textContent = 'Photo selectionnee: ' + file.name;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        previewImg.src = e.target && e.target.result ? e.target.result : '';
+        preview.classList.add('is-visible');
+      };
+      reader.readAsDataURL(file);
+    });
+  })();
+</script>
+<script>
+  window.NexaFaceAuthConfig = {
+    modelPath: 'https://justadudewhohacks.github.io/face-api.js/models',
+    saveUrl: '{{ path('api_face_save') }}',
+    deleteUrl: '{{ path('api_face_delete') }}',
+    loginUrl: '{{ path('api_face_login') }}'
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<script src="{{ asset('js/face-auth.js?v=20260221a') }}"></script>
 {% endblock %}

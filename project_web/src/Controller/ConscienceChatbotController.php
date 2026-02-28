@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Repository\ThemeRepository;
+use App\Service\ConscienceCoachingService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,7 +13,11 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ConscienceChatbotController extends AbstractController
 {
     #[Route('/api/conscience/chatbot', name: 'app_conscience_chatbot', methods: ['POST'])]
-    public function reply(Request $request, ThemeRepository $themeRepository): JsonResponse
+    public function reply(
+        Request $request,
+        ThemeRepository $themeRepository,
+        ConscienceCoachingService $conscienceCoachingService
+    ): JsonResponse
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
 
@@ -95,9 +101,45 @@ final class ConscienceChatbotController extends AbstractController
             ];
         }
 
+        $coachingData = null;
+        $user = $this->getUser();
+        if ($message !== '' && $user instanceof User && $this->shouldUseCoaching($normalized)) {
+            try {
+                $coachingData = $conscienceCoachingService->buildForUser($user, $message);
+                $coach = $coachingData['coaching'] ?? null;
+                if (is_array($coach)) {
+                    $coachMessage = trim((string) ($coach['coachingMessage'] ?? ''));
+                    if ($coachMessage !== '') {
+                        $reply = $coachMessage;
+                    }
+
+                    $coachActions = $coach['microActions'] ?? [];
+                    if (is_array($coachActions) && $coachActions !== []) {
+                        $suggestions = array_slice(
+                            array_values(
+                                array_filter(
+                                    array_map(
+                                        static fn (mixed $item): string => trim((string) $item),
+                                        $coachActions
+                                    ),
+                                    static fn (string $item): bool => $item !== ''
+                                )
+                            ),
+                            0,
+                            3
+                        );
+                    }
+                }
+            } catch (\Throwable) {
+                // Keep static reply path if external APIs fail.
+            }
+        }
+
         return $this->json([
             'reply' => $reply,
             'suggestions' => $suggestions,
+            'mood' => is_array($coachingData) ? ($coachingData['moodAnalysis'] ?? null) : null,
+            'coach' => is_array($coachingData) ? ($coachingData['coaching'] ?? null) : null,
         ]);
     }
 
@@ -121,5 +163,25 @@ final class ConscienceChatbotController extends AbstractController
         }
 
         return preg_replace('/\s+/', ' ', $normalized) ?? $normalized;
+    }
+
+    private function shouldUseCoaching(string $normalizedMessage): bool
+    {
+        return $this->containsAny($normalizedMessage, [
+            'coach',
+            'coaching',
+            'motivation',
+            'stress',
+            'anx',
+            'fatigue',
+            'plan',
+            'bloque',
+            'procrastination',
+            'priorite',
+            'focus',
+            'action',
+            'aide',
+            'help',
+        ]);
     }
 }

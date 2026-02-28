@@ -1,10 +1,16 @@
-{% extends 'theme/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Creative Lab - NEXA{% endblock %}
+{% block title %}Creative Lab - Executive NEXA{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/creative-lab.css?v=20260215a') }}">
+    <link rel="stylesheet" href="{{ asset('css/creative-lab.css?v=' ~ 'now'|date('U')) }}">
+    <style>
+        .creative-hero h1 {
+            background-clip: text;
+            -webkit-background-clip: text;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
@@ -12,65 +18,74 @@
     <section class="creative-hero">
         <div>
             <h1>Creative Lab</h1>
-            <p>Un espace fun et moderne pour stimuler la concentration: Tic-Tac-Toe, enigmes et puzzle.</p>
+            <p>Affinez votre esprit avec nos défis cognitifs haute fidélité.</p>
         </div>
-        <a href="{{ path('app_conscience_index') }}" class="btn ghost">
-            <i class="fa-solid fa-arrow-left"></i> Retour Conscience
-        </a>
+        <div style="display: flex; gap: 16px;">
+            <a href="{{ path('app_conscience_index') }}" class="btn" style="border-radius: 8px; border: 1px solid var(--nexa-border); color: var(--nexa-text-muted); padding: 8px 16px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600;">
+                <i class="fa-solid fa-arrow-left"></i> Retour Conscience
+            </a>
+        </div>
     </section>
 
     <section class="creative-lab-grid">
+        <!-- Tic-Tac-Toe -->
         <article class="game-card">
             <div class="game-card-head">
                 <h2><i class="fa-solid fa-xmark"></i> Tic-Tac-Toe</h2>
-                <button type="button" class="btn ghost" id="tttResetBtn">Reset</button>
+                <button type="button" class="btn" id="tttResetBtn" style="font-size: 11px; padding: 4px 12px; background: rgba(255,255,255,0.05);">RÉINITIALISER</button>
             </div>
-            <p>Alignez 3 symboles pour gagner.</p>
+            <p>Un duel classique contre notre IA pour stimuler votre sens tactique.</p>
             <div class="ttt-board" id="tttBoard"></div>
             <div class="game-status" id="tttStatus">Votre tour (X)</div>
         </article>
 
+        <!-- Enigme -->
         <article class="game-card">
             <div class="game-card-head">
-                <h2><i class="fa-solid fa-lightbulb"></i> Enigme du jour</h2>
-                <button type="button" class="btn ghost" id="riddleNextBtn">Suivante</button>
+                <h2><i class="fa-solid fa-lightbulb"></i> Énigme Logique</h2>
+                <button type="button" class="btn" id="riddleNextBtn" style="font-size: 11px; padding: 4px 12px; background: rgba(255,255,255,0.05);">SUIVANTE</button>
             </div>
-            <p>Test rapide de logique.</p>
+            <p>Déchiffrez les mystères de la logique pure.</p>
             <div class="riddle-box">
-                <strong id="riddleQuestion"></strong>
-                <input id="riddleAnswer" type="text" placeholder="Votre reponse..." autocomplete="off">
+                <strong id="riddleQuestion">...</strong>
+                <input id="riddleAnswer" type="text" placeholder="Votre réponse..." autocomplete="off">
                 <div class="riddle-actions">
-                    <button type="button" class="btn primary" id="riddleCheckBtn">Verifier</button>
+                    <button type="button" class="btn primary" id="riddleCheckBtn" style="width: 100%; padding: 12px;">VÉRIFIER</button>
                 </div>
                 <div class="game-status" id="riddleStatus"></div>
             </div>
         </article>
 
-        <article class="game-card puzzle-card">
+        <!-- Puzzle -->
+        <article class="game-card">
             <div class="game-card-head">
-                <h2><i class="fa-solid fa-puzzle-piece"></i> Puzzle 3x3</h2>
-                <button type="button" class="btn ghost" id="puzzleShuffleBtn">Melanger</button>
+                <h2><i class="fa-solid fa-puzzle-piece"></i> Puzzle Numérique</h2>
+                <button type="button" class="btn" id="puzzleShuffleBtn" style="font-size: 11px; padding: 4px 12px; background: rgba(255,255,255,0.05);">MÉLANGER</button>
             </div>
-            <p>Remettez les chiffres en ordre de 1 a 8.</p>
+            <p>Réorganisez les tuiles pour atteindre la séquence parfaite.</p>
             <div class="puzzle-grid" id="puzzleGrid"></div>
-            <div class="game-status" id="puzzleStatus">Cliquez une case voisine du vide.</div>
+            <div class="game-status" id="puzzleStatus">Organisez de 1 à 8.</div>
         </article>
 
-        <article class="game-card reflex-card">
+        <!-- Reflex -->
+        <article class="game-card">
             <div class="game-card-head">
-                <h2><i class="fa-solid fa-bolt"></i> Reflex Click</h2>
-                <button type="button" class="btn ghost" id="reflexStartBtn">Start 10s</button>
+                <h2><i class="fa-solid fa-bolt"></i> Reflex Point</h2>
+                <button type="button" class="btn" id="reflexStartBtn" style="font-size: 11px; padding: 4px 12px; background: rgba(59, 130, 246, 0.05); color: #3b82f6; border-radius: 8px; font-weight: 700;">DÉMARRER</button>
             </div>
-            <p>Cliquez le plus vite possible pendant 10 secondes.</p>
-            <button type="button" class="reflex-target" id="reflexTargetBtn">TAP</button>
-            <div class="game-status" id="reflexStatus">Appuyez sur Start pour commencer.</div>
+            <p>Mesurez votre temps de réaction en millisecondes.</p>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 32px;">
+                <div class="reflex-target-box">
+                    <button type="button" class="reflex-target" id="reflexTargetBtn">TAP</button>
+                </div>
+                <div class="game-status" id="reflexStatus" style="width: 100%;">Cliquez sur Démarrer</div>
+            </div>
         </article>
-
     </section>
 </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('js/creative-lab.js?v=20260215a') }}"></script>
+    <script src="{{ asset('js/creative-lab.js?v=' ~ 'now'|date('U')) }}"></script>
 {% endblock %}

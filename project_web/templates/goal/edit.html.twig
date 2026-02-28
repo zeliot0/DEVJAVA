@@ -1,161 +1,177 @@
-﻿{% extends 'theme/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Modifier Objectif{% endblock %}
+{% set body_class = 'conscience-page' %}
+
+{% block title %}MISE À JOUR : {{ goal.titleGoa }} — NEXA Intelligence{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/goal-new-phoenix.css?v=' ~ 'now'|date('U')) }}">
+    <style>
+        .goal-edit-page {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 56px 22px 68px;
+        }
+        .goal-edit-title {
+            margin: 0;
+            font-size: clamp(36px, 5vw, 60px);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 1.04;
+            background: linear-gradient(90deg, #0f172a 0%, #4f46e5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .goal-edit-subtitle {
+            margin: 14px 0 0;
+            font-size: 20px;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+        .goal-edit-toolbar {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 28px 0 34px;
+        }
+        .goal-edit-toolbar .goal-new-btn-primary {
+            background: #2563eb;
+            box-shadow: 0 12px 24px rgba(37, 99, 235, 0.22);
+        }
+        .goal-edit-toolbar .goal-new-btn-primary:hover {
+            background: #1d4ed8;
+        }
+        .goal-edit-form-wrap {
+            border-radius: 28px;
+            border-color: #e2e8f0;
+            box-shadow: 0 8px 26px rgba(15, 23, 42, 0.06);
+            padding: 30px;
+        }
+        .goal-edit-form-wrap .goal-card {
+            border: 1px solid #eef2ff;
+            border-radius: 18px;
+        }
+        .goal-edit-form-wrap .goal-section-title {
+            color: #334155;
+        }
+        .goal-edit-form-wrap .goal-section-bar-orange {
+            background: #3b82f6;
+        }
+        .goal-edit-form-wrap .goal-section-bar-violet {
+            background: #8b5cf6;
+        }
+        .goal-edit-form-wrap .goal-section-bar-green {
+            background: #10b981;
+        }
+        .goal-edit-form-wrap .goal-input:focus,
+        .goal-edit-form-wrap .goal-select:focus,
+        .goal-edit-form-wrap .goal-textarea:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+        }
+        .goal-edit-form-wrap .goal-new-btn-primary {
+            background: #2563eb;
+            box-shadow: 0 10px 22px rgba(37, 99, 235, 0.24);
+        }
+        .goal-edit-form-wrap .goal-new-btn-primary:hover {
+            background: #1d4ed8;
+        }
+        .goal-edit-toolbar .d-inline-flex .btn {
+            border-radius: 12px;
+            border: 1px solid #fecaca;
+            background: #fff5f5;
+            color: #dc2626;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 11px 18px;
+        }
+        .goal-edit-toolbar .d-inline-flex .btn:hover {
+            background: #fee2e2;
+        }
+        .goal-success-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .goal-success-popup.show {
+            display: flex;
+        }
+        .goal-success-card {
+            background: white;
+            padding: 48px;
+            border-radius: 24px;
+            text-align: center;
+            max-width: 500px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            animation: popupIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes popupIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @media (max-width: 860px) {
+            .goal-edit-subtitle {
+                font-size: 17px;
+            }
+            .goal-edit-form-wrap {
+                padding: 18px;
+                border-radius: 20px;
+            }
+            .goal-edit-toolbar .goal-new-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-<div class="container-fluid mt-4 goals-form-page">
-    <div class="d-flex justify-content-between align-items-center mb-4 goals-form-header">
-        <div>
-            <h1 class="h2 mb-1"><i class="fas fa-pen-to-square me-2"></i>Modifier l'objectif</h1>
-            <p class="mb-0">Mettez a jour les informations de votre objectif</p>
-        </div>
-        <div class="goals-inline-actions">
-            <a href="{{ path('app_milestones_index') }}" class="btn btn-outline-secondary goals-btn goals-btn-secondary">
-                <i class="fas fa-flag me-1"></i> Jalons
-            </a>
-            <a href="{{ path('app_goal_index') }}" class="btn btn-outline-secondary goals-btn goals-btn-secondary">
-                <i class="fas fa-arrow-left me-1"></i> Retour
-            </a>
-        </div>
+<div class="goal-new-page goal-edit-page">
+    <header>
+        <h1 class="goal-edit-title">Commandeur d'Objectifs</h1>
+        <p class="goal-edit-subtitle">Modification stratégique de l'objectif <strong>#{{ goal.idGoa }}</strong> et ajustement des paramètres de progression.</p>
+    </header>
+
+    <div class="goal-edit-toolbar">
+        <a href="{{ path('app_goal_index') }}" class="goal-new-btn goal-new-btn-secondary">
+            <i class="fas fa-arrow-left"></i> Retour au Répertoire
+        </a>
+        <a href="{{ path('app_goal_show', {id_g: goal.idGoa}) }}" class="goal-new-btn goal-new-btn-primary">
+            <i class="fas fa-eye"></i> Voir la fiche
+        </a>
+        {% if not is_granted('ROLE_ADMIN') %}
+            <div style="margin-left: auto;">
+                {{ include('goal/_delete_form.html.twig') }}
+            </div>
+        {% endif %}
     </div>
 
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">{{ message }}</div>
-    {% endfor %}
-    {% for message in app.flashes('error') %}
-        <div class="alert alert-danger">{{ message }}</div>
-    {% endfor %}
+    <div class="goal-new-form-wrap goal-edit-form-wrap">
+        {{ include('goal/_form.html.twig', {'button_label': 'Enregistrer les modifications'}) }}
+    </div>
 
-    <div class="card border-0 shadow-sm goals-form-card">
-        <div class="card-body">
-            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-
-            <div class="goals-form-layout">
-                <div class="goals-form-main">
-                    <section class="goals-section">
-                        <h3 class="goals-section-title"><i class="fas fa-pen"></i> Informations principales</h3>
-                        <div class="mb-3">
-                            {{ form_label(form.titleGoa, 'Titre', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
-                            {{ form_widget(form.titleGoa, {'attr': {'class': 'form-control'}}) }}
-                            <div class="text-danger">{{ form_errors(form.titleGoa) }}</div>
-                        </div>
-
-                        <div class="mb-0">
-                            {{ form_label(form.descriptionGoa, 'Description', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
-                            {{ form_widget(form.descriptionGoa, {'attr': {'class': 'form-control', 'rows': 4}}) }}
-                            <div class="text-danger">{{ form_errors(form.descriptionGoa) }}</div>
-                        </div>
-                    </section>
-
-                    <section class="goals-section">
-                        <h3 class="goals-section-title"><i class="fas fa-calendar-alt"></i> Planification</h3>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                {{ form_label(form.dateDebutGoa, 'Date de début', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
-                                {{ form_widget(form.dateDebutGoa, {'attr': {'class': 'form-control'}}) }}
-                                <div class="text-danger">{{ form_errors(form.dateDebutGoa) }}</div>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                {{ form_label(form.dateFinalGoa, 'Date de fin', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
-                                {{ form_widget(form.dateFinalGoa, {'attr': {'class': 'form-control'}}) }}
-                                <div class="text-danger">{{ form_errors(form.dateFinalGoa) }}</div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                {{ form_label(form.statusGoa, 'Statut', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
-                                {{ form_widget(form.statusGoa, {'attr': {'class': 'form-control'}}) }}
-                                <div class="text-danger">{{ form_errors(form.statusGoa) }}</div>
-                            </div>
-
-                            <div class="col-md-4 mb-3">
-                                <div class="progress-edit-container">
-                                    <label class="form-label fw-semibold">Progression</label>
-
-                                    {% set p = form.progressGoa.vars.value ?? 0 %}
-                                    {{ form_widget(form.progressGoa, {'attr': {'class': 'd-none', 'id': 'realProgress'}}) }}
-
-                                    <div class="progress-modern">
-                                        <button type="button" class="progress-btn down">-</button>
-                                        <div class="progress-bar-modern">
-                                            <div class="progress-fill-modern" id="progressFill"></div>
-                                        </div>
-                                        <button type="button" class="progress-btn up">+</button>
-                                    </div>
-
-                                    <div class="progress-percent" id="progressText">{{ p }}%</div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4 mb-3">
-                                {{ form_label(form.priorityGoa, 'Priorité', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
-                                {{ form_widget(form.priorityGoa, {'attr': {'class': 'form-control'}}) }}
-                                <div class="text-danger">{{ form_errors(form.priorityGoa) }}</div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section class="goals-section">
-                        <h3 class="goals-section-title"><i class="fas fa-sliders-h"></i> Détails complémentaires</h3>
-                        <div class="mb-3">
-                            {{ form_label(form.categoryGoa, 'Catégorie', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
-                            {{ form_widget(form.categoryGoa, {'attr': {'class': 'form-control'}}) }}
-                            <div class="text-danger">{{ form_errors(form.categoryGoa) }}</div>
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form_label(form.notesGoa, 'Notes', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
-                            {{ form_widget(form.notesGoa, {'attr': {'class': 'form-control', 'rows': 3}}) }}
-                            <div class="text-danger">{{ form_errors(form.notesGoa) }}</div>
-                        </div>
-
-                        <div class="mb-0">
-                            {{ form_label(form.colorGoa, 'Couleur', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
-                            {{ form_widget(form.colorGoa, {'attr': {'class': 'form-control'}}) }}
-                            <div class="text-danger">{{ form_errors(form.colorGoa) }}</div>
-                        </div>
-                    </section>
-
-                    <div class="d-flex gap-2 justify-content-end mt-4 pt-3 border-top goals-form-actions">
-                        <a href="{{ path('app_goal_index') }}" class="btn btn-outline-secondary goals-btn goals-btn-secondary">
-                            <i class="fas fa-times me-1"></i> Annuler
-                        </a>
-                        <button type="submit" class="btn btn-primary goals-btn goals-btn-primary">
-                            <i class="fas fa-check me-1"></i> Mettre à jour
-                        </button>
-                    </div>
-                </div>
-
-                <aside class="goals-form-aside" aria-label="Aide">
-                    <div class="goals-aside-card">
-                        <h3><i class="fas fa-lightbulb"></i> Conseils rapides</h3>
-                        <ul>
-                            <li>Vérifiez les dates avant d'enregistrer.</li>
-                            <li>Maintenez la progression réaliste.</li>
-                            <li>Utilisez des notes courtes et claires.</li>
-                        </ul>
-                    </div>
-                </aside>
-            </div>
-
-            <!-- SUCCESS CELEBRATION -->
-            <div id="goalSuccessPopup" class="goal-success-popup">
-                <div class="goal-success-card">
-                    <div class="goal-success-flag"></div>
-                    <h2>Congrats! &#127881;</h2>
-                    <p class="lead">You've reached your goal!</p>
-                    <p class="goal-message">
-                        Do not forget, our goal is to <strong>"Free Palestine"</strong>.
-                    </p>
-                    <button type="button" class="btn btn-light mt-3" id="closeGoalPopup">
-                        Close
-                    </button>
-                </div>
-            </div>
-
-            {{ form_end(form) }}
+    <div id="goalSuccessPopup" class="goal-success-popup">
+        <div class="goal-success-card">
+            <div style="font-size: 64px; margin-bottom: 24px;">🎉</div>
+            <h2 style="font-weight: 800; color: #1a1b23; margin-bottom: 16px;">Vecteur Accomplis !</h2>
+            <p style="color: #6b7280; line-height: 1.6; margin-bottom: 32px;">
+                Vous avez atteint 100% de votre objectif. La matrice opérationnelle est synchronisée.
+                N'oubliez pas, notre vision ultime est la liberation et le succes collectif.
+            </p>
+            <button type="button" class="goal-new-btn goal-new-btn-primary" id="closeGoalPopup" style="width: 100%; justify-content: center;">
+                Fermer
+            </button>
         </div>
     </div>
 </div>
@@ -163,59 +179,27 @@
 
 {% block javascripts %}
 {{ parent() }}
-
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-
-    const input = document.querySelector('[name$="[progressGoa]"]');
-    const fill = document.getElementById("progressFill");
-    const text = document.getElementById("progressText");
-
+    const input = document.getElementById("goal_progressGoa");
     const popup = document.getElementById("goalSuccessPopup");
     const closeBtn = document.getElementById("closeGoalPopup");
 
-    if (!input || !fill || !text) return;
+    if (!input) return;
 
-    function color(v) {
-        if (v == 100) return "#22c55e";
-        if (v > 60) return "#3b82f6";
-        if (v > 30) return "#f59e0b";
-        return "#ef4444";
-    }
-
-    function update(v) {
-        v = Math.max(0, Math.min(100, v));
-        input.value = v;
-        fill.style.width = v + "%";
-        fill.style.background = color(v);
-        text.innerText = v + "%";
-
-        // Show popup when 100%
-        if (v === 100 && popup) {
+    function checkSuccess() {
+        if (parseFloat(input.value) >= 100) {
             popup.classList.add("show");
         }
     }
 
-    // load value from database
-    update(parseFloat(input.value || 0));
-
-    document.querySelector(".progress-btn.up").addEventListener("click", () => {
-        update(parseFloat(input.value || 0) + 10);
-    });
-
-    document.querySelector(".progress-btn.down").addEventListener("click", () => {
-        update(parseFloat(input.value || 0) - 10);
-    });
+    input.addEventListener("change", checkSuccess);
 
     if (closeBtn) {
-        closeBtn.addEventListener("click", () => {
+        closeBtn.addEventListener("click", function () {
             popup.classList.remove("show");
         });
     }
-
 });
 </script>
-
 {% endblock %}
-
-

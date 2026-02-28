@@ -254,9 +254,7 @@ class UserResponseController extends AbstractController
             return $this->redirectToRoute('app_theme_rapport', ['id' => $theme->getIdT()]);
         }
 
-        $questions = $questionRepository->findActiveByThemeOrdered($theme);
-        $responses = array_values($this->latestResponsesByQuestion($questions, $em));
-        $details = $this->buildReportDetails($responses);
+        $analysis = $this->buildThemeAnalysis($theme, $em, $questionRepository);
 
         $options = new Options();
         $options->set('defaultFont', 'DejaVu Sans');
@@ -264,7 +262,8 @@ class UserResponseController extends AbstractController
         $dompdf = new Dompdf($options);
         $html = $this->renderView('user_response/rapport_pdf.html.twig', [
             'theme' => $theme,
-            'details' => $details,
+            'details' => $analysis['details'],
+            'taskSuggestions' => $analysis['taskSuggestions'],
         ]);
 
         $dompdf->loadHtml($html);
@@ -914,6 +913,7 @@ class UserResponseController extends AbstractController
     {
         $today = new \DateTimeImmutable('today');
         $themeName = trim((string) ($theme->getNom() ?? 'Conscience'));
+        $themeIntention = trim((string) ($theme->getIntention() ?? ''));
         $suggestions = [];
 
         foreach ($details as $idx => $item) {
@@ -1003,6 +1003,32 @@ class UserResponseController extends AbstractController
                 'todo',
                 $today->modify('+2 day'),
                 sprintf('Tendance negative detectee (down=%d).', (int) ($trend['down'] ?? 0))
+            );
+        }
+
+        if ($suggestions === []) {
+            $suggestions[] = $this->makeReportTaskSuggestion(
+                'fallback-review',
+                $theme,
+                sprintf('[%s] Revue preventive du theme', $themeName),
+                'Faire une revue rapide des dernieres reponses et confirmer une action concrete pour cette semaine.',
+                'med',
+                'todo',
+                $today->modify('+2 day'),
+                'Aucun signal critique detecte: suggestion preventive.'
+            );
+
+            $suggestions[] = $this->makeReportTaskSuggestion(
+                'fallback-intention',
+                $theme,
+                sprintf('[%s] Action alignee a l intention', $themeName),
+                $themeIntention !== ''
+                    ? sprintf('Definir une micro-action mesurable alignee a: "%s".', $themeIntention)
+                    : 'Definir une micro-action mesurable alignee au theme.',
+                'low',
+                'todo',
+                $today->modify('+4 day'),
+                'Suggestion generee automatiquement pour maintenir la progression.'
             );
         }
 

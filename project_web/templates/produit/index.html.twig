@@ -1,162 +1,285 @@
-﻿{% extends 'theme/base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
-{% block title %}Produits - NEXA{% endblock %}
+{% block title %}Nexa AI - Centre Logistique{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/product-index-modern.css?v=20260214b') }}">
-    <link rel="stylesheet" href="{{ asset('css/product-modern-pro-cards.css?v=20260214a') }}">
+    <style>
+        :root {
+            --ai-bg: #ffffff;
+            --ai-accent: #0066ff;
+            --ai-danger: #ef4444;
+            --ai-text-main: #0a0a0a;
+            --ai-text-muted: #737373;
+            --ai-border: rgba(0, 0, 0, 0.04);
+        }
+
+        /* Orbes de fond */
+        .bg-orb {
+            position: fixed;
+            width: 800px;
+            height: 800px;
+            border-radius: 50%;
+            filter: blur(150px);
+            z-index: -1;
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        /* Cartes Bento Stats */
+        .stat-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 24px;
+            border: 1px solid var(--ai-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+            transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Product Card */
+        .product-card {
+            background: #ffffff;
+            border-radius: 28px;
+            border: 1px solid var(--ai-border);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.06);
+            border-color: var(--ai-accent);
+        }
+
+        .product-image {
+            height: 200px;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .weight-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            z-index: 10;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            background: #ffffff;
+            border: 1px solid var(--ai-border);
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        }
+
+        /* Animations */
+        .reveal { opacity: 0; transform: translateY(20px); }
+    </style>
 {% endblock %}
 
 {% block body %}
-{% set currentSort = app.request.get('sort') %}
-{% set currentDir = (app.request.get('dir') ?: 'DESC')|upper %}
-{% set queryParams = app.request.query.all %}
-{% set totalProducts = produits|length %}
-{% set totalStock = 0 %}
-{% set lowStockCount = 0 %}
-{% for p in produits %}
-    {% set qty = p.quantiteStock ?? 0 %}
-    {% set totalStock = totalStock + qty %}
-    {% if qty < 5 %}
-        {% set lowStockCount = lowStockCount + 1 %}
-    {% endif %}
-{% endfor %}
+    {% set totalProducts = produits|length %}
+    {% set totalStock = 0 %}
+    {% set lowStockCount = 0 %}
+    {% for p in produits %}
+        {% set qty = p.quantiteStock ?? 0 %}
+        {% set totalStock = totalStock + qty %}
+        {% if qty < 5 %}
+            {% set lowStockCount = lowStockCount + 1 %}
+        {% endif %}
+    {% endfor %}
 
-<div class="produits-page-modern">
-    <div class="page-header produits-header-modern">
-        <div>
-            <div class="produits-kicker">Stock manager</div>
-            <h1>Produits</h1>
-            <p>{{ is_granted('ROLE_ADMIN') ? 'Consultation du stock (admin)' : 'Gestion du stock et des informations produits' }}</p>
-        </div>
+    <div class="bg-orb top-[-100px] left-[-100px] bg-blue-400"></div>
+    <div class="bg-orb bottom-[-100px] right-[-100px] bg-indigo-400"></div>
 
-        <div class="page-actions produits-actions-modern">
-            <a href="{{ path('app_mouvement_index') }}" class="btn">
-                <i class="fa-solid fa-right-left"></i> Mouvements
-            </a>
-            {% if not is_granted('ROLE_ADMIN') %}
-                <a href="{{ path('app_produit_stats') }}" class="btn">Stats</a>
-                <a href="{{ path('app_produit_pdf', queryParams) }}" class="btn">PDF</a>
-                <a href="{{ path('app_produit_new') }}" class="btn primary">+ Ajouter un produit</a>
-            {% endif %}
-        </div>
-    </div>
+    <main class="flex-1 max-w-[1400px] mx-auto w-full py-16 px-4">
+        
+        <!-- SECTION TITRE -->
+        <section class="reveal mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+            <div class="max-w-2xl">
+                <h1 class="text-6xl font-[900] tracking-tight text-slate-900 mb-6 leading-[1.1]">
+                    Centre <span class="text-blue-600">Logistique</span>
+                </h1>
+                <p class="text-slate-400 font-medium text-xl leading-relaxed">
+                    Orchestration des flux matériels et supervision de l'inventaire systémique.
+                </p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+                <a href="{{ path('app_mouvement_index') }}" class="px-5 py-2.5 bg-white border border-slate-100 rounded-xl text-xs font-bold text-slate-600 hover:bg-gray-50 transition-all shadow-sm no-underline">Flux & Mouvements</a>
+                <a href="{{ path('app_produit_articles') }}" class="px-5 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-black transition-all shadow-lg shadow-slate-100 no-underline">Vue Catalogue</a>
+                <a href="{{ path('app_produit_puzzle') }}" class="px-3 py-2 bg-emerald-50 border border-emerald-100 rounded-lg text-[11px] font-bold text-emerald-700 hover:bg-emerald-100 transition-all shadow-sm no-underline">Puzzle</a>
+                <form method="post" action="{{ path('app_produit_send_low_stock_alerts') }}" class="m-0">
+                    <input type="hidden" name="_token" value="{{ csrf_token('send_low_stock_alerts') }}">
+                    <button type="submit" class="px-5 py-2.5 bg-amber-50 border border-amber-200 rounded-xl text-xs font-bold text-amber-700 hover:bg-amber-100 transition-all shadow-sm">
+                        Envoyer alertes stock
+                    </button>
+                </form>
+                {% if not is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('app_produit_new') }}" class="px-5 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 no-underline">+ Produit</a>
+                {% endif %}
+            </div>
+        </section>
 
-    <section class="produits-kpi-row" aria-label="Indicateurs produits">
-        <article class="produits-kpi">
-            <span>Total produits</span>
-            <strong>{{ totalProducts }}</strong>
-        </article>
-        <article class="produits-kpi">
-            <span>Stock cumulé</span>
-            <strong>{{ totalStock }}</strong>
-        </article>
-        <article class="produits-kpi {{ lowStockCount > 0 ? 'is-alert' : '' }}">
-            <span>Stock critique</span>
-            <strong>{{ lowStockCount }}</strong>
-        </article>
-    </section>
-
-    <form method="get" class="search-bar produits-search-modern">
-        <div class="produits-search-input">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" name="q" value="{{ q }}" placeholder="Rechercher un produit..." autocomplete="off">
-        </div>
-
-        <div class="produits-search-right">
-            <label for="sort">Trier par :</label>
-            <select id="sort" name="sort">
-                <option value="" {{ currentSort is empty ? 'selected' : '' }}>Date d'ajout</option>
-                <option value="nom" {{ currentSort == 'nom' ? 'selected' : '' }}>Nom</option>
-                <option value="categorie" {{ currentSort == 'categorie' ? 'selected' : '' }}>Catégorie</option>
-                <option value="stock" {{ currentSort == 'stock' ? 'selected' : '' }}>Stock</option>
-            </select>
-
-            <select name="dir">
-                <option value="DESC" {{ currentDir == 'DESC' ? 'selected' : '' }}>DESC</option>
-                <option value="ASC" {{ currentDir == 'ASC' ? 'selected' : '' }}>ASC</option>
-            </select>
-
-            <button type="submit" class="btn primary">
-                <i class="fa-solid fa-filter"></i> Rechercher
-            </button>
-
-            {% if q or currentSort %}
-                <a class="btn" href="{{ path('app_produit_index') }}">
-                    <i class="fa-solid fa-rotate-left"></i> Reset
-                </a>
-            {% endif %}
-        </div>
-    </form>
-
-    <div class="pack-grid produits-grid-modern">
-        {% for produit in produits %}
-            {% set lowStock = produit.quantiteStock is not null and produit.quantiteStock < 5 %}
-            {% set watchStock = produit.quantiteStock is not null and produit.quantiteStock >= 5 and produit.quantiteStock < 15 %}
-            {% set stockStateClass = lowStock ? 'is-low' : (watchStock ? 'is-watch' : 'is-ok') %}
-            {% set stockStateLabel = lowStock ? 'Critique' : (watchStock ? 'A surveiller' : 'Stable') %}
-
-            <article class="pack-card produits-card-modern {{ lowStock ? 'low-stock' : '' }}">
-                <div class="produits-card-head">
-                    <div class="produits-item-media">
-                        <div class="thumb produits-thumb-modern">
-                            {% if produit.photoP %}
-                                <img src="{{ asset('uploads/produits/' ~ produit.photoP) }}" alt="{{ produit.nomP }}">
-                            {% else %}
-                                <span class="thumb-placeholder">{{ produit.nomP|slice(0, 1)|upper }}</span>
-                            {% endif %}
+        <!-- INDICATEURS LOGISTIQUES -->
+        <section class="reveal mb-16">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="stat-card">
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-4">Références Actives</span>
+                    <div class="flex items-end justify-between">
+                        <span class="text-5xl font-extrabold text-slate-900">{{ totalProducts }}</span>
+                        <span class="text-xs font-bold text-slate-400 mb-2">Items uniques</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-4">Capacité Instantanée</span>
+                    <div class="flex items-end justify-between">
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-5xl font-extrabold text-slate-900">{{ totalStock }}</span>
+                            <span class="text-lg font-bold text-slate-400">unités</span>
                         </div>
-                        <div class="produits-item-text">
-                            <h3>{{ produit.nomP }}</h3>
-                            <span>#{{ produit.idP }}</span>
-                            <div class="produits-health {{ stockStateClass }}">
-                                <i class="fa-solid fa-wave-square"></i> {{ stockStateLabel }}
+                        <div class="w-24 h-2 bg-gray-100 rounded-full mb-3 overflow-hidden">
+                            {% set progressWidth = totalProducts > 0 ? (totalStock / (totalProducts * 100) * 100)|round : 0 %}
+                            <div class="bg-blue-600 h-full" style="width: {{ progressWidth > 100 ? 100 : progressWidth }}%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card {{ lowStockCount > 0 ? 'bg-red-50/20 border-red-100' : '' }}">
+                    <span class="text-[10px] font-black {{ lowStockCount > 0 ? 'text-red-500' : 'text-slate-400' }} uppercase tracking-widest block mb-4">Alertes Rupture</span>
+                    <div class="flex items-end justify-between">
+                        <span class="text-5xl font-extrabold {{ lowStockCount > 0 ? 'text-red-600' : 'text-slate-900' }}">{{ lowStockCount }}</span>
+                        <span class="text-xs font-bold {{ lowStockCount > 0 ? 'text-red-400' : 'text-slate-400' }} mb-2">Actions requises</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEARCH & FILTERS -->
+        <section class="reveal mb-12">
+            <form method="get" class="flex flex-col md:flex-row gap-4">
+                <div class="filter-bar flex-1 p-2 flex items-center gap-3">
+                    <div class="pl-3 text-slate-300">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    </div>
+                    <input type="text" name="q" value="{{ q|default('') }}" placeholder="Rechercher une référence..." class="flex-1 bg-transparent border-none focus:ring-0 text-sm font-semibold text-slate-800 outline-none">
+                </div>
+                <div class="filter-bar px-4 py-2 flex items-center gap-4">
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Trier par :</span>
+                    <select name="sort" onchange="this.form.submit()" class="bg-transparent border-none focus:ring-0 text-sm font-bold text-slate-800 cursor-pointer outline-none">
+                        <option value="">Défaut</option>
+                        <option value="nom" {{ app.request.get('sort') == 'nom' ? 'selected' : '' }}>Nom (A-Z)</option>
+                        <option value="stock" {{ app.request.get('sort') == 'stock' ? 'selected' : '' }}>Niveau de Stock</option>
+                    </select>
+                </div>
+                <button type="submit" class="hidden"></button>
+            </form>
+        </section>
+
+        <!-- PRODUCT GRID -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
+            {% for produit in produits %}
+                {% set stock = produit.quantiteStock ?? 0 %}
+                {% set statusColor = stock < 5 ? 'text-red-600 bg-red-50' : (stock < 15 ? 'text-orange-600 bg-orange-50' : 'text-emerald-600 bg-emerald-50') %}
+                
+                <div class="reveal product-card group">
+                    <div class="product-image">
+                        <div class="weight-badge {{ statusColor }}">
+                            {{ stock }} {{ produit.uniteP }}
+                        </div>
+                        {% if produit.photoP %}
+                            <img src="{{ (produit.photoP starts with 'http') ? produit.photoP : asset('uploads/produits/' ~ produit.photoP) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        {% else %}
+                            <svg class="text-slate-200" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="M3.3 7 12 12l8.7-5"/></svg>
+                        {% endif %}
+                    </div>
+                    <div class="p-8 flex-1 flex flex-col">
+                        <h3 class="text-2xl font-extrabold text-slate-900 mb-4">{{ produit.nomP }}</h3>
+                        <div class="flex items-center gap-4 text-slate-400 mb-8">
+                            <div class="flex items-center gap-1.5">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                                <span class="text-[11px] font-bold uppercase">{{ produit.categorieP ?: 'N/C' }}</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                <span class="text-[11px] font-bold uppercase">{{ produit.emplacement ?: 'N/C' }}</span>
                             </div>
                         </div>
-                    </div>
-                    <span class="nexa-badge {{ lowStock ? 'high' : '' }}">{{ produit.categorieP ?: 'Stock' }}</span>
-                </div>
-
-                <div class="produits-stock-box">
-                    <span>Stock actuel</span>
-                    <strong>{{ produit.quantiteStock }} <small>{{ produit.uniteP }}</small></strong>
-                </div>
-
-                <div class="produits-meta">
-                    <div class="nexa-meta-item produits-meta-item">
-                        <i class="fa-solid fa-location-dot"></i>
-                        <span>{{ produit.emplacement ?: '—' }}</span>
-                    </div>
-                    <div class="nexa-meta-item produits-meta-item">
-                        <i class="fa-solid fa-calendar"></i>
-                        <span>Ajout: {{ produit.dateAjout ? produit.dateAjout|date('d/m/Y') : '—' }}</span>
+                        
+                        <div class="mt-auto flex gap-2">
+                             <a href="{{ path('app_produit_show', {id_p: produit.idP}) }}" class="flex-1 py-4 bg-slate-50 text-slate-900 rounded-2xl font-bold text-sm hover:bg-slate-900 hover:text-white transition-all text-center no-underline">Fiche Détaillée</a>
+                             {% if not is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path('app_produit_edit', {id_p: produit.idP}) }}" class="px-5 py-4 bg-white border border-slate-100 text-slate-400 rounded-2xl hover:bg-slate-900 hover:text-white transition-all text-center">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                </a>
+                             {% endif %}
+                        </div>
                     </div>
                 </div>
-
-                <div class="nexa-actions-cell produits-actions-row">
-                    <a href="{{ path('app_produit_show', {'id_p': produit.idP}) }}" class="nexa-btn-icon view" title="Voir">
-                        <i class="fa-solid fa-eye"></i>
-                    </a>
-                    {% if not is_granted('ROLE_ADMIN') %}
-                    <a href="{{ path('app_produit_edit', {'id_p': produit.idP}) }}" class="nexa-btn-icon edit" title="Modifier">
-                        <i class="fa-solid fa-pen"></i>
-                    </a>
-                    <form method="post" action="{{ path('app_produit_delete', {'id_p': produit.idP}) }}" onsubmit="return confirm('Supprimer ?');" style="display:inline;">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.idP) }}">
-                        <button class="nexa-btn-icon delete" title="Supprimer" type="submit">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </form>
-                    {% endif %}
+            {% else %}
+                <div class="reveal col-span-full text-center py-20 bg-slate-50 rounded-[32px] border border-dashed border-slate-200">
+                    <span class="text-6xl mb-6 block">📦</span>
+                    <h3 class="text-2xl font-black text-slate-900 mb-2">Inventaire à Zéro</h3>
+                    <p class="text-slate-400 font-medium">Aucun produit ne correspond à l'état actuel de la base.</p>
                 </div>
-            </article>
-        {% else %}
-            <div class="produits-empty">Aucun produit enregistré.</div>
-        {% endfor %}
-    </div>
-</div>
+            {% endfor %}
+        </section>
+
+    </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tl = gsap.timeline({ defaults: { ease: "expo.out", duration: 1.2 } });
+
+            // Séquence de révélation
+            tl.to(".reveal", {
+                opacity: 1,
+                y: 0,
+                stagger: 0.1,
+                duration: 1.4
+            });
+
+            // Mouvement des orbes
+            gsap.to(".bg-orb", {
+                x: "random(-60, 60)",
+                y: "random(-60, 60)",
+                duration: 12,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut"
+            });
+
+            // Micro-interactions
+            document.querySelectorAll('.stat-card, .product-card, button, a.btn').forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    gsap.to(el, { scale: 1.01, duration: 0.3 });
+                });
+                el.addEventListener('mouseleave', () => {
+                    gsap.to(el, { scale: 1, duration: 0.3 });
+                });
+            });
+        });
+    </script>
 {% endblock %}

@@ -1,0 +1,30 @@
+﻿{% extends 'base.html.twig' %}
+
+{% set body_class = 'conscience-page' %}
+
+{% block title %}Édition Message Temporel — NEXA{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/time-message-modern.css?v=' ~ 'now'|date('U')) }}">
+{% endblock %}
+
+{% block body %}
+<div class="conscience-modern-page tm-page">
+
+    <header class="tm-header">
+        <div>
+            <h1 class="tm-title"><i class="fas fa-pen-to-square"></i> Modifier la Correspondance</h1>
+            <p class="tm-subtitle">Ajustement du contenu ou de la programmation temporelle.</p>
+        </div>
+        <div class="tm-actions">
+            <a href="{{ path('app_time_message_index') }}" class="tm-btn"><i class="fas fa-arrow-left"></i> Retour au Journal</a>
+        </div>
+    </header>
+
+    <div class="tm-form-card">
+        {{ include('time_message/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,119 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block title %}Phoenix Goals — NEXA Intelligence{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/phoenix-goal-modern.css?v=' ~ 'now'|date('U')) }}">
+{% endblock %}
+
+{% block body %}
+<div class="pg-page">
+
+    <header class="pg-header">
+        <div class="pg-header-title-wrap">
+            <div class="pg-header-logo">
+                <i class="fa-solid fa-fire"></i>
+                <h1>Phoenix Goals</h1>
+            </div>
+            <p class="pg-header-subtitle">Système de résurrection et d'analyse post-mortem des objectifs.</p>
+        </div>
+        <div class="pg-header-actions">
+            <a href="{{ path('app_goal_index') }}" class="pg-btn pg-btn-white">
+                <i class="fa-solid fa-crosshairs"></i> Répertoire Goals
+            </a>
+            <a href="{{ path('app_phoenix_goal_new') }}" class="pg-btn pg-btn-orange">
+                <i class="fa-solid fa-plus"></i> Nouveau Phoenix
+            </a>
+        </div>
+    </header>
+
+    {% set total = phoenix_goals|length %}
+    {% set immortals = 0 %}
+    {% set risen = 0 %}
+    {% set avgLevel = 0 %}
+    {% for p in phoenix_goals %}
+        {% if p.immortalityEnabled %}{% set immortals = immortals + 1 %}{% endif %}
+        {% if p.phoenixPhase == 'risen' %}{% set risen = risen + 1 %}{% endif %}
+        {% set avgLevel = avgLevel + (p.phoenixLevel|default(0)) %}
+    {% endfor %}
+    {% set avgLevel = total > 0 ? (avgLevel / total)|round(1) : 0 %}
+
+    <section class="pg-kpi-grid">
+        <article class="pg-kpi-card">
+            <span class="pg-kpi-label">TOTAL PHOENIX</span>
+            <strong class="pg-kpi-value">{{ total }}</strong>
+        </article>
+        <article class="pg-kpi-card">
+            <span class="pg-kpi-label">RESURRECTED (RISEN)</span>
+            <strong class="pg-kpi-value">{{ risen }}</strong>
+        </article>
+        <article class="pg-kpi-card">
+            <span class="pg-kpi-label">IMMORTALS</span>
+            <strong class="pg-kpi-value">{{ immortals }}</strong>
+        </article>
+        <article class="pg-kpi-card">
+            <span class="pg-kpi-label">AVG LEVEL</span>
+            <strong class="pg-kpi-value">{{ avgLevel }}</strong>
+        </article>
+    </section>
+
+    <div style="margin-bottom: 24px;">
+        <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; font-weight: 800; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.1em;">
+            <div style="width: 3px; height: 16px; background: #3b82f6; border-radius: 2px;"></div>
+            RÉPERTOIRE DE PERFORMANCE
+        </div>
+    </div>
+
+    <div class="pg-table-card">
+        <div class="pg-table-header">
+            <div class="pg-table-th">ID</div>
+            <div class="pg-table-th">OBJECTIF ORIGINEL</div>
+            <div class="pg-table-th">PHASE ACTUELLE</div>
+            <div class="pg-table-th" style="text-align: center;">NIVEAU</div>
+            <div class="pg-table-th">DATE D'ÉCHEC</div>
+            <div class="pg-table-th">RENAISSANCE</div>
+            <div class="pg-table-th">IMMORTALITY</div>
+            <div class="pg-table-th" style="text-align: right;">ACTIONS</div>
+        </div>
+
+        <div class="pg-table-body">
+            {% for phoenix_goal in phoenix_goals %}
+                <div class="pg-table-row">
+                    <div class="pg-cell-id">#{{ phoenix_goal.id }}</div>
+                    <div class="pg-cell-text">
+                        {{ phoenix_goal.originalGoal ? phoenix_goal.originalGoal.titleGoa : 'Non défini' }}
+                    </div>
+                    <div>
+                        <span class="pg-pill phase-{{ phoenix_goal.phoenixPhase|default('ashes')|lower }}">
+                            {{ phoenix_goal.phoenixPhase|default('ashes')|upper }}
+                        </span>
+                    </div>
+                    <div class="pg-cell-text" style="text-align: center;">Lv.{{ phoenix_goal.phoenixLevel }}</div>
+                    <div class="pg-cell-muted">{{ phoenix_goal.deathDate ? phoenix_goal.deathDate|date('d M Y') : '-' }}</div>
+                    <div class="pg-cell-muted">{{ phoenix_goal.rebirthDate ? phoenix_goal.rebirthDate|date('d M Y') : '-' }}</div>
+                    <div>
+                        {% if phoenix_goal.immortalityEnabled %}
+                            <span class="pg-pill phase-risen" style="background: #f0fdf4;">ENABLED</span>
+                        {% else %}
+                            <span class="pg-pill" style="background: #f8fafc; color: #94a3b8;">DISABLED</span>
+                        {% endif %}
+                    </div>
+                    <div style="text-align: right;">
+                        <a href="{{ path('app_phoenix_goal_show', {'id': phoenix_goal.id}) }}" class="pg-btn pg-btn-white" style="padding: 6px 12px; display: inline-flex;">
+                            <i class="fa-solid fa-eye" style="font-size: 13px;"></i>
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="pg-empty-container">
+                    <div class="pg-empty-icon">🔥</div>
+                    <p class="pg-empty-title">Aucun Phoenix Goal actif.</p>
+                    <p class="pg-empty-subtitle">Transformez un échec en opportunité de renaissance.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

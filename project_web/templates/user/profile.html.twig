@@ -8,45 +8,170 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/profile-form-modern.css?v=20260214a') }}">
+    <link rel="stylesheet" href="{{ asset('css/profile-form-modern.css?v=20260215c') }}">
 {% endblock %}
 
 {% block admin_content %}
+    {% set profilePhoto = user.profilePhoto ? asset('uploads/profiles/' ~ user.profilePhoto) : null %}
     <div class="panel profile-modern-panel">
         <div class="panel-title">
             <i class="fa-solid fa-user-pen"></i>
             Informations du compte
         </div>
 
-        <form method="post" action="{{ path('app_profile') }}" class="profile-modern-form">
+        <form method="post" action="{{ path('app_profile') }}" class="profile-modern-form" enctype="multipart/form-data">
             <input type="hidden" name="_token" value="{{ csrf_token('profile_update') }}">
+            {% if errors._global is defined %}
+                <div class="profile-modern-error">{{ errors._global }}</div>
+            {% endif %}
+
+            <div class="profile-modern-head">
+                <div class="profile-modern-avatar">
+                    {% if profilePhoto %}
+                        <img src="{{ profilePhoto }}" alt="Photo de profil">
+                    {% else %}
+                        {{ user.nom|first|upper }}
+                    {% endif %}
+                </div>
+                <div class="profile-modern-head-text">
+                    <div class="profile-modern-name">{{ user.nom }}</div>
+                    <div class="profile-modern-email">{{ user.email }}</div>
+                    <label for="profile_photo" class="profile-modern-upload-label">
+                        <i class="fa-solid fa-camera"></i> Changer la photo
+                    </label>
+                    <button type="submit" name="generate_comic_avatar" value="1" class="profile-modern-upload-label" formnovalidate>
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Avatar comique
+                    </button>
+                    {% if profilePhoto %}
+                        <button type="submit" name="remove_photo" value="1" class="profile-modern-remove-photo-btn" formnovalidate>
+                            <i class="fa-solid fa-trash"></i> Supprimer la photo
+                        </button>
+                    {% endif %}
+                    <input id="profile_photo" name="profile_photo" type="file" accept="image/png,image/jpeg,image/webp" class="profile-modern-file-input">
+                    <small class="profile-modern-upload-help">Format JPG, PNG ou WEBP. Max 2MB.</small>
+                    <small id="profile-photo-name" class="profile-modern-upload-name"></small>
+                    {% if errors.profile_photo is defined %}
+                        <small class="profile-modern-error">{{ errors.profile_photo }}</small>
+                    {% endif %}
+                </div>
+            </div>
 
             <label for="nom" class="profile-modern-label">Nom</label>
-            <input id="nom" name="nom" type="text" value="{{ user.nom }}" required
+            <input id="nom" name="nom" type="text" value="{{ form and form.nom is defined ? form.nom : user.nom }}" required
                    class="profile-modern-input">
+            {% if errors.nom is defined %}
+                <small class="profile-modern-error">{{ errors.nom }}</small>
+            {% endif %}
 
             <label for="email" class="profile-modern-label">Email</label>
-            <input id="email" name="email" type="email" value="{{ user.email }}" required
+            <input id="email" name="email" type="email" value="{{ user.email }}" readonly
                    class="profile-modern-input">
+            <small class="profile-modern-upload-help">L'email ne peut pas etre modifie depuis le profil.</small>
+            {% if errors.email is defined %}
+                <small class="profile-modern-error">{{ errors.email }}</small>
+            {% endif %}
 
             <hr class="profile-modern-divider">
 
             <div class="profile-modern-subtitle">Changer le mot de passe (optionnel)</div>
-            <input name="current_password" type="password" placeholder="Mot de passe actuel"
+            <input name="current_password" type="password" placeholder="Mot de passe actuel" autocomplete="off"
                    class="profile-modern-input">
-            <input name="new_password" type="password" placeholder="Nouveau mot de passe"
+            {% if errors.current_password is defined %}
+                <small class="profile-modern-error">{{ errors.current_password }}</small>
+            {% endif %}
+            <input name="new_password" type="password" placeholder="Nouveau mot de passe" autocomplete="new-password"
                    class="profile-modern-input">
-            <input name="confirm_password" type="password" placeholder="Confirmer le nouveau mot de passe"
+            {% if errors.new_password is defined %}
+                <small class="profile-modern-error">{{ errors.new_password }}</small>
+            {% endif %}
+            <input name="confirm_password" type="password" placeholder="Confirmer le nouveau mot de passe" autocomplete="new-password"
                    class="profile-modern-input">
+            {% if errors.confirm_password is defined %}
+                <small class="profile-modern-error">{{ errors.confirm_password }}</small>
+            {% endif %}
+
+            <hr class="profile-modern-divider">
+
+            <div class="profile-modern-subtitle">Reconnaissance faciale</div>
+            <div class="face-profile-panel" data-face-auth-profile>
+                <video id="face-register-video" class="face-video" autoplay muted playsinline></video>
+                <div id="face-register-status" class="face-status">
+                    {% if user.isFaceEnabled %}
+                        Reconnaissance faciale active.
+                    {% else %}
+                        Aucun visage enregistre.
+                    {% endif %}
+                </div>
+                <div class="face-profile-actions">
+                    <button type="button" id="face-register-btn" class="profile-modern-upload-label">
+                        <i class="fa-solid fa-face-smile"></i> Enregistrer mon visage
+                    </button>
+                    <button type="button" id="face-delete-btn" class="profile-modern-remove-photo-btn">
+                        <i class="fa-solid fa-face-frown-open"></i> Supprimer le visage
+                    </button>
+                </div>
+                <small class="profile-modern-upload-help">
+                    Placez votre visage face a la camera, bonne lumiere, puis cliquez sur enregistrer.
+                </small>
+            </div>
 
             <div class="profile-modern-actions">
                 <button type="submit" class="btn-adm active profile-modern-btn-primary">
                     <i class="fa-solid fa-floppy-disk"></i> Enregistrer
                 </button>
-                <a href="{{ path('admin_dashboard') }}" class="btn-adm profile-modern-btn-secondary">
-                    <i class="fa-solid fa-arrow-left"></i> Retour dashboard
-                </a>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('admin_dashboard') }}" class="btn-adm profile-modern-btn-secondary">
+                        <i class="fa-solid fa-arrow-left"></i> Retour dashboard
+                    </a>
+                {% endif %}
             </div>
         </form>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        window.NexaFaceAuthConfig = {
+            modelPath: 'https://justadudewhohacks.github.io/face-api.js/models',
+            saveUrl: '{{ path('api_face_save') }}',
+            deleteUrl: '{{ path('api_face_delete') }}',
+            loginUrl: '{{ path('api_face_login') }}'
+        };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <script src="{{ asset('js/face-auth.js?v=20260221a') }}"></script>
+    <script>
+        (function () {
+            const input = document.getElementById('profile_photo');
+            const avatar = document.querySelector('.profile-modern-avatar');
+            const fileName = document.getElementById('profile-photo-name');
+            if (!input || !avatar || !fileName) return;
+
+            input.addEventListener('change', function () {
+                const file = input.files && input.files[0] ? input.files[0] : null;
+                if (!file) {
+                    fileName.textContent = '';
+                    return;
+                }
+
+                fileName.textContent = 'Photo selectionnee: ' + file.name;
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const existingImg = avatar.querySelector('img');
+                    if (existingImg) {
+                        existingImg.src = e.target.result;
+                        return;
+                    }
+
+                    avatar.textContent = '';
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = 'Photo de profil';
+                    avatar.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        })();
+    </script>
 {% endblock %}

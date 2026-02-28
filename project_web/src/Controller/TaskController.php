@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Form\TaskType;
 use App\Repository\TaskRepository;
+use App\Service\TaskDigestMailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,6 +21,26 @@ final class TaskController extends AbstractController
         return $this->render('task/index.html.twig', [
             'tasks' => $taskRepository->findAll(),
         ]);
+    }
+
+    #[Route('/send-digest-email', name: 'app_task_send_digest_email', methods: ['POST'])]
+    public function sendDigestEmail(Request $request, TaskRepository $taskRepository, TaskDigestMailerService $taskDigestMailerService): Response
+    {
+        if (!$this->isCsrfTokenValid('send_task_digest', (string) $request->request->get('_token'))) {
+            $this->addFlash('error', 'Jeton CSRF invalide.');
+            return $this->redirectToRoute('app_task_index');
+        }
+
+        $tasks = $taskRepository->findBy([], ['updateAt' => 'DESC']);
+        $ok = $taskDigestMailerService->sendDigest($tasks);
+
+        if ($ok) {
+            $this->addFlash('success', 'Email recap des taches envoye.');
+        } else {
+            $this->addFlash('error', 'Echec envoi email recap. Verifie MAILER_DSN et les variables MAILER_DEFAULT_*.');
+        }
+
+        return $this->redirectToRoute('app_task_index');
     }
 
     #[Route('/new', name: 'app_task_new', methods: ['GET', 'POST'])]

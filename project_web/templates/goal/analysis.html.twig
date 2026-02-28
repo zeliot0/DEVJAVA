@@ -1,0 +1,1407 @@
+{% extends 'base.html.twig' %}
+
+{% set body_class = 'analysis-page' %}
+
+{% block title %}Analyse IA pour {{ goal.titleGoa }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --bg-0: #ffffff;
+            --bg-1: #f7fbff;
+            --bg-2: #eef2ff;
+            --surface: #ffffff;
+            --surface-2: #f8fafe;
+            --text-main: #111827;
+            --text-soft: #5b657a;
+            --line: rgba(15, 23, 42, 0.12);
+            --line-strong: rgba(59, 130, 246, 0.35);
+            --blue-1: #dbeafe;
+            --blue-2: #93c5fd;
+            --violet-1: #c4b5fd;
+            --violet-2: #a78bfa;
+            --success: #16a34a;
+            --info: #2563eb;
+            --warning: #d97706;
+            --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        body.analysis-page {
+            min-height: 100vh;
+            margin: 0;
+            font-family: "Inter", "Segoe UI", sans-serif;
+            color: var(--text-main);
+            background:
+                radial-gradient(1100px 700px at 10% 0%, rgba(219, 234, 254, 0.7), transparent 60%),
+                radial-gradient(900px 600px at 90% 20%, rgba(196, 181, 253, 0.35), transparent 65%),
+                linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 60%, var(--bg-2) 100%);
+        }
+
+        .analysis-container {
+            width: min(920px, calc(100% - 24px));
+            margin: 44px auto;
+            padding: 42px 44px;
+            border-radius: 26px;
+            background: linear-gradient(180deg, var(--surface) 0%, var(--surface-2) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow:
+                0 20px 55px rgba(15, 23, 42, 0.08),
+                0 6px 18px rgba(148, 163, 184, 0.2);
+            font-size: 16px;
+        }
+
+        .analysis-container h1 {
+            margin: 0 0 14px;
+            text-align: center;
+            font-size: clamp(2rem, 3.1vw, 2.85rem);
+            line-height: 1.14;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+            background: linear-gradient(92deg, #6b8fd6 0%, #8f89df 58%, #a5b4fc 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .analysis-subtitle {
+            margin: 0 auto 26px;
+            max-width: 760px;
+            text-align: center;
+            line-height: 1.75;
+            font-size: 1.03rem;
+            color: rgba(71, 85, 105, 0.9);
+        }
+
+        .analysis-form-row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 6px;
+        }
+
+        .date-field-wrap {
+            width: min(100%, 560px);
+            position: relative;
+            border-radius: 16px;
+            padding: 1px;
+            background: linear-gradient(120deg, rgba(148, 163, 184, 0.4), rgba(203, 213, 225, 0.42));
+            transition: background-position 0.45s ease-in-out, box-shadow 0.45s ease-in-out;
+            background-size: 200% 200%;
+            background-position: 0% 50%;
+        }
+
+        .date-field-wrap.is-focused {
+            background-image: linear-gradient(120deg, #60a5fa, #a78bfa, #93c5fd);
+            background-size: 220% 220%;
+            animation: fieldFlow 6s linear infinite;
+            box-shadow: 0 12px 26px rgba(99, 102, 241, 0.12);
+        }
+
+        .date-field-inner {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            background: #f9fbff;
+        }
+
+        .date-floating-label {
+            position: absolute;
+            left: 14px;
+            top: 0;
+            transform: translateY(-54%);
+            font-size: 0.75rem;
+            color: rgba(100, 116, 139, 0.9);
+            pointer-events: none;
+            transition: all 0.34s var(--ease-smooth);
+            background: #f9fbff;
+            padding: 0 6px;
+            border-radius: 7px;
+            z-index: 2;
+        }
+
+        .date-field-wrap.is-focused .date-floating-label,
+        .date-field-wrap.has-value .date-floating-label {
+            top: 0;
+            transform: translateY(-54%);
+            font-size: 0.75rem;
+            color: #4f46e5;
+        }
+
+        #birthDateInput {
+            width: 100%;
+            min-height: 54px;
+            border: 0;
+            outline: none;
+            padding: 19px 44px 9px 16px;
+            font-size: 1rem;
+            line-height: 1.35;
+            color: #0f172a;
+            background: transparent;
+            appearance: auto;
+            -webkit-appearance: auto;
+            color-scheme: light;
+        }
+
+        #birthDateInput::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        #birthDateInput::-webkit-calendar-picker-indicator:hover {
+            opacity: 1;
+            transform: scale(1.06);
+        }
+
+        .action-area {
+            margin-top: 26px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(148, 163, 184, 0.3);
+            text-align: center;
+            display: grid;
+            justify-items: center;
+            gap: 10px;
+        }
+
+        .camera-cta {
+            margin-bottom: 0;
+        }
+
+        #detectEmotionBtn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 48px;
+            padding: 0 20px;
+            border-radius: 999px;
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            background: #eef4ff;
+            color: #1e3a8a;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.36s var(--ease-smooth);
+        }
+
+        #detectEmotionBtn:hover {
+            transform: translateY(-1px);
+            background: #e5edff;
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.12);
+        }
+
+        #analyzeBtn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 236px;
+            min-height: 52px;
+            border-radius: 999px;
+            border: 1px solid rgba(15, 23, 42, 0.12);
+            background: #ffffff;
+            color: #111827;
+            font-weight: 650;
+            font-size: 0.98rem;
+            letter-spacing: 0.15px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+            transition:
+                color 0.44s var(--ease-smooth),
+                transform 0.44s var(--ease-smooth),
+                box-shadow 0.44s var(--ease-smooth),
+                background 0.44s var(--ease-smooth),
+                border-color 0.44s var(--ease-smooth);
+        }
+
+        #analyzeBtn::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(125deg, #e0ecff 0%, #ddd6fe 62%, #e0f2fe 100%);
+            opacity: 0;
+            transition: opacity 0.44s var(--ease-smooth);
+            z-index: 0;
+        }
+
+        #analyzeBtn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            border-color: rgba(79, 70, 229, 0.2);
+            box-shadow: 0 14px 28px rgba(79, 70, 229, 0.14);
+        }
+
+        #analyzeBtn:hover:not(:disabled)::before {
+            opacity: 1;
+        }
+
+        #analyzeBtn:disabled {
+            cursor: not-allowed;
+            opacity: 0.92;
+        }
+
+        .btn-label,
+        .btn-spinner {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-spinner {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid rgba(15, 23, 42, 0.22);
+            border-top-color: rgba(79, 70, 229, 0.95);
+            display: none;
+            animation: spin 0.8s linear infinite;
+        }
+
+        #analyzeBtn.is-loading .btn-spinner {
+            display: inline-block;
+        }
+
+        #analyzeBtn.is-loading .btn-label i {
+            display: none;
+        }
+
+        .privacy-note {
+            margin-top: 2px;
+            color: #64748b;
+            font-size: 0.87rem;
+        }
+
+        .spiritual-toggle-wrap {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .spiritual-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(180, 152, 104, 0.34);
+            background: linear-gradient(135deg, #fff7e8 0%, #eef7ff 100%);
+            color: #374151;
+            font-size: 0.84rem;
+            font-weight: 600;
+        }
+
+        .spiritual-toggle input {
+            accent-color: #2563eb;
+        }
+
+        .emotion-inline {
+            display: none;
+            margin-top: 8px;
+            padding: 16px 18px;
+            border-radius: 14px;
+            background: linear-gradient(160deg, #f8fbff 0%, #eff5ff 100%);
+            border: 1px solid rgba(130, 150, 186, 0.32);
+            text-align: left;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .emotion-inline .title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .emotion-inline .sub {
+            color: #475569;
+            line-height: 1.7;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .result-box {
+            position: relative;
+            display: none;
+            margin-top: 28px;
+            padding: 20px 22px 20px 24px;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.26);
+            background: rgba(255, 255, 255, 0.94);
+            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.09);
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.42s ease-in-out, transform 0.42s ease-in-out;
+            overflow: hidden;
+            font-size: 0.98rem;
+        }
+
+        .result-box.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result-box::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--info);
+        }
+
+        .result-box.is-success::before { background: var(--success); }
+        .result-box.is-warning::before { background: var(--warning); }
+
+        .result-head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            color: #1f2937;
+            font-weight: 650;
+        }
+
+        .result-head i {
+            color: #6366f1;
+        }
+
+        .result-box h3 {
+            margin: 0;
+            font-size: 1.13rem;
+            letter-spacing: 0.1px;
+        }
+
+        .result-box p {
+            margin: 0 0 10px;
+            color: #334155;
+            line-height: 1.72;
+            font-size: 0.96rem;
+        }
+
+        .result-box h4 {
+            margin: 14px 0 8px;
+            padding-top: 8px;
+            border-top: 1px dashed rgba(148, 163, 184, 0.38);
+            color: #0f172a;
+            font-size: 1.01rem;
+            font-weight: 700;
+        }
+
+        .result-box p strong {
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .result-box ul {
+            margin: 0 0 2px;
+            padding-left: 22px;
+            color: #334155;
+        }
+
+        .spiritual-card {
+            margin-top: 14px;
+            padding: 16px 16px 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(184, 145, 74, 0.3);
+            background: linear-gradient(145deg, #fff8ea 0%, #f4f9ff 100%);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.75),
+                0 6px 14px rgba(148, 163, 184, 0.12);
+        }
+
+        .spiritual-head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #7c5d1e;
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 1.02rem;
+        }
+
+        .spiritual-ayah-ar {
+            direction: rtl;
+            text-align: right;
+            font-size: 1.2rem;
+            line-height: 1.9;
+            color: #111827;
+            font-family: "Amiri", "Noto Naskh Arabic", "Times New Roman", serif;
+            margin: 0 0 10px;
+        }
+
+        .spiritual-ayah-fr {
+            margin: 0 0 8px;
+            color: #334155;
+            font-style: italic;
+            line-height: 1.65;
+        }
+
+        .spiritual-ayah-en {
+            margin: 0 0 8px;
+            color: #475569;
+            font-style: italic;
+            line-height: 1.65;
+        }
+
+        .spiritual-ref {
+            margin: 0 0 10px;
+            color: #64748b;
+            font-size: 0.86rem;
+        }
+
+        .spiritual-action {
+            margin: 10px 0 0;
+            color: #1e3a8a;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        .result-box li {
+            margin-bottom: 7px;
+            line-height: 1.62;
+            font-size: 0.95rem;
+        }
+
+        .camera-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.36);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+            z-index: 1200;
+            opacity: 0;
+            transition: opacity 0.35s ease-in-out;
+        }
+
+        .camera-overlay.is-open {
+            display: flex;
+            opacity: 1;
+        }
+
+        .camera-modal {
+            width: min(760px, 96vw);
+            border-radius: 22px;
+            background: #f8faff;
+            border: 1px solid rgba(148, 163, 184, 0.32);
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.2);
+            padding: 18px 18px 14px;
+            transform: translateY(6px) scale(0.99);
+            transition: transform 0.35s ease-in-out;
+        }
+
+        .camera-overlay.is-open .camera-modal {
+            transform: translateY(0) scale(1);
+        }
+
+        .camera-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .camera-head h3 {
+            margin: 0;
+            font-size: 1.02rem;
+            color: #1f2937;
+        }
+
+        #cancelCameraBtn {
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            border-radius: 999px;
+            padding: 7px 12px;
+            font-size: 0.87rem;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #cancelCameraBtn:hover {
+            background: #f1f5f9;
+        }
+
+        .camera-status {
+            color: #475569;
+            font-size: 0.94rem;
+            margin: 2px 0 10px;
+            min-height: 22px;
+        }
+
+        .camera-frame {
+            position: relative;
+            border-radius: 18px;
+            background: #0f172a;
+            overflow: hidden;
+            aspect-ratio: 16 / 9;
+            border: 1px solid rgba(96, 165, 250, 0.45);
+        }
+
+        .camera-frame::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(140deg, rgba(96, 165, 250, 0.95), rgba(167, 139, 250, 0.92), rgba(125, 211, 252, 0.95));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            opacity: 0.92;
+        }
+
+        .camera-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.45s ease-in-out;
+        }
+
+        .camera-video.is-ready {
+            opacity: 1;
+        }
+
+        .scan-line {
+            position: absolute;
+            left: 5%;
+            width: 90%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.95), transparent);
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.5);
+            top: 16%;
+            display: none;
+        }
+
+        .camera-frame.is-scanning .scan-line {
+            display: block;
+            animation: scannerMove 2.2s ease-in-out infinite;
+        }
+
+        .corner-dot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(96, 165, 250, 0.95);
+            box-shadow: 0 0 12px rgba(96, 165, 250, 0.75);
+            animation: pulseDot 1.9s ease-in-out infinite;
+        }
+
+        .corner-dot.tl { top: 12px; left: 12px; }
+        .corner-dot.tr { top: 12px; right: 12px; }
+        .corner-dot.bl { bottom: 12px; left: 12px; }
+        .corner-dot.br { bottom: 12px; right: 12px; }
+
+        .camera-foot {
+            margin-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        .emotion-panel {
+            display: none;
+            margin-top: 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.28);
+            background: #ffffff;
+            padding: 12px;
+        }
+
+        .emotion-panel .headline {
+            margin: 0 0 10px;
+            color: #1f2937;
+            font-weight: 650;
+        }
+
+        .metric {
+            margin-bottom: 8px;
+        }
+
+        .metric .row {
+            display: flex;
+            justify-content: space-between;
+            color: #475569;
+            font-size: 0.88rem;
+            margin-bottom: 4px;
+        }
+
+        .metric .bar {
+            height: 8px;
+            border-radius: 999px;
+            background: #e2e8f0;
+            overflow: hidden;
+        }
+
+        .metric .fill {
+            width: 0%;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #60a5fa, #a78bfa);
+            transition: width 0.85s var(--ease-smooth);
+        }
+
+        @keyframes fieldFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes scannerMove {
+            0% { top: 16%; }
+            50% { top: 82%; }
+            100% { top: 16%; }
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .analysis-container {
+                margin: 22px auto;
+                padding: 26px 18px;
+                border-radius: 22px;
+            }
+
+            .analysis-subtitle {
+                font-size: 0.98rem;
+                line-height: 1.72;
+            }
+
+            .result-box {
+                padding: 16px 15px 16px 18px;
+            }
+
+            #analyzeBtn {
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="analysis-container">
+    <h1>Analyse IA pour "{{ goal.titleGoa }}"</h1>
+    <p class="analysis-subtitle">
+        Analyse IA avancee: en cliquant ci-dessous, le systeme collecte les donnees reelles de votre objectif
+        (jalons, risques, priorite, echeance) et genere un rapport strategique avec score de reussite,
+        blocages critiques et recommandations personnalisees.
+    </p>
+
+    <div class="analysis-form-row">
+        <div class="date-field-wrap" id="birthDateWrap">
+            <div class="date-field-inner">
+                <label class="date-floating-label" for="birthDateInput">Date de naissance (optionnelle)</label>
+                <input type="date" id="birthDateInput" aria-label="Date de naissance (optionnelle)">
+            </div>
+        </div>
+    </div>
+
+    <div class="action-area">
+        <div class="camera-cta">
+            <button id="detectEmotionBtn" type="button">
+                <i class="fa-solid fa-camera"></i> Demarrer la detection emotionnelle
+            </button>
+        </div>
+        <button id="analyzeBtn" type="button">
+            <span class="btn-label"><i class="fa-solid fa-chart-line"></i> Lancer l'analyse</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+        </button>
+        <div class="spiritual-toggle-wrap">
+            <label class="spiritual-toggle" for="spiritualModeToggle">
+                <i class="fa-solid fa-moon"></i>
+                <input id="spiritualModeToggle" type="checkbox" checked>
+                Mode spirituel (Qur'an)
+            </label>
+        </div>
+        <p class="privacy-note"><i class="fa-solid fa-shield-halved"></i> Les donnees video ne sont pas stockees.</p>
+        <div id="emotionInline" class="emotion-inline"></div>
+    </div>
+
+    <div id="analysisResult" class="result-box"></div>
+</div>
+
+<div id="cameraOverlay" class="camera-overlay" aria-hidden="true">
+    <div class="camera-modal" role="dialog" aria-modal="true" aria-labelledby="cameraModalTitle">
+        <div class="camera-head">
+            <h3 id="cameraModalTitle">Detection emotionnelle</h3>
+            <button type="button" id="cancelCameraBtn">Annuler</button>
+        </div>
+        <p id="cameraStatus" class="camera-status">Initialisation de l'analyse emotionnelle...</p>
+        <div id="cameraFrame" class="camera-frame">
+            <video id="cameraVideo" class="camera-video" autoplay playsinline muted></video>
+            <div class="scan-line"></div>
+            <span class="corner-dot tl"></span>
+            <span class="corner-dot tr"></span>
+            <span class="corner-dot bl"></span>
+            <span class="corner-dot br"></span>
+        </div>
+        <div class="camera-foot">
+            <span id="cameraFootText">Analyse en cours...</span>
+            <span id="cameraPermissionText">Verification camera...</span>
+        </div>
+        <div id="emotionPanel" class="emotion-panel">
+            <p id="emotionHeadline" class="headline"></p>
+            <div class="metric">
+                <div class="row"><span>Intensite</span><span id="emotionIntensityVal">0%</span></div>
+                <div class="bar"><div id="emotionIntensityFill" class="fill"></div></div>
+            </div>
+            <div class="metric">
+                <div class="row"><span>Confiance</span><span id="emotionConfidenceVal">0%</span></div>
+                <div class="bar"><div id="emotionConfidenceFill" class="fill"></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const detectEmotionBtn = document.getElementById('detectEmotionBtn');
+    const resultDiv = document.getElementById('analysisResult');
+    const emotionInline = document.getElementById('emotionInline');
+    const birthDateInput = document.getElementById('birthDateInput');
+    const birthDateWrap = document.getElementById('birthDateWrap');
+    const spiritualModeToggle = document.getElementById('spiritualModeToggle');
+    const btnLabel = analyzeBtn.querySelector('.btn-label');
+    const cameraOverlay = document.getElementById('cameraOverlay');
+    const cancelCameraBtn = document.getElementById('cancelCameraBtn');
+    const cameraStatus = document.getElementById('cameraStatus');
+    const cameraFootText = document.getElementById('cameraFootText');
+    const cameraPermissionText = document.getElementById('cameraPermissionText');
+    const cameraFrame = document.getElementById('cameraFrame');
+    const cameraVideo = document.getElementById('cameraVideo');
+    const emotionPanel = document.getElementById('emotionPanel');
+    const emotionHeadline = document.getElementById('emotionHeadline');
+    const emotionIntensityVal = document.getElementById('emotionIntensityVal');
+    const emotionConfidenceVal = document.getElementById('emotionConfidenceVal');
+    const emotionIntensityFill = document.getElementById('emotionIntensityFill');
+    const emotionConfidenceFill = document.getElementById('emotionConfidenceFill');
+
+    let stream = null;
+    let detectedEmotion = null;
+    let autoCloseTimer = null;
+    let emotionRequestInFlight = false;
+    let emotionCooldownUntil = 0;
+    let cooldownTimer = null;
+
+    const setDateState = () => {
+        birthDateWrap.classList.toggle('has-value', !!birthDateInput.value);
+    };
+
+    birthDateInput.addEventListener('focus', () => birthDateWrap.classList.add('is-focused'));
+    birthDateInput.addEventListener('blur', () => birthDateWrap.classList.remove('is-focused'));
+    birthDateInput.addEventListener('input', setDateState);
+    birthDateInput.addEventListener('change', setDateState);
+    setDateState();
+
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    const isLocalDevHost = ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);
+    const detectBtnDefaultHtml = detectEmotionBtn.innerHTML;
+    const escapeHtml = (value) =>
+        String(value ?? '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+
+    const startDetectCooldown = (seconds) => {
+        const total = Math.max(0, Number(seconds) || 0);
+        if (total <= 0) return;
+        emotionCooldownUntil = Date.now() + total * 1000;
+        detectEmotionBtn.disabled = true;
+
+        if (cooldownTimer) {
+            clearInterval(cooldownTimer);
+            cooldownTimer = null;
+        }
+        const tick = () => {
+            const remain = Math.max(0, Math.ceil((emotionCooldownUntil - Date.now()) / 1000));
+            if (remain > 0) {
+                detectEmotionBtn.innerHTML = '<i class="fa-solid fa-hourglass-half"></i> Reessayez dans ' + remain + 's';
+            } else {
+                clearInterval(cooldownTimer);
+                cooldownTimer = null;
+                detectEmotionBtn.disabled = false;
+                detectEmotionBtn.innerHTML = detectBtnDefaultHtml;
+            }
+        };
+        tick();
+        cooldownTimer = setInterval(tick, 1000);
+    };
+
+    const mapCameraError = (error) => {
+        const name = error && error.name ? error.name : '';
+        if (name === 'NotAllowedError' || name === 'SecurityError') {
+            return 'Acces camera refuse. Autorisez la camera pour ce site puis rechargez la page.';
+        }
+        if (name === 'NotFoundError' || name === 'DevicesNotFoundError') {
+            return 'Aucune camera detectee sur cet appareil.';
+        }
+        if (name === 'NotReadableError' || name === 'TrackStartError') {
+            return 'Camera indisponible: elle est probablement utilisee par une autre application (Meet/Zoom/Teams).';
+        }
+        if (name === 'OverconstrainedError' || name === 'ConstraintNotSatisfiedError') {
+            return 'Contraintes camera non supportees. Nous allons essayer un mode compatible.';
+        }
+        return error && error.message ? error.message : 'Impossible d\'activer la camera.';
+    };
+
+    const isLikelyVirtualCamera = (label) => {
+        const s = String(label || '').toLowerCase();
+        return s.includes('obs') || s.includes('manycam') || s.includes('snap camera') || s.includes('virtual');
+    };
+
+    const acquireCameraStream = async (excludedDeviceId = null) => {
+        let devices = [];
+        try {
+            devices = await navigator.mediaDevices.enumerateDevices();
+        } catch (_) {
+            devices = [];
+        }
+        const videoDevices = devices.filter((d) => d.kind === 'videoinput');
+        const usableDevices = excludedDeviceId
+            ? videoDevices.filter((d) => d.deviceId && d.deviceId !== excludedDeviceId)
+            : videoDevices;
+        const orderedIds = [
+            ...usableDevices.filter((d) => !isLikelyVirtualCamera(d.label)).map((d) => d.deviceId),
+            ...usableDevices.filter((d) => isLikelyVirtualCamera(d.label)).map((d) => d.deviceId)
+        ];
+
+        const attempts = [
+            ...orderedIds.map((id) => ({ video: { deviceId: { exact: id } }, audio: false })),
+            { video: { facingMode: { ideal: 'user' } }, audio: false },
+            { video: true, audio: false }
+        ];
+
+        let lastError = null;
+        for (const constraints of attempts) {
+            try {
+                return await navigator.mediaDevices.getUserMedia(constraints);
+            } catch (e) {
+                lastError = e;
+            }
+        }
+        throw lastError || new Error('Camera non disponible');
+    };
+
+    const stopStream = () => {
+        if (stream) {
+            stream.getTracks().forEach((t) => t.stop());
+            stream = null;
+        }
+        cameraVideo.srcObject = null;
+        cameraVideo.classList.remove('is-ready');
+        cameraFrame.classList.remove('is-scanning');
+    };
+
+    const waitForVideoFrames = async () => {
+        const timeoutAt = Date.now() + 6000;
+        while (Date.now() < timeoutAt) {
+            const hasSize = cameraVideo.videoWidth > 0 && cameraVideo.videoHeight > 0;
+            if (hasSize && cameraVideo.readyState >= 2) {
+                await sleep(250);
+                return;
+            }
+            await sleep(120);
+        }
+        throw new Error('Flux video non initialise (aucune image exploitable).');
+    };
+
+    const waitForLiveFrameTick = async () => {
+        if (typeof cameraVideo.requestVideoFrameCallback !== 'function') {
+            await sleep(220);
+            return;
+        }
+        await new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => reject(new Error('Aucune frame camera recue.')), 2500);
+            cameraVideo.requestVideoFrameCallback(() => {
+                clearTimeout(timeout);
+                resolve();
+            });
+        });
+    };
+
+    const isLikelyBlackOrFlatFrame = (ctx, width, height) => {
+        const sampleW = Math.max(40, Math.min(120, width));
+        const sampleH = Math.max(40, Math.min(90, height));
+        const sx = Math.max(0, Math.floor((width - sampleW) / 2));
+        const sy = Math.max(0, Math.floor((height - sampleH) / 2));
+        const data = ctx.getImageData(sx, sy, sampleW, sampleH).data;
+
+        let sum = 0;
+        let sumSq = 0;
+        let count = 0;
+        for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+            sum += lum;
+            sumSq += lum * lum;
+            count++;
+        }
+        const mean = sum / Math.max(1, count);
+        const variance = Math.max(0, sumSq / Math.max(1, count) - mean * mean);
+        return mean < 16 || variance < 14;
+    };
+
+    const captureFrameToCanvas = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = cameraVideo.videoWidth || 640;
+        canvas.height = cameraVideo.videoHeight || 480;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(cameraVideo, 0, 0, canvas.width, canvas.height);
+        return { canvas, ctx };
+    };
+
+    const estimateFrameDelta = (a, b) => {
+        const wa = a.width;
+        const ha = a.height;
+        const wb = b.width;
+        const hb = b.height;
+        const w = Math.min(wa, wb, 96);
+        const h = Math.min(ha, hb, 72);
+        const offA = document.createElement('canvas');
+        const offB = document.createElement('canvas');
+        offA.width = w; offA.height = h;
+        offB.width = w; offB.height = h;
+        const cta = offA.getContext('2d');
+        const ctb = offB.getContext('2d');
+        cta.drawImage(a, 0, 0, w, h);
+        ctb.drawImage(b, 0, 0, w, h);
+        const da = cta.getImageData(0, 0, w, h).data;
+        const db = ctb.getImageData(0, 0, w, h).data;
+        let diff = 0;
+        let n = 0;
+        for (let i = 0; i < da.length; i += 4) {
+            const ya = 0.299 * da[i] + 0.587 * da[i + 1] + 0.114 * da[i + 2];
+            const yb = 0.299 * db[i] + 0.587 * db[i + 1] + 0.114 * db[i + 2];
+            diff += Math.abs(ya - yb);
+            n++;
+        }
+        return diff / Math.max(1, n);
+    };
+
+    const normalizeEmotion = (value) => {
+        const key = String(value || '').toLowerCase();
+        const map = {
+            sad: ['[SAD]', 'Tristesse legere'],
+            triste: ['[SAD]', 'Tristesse legere'],
+            angry: ['[ANGRY]', 'Tension emotionnelle'],
+            colere: ['[ANGRY]', 'Tension emotionnelle'],
+            joy: ['[POSITIVE]', 'Etat positif'],
+            happy: ['[POSITIVE]', 'Etat positif'],
+            fear: ['[FEAR]', 'Inquietude moderee'],
+            anxious: ['[FEAR]', 'Inquietude moderee'],
+            surprise: ['[SURPRISE]', 'Surprise'],
+            surprised: ['[SURPRISE]', 'Surprise'],
+            neutral: ['[NEUTRAL]', 'Etat neutre']
+        };
+        if (map[key]) {
+            return map[key];
+        }
+        const human = key ? key.charAt(0).toUpperCase() + key.slice(1) : 'Etat inconnu';
+        return ['[EMOTION]', human];
+    };
+
+    const closeCameraModal = () => {
+        if (autoCloseTimer) {
+            clearTimeout(autoCloseTimer);
+            autoCloseTimer = null;
+        }
+        cameraOverlay.classList.remove('is-open');
+        cameraOverlay.setAttribute('aria-hidden', 'true');
+        cameraFrame.classList.remove('is-scanning');
+        cameraVideo.classList.remove('is-ready');
+        cancelCameraBtn.textContent = 'Annuler';
+        cameraPermissionText.textContent = 'Verification camera...';
+        emotionPanel.style.display = 'none';
+        emotionIntensityFill.style.width = '0%';
+        emotionConfidenceFill.style.width = '0%';
+        stopStream();
+    };
+
+    const openCameraModal = () => {
+        cameraOverlay.classList.add('is-open');
+        cameraOverlay.setAttribute('aria-hidden', 'false');
+        cameraStatus.textContent = 'Initialisation de l\'analyse emotionnelle...';
+        cameraFootText.textContent = 'Analyse en cours...';
+        cameraPermissionText.textContent = 'Demande d\'autorisation camera...';
+    };
+
+    const runEmotionDetection = async () => {
+        if (emotionRequestInFlight) {
+            return;
+        }
+        if (Date.now() < emotionCooldownUntil) {
+            return;
+        }
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            alert('Camera not supported.');
+            return;
+        }
+        if (!window.isSecureContext && !isLocalDevHost) {
+            alert('Camera requires HTTPS or localhost/127.0.0.1.');
+            return;
+        }
+
+        // Preflight: avoid opening camera if backend cooldown is active.
+        try {
+            const statusRes = await fetch('/api/emotion/status', {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' },
+                credentials: 'same-origin'
+            });
+            const statusJson = await statusRes.json();
+            if (statusRes.ok && statusJson.ok && !statusJson.available) {
+                const waitSec = Number(statusJson.retry_after) || 30;
+                startDetectCooldown(waitSec);
+                alert('Detection temporairement limitee. Reessayez dans ' + waitSec + ' secondes.');
+                return;
+            }
+        } catch (_) {
+            // If status endpoint fails, continue and let detect endpoint decide.
+        }
+
+        openCameraModal();
+        await sleep(350);
+        emotionRequestInFlight = true;
+        detectEmotionBtn.disabled = true;
+        try {
+            stream = await acquireCameraStream();
+            cameraPermissionText.textContent = 'Camera detectee, verification du flux...';
+            cameraVideo.srcObject = stream;
+
+            await new Promise((resolve, reject) => {
+                const timeout = setTimeout(() => reject(new Error('Aucun flux video recu depuis la camera.')), 3000);
+                cameraVideo.onloadedmetadata = () => {
+                    clearTimeout(timeout);
+                    resolve();
+                };
+            });
+            await cameraVideo.play();
+            await waitForVideoFrames();
+            await waitForLiveFrameTick();
+
+            let firstTrack = stream.getVideoTracks()[0] || null;
+            if (!firstTrack || firstTrack.readyState !== 'live') {
+                throw new Error('Le flux camera n\'est pas actif (track inactive).');
+            }
+
+            cameraVideo.classList.add('is-ready');
+            cameraFrame.classList.add('is-scanning');
+
+            // Ensure we actually receive frames, otherwise camera is effectively unavailable.
+            await sleep(450);
+            if (!cameraVideo.videoWidth || !cameraVideo.videoHeight) {
+                throw new Error('Flux video vide. Fermez les applications utilisant la camera puis reessayez.');
+            }
+
+            cameraStatus.textContent = 'Detection des traits faciaux...';
+            await sleep(900);
+            cameraStatus.textContent = 'Analyse des micro-expressions...';
+            await sleep(900);
+            cameraStatus.textContent = 'Classification emotionnelle...';
+            await sleep(850);
+
+            const canvas = document.createElement('canvas');
+            canvas.width = cameraVideo.videoWidth || 640;
+            canvas.height = cameraVideo.videoHeight || 480;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(cameraVideo, 0, 0, canvas.width, canvas.height);
+            let badFrame = isLikelyBlackOrFlatFrame(ctx, canvas.width, canvas.height);
+            await sleep(280);
+            const { canvas: canvas2 } = captureFrameToCanvas();
+            const motion = estimateFrameDelta(canvas, canvas2);
+            if (!badFrame && motion < 1.2) {
+                badFrame = true;
+            }
+            if (badFrame) {
+                const failedDeviceId = firstTrack && firstTrack.getSettings ? (firstTrack.getSettings().deviceId || null) : null;
+                cameraStatus.textContent = 'Flux camera instable, tentative de recuperation...';
+                cameraPermissionText.textContent = 'Nouvelle tentative sur une autre source video...';
+                stopStream();
+                await sleep(320);
+
+                stream = await acquireCameraStream(failedDeviceId);
+                cameraVideo.srcObject = stream;
+                await new Promise((resolve, reject) => {
+                    const timeout = setTimeout(() => reject(new Error('Aucun flux video recu (nouvelle tentative).')), 3000);
+                    cameraVideo.onloadedmetadata = () => {
+                        clearTimeout(timeout);
+                        resolve();
+                    };
+                });
+                await cameraVideo.play();
+                await waitForVideoFrames();
+                await waitForLiveFrameTick();
+                firstTrack = stream.getVideoTracks()[0] || null;
+                if (!firstTrack || firstTrack.readyState !== 'live') {
+                    throw new Error('Le flux camera reste inactif apres recuperation.');
+                }
+                cameraVideo.classList.add('is-ready');
+                cameraFrame.classList.add('is-scanning');
+
+                const canvasRetry = document.createElement('canvas');
+                canvasRetry.width = cameraVideo.videoWidth || 640;
+                canvasRetry.height = cameraVideo.videoHeight || 480;
+                const ctxRetry = canvasRetry.getContext('2d');
+                ctxRetry.drawImage(cameraVideo, 0, 0, canvasRetry.width, canvasRetry.height);
+                await sleep(280);
+                const { canvas: canvasRetry2 } = captureFrameToCanvas();
+                const motionRetry = estimateFrameDelta(canvasRetry, canvasRetry2);
+                if (isLikelyBlackOrFlatFrame(ctxRetry, canvasRetry.width, canvasRetry.height) || motionRetry < 1.2) {
+                    throw new Error('Flux camera fige ou noir. Fermez Meet/Zoom/Teams, desactivez la camera virtuelle puis reessayez.');
+                }
+                canvas.width = canvasRetry.width;
+                canvas.height = canvasRetry.height;
+                ctx.drawImage(canvasRetry, 0, 0);
+            }
+
+            const settings = firstTrack.getSettings ? firstTrack.getSettings() : {};
+            const cameraLabel = firstTrack.label || '';
+            cameraPermissionText.textContent =
+                'Camera active' + (settings.width && settings.height ? ' (' + settings.width + 'x' + settings.height + ')' : '') + (cameraLabel ? ' - ' + cameraLabel : '');
+            const image = canvas.toDataURL('image/jpeg', 0.82);
+
+            const response = await fetch('/api/emotion', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({ image: image })
+            });
+
+            const contentType = (response.headers.get('content-type') || '').toLowerCase();
+            if (!contentType.includes('application/json')) {
+                throw new Error('Emotion API a retourne une reponse invalide.');
+            }
+            const data = await response.json();
+            if (!response.ok || !data.ok) {
+                if (response.status === 429 && Number.isFinite(Number(data.retry_after))) {
+                    startDetectCooldown(Number(data.retry_after));
+                } else {
+                    startDetectCooldown(10);
+                }
+                throw new Error(data.error || 'Detection emotionnelle indisponible.');
+            }
+            if (!data.emotion) {
+                startDetectCooldown(10);
+                throw new Error('Aucune emotion detectee.');
+            }
+
+            const rawEmotion = data.emotion;
+            const [emoji, label] = normalizeEmotion(rawEmotion);
+            const intensity = Number.isFinite(Number(data.intensity)) ? Math.max(0, Math.min(100, Number(data.intensity))) : null;
+            const confidence = Number.isFinite(Number(data.confidence)) ? Math.max(0, Math.min(100, Number(data.confidence))) : null;
+
+            detectedEmotion = {
+                raw: rawEmotion,
+                label: label,
+                emoji: emoji,
+                intensity: intensity,
+                confidence: confidence
+            };
+
+            cameraFrame.classList.remove('is-scanning');
+            cameraStatus.textContent = 'Detection terminee';
+            cameraFootText.textContent = 'Cette emotion sera integree a l\'analyse strategique.';
+            cameraPermissionText.textContent = 'Camera active';
+            cancelCameraBtn.textContent = 'Fermer';
+
+            emotionPanel.style.display = 'block';
+            emotionHeadline.textContent = emoji + ' Etat emotionnel detecte : ' + label;
+            emotionIntensityVal.textContent = intensity === null ? 'N/A' : intensity + '%';
+            emotionConfidenceVal.textContent = confidence === null ? 'N/A' : confidence + '%';
+            requestAnimationFrame(() => {
+                emotionIntensityFill.style.width = intensity === null ? '0%' : intensity + '%';
+                emotionConfidenceFill.style.width = confidence === null ? '0%' : confidence + '%';
+            });
+
+            emotionInline.style.display = 'block';
+            emotionInline.innerHTML =
+                '<div class="title"><i class="fa-solid fa-brain"></i> Contexte emotionnel capture</div>' +
+                '<p class="sub">Aujourd\'hui, vous semblez en ' + label.toLowerCase() +
+                '. Confiance: ' + (confidence === null ? 'N/A' : confidence + '%') +
+                '. Intensite: ' + (intensity === null ? 'N/A' : intensity + '%') +
+                '. Cette emotion sera integree a l\'analyse strategique.</p>';
+
+            startDetectCooldown(30);
+        } catch (err) {
+            console.error(err);
+            detectedEmotion = null;
+            emotionInline.style.display = 'none';
+            cameraFrame.classList.remove('is-scanning');
+            cameraStatus.textContent = mapCameraError(err);
+            cameraFootText.textContent = 'Astuce: fermez Google Meet/Zoom/Teams, puis configurez EMOTION_API_URL ou HUGGINGFACE_API_KEY.';
+            cameraPermissionText.textContent = 'Autorisation camera requise';
+            if (stream) {
+                stream.getTracks().forEach((t) => t.stop());
+                stream = null;
+            }
+        } finally {
+            emotionRequestInFlight = false;
+            if (Date.now() >= emotionCooldownUntil) {
+                detectEmotionBtn.disabled = false;
+                detectEmotionBtn.innerHTML = detectBtnDefaultHtml;
+            }
+        }
+    };
+
+    detectEmotionBtn.addEventListener('click', runEmotionDetection);
+    cancelCameraBtn.addEventListener('click', closeCameraModal);
+    cameraOverlay.addEventListener('click', (e) => {
+        if (e.target === cameraOverlay) closeCameraModal();
+    });
+
+    const renderResult = (html, mode) => {
+        resultDiv.className = 'result-box';
+        if (mode) resultDiv.classList.add(mode);
+        resultDiv.innerHTML = html;
+        resultDiv.style.display = 'block';
+        requestAnimationFrame(() => resultDiv.classList.add('is-visible'));
+    };
+
+    const setLoading = (loading) => {
+        analyzeBtn.disabled = loading;
+        analyzeBtn.classList.toggle('is-loading', loading);
+        btnLabel.innerHTML = loading
+            ? '<i class="fa-solid fa-robot"></i> Analyse en cours...'
+            : '<i class="fa-solid fa-chart-line"></i> Lancer l\'analyse';
+    };
+
+    analyzeBtn.addEventListener('click', async () => {
+        setLoading(true);
+        resultDiv.style.display = 'none';
+        resultDiv.classList.remove('is-visible', 'is-success', 'is-warning');
+
+        try {
+            const data = new URLSearchParams();
+            if (birthDateInput && birthDateInput.value) {
+                data.append('birthDate', birthDateInput.value);
+            }
+            if (detectedEmotion) {
+                data.append('emotion_label', detectedEmotion.raw);
+                if (typeof detectedEmotion.intensity === 'number') {
+                    data.append('emotion_intensity', String(detectedEmotion.intensity));
+                }
+                if (typeof detectedEmotion.confidence === 'number') {
+                    data.append('emotion_confidence', String(detectedEmotion.confidence));
+                }
+            }
+            data.append('include_spiritual', spiritualModeToggle && spiritualModeToggle.checked ? '1' : '0');
+
+            const res = await fetch(window.location.href, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin',
+                body: data
+            });
+
+            const contentType = (res.headers.get('content-type') || '').toLowerCase();
+            if (!contentType.includes('application/json')) {
+                throw new Error('Reponse non JSON');
+            }
+
+            const json = await res.json();
+            if (!res.ok) {
+                throw new Error(json.error || 'Erreur serveur');
+            }
+
+            if (json.ok && json.data) {
+                const report = json.data;
+                let html = '<div class="result-head"><i class="fa-solid fa-microchip"></i><h3>Rapport IA</h3></div>';
+
+                if (report.successScore !== undefined) {
+                    html += '<p><strong>Score de reussite :</strong> ' + escapeHtml(report.successScore) + '%</p>';
+                }
+                if (report.blockers) {
+                    html += '<p><strong>Points de blocage :</strong> ' + escapeHtml(report.blockers) + '</p>';
+                }
+                if (report.risks) {
+                    html += '<p><strong>Risques :</strong> ' + escapeHtml(report.risks) + '</p>';
+                }
+                if (report.recommendations && Array.isArray(report.recommendations) && report.recommendations.length > 0) {
+                    html += '<h4>Recommandations</h4><ul>';
+                    report.recommendations.forEach((item) => { html += '<li>' + escapeHtml(item) + '</li>'; });
+                    html += '</ul>';
+                }
+                if (report.emotionContext && report.emotionInsight) {
+                    html += '<h4>Contexte emotionnel</h4>';
+                    html += '<p><strong>Etat detecte :</strong> ' + escapeHtml(report.emotionContext.label) + '</p>';
+                    html += '<p><strong>Intensite :</strong> ' + escapeHtml(report.emotionContext.intensity) + '%</p>';
+                    html += '<p><strong>Confiance :</strong> ' + escapeHtml(report.emotionContext.confidence) + '%</p>';
+                    html += '<p>' + escapeHtml(report.emotionInsight) + '</p>';
+                }
+                if (report.emotionScoreImpact) {
+                    const impact = report.emotionScoreImpact;
+                    html += '<p><strong>Impact emotionnel sur le score :</strong> ' +
+                        escapeHtml(impact.baseScore) + '% -> ' + escapeHtml(impact.adjustedScore) + '% (' +
+                        (Number(impact.delta) > 0 ? '+' : '') + escapeHtml(impact.delta) + ')</p>';
+                    html += '<p>' + escapeHtml(impact.explanation) + '</p>';
+                }
+                if (report.spiritualGuidance) {
+                    const guide = report.spiritualGuidance;
+                    html += '<div class="spiritual-card">';
+                    html += '<div class="spiritual-head"><i class="fa-solid fa-moon"></i> Guidance spirituelle</div>';
+                    html += '<p class="spiritual-ayah-ar">' + escapeHtml(guide.ayahArabic) + '</p>';
+                    html += '<p class="spiritual-ayah-fr">"' + escapeHtml(guide.ayahFrench) + '"</p>';
+                    if (guide.ayahEnglish) {
+                        html += '<p class="spiritual-ayah-en">"' + escapeHtml(guide.ayahEnglish) + '"</p>';
+                    }
+                    html += '<p class="spiritual-ref">(' + escapeHtml(guide.reference) + ')</p>';
+                    html += '<p>' + escapeHtml(guide.explanation) + '</p>';
+                    html += '<p class="spiritual-action">Action recommandee: ' + escapeHtml(guide.action) + '</p>';
+                    html += '</div>';
+                }
+
+                const mode = (typeof report.successScore === 'number' && report.successScore >= 60) ? 'is-success' : 'is-warning';
+                renderResult(html, mode);
+            } else {
+                renderResult(
+                    '<div class="result-head"><i class="fa-solid fa-circle-info"></i><h3>Information</h3></div><p>' +
+                    (json.error || 'Echec de l analyse.') +
+                    '</p>',
+                    'is-warning'
+                );
+            }
+        } catch (error) {
+            console.error(error);
+            renderResult(
+                '<div class="result-head"><i class="fa-solid fa-triangle-exclamation"></i><h3>Erreur</h3></div>' +
+                '<p>Erreur durant la requete. Rechargez la page et reessayez.</p>',
+                'is-warning'
+            );
+        } finally {
+            setLoading(false);
+        }
+    });
+})();
+</script>
+{% endblock %}

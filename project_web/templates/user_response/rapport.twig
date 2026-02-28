@@ -1,322 +1,266 @@
-{% extends 'theme/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Rapport - {{ theme.nom }}{% endblock %}
+{% set body_class = 'conscience-page' %}
+
+{% block title %}AUDIT SYSTÉMIQUE — {{ theme.nom }} — NEXA Intelligence{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/conscience-modern-proo.css?v=' ~ 'now'|date('U')) }}">
+    <style>
+        .report-card-premium {
+            background: white; border: 1px solid var(--notion-border); border-radius: 24px; padding: 40px; box-shadow: var(--card-shadow); margin-bottom: 40px;
+        }
+        .metric-cell { padding: 20px; border-radius: 16px; background: #f9fafb; border: 1px solid #f3f4f6; }
+        .metric-value { font-size: 24px; font-weight: 800; color: #1a1b23; font-family: 'Space Grotesk', sans-serif; }
+        .metric-label { font-size: 10px; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+        
+        .action-node { 
+            padding: 24px; border-radius: 20px; border: 1px solid #f3f4f6; background: white; 
+            margin-bottom: 16px; display: flex; gap: 20px; align-items: flex-start; transition: all 0.3s;
+        }
+        .action-node:hover { transform: translateX(8px); border-color: #e5e7eb; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05); }
+        .node-icon { 
+            width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
+        }
+
+        .convergence-row {
+            display: grid; grid-template-columns: 1fr auto auto auto; gap: 24px; align-items: center; padding: 24px;
+            background: white; border-radius: 20px; border: 1px solid #f3f4f6; margin-bottom: 12px; transition: all 0.3s;
+        }
+        .convergence-row:hover { background: #f9fafb; border-color: var(--nexa-indigo); }
+        .status-badge { padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+        .status-badge.optimal { background: #dcfce7; color: #166534; }
+        .status-badge.risk { background: #fef2f2; color: #ef4444; }
+        .status-badge.stby { background: #f3f4f6; color: #6b7280; }
+    </style>
+{% endblock %}
 
 {% block body %}
-<div class="wrap report-wrap">
+<div class="conscience-modern-page">
 
-  <section class="page-header report-hero">
-    <div class="page-header-top">
-      <div class="page-title">
-        <h1><i class="fa-solid fa-chart-column"></i> Rapport - {{ theme.nom }}</h1>
-        <p>Synthese de vos reponses et recommandations.</p>
-      </div>
+    <header class="conscience-page-header">
+        <div>
+            <div style="font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 8px;">Intelligence Prédictive</div>
+            <h1 style="font-family: 'Space Grotesk', sans-serif;">Audit : {{ theme.nom }}</h1>
+            <p>Rapport de résonance systémique et plan de mutation opérationnelle.</p>
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 24px;">
+            <a href="{{ path('app_theme_answer', { id: theme.idT }) }}" class="btn">
+                <i class="fas fa-play"></i> Nouvelle Capture
+            </a>
+            <a href="{{ path('app_conscience_index') }}" class="btn">
+                <i class="fas fa-arrow-left"></i> Hub
+            </a>
+            <a href="{{ path('app_theme_rapport_pdf', { id: theme.idT }) }}" class="btn primary">
+                <i class="fas fa-file-pdf"></i> Exporter l'Audit
+            </a>
+        </div>
+    </header>
 
-      <div class="page-actions">
-        <a href="{{ path('app_theme_answer', { id: theme.idT }) }}" class="btn ghost">
-          Retour aux questions
-        </a>
-        <a href="{{ path('app_theme_rapport_pdf', { id: theme.idT }) }}" class="btn primary">
-          <i class="fa-solid fa-file-pdf"></i> Exporter en PDF
-        </a>
-      </div>
-    </div>
-  </section>
+    {% if details is empty %}
+        <div style="text-align: center; padding: 100px; background: white; border-radius: 32px; border: 2px dashed #e5e7eb;">
+            <i class="fa-solid fa-chart-pie" style="font-size: 64px; color: #d1d5db; margin-bottom: 32px;"></i>
+            <h3 style="font-size: 22px; font-weight: 800; color: #1a1b23;">Matrice d'Analyse Vide</h3>
+            <p style="color: #9ca3af; max-width: 450px; margin: 16px auto 32px; line-height: 1.6;">Le système requiert une série de captures de données pour générer des insights prédictifs fiables.</p>
+            <a href="{{ path('app_theme_answer', { id: theme.idT }) }}" class="btn primary" style="padding: 14px 40px; font-weight: 800;">LANCER L'INTÉGRATION</a>
+        </div>
+    {% else %}
 
-  {% if details is empty %}
-    <div class="report-empty">
-      <i class="fa-regular fa-folder-open"></i>
-      <h3>Aucune reponse enregistree</h3>
-      <p>Commencez par repondre aux questions pour generer le rapport.</p>
-    </div>
-  {% else %}
-    {% set total = insights.totalResponses|default(details|length) %}
-    {% set good = insights.good|default(0) %}
-    {% set warn = insights.warn|default(0) %}
-    {% set score = insights.score|default(0) %}
-
-    <section class="report-kpi-strip">
-      <article class="report-kpi">
-        <span>Total</span>
-        <strong>{{ total }}</strong>
-      </article>
-      <article class="report-kpi good">
-        <span>Bonnes habitudes</span>
-        <strong>{{ good }}</strong>
-      </article>
-      <article class="report-kpi warn">
-        <span>A ameliorer</span>
-        <strong>{{ warn }}</strong>
-      </article>
-      <article class="report-kpi score">
-        <span>Score global</span>
-        <strong>{{ score }}%</strong>
-      </article>
-    </section>
-
-    <section class="report-scorebar">
-      <div class="report-scorebar-track">
-        <div class="report-scorebar-fill" style="width: {{ score }}%"></div>
-      </div>
-      <small>Progression globale sur ce theme</small>
-    </section>
-
-    {% if insights is defined %}
-      <section class="report-kpi-strip" style="margin-top:16px;">
-        <article class="report-kpi score">
-          <span>Score qualite</span>
-          <strong>{{ insights.weightedScore|default(0) }}%</strong>
-        </article>
-        <article class="report-kpi warn">
-          <span>Indice de risque</span>
-          <strong>{{ insights.riskIndex|default(0) }}%</strong>
-        </article>
-        <article class="report-kpi">
-          <span>Tendance</span>
-          <strong>+{{ insights.trend.up|default(0) }} / -{{ insights.trend.down|default(0) }}</strong>
-        </article>
-        <article class="report-kpi">
-          <span>Niveau de maturite</span>
-          <strong>{{ insights.maturityLevel|default('A renforcer') }}</strong>
-        </article>
-      </section>
-
-      <section class="report-kpi-strip" style="margin-top:16px;">
-        <article class="report-kpi">
-          <span>Fraicheur data</span>
-          <strong>{{ insights.freshnessScore|default(0) }}%</strong>
-        </article>
-        <article class="report-kpi">
-          <span>Consistance</span>
-          <strong>{{ insights.consistencyScore|default(0) }}%</strong>
-        </article>
-        <article class="report-kpi">
-          <span>Confiance analytique</span>
-          <strong>{{ insights.confidenceScore|default(0) }}%</strong>
-        </article>
-      </section>
-
-      <section class="report-grid" style="margin-top: 14px;">
-        <article class="report-card is-neutral">
-          <div class="report-card-top">
-            <h3><i class="fa-solid fa-file-lines"></i> Synthese executive</h3>
-            <span class="report-badge neutral">Analyse pro</span>
-          </div>
-          <p class="report-advice info">{{ insights.summary|default('') }}</p>
-        </article>
-      </section>
-
-      <section class="report-kpi-strip" style="margin-top:16px;">
-        <article class="report-kpi">
-          <span>Couverture</span>
-          <strong>{{ insights.completionRate|default(0) }}%</strong>
-        </article>
-        <article class="report-kpi">
-          <span>Momentum</span>
-          <strong>{{ insights.momentum|default('Demarrage') }}</strong>
-        </article>
-        <article class="report-kpi warn">
-          <span>Restant</span>
-          <strong>{{ insights.pending|default(0) }}</strong>
-        </article>
-      </section>
-
-      {% if insights.recommendations is not empty %}
-        <section class="report-grid" style="margin-top: 14px;">
-          {% for reco in insights.recommendations %}
-            <article class="report-card is-warn">
-              <div class="report-card-top">
-                <h3><i class="fa-solid fa-wand-magic-sparkles"></i> {{ reco.title }}</h3>
-                <span class="report-badge warn">Priorite {{ reco.priority|default(1) }}</span>
-              </div>
-              <p class="report-advice warn">{{ reco.message }}</p>
-            </article>
-          {% endfor %}
-        </section>
-      {% endif %}
-
-      {% if insights.actionPlan is defined %}
-        <section class="report-grid" style="margin-top: 14px;">
-          <article class="report-card is-warn">
-            <div class="report-card-top">
-              <h3><i class="fa-solid fa-bolt"></i> Plan 24h</h3>
-              <span class="report-badge warn">Immediat</span>
+        <div class="section-title" style="margin-bottom: 24px; font-size: 11px; font-weight: 800; color: var(--nexa-indigo); text-transform: uppercase; letter-spacing: 0.2em;">INDICES DE RÉSONANCE GLOBAL</div>
+        
+        <div class="report-card-premium" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;">
+            <div class="metric-cell">
+                <div class="metric-label">Score de Qualité</div>
+                <div class="metric-value">{{ insights.weightedScore|default(0) }}%</div>
+                <div style="margin-top: 8px; height: 4px; background: #e5e7eb; border-radius: 2px; overflow: hidden;">
+                    <div style="width: {{ insights.weightedScore|default(0) }}%; height: 100%; background: #6366f1;"></div>
+                </div>
             </div>
-            {% for item in insights.actionPlan.immediate|default([]) %}
-              <p class="report-advice warn"><strong>{{ item.title }}:</strong> {{ item.action }}</p>
-            {% endfor %}
-          </article>
-
-          <article class="report-card is-neutral">
-            <div class="report-card-top">
-              <h3><i class="fa-solid fa-calendar-week"></i> Plan 7 jours</h3>
-              <span class="report-badge neutral">Hebdomadaire</span>
+            <div class="metric-cell" style="background: #fdf2f2; border-color: #fee2e2;">
+                <div class="metric-label" style="color: #ef4444;">Index de Risque</div>
+                <div class="metric-value" style="color: #ef4444;">{{ insights.riskIndex|default(0) }}%</div>
+                <div style="margin-top: 8px; height: 4px; background: #fee2e2; border-radius: 2px; overflow: hidden;">
+                    <div style="width: {{ insights.riskIndex|default(0) }}%; height: 100%; background: #ef4444;"></div>
+                </div>
             </div>
-            {% for item in insights.actionPlan.weekly|default([]) %}
-              <p class="report-advice info"><strong>{{ item.title }}:</strong> {{ item.action }}</p>
-            {% endfor %}
-          </article>
-
-          <article class="report-card is-good">
-            <div class="report-card-top">
-              <h3><i class="fa-solid fa-chess-king"></i> Plan 30 jours</h3>
-              <span class="report-badge good">Strategique</span>
+            <div class="metric-cell">
+                <div class="metric-label">Fiabilité Capteurs</div>
+                <div class="metric-value">{{ insights.completionRate|default(0) }}%</div>
+                <div style="font-size: 11px; color: #6b7280; font-weight: 700; margin-top: 4px;">COUVERTURE</div>
             </div>
-            {% for item in insights.actionPlan.strategic|default([]) %}
-              <p class="report-advice good"><strong>{{ item.title }}:</strong> {{ item.action }}</p>
+            <div class="metric-cell" style="background: #ecfdf5; border-color: #d1fae5;">
+                <div class="metric-label" style="color: #059669;">Niveau de Maturité</div>
+                <div class="metric-value" style="color: #059669; font-size: 18px; padding-top: 6px;">{{ insights.maturityLevel|default('Analyse...') }}</div>
+            </div>
+        </div>
+
+        <div style="background: #1a1b23; border-radius: 24px; padding: 40px; margin-bottom: 60px; display: flex; align-items: center; gap: 40px; color: white; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
+            <div style="width: 80px; height: 80px; border-radius: 20px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 40px; flex-shrink: 0;">🧠</div>
+            <div>
+                <h4 style="font-size: 12px; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">SYNTHÈSE SYSTÉMIQUE</h4>
+                <p style="font-size: 18px; color: white; line-height: 1.6; font-weight: 500; margin: 0;">{{ insights.summary|default('Analyse des vecteurs de tendance en cours...') }}</p>
+            </div>
+        </div>
+
+        <div class="section-title" style="margin-bottom: 24px; font-size: 11px; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.2em;">PLAN DE MUTATION OPÉRATIONNELLE</div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 60px;">
+            <div class="action-column">
+                <label style="display: block; font-size: 10px; font-weight: 800; color: #ef4444; margin-bottom: 16px;">VIGILANCE IMMÉDIATE</label>
+                {% for item in insights.actionPlan.immediate|default([]) %}
+                    <div class="action-node" style="border-left: 4px solid #ef4444;">
+                        <div class="node-icon" style="background: #fef2f2; color: #ef4444;"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 700; color: #1a1b23; margin-bottom: 4px;">{{ item.title }}</div>
+                            <p style="font-size: 13px; color: #6b7280; margin: 0; line-height: 1.5;">{{ item.action }}</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <div style="padding: 24px; border-radius: 20px; background: #f9fafb; text-align: center; color: #9ca3af; font-size: 13px;">Aucun risque critique.</div>
+                {% endfor %}
+            </div>
+
+            <div class="action-column">
+                <label style="display: block; font-size: 10px; font-weight: 800; color: #6366f1; margin-bottom: 16px;">COURT TERME (W7)</label>
+                {% for item in insights.actionPlan.weekly|default([]) %}
+                    <div class="action-node" style="border-left: 4px solid #6366f1;">
+                        <div class="node-icon" style="background: #eef2ff; color: #6366f1;"><i class="fas fa-calendar-check"></i></div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 700; color: #1a1b23; margin-bottom: 4px;">{{ item.title }}</div>
+                            <p style="font-size: 13px; color: #6b7280; margin: 0; line-height: 1.5;">{{ item.action }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="action-column">
+                <label style="display: block; font-size: 10px; font-weight: 800; color: #059669; margin-bottom: 16px;">MUTATION STRATÉGIQUE</label>
+                {% for item in insights.actionPlan.strategic|default([]) %}
+                    <div class="action-node" style="border-left: 4px solid #059669;">
+                        <div class="node-icon" style="background: #ecfdf5; color: #059669;"><i class="fas fa-chess"></i></div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 700; color: #1a1b23; margin-bottom: 4px;">{{ item.title }}</div>
+                            <p style="font-size: 13px; color: #6b7280; margin: 0; line-height: 1.5;">{{ item.action }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="section-title" style="margin-bottom: 24px; font-size: 11px; font-weight: 800; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.2em;">CONVERGENCE DES INDICATEURS</div>
+
+        <div style="margin-bottom: 80px;">
+            {% for item in details %}
+                <div class="convergence-row">
+                    <div>
+                        <div style="font-size: 15px; font-weight: 700; color: #1a1b23; margin-bottom: 4px;">{{ item.question }}</div>
+                        <div style="font-size: 11px; color: #9ca3af; font-weight: 600;">DATE LOG : {{ item.date|date('d F Y') }}</div>
+                    </div>
+                    
+                    <div style="text-align: center; min-width: 150px;">
+                        <span class="status-badge {{ item.ok is same as(true) ? 'optimal' : (item.ok is same as(false) ? 'risk' : 'stby') }}">
+                            {{ item.ok is same as(true) ? 'OPTIMAL' : (item.ok is same as(false) ? 'RISQUE' : 'NEUTRE') }}
+                        </span>
+                    </div>
+
+                    <div style="text-align: right; min-width: 120px;">
+                        <div style="font-size: 20px; font-weight: 800; color: #1a1b23;">
+                            {% if item.type == 'boolean' %}
+                                {{ item.value == '1' ? 'YES' : 'NO' }}
+                            {% else %}
+                                {{ item.value }}{% if item.unite %} {{ item.unite }}{% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div style="min-width: 140px; text-align: right;">
+                        {% if item.type == 'number' and item.ideal is not null %}
+                            <div style="font-size: 10px; font-weight: 800; color: #3b82f6; text-transform: uppercase;">CIBLE : {{ item.ideal }}</div>
+                            <div style="font-size: 11px; color: {{ item.gap >= 0 ? '#059669' : '#ef4444' }}; font-weight: 700;">
+                                GAP : {{ item.gap|number_format(1) }} ({{ item.gapPercent|number_format(1) }}%)
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
             {% endfor %}
-          </article>
-        </section>
-      {% endif %}
+        </div>
+        <div class="section-title" style="margin-bottom: 24px; font-size: 11px; font-weight: 800; color: #6366f1; text-transform: uppercase; letter-spacing: 0.2em;">TACHES SUGGEREES PAR THEME</div>
 
-      {% if insights.alerts is not empty %}
-        <section class="report-grid" style="margin-top: 14px;">
-          {% for alert in insights.alerts %}
-            <article class="report-card is-warn">
-              <div class="report-card-top">
-                <h3><i class="fa-solid fa-triangle-exclamation"></i> {{ alert.title }}</h3>
-                <span class="report-badge warn">P{{ alert.priority|default(1) }}</span>
-              </div>
-              <p class="report-advice warn">{{ alert.message }}</p>
-            </article>
-          {% endfor %}
-        </section>
-      {% endif %}
-
-      {% if insights.strengths is not empty %}
-        <section class="report-grid" style="margin-top: 14px;">
-          {% for strength in insights.strengths %}
-            <article class="report-card is-good">
-              <div class="report-card-top">
-                <h3><i class="fa-solid fa-medal"></i> {{ strength.title }}</h3>
-                <span class="report-badge good">Positif</span>
-              </div>
-              <p class="report-advice good">{{ strength.message }}</p>
-            </article>
-          {% endfor %}
-        </section>
-      {% endif %}
-    {% endif %}
-
-    <section class="report-grid">
-      {% for item in details %}
-        {% set badgeText = item.ok is same as(true) ? 'Bonne habitude' : (item.ok is same as(false) ? 'A ameliorer' : 'Information utile') %}
-        {% set adviceText = (item.advice ?? '')|trim %}
-        {% set adviceLower = adviceText|lower %}
-        {% set hideAdvice = false %}
-        {% if item.ok is same as(true) and ('bonne habitude' in adviceLower) %}
-          {% set hideAdvice = true %}
-        {% elseif item.ok is same as(false) and ('amelior' in adviceLower) %}
-          {% set hideAdvice = true %}
-        {% elseif item.ok is null and ('information' in adviceLower) %}
-          {% set hideAdvice = true %}
+        {% if taskSuggestions is empty %}
+            <div style="margin-bottom: 32px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 16px; padding: 18px; color: #64748b; font-size: 13px;">
+                Aucune tache critique detectee. Les suggestions preventives apparaissent ici automatiquement.
+            </div>
+        {% else %}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px;">
+                {% for suggestion in taskSuggestions %}
+                    <article style="background: white; border: 1px solid #e5e7eb; border-radius: 20px; padding: 20px;">
+                        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 10px;">
+                            <h4 style="font-size: 15px; font-weight: 800; color: #111827; margin: 0;">{{ suggestion.title }}</h4>
+                            <span class="status-badge {{ suggestion.priority == 'high' ? 'risk' : (suggestion.priority == 'low' ? 'stby' : 'optimal') }}">
+                                {{ suggestion.priority|upper }}
+                            </span>
+                        </div>
+                        <p style="margin: 0 0 10px 0; color: #4b5563; font-size: 13px; line-height: 1.5;">{{ suggestion.description }}</p>
+                        <p style="margin: 0 0 14px 0; color: #6b7280; font-size: 12px; line-height: 1.5;">
+                            <strong>Preuve:</strong> {{ suggestion.evidence }}
+                        </p>
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                            <span style="font-size: 11px; color: #6b7280; font-weight: 700;">Echeance: {{ suggestion.dueAt|date('d/m/Y') }}</span>
+                            <button type="button" class="btn primary report-add-task-btn" data-suggestion-id="{{ suggestion.id }}" style="padding: 8px 14px; font-size: 12px; font-weight: 800;">
+                                Ajouter a mes taches
+                            </button>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
         {% endif %}
-
-        <article class="report-card {{ item.ok is same as(true) ? 'is-good' : (item.ok is same as(false) ? 'is-warn' : 'is-neutral') }}">
-          <div class="report-card-top">
-            <h3>
-              <i class="fa-solid {{ item.type == 'boolean' ? 'fa-toggle-on' : (item.type == 'number' ? 'fa-hashtag' : 'fa-message') }}"></i>
-              {{ item.question }}
-            </h3>
-            <span class="report-badge {{ item.ok is same as(true) ? 'good' : (item.ok is same as(false) ? 'warn' : 'neutral') }}">
-              {{ badgeText }}
-            </span>
-          </div>
-
-          <div class="report-line">
-            <span class="report-label">Votre reponse</span>
-            <strong class="report-value">
-              {% if item.type == 'boolean' %}
-                {{ item.value == '1' ? 'Oui' : 'Non' }}
-              {% else %}
-                {{ item.value }}
-                {% if item.unite %} {{ item.unite }}{% endif %}
-              {% endif %}
-            </strong>
-          </div>
-
-          {% if item.type == 'number' and item.ideal is not null %}
-            <div class="report-line report-target">
-              <span class="report-label">Objectif</span>
-              <strong class="report-value">
-                {{ item.ideal }}{% if item.unite %} {{ item.unite }}{% endif %}
-              </strong>
-            </div>
-            {% if item.gap is not null %}
-              <div class="report-line">
-                <span class="report-label">Ecart vs objectif</span>
-                <strong class="report-value">
-                  {{ item.gap > 0 ? '+' : '' }}{{ item.gap|number_format(2, '.', ' ') }}{% if item.unite %} {{ item.unite }}{% endif %}
-                  {% if item.gapPercent is not null %}
-                    ({{ item.gapPercent > 0 ? '+' : '' }}{{ item.gapPercent|number_format(1, '.', ' ') }}%)
-                  {% endif %}
-                </strong>
-              </div>
-            {% endif %}
-          {% endif %}
-
-          {% if adviceText is not empty and not hideAdvice %}
-            <p class="report-advice {{ item.ok is same as(true) ? 'good' : (item.ok is same as(false) ? 'warn' : 'info') }}">
-              {{ adviceText }}
-            </p>
-          {% endif %}
-
-          <small class="report-date">
-            <i class="fa-regular fa-clock"></i>
-            Repondu le {{ item.date|date('d/m/Y a H:i') }}
-          </small>
-        </article>
-      {% endfor %}
-    </section>
-
-    {% set seedSuggestion = taskSuggestions|default([])|first %}
-    {% set seedItem = details|first %}
-    {% set seedTitle = seedSuggestion ? seedSuggestion.title : ('[' ~ theme.nom ~ '] Action suite au rapport') %}
-    {% set seedDescription = seedSuggestion
-      ? seedSuggestion.description
-      : (seedItem
-          ? ('Question: ' ~ seedItem.question ~ ' | Reponse: ' ~ (seedItem.value ?? 'N/A') ~ '.')
-          : 'Action generee depuis vos reponses du rapport.')
-    %}
-    {% set seedPriority = seedSuggestion ? seedSuggestion.priority : ((seedItem and seedItem.ok is same as(false)) ? 'high' : 'med') %}
-    {% set seedDueAt = seedSuggestion
-      ? seedSuggestion.dueAt
-      : (('now'|date_modify('+2 day'))|date('Y-m-d'))
-    %}
-
-    <section class="report-grid" style="margin-top: 14px;">
-      <article class="report-card is-neutral">
-        <div class="report-card-top">
-          <h3><i class="fa-solid fa-list-check"></i> Generer une tache depuis vos reponses</h3>
-          <span class="report-badge neutral">Action</span>
-        </div>
-        <p class="report-advice info">
-          Voulez-vous creer une tache basee sur ce rapport ? Si vous cliquez Oui, vous serez redirige vers la gestion des taches avec le formulaire d'ajout deja ouvert.
-        </p>
-        <div class="page-actions" style="margin-top:10px;">
-          <a class="btn primary"
-             href="{{ path('app_task_index', {
-               open_task_from_report: 1,
-               title: seedTitle,
-               description: seedDescription,
-               priority: seedPriority,
-               status: 'todo',
-               dueAt: seedDueAt
-             }) }}">
-            <i class="fa-solid fa-check"></i> Oui, generer une tache
-          </a>
-          <button type="button" class="btn ghost" onclick="this.closest('.report-card').remove()">
-            Non
-          </button>
-        </div>
-      </article>
-    </section>
-  {% endif %}
+    {% endif %}
 
 </div>
 {% endblock %}
 
 {% block javascripts %}
-  {{ parent() }}
+    {{ parent() }}
+    {% if taskSuggestions is not empty %}
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const acceptUrl = "{{ path('app_theme_task_suggestion_accept', { id: theme.idT }) }}";
+                const buttons = document.querySelectorAll('.report-add-task-btn');
+
+                buttons.forEach((btn) => {
+                    btn.addEventListener('click', async () => {
+                        const suggestionId = btn.getAttribute('data-suggestion-id');
+                        if (!suggestionId) {
+                            return;
+                        }
+
+                        const initialText = btn.textContent;
+                        btn.disabled = true;
+                        btn.textContent = 'Ajout...';
+
+                        try {
+                            const response = await fetch(acceptUrl, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ suggestionId })
+                            });
+                            const payload = await response.json();
+
+                            if (!response.ok || !payload || payload.ok !== true) {
+                                throw new Error('task_create_failed');
+                            }
+
+                            btn.textContent = payload.created ? 'Ajoute' : 'Deja existante';
+                            btn.classList.remove('primary');
+                        } catch (error) {
+                            btn.disabled = false;
+                            btn.textContent = initialText || 'Ajouter a mes taches';
+                        }
+                    });
+                });
+            });
+        </script>
+    {% endif %}
 {% endblock %}
 

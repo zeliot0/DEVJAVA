@@ -1,0 +1,60 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block admin_page_title %}Quotes Motivation{% endblock %}
+{% block admin_page_hint %}CRUD des citations motivationnelles par mood{% endblock %}
+
+{% block admin_content %}
+<div class="panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;">
+        <h2 class="panel-title" style="margin:0;">
+            <i class="fa-solid fa-quote-right" style="color: var(--primary);"></i> Repertoire des quotes
+        </h2>
+        <a class="btn-adm active" href="{{ path('admin_motivation_quotes_new') }}">
+            <i class="fa-solid fa-plus"></i> Nouvelle quote
+        </a>
+    </div>
+
+    {% if quotesByMood is empty %}
+        <div style="padding:20px;border:1px dashed var(--border);border-radius:12px;color:var(--muted);font-weight:700;">
+            Aucune quote configuree.
+        </div>
+    {% else %}
+        <div style="display:grid;gap:16px;">
+            {% for mood, quotes in quotesByMood %}
+                <section style="border:1px solid var(--border);border-radius:16px;padding:14px;background:rgba(var(--surface-rgb),0.35);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;">
+                        <strong style="font-size:0.9rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);">{{ mood }}</strong>
+                        <a class="btn-adm" href="{{ path('admin_motivation_quotes_new', {'mood': mood}) }}">
+                            <i class="fa-solid fa-plus"></i> Ajouter dans {{ mood }}
+                        </a>
+                    </div>
+
+                    <div style="display:grid;gap:10px;">
+                        {% for quote in quotes %}
+                            <article style="border:1px solid var(--border);border-radius:12px;padding:12px;background:rgba(var(--surface-rgb),0.5);">
+                                <div style="font-size:0.95rem;font-weight:800;margin-bottom:8px;">{{ quote.french|default('') }}</div>
+                                <div style="font-size:0.82rem;color:var(--muted);margin-bottom:6px;">{{ quote.english|default('') }}</div>
+                                <div style="font-size:0.82rem;color:var(--muted);margin-bottom:10px;">{{ quote.arabic|default('') }}</div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+                                    <span class="badge">{{ quote.source|default('Source inconnue') }}</span>
+                                    <div style="display:flex;gap:8px;">
+                                        <a class="btn-adm" href="{{ path('admin_motivation_quotes_edit', {'mood': mood, 'index': loop.index0}) }}">
+                                            <i class="fa-solid fa-pen"></i> Modifier
+                                        </a>
+                                        <form method="post" action="{{ path('admin_motivation_quotes_delete', {'mood': mood, 'index': loop.index0}) }}" onsubmit="return confirm('Supprimer cette quote ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete_quote_' ~ mood ~ '_' ~ loop.index0) }}">
+                                            <button type="submit" class="btn-link" style="background:rgba(239,68,68,.12);color:#ef4444;border-color:rgba(239,68,68,.35);">
+                                                <i class="fa-solid fa-trash"></i> Supprimer
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

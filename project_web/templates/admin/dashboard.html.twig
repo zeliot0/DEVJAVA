@@ -1,74 +1,518 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block admin_page_title %}Dashboard Général{% endblock %}
-{% block admin_page_hint %}État de santé et statistiques globales de la plateforme NEXA{% endblock %}
+{% block title %}NEXA Admin Dashboard{% endblock %}
+{% block admin_page_title %}&nbsp;{% endblock %}
+{% block admin_page_hint %}&nbsp;{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/notion-core.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/nexa-performance-hub.css') }}">
+    <style>
+        .page-header, .flash-wrap {
+            display: none !important;
+        }
+        .notion-sidebar-v2 {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            bottom: 0 !important;
+            height: 100vh !important;
+            z-index: 1200 !important;
+        }
+        .adm-main {
+            margin-left: 280px !important;
+            width: calc(100% - 280px) !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            padding: 0 !important;
+            min-height: 100vh !important;
+            background: var(--nexa-bg) !important;
+            position: relative;
+        }
+        .adm-main .adm-wrapper {
+            width: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .nexa-performance-hub {
+            width: 96% !important;
+            max-width: 1450px !important;
+            margin: 0 auto !important;
+            padding: 0 0 3rem 0 !important; /* Force to the very top */
+        }
+        /* Keep frame logic for inline views */
+        .ds-inline-shell {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 1rem;
+            padding: 24px;
+            border-radius: 24px;
+            border: 1px solid var(--nexa-border);
+            background: white;
+            box-shadow: var(--nexa-shadow);
+            min-height: 70vh;
+            width: 100%;
+        }
+        .ds-inline-shell[hidden] { display: none; }
+        .ds-inline-frame {
+            flex: 1 1 auto;
+            width: 100%;
+            min-height: 72vh;
+            border: 0;
+            border-radius: 16px;
+            background: #fff;
+        }
+        .nexa-main-wrapper.is-inline-open .nexa-dashboard-content {
+            display: none;
+        }
+        .ds-inline-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 12px;
+            background: #f1f3f9;
+            color: #1a1b23;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        .ds-inline-btn:hover { background: #e5e7eb; transform: translateY(-1px); }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        (function() {
+            const dashboard = document.querySelector('.nexa-performance-hub');
+            const main = document.querySelector('.nexa-main-wrapper');
+            const shell = document.getElementById('ds-inline-shell');
+            const frame = document.getElementById('ds-inline-frame');
+            const title = document.getElementById('ds-inline-title');
+            const urlLabel = document.getElementById('ds-inline-url');
+            const closeBtn = document.getElementById('ds-inline-close');
+            const openNewBtn = document.getElementById('ds-inline-open-new');
+
+            if (!dashboard || !main || !shell || !frame || !title || !urlLabel || !closeBtn || !openNewBtn) {
+                return;
+            }
+
+            function isUserOpeningNewTab(event) {
+                return event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
+            }
+
+            function shouldInlineLink(link) {
+                if (!link || link.dataset.inlineIgnore === '1') {
+                    return false;
+                }
+                const href = link.getAttribute('href');
+                if (!href || href.startsWith('#') || href.startsWith('javascript:')) {
+                    return false;
+                }
+                try {
+                const linkUrl = new URL(href, window.location.href);
+                if (linkUrl.origin !== window.location.origin) {
+                    return false;
+                }
+                if (linkUrl.pathname === window.location.pathname) {
+                    return false;
+                }
+                return true;
+                } catch(e) { return false; }
+            }
+
+            function openInline(linkUrl, linkLabel) {
+                const embedUrl = new URL(linkUrl.href);
+                embedUrl.searchParams.set('embed', '1');
+
+                title.textContent = linkLabel || 'Vue integree';
+                urlLabel.textContent = linkUrl.pathname + linkUrl.search;
+                openNewBtn.href = linkUrl.href;
+                frame.src = embedUrl.href;
+
+                shell.hidden = false;
+                main.classList.add('is-inline-open');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            function closeInline() {
+                shell.hidden = true;
+                main.classList.remove('is-inline-open');
+                frame.src = 'about:blank';
+                openNewBtn.href = '#';
+            }
+
+            dashboard.addEventListener('click', function(event) {
+                const link = event.target.closest('a[href]');
+                if (!link || isUserOpeningNewTab(event) || !shouldInlineLink(link)) {
+                    return;
+                }
+
+                event.preventDefault();
+
+                const linkUrl = new URL(link.getAttribute('href'), window.location.href);
+                const linkLabel = (link.textContent || link.title || linkUrl.pathname).replace(/\s+/g, ' ').trim();
+                openInline(linkUrl, linkLabel);
+            });
+
+            closeBtn.addEventListener('click', closeInline);
+
+            // Compatibility for Notion Sidebar
+            window.nexaToggleDark = function() {
+                const html = document.documentElement;
+                const current = html.getAttribute('data-theme') || 'light';
+                const next = current === 'dark' ? 'light' : 'dark';
+                html.setAttribute('data-theme', next);
+                document.body.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+                
+                // Update icons if they exist (Notion sidebar uses moon/sun)
+                const icons = document.querySelectorAll('.notion-nav-item i.fa-moon, .notion-nav-item i.fa-sun');
+                icons.forEach(icon => {
+                    icon.className = next === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+                });
+            };
+        })();
+    </script>
+{% endblock %}
+
+{% block admin_sidebar %}
+    {% include 'layout/sidebar.html.twig' %}
+{% endblock %}
 
 {% block admin_content %}
-    <div class="kpi-row">
-        <div class="kpi-card" style="border-left: 5px solid var(--primary);">
-            <div class="kpi-label">Utilisateurs</div>
-            <div class="kpi-value">{{ totalUsers }}</div>
-            <div class="kpi-sub">Comptes actifs sur NEXA</div>
-        </div>
+    {% set adminName = app.user and app.user.nom ? app.user.nom : 'Admin User' %}
+    
+    <div class="nexa-performance-hub nexa-main-wrapper">
+        <header class="nexa-header">
+            <div class="nexa-brand-group">
+                <div class="nexa-logo">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div class="nexa-title-wrap">
+                    <h4>Nexa Intelligence System</h4>
+                    <h1>Performance Command Hub</h1>
+                </div>
+            </div>
 
-        <div class="kpi-card" style="border-left: 5px solid var(--accent);">
-            <div class="kpi-label">Tâches</div>
-            <div class="kpi-value">{{ totalTasks }}</div>
-            <div class="kpi-sub">Volume global de travail</div>
-        </div>
+            <div class="nexa-header-stats">
+                <div class="nexa-header-stat-item">
+                    <small>System Health</small>
+                    <strong class="uptime">{{ completionRate }}%</strong>
+                </div>
+                <div class="nexa-header-stat-item">
+                    <small>Active Tasks</small>
+                    <strong class="project-end">{{ openTasks }}</strong>
+                </div>
+                <div class="nexa-header-stat-item">
+                    <a href="{{ path('app_logout') }}" class="nexa-logout-btn" title="Logout">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
 
-        <div class="kpi-card" style="border-left: 5px solid var(--good);">
-            <div class="kpi-label">Actions</div>
-            <div class="kpi-value">{{ totalExecutions }}</div>
-            <div class="kpi-sub">Exécutions suivies</div>
-        </div>
+        {# Inline Shell for embedded views #}
+        <section class="ds-inline-shell" id="ds-inline-shell" hidden>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div>
+                    <div style="font-weight: 800; font-size: 1.2rem;" id="ds-inline-title">Vue integree</div>
+                    <div style="color: var(--nexa-text-muted); font-size: 0.8rem;" id="ds-inline-url"></div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" class="ds-inline-btn" id="ds-inline-close">
+                        <i class="fa-solid fa-arrow-left"></i> Dashboard
+                    </button>
+                    <a href="#" class="ds-inline-btn" id="ds-inline-open-new" target="_blank">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Open
+                    </a>
+                </div>
+            </div>
+            <iframe id="ds-inline-frame" class="ds-inline-frame"></iframe>
+        </section>
 
-        <div class="kpi-card" style="border-left: 5px solid var(--warn);">
-            <div class="kpi-label">Uptime</div>
-            <div class="kpi-value">99.9%</div>
-            <div class="kpi-sub">Système stable</div>
-        </div>
-    </div>
+        <div class="nexa-dashboard-content">
+            <!-- KPI Row -->
+            <div class="nexa-kpi-grid">
+                <article class="nexa-card">
+                    <div class="nexa-card-head">
+                        <span>Task Throughput</span>
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <div class="nexa-card-value">{{ taskCreatedPeriod }}</div>
+                    <div class="nexa-card-subtext">Done: <span>{{ doneTasks }}</span> | Success: <span>{{ completionRate }}%</span></div>
+                    <div class="nexa-activity-matrix">
+                        <div class="nexa-matrix-label">Activity Matrix (30D)</div>
+                        <div class="nexa-matrix-dots">
+                            {% for i in 1..28 %}
+                                <div class="nexa-dot {{ i > 20 ? 'active' : '' }} {{ i == 25 ? 'highlight' : '' }} {{ i == 27 ? 'pulse' : '' }}"></div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </article>
 
-    <div class="adm-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-        <div class="panel">
-            <div class="panel-title" style="font-weight: 900; margin-bottom: 20px;"><i class="fa-solid fa-user-plus" style="color: var(--primary);"></i> Nouveaux Membres</div>
-            <table class="adm-table" style="width: 100%;">
-                <tbody>
-                    {% for u in latestUsers %}
-                        <tr>
-                            <td style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; margin-bottom: 10px;">
-                                <div style="display: flex; align-items: center; gap: 15px;">
-                                    <div class="badge" style="background: var(--gradient); width: 35px; height: 35px; border-radius: 10px; display: grid; place-items: center;"><i class="fa-solid fa-user"></i></div>
-                                    <div style="font-weight: 800;">{{ u.email }}</div>
+                <article class="nexa-card">
+                    <div class="nexa-card-head">
+                        <span>Strategic Milestones</span>
+                        <i class="fa-solid fa-flag"></i>
+                    </div>
+                    <div class="nexa-card-value">{{ goalsInProgress }}/{{ goalsTotal }}</div>
+                    <div style="margin-top: 2rem;">
+                        <div class="nexa-card-head" style="margin-bottom: 0.5rem;">
+                            <span>Completion Track</span>
+                            <span>{{ completionRate }}%</span>
+                        </div>
+                        <div class="nexa-meter-bar">
+                            <div class="nexa-meter-fill" style="width: {{ completionRate }}%; background: var(--nexa-primary);"></div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1.5rem; font-size: 0.75rem; color: var(--nexa-text-muted); font-weight: 700;">
+                        <i class="fa-solid fa-person-running" style="color: #fbbf24;"></i> Running at 0.2 units/day
+                    </div>
+                </article>
+
+                <article class="nexa-card">
+                    <div class="nexa-card-head">
+                        <span>Emotional Pulse</span>
+                        <i class="fa-solid fa-face-smile"></i>
+                    </div>
+                    <div class="nexa-card-value">{{ (avgSatisfaction * 20)|round }}%</div>
+                    <div class="nexa-pulse-meter">
+                        <div class="nexa-meter-bar">
+                            <div class="nexa-meter-fill" style="width: {{ (avgSatisfaction * 20)|round }}%;"></div>
+                        </div>
+                        <div class="nexa-meter-labels">
+                            <span>Distress</span>
+                            <span>Harmony</span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1.5rem; font-size: 0.85rem; line-height: 1.4;">
+                        Emotional resonance is <span style="color: var(--nexa-success); font-weight: 700;">optimal.</span>
+                    </div>
+                </article>
+
+                <article class="nexa-card">
+                    <div class="nexa-card-head">
+                        <span>Security Assets</span>
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div class="nexa-card-value">{{ questionsActive }}</div>
+                    <div class="nexa-card-subtext">Verified Command Ports</div>
+                    <div class="inventory-tags">
+                        <div class="inventory-tag types">
+                            <span class="count">{{ productsTotal }}</span>
+                            <span class="label">Domains</span>
+                        </div>
+                        <div class="inventory-tag risks">
+                            <span class="count">{{ overdueTasks }}</span>
+                            <span class="label">Overdue</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Middle Row -->
+            <div class="nexa-middle-grid">
+                <div class="nexa-chart-section">
+                    <article class="nexa-card nexa-chart-card">
+                        <div class="nexa-card-head">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <i class="fa-solid fa-wave-square"></i>
+                                <span>Multi-Point Performance Trend</span>
+                            </div>
+                            <div class="nexa-chart-legend">
+                                <div class="legend-item"><span class="legend-dot creations"></span> Creations</div>
+                                <div class="legend-item"><span class="legend-dot completions"></span> Completions</div>
+                                <div class="legend-item"><span class="legend-dot load"></span> System Load</div>
+                            </div>
+                        </div>
+                        
+                        <svg viewBox="0 0 900 290" style="width: 100%; height: 320px; overflow: visible;">
+                            <defs>
+                                <linearGradient id="gradPurple" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="rgba(139, 92, 246, 0.2)"/>
+                                    <stop offset="100%" stop-color="rgba(139, 92, 246, 0)"/>
+                                </linearGradient>
+                            </defs>
+                            <!-- Grid lines -->
+                            <line x1="0" y1="50" x2="900" y2="50" stroke="#f0f2f8" stroke-width="1" />
+                            <line x1="0" y1="150" x2="900" y2="150" stroke="#f0f2f8" stroke-width="1" />
+                            <line x1="0" y1="250" x2="900" y2="250" stroke="#f0f2f8" stroke-width="1" />
+                            
+                            <path d="{{ taskCreatedAreaPath }}" fill="url(#gradPurple)" />
+                            <path d="{{ taskCreatedPath }}" class="nexa-line-creations" stroke-width="4" stroke-linecap="round" />
+                            <path d="{{ taskCompletedPath }}" class="nexa-line-completions" stroke-width="2" stroke-dasharray="5,5" />
+                        </svg>
+                    </article>
+
+                    <div class="nexa-forecast-box">
+                        <div class="forecast-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                        <div class="forecast-content">
+                            <h5>AI Project Forecast</h5>
+                            <p>Basé sur une vélocité stable de 0.2 req/jour, nous prévoyons l'achèvement du projet pour le 30 April 2026. Recommandation: priorisez les tâches à impact "HIGH" pour sécuriser le flux.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <article class="nexa-card nexa-noise-card">
+                    <div class="noise-label">Communication Noise</div>
+                    <div class="noise-value">0%</div>
+                    <div class="noise-label">Unread System Density</div>
+                    
+                    <div class="signals-analyzed">
+                        <div style="font-size: 1.8rem; font-weight: 800; color: #1a1b23;">{{ feedbackTotal }}</div>
+                        <div style="font-size: 0.65rem; font-weight: 700; color: var(--nexa-text-muted); text-transform: uppercase;">Signals Analyzed</div>
+                    </div>
+                    
+                    <div style="margin-top: 3rem; font-size: 0.8rem; color: var(--nexa-text-muted); display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-robot"></i>
+                        <span>System: "No cognitive overload detected."</span>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Bottom Row -->
+            <div class="nexa-bottom-grid">
+                <article class="nexa-card" style="grid-column: span 1;">
+                    <div class="nexa-card-head">
+                        <span>User Intelligence Command</span>
+                        <i class="fa-solid fa-users-gear"></i>
+                    </div>
+                    <div class="nexa-user-feed" style="margin-top: 1rem;">
+                        {% for user in latestUsers|slice(0, 5) %}
+                            {% set attempt = latestAttempts[user.email|lower] ?? null %}
+                            <div class="feed-item" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--nexa-border);">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--nexa-accent); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.7rem;">
+                                        {{ user.nom|slice(0, 1)|upper }}
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 0.85rem; font-weight: 700;">{{ user.nom }}</div>
+                                        <div style="font-size: 0.7rem; color: var(--nexa-text-muted);">
+                                            {% if attempt %}
+                                                <i class="fa-solid fa-location-dot" style="font-size: 0.6rem;"></i> {{ attempt.city }}, {{ attempt.country }}
+                                            {% else %}
+                                                <i class="fa-solid fa-earth-africa" style="font-size: 0.6rem;"></i> Localisation inconnue
+                                            {% endif %}
+                                        </div>
+                                    </div>
                                 </div>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr><td style="color: var(--muted);">Aucun utilisateur récent.</td></tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div class="panel">
-            <div class="panel-title" style="font-weight: 900; margin-bottom: 20px;"><i class="fa-solid fa-bolt" style="color: var(--warn);"></i> Activité Récente</div>
-            <table class="adm-table" style="width: 100%;">
-                <tbody>
-                    {% for t in latestTasks %}
-                        <tr>
-                            <td style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; margin-bottom: 10px;">
-                                <div style="display: flex; align-items: center; gap: 15px;">
-                                    <div class="badge" style="background: rgba(159, 122, 234, 0.2); color: var(--accent); width: 35px; height: 35px; border-radius: 10px; display: grid; place-items: center;"><i class="fa-solid fa-file-invoice"></i></div>
-                                    <div style="font-weight: 800;">{{ t.title }}</div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    {% if user.isBlocked %}
+                                        <span style="font-size: 0.6rem; font-weight: 800; color: #f43f5e; text-transform: uppercase; background: rgba(244, 63, 94, 0.1); padding: 2px 6px; border-radius: 4px;">Banned</span>
+                                    {% endif %}
+                                    <form action="{{ path('app_user_toggle_block', {id: user.id}) }}" method="POST" style="margin: 0;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('toggle_block_user_' ~ user.id) }}">
+                                        <button type="submit" style="background: none; border: none; cursor: pointer; color: var(--nexa-text-muted); transition: color 0.2s;" title="{{ user.isBlocked ? 'Debloquer' : 'Bloquer' }}">
+                                            <i class="fa-solid {{ user.isBlocked ? 'fa-unlock' : 'fa-ban' }}"></i>
+                                        </button>
+                                    </form>
                                 </div>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr><td style="color: var(--muted);">Aucune activité récente.</td></tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div style="margin-top: 1rem; border-top: 1px solid var(--nexa-border); padding-top: 0.9rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 0.66rem; font-weight: 800; text-transform: uppercase; color: var(--nexa-text-muted); letter-spacing: 0.08em;">
+                                Registration Attempts
+                            </span>
+                            <a href="{{ path('admin_registration_attempts') }}" style="font-size: 0.68rem; font-weight: 800; color: var(--nexa-accent); text-decoration: none;">
+                                Open <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+
+                        <div style="margin-top: 0.55rem; display: flex; gap: 8px; flex-wrap: wrap;">
+                            <span style="padding: 4px 8px; border-radius: 999px; font-size: 0.65rem; font-weight: 800; background: #eef2ff; color: #4f46e5;">
+                                Total {{ totalRegistrationAttempts }}
+                            </span>
+                            <span style="padding: 4px 8px; border-radius: 999px; font-size: 0.65rem; font-weight: 800; background: #fff1f2; color: #e11d48;">
+                                Rejected {{ rejectedRegistrationAttempts }}
+                            </span>
+                        </div>
+
+                        <div style="margin-top: 0.65rem; display: flex; flex-direction: column; gap: 6px;">
+                            {% for attempt in latestRegistrationAttempts|slice(0, 3) %}
+                                {% set attemptLocation = attempt.city ?: attempt.country ?: 'Unknown' %}
+                                <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 0.7rem;">
+                                    <span style="font-weight: 700; color: #1f2937;">
+                                        {{ attempt.email|length > 22 ? attempt.email|slice(0, 22) ~ '...' : attempt.email }}
+                                    </span>
+                                    <span style="font-weight: 900; color: {{ attempt.status == 'accepted' ? '#059669' : '#e11d48' }};">
+                                        {{ attempt.status|upper }}
+                                    </span>
+                                    <span style="color: var(--nexa-text-muted);">
+                                        <i class="fa-solid fa-location-dot"></i> {{ attemptLocation }}
+                                    </span>
+                                </div>
+                            {% else %}
+                                <div style="font-size: 0.7rem; font-weight: 700; color: var(--nexa-text-muted);">
+                                    No attempts recorded
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                        <a href="{{ path('admin_users') }}" style="font-size: 0.74rem; font-weight: 700; color: var(--nexa-accent); text-decoration: none;">
+                            Manage All Users <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                        <a href="{{ path('admin_registration_attempts') }}" style="font-size: 0.74rem; font-weight: 700; color: #6d28d9; text-decoration: none;">
+                            View Attempts <i class="fa-solid fa-user-clock"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="nexa-card">
+                    <div class="nexa-feed-header">
+                        <div class="nexa-card-head" style="margin: 0;">Operational Logic Feed</div>
+                        <div style="font-size: 0.65rem; font-weight: 700; color: var(--nexa-text-muted); text-transform: uppercase;">{{ latestTasks|length }} Live Events</div>
+                    </div>
+                    <div class="nexa-feed-list">
+                        {% for task in latestTasks|slice(0, 4) %}
+                            <div class="feed-item">
+                                <div class="feed-title">{{ task.title|length > 25 ? task.title|slice(0, 25) ~ '...' : task.title }}</div>
+                                <div class="feed-meta">
+                                    <span class="feed-tag">{{ task.priority|upper }}</span>
+                                    <span class="feed-time">{{ task.createAt|date('H:i') }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </article>
+
+                <article class="nexa-card">
+                    <div class="nexa-card-head">Inventory Logistics</div>
+                    <div class="inventory-tags" style="flex-direction: column;">
+                        <div class="inventory-tag types" style="display: flex; justify-content: space-between; align-items: center; text-align: left;">
+                            <div>
+                                <span class="label">Types</span>
+                                <span class="count" style="margin: 0;">{{ themesTotal }}</span>
+                            </div>
+                            <div style="font-weight: 800; color: #6366f1;">3</div>
+                        </div>
+                        <div class="inventory-tag risks" style="display: flex; justify-content: space-between; align-items: center; text-align: left;">
+                            <div>
+                                <span class="label">Risks</span>
+                                <span class="count" style="margin: 0;">{{ lowStockProducts }}</span>
+                            </div>
+                            <div style="font-weight: 800; color: #f43f5e;">2</div>
+                        </div>
+                    </div>
+                </article>
+            </div>
         </div>
     </div>
 {% endblock %}

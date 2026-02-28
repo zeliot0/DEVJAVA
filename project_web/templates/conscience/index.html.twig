@@ -1,381 +1,849 @@
-{% extends 'theme/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Conscience - NEXA{% endblock %}
+{% block title %}Nexa AI - Commandeur d'Intelligence{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/conscience-modern-pro.css?v=20260215i') }}">
+    <style>
+        :root {
+            --ai-bg: #ffffff;
+            --ai-accent: #0066ff;
+            --ai-text-main: #0a0a0a;
+            --ai-text-muted: #737373;
+            --ai-border: rgba(0, 0, 0, 0.03);
+        }
+
+        /* Orbes de fond */
+        .bg-orb {
+            position: fixed;
+            width: 700px;
+            height: 700px;
+            border-radius: 50%;
+            filter: blur(140px);
+            z-index: -1;
+            opacity: 0.04;
+            pointer-events: none;
+        }
+
+        /* Cartes Bento Stats */
+        .stat-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 24px;
+            border: 1px solid var(--ai-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+            transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
+            border-color: var(--ai-accent);
+        }
+
+        /* Input de recherche Premium */
+        .search-wrapper {
+            background: #ffffff;
+            border: 1px solid var(--ai-border);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+
+        .search-wrapper:focus-within {
+            border-color: var(--ai-accent);
+            box-shadow: 0 15px 40px rgba(0, 102, 255, 0.08);
+        }
+
+        /* Badges */
+        .badge-pill {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Animations */
+        .reveal { opacity: 0; transform: translateY(20px); }
+
+        /* Fab & Modals inherited but styled to match */
+        .conscience-chat-fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--ai-accent);
+            color: white;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 10px 30px rgba(0, 102, 255, 0.3);
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: none;
+        }
+        .conscience-chat-fab:hover { transform: scale(1.1) rotate(5deg); }
+
+        /* Modal styling overrides to match AI theme */
+        .conscience-modal {
+            border-radius: 32px;
+            border: 1px solid var(--ai-border);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.1);
+        }
+
+        /* Toast notifications */
+        .conscience-toast-stack {
+            position: fixed;
+            top: 80px;
+            right: 30px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .conscience-toast {
+            min-width: 260px;
+            max-width: 360px;
+            border-radius: 14px;
+            padding: 12px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 16px 36px rgba(15, 23, 42, 0.16);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            background: #ffffff;
+            color: #0f172a;
+        }
+
+        .conscience-toast.success {
+            border-color: rgba(16, 185, 129, 0.35);
+            background: #ecfdf5;
+            color: #065f46;
+        }
+
+        .conscience-toast.error {
+            border-color: rgba(239, 68, 68, 0.35);
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .conscience-toast.info {
+            border-color: rgba(79, 70, 229, 0.3);
+            background: #eef2ff;
+            color: #3730a3;
+        }
+
+        .conscience-notif-wrap {
+            position: relative;
+            z-index: 2200;
+        }
+
+        .conscience-notif-btn {
+            position: relative;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            background: #ffffff;
+            color: #475569;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s ease;
+        }
+
+        .conscience-notif-btn:hover {
+            color: #1d4ed8;
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 10px 24px rgba(59, 130, 246, 0.14);
+        }
+
+        .conscience-notif-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: 999px;
+            background: #ef4444;
+            color: #ffffff;
+            font-size: 10px;
+            line-height: 20px;
+            font-weight: 800;
+            border: 2px solid #ffffff;
+            text-align: center;
+        }
+
+        .conscience-notif-badge.is-hidden {
+            display: none;
+        }
+
+        .conscience-notif-panel {
+            position: fixed;
+            top: 96px;
+            right: 24px;
+            width: 360px;
+            max-width: min(92vw, 360px);
+            max-height: 70vh;
+            background: #ffffff;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.16);
+            padding: 12px;
+            overflow: hidden;
+            z-index: 3000;
+            display: none;
+        }
+
+        .conscience-notif-panel.is-open {
+            display: block;
+        }
+
+        .conscience-notif-list {
+            max-height: calc(70vh - 64px);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .conscience-notif-panel {
+                top: 88px;
+                right: auto;
+                left: 12px;
+                width: calc(100vw - 24px);
+                max-width: calc(100vw - 24px);
+            }
+        }
+
+        .conscience-notif-item {
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            padding: 10px;
+            background: #f8fafc;
+        }
+
+        .theme-follow-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            background: #ffffff;
+            color: #475569;
+            white-space: nowrap;
+        }
+
+        .theme-follow-btn:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            color: #4338ca;
+            box-shadow: 0 12px 26px rgba(99, 102, 241, 0.12);
+        }
+
+        .theme-follow-btn.is-following {
+            background: #eef2ff;
+            color: #4338ca;
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+
+        .theme-follow-btn.is-loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
-<div class="conscience-modern-page">
-    <div class="page-header">
-        <div>
-            <h1>Conscience</h1>
-            <p>Mode intelligent active: priorites, progression et focus automatique.</p>
-        </div>
+    <div class="bg-orb top-[-100px] left-[-100px] bg-indigo-400"></div>
+    <div class="bg-orb bottom-[-100px] right-[-100px] bg-blue-400"></div>
 
-        <div class="page-actions">
-            <a href="{{ path('app_creative_lab') }}" class="btn">
-                <i class="fa-solid fa-gamepad"></i> Creative Lab
-            </a>
-            {% if is_granted('ROLE_ADMIN') %}
-                <a href="{{ path('app_theme_new') }}" class="btn primary">
-                    <i class="fa-solid fa-plus"></i> Nouveau theme
-                </a>
-                <a href="{{ path('app_theme_index') }}" class="btn">
-                    <i class="fa-solid fa-sliders"></i> Gestion themes
-                </a>
-            {% endif %}
-        </div>
-    </div>
-
-    <form method="get" action="{{ path('app_conscience_index') }}" class="search-bar conscience-toolbar">
-        <div class="conscience-search-box">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" name="q" value="{{ search }}" placeholder="Rechercher un theme..." autocomplete="off">
-            <button type="button" class="conscience-voice-btn" id="conscienceVoiceBtn" title="Recherche vocale">
-                <i class="fa-solid fa-microphone"></i>
-            </button>
-        </div>
-
-        <div class="conscience-filter-box">
-            <label>Trier par :</label>
-            <select name="sort">
-                <option value="smart" {{ (sort|default('smart')) == 'smart' ? 'selected' : '' }}>Smart (recommande)</option>
-                <option value="newest" {{ (sort|default('smart')) == 'newest' ? 'selected' : '' }}>Plus recents</option>
-                <option value="priority_desc" {{ (sort|default('smart')) == 'priority_desc' ? 'selected' : '' }}>Priorite haute</option>
-                <option value="priority_asc" {{ (sort|default('smart')) == 'priority_asc' ? 'selected' : '' }}>Priorite basse</option>
-                <option value="questions_desc" {{ (sort|default('smart')) == 'questions_desc' ? 'selected' : '' }}>Plus de questions</option>
-            </select>
-        </div>
-    </form>
-
-    <section class="kpi-grid kpi-overview-grid">
-        <div class="kpi-card kpi-stat-card">
-            <span>Themes actifs</span>
-            <strong>{{ themes|length }}</strong>
-        </div>
-
-        <div class="kpi-card kpi-stat-card">
-            <span>Questions a traiter</span>
-            <strong>{{ totalActiveQuestions|default(0) }}</strong>
-        </div>
-
-        <div class="kpi-card kpi-stat-card">
-            <span>En attente</span>
-            <strong>{{ totalPending|default(0) }}</strong>
-        </div>
-
-        <div class="kpi-card kpi-stat-card">
-            <span>Progression globale</span>
-            <strong>{{ globalProgress|default(0) }}%</strong>
-        </div>
-    </section>
-
-    {% if focusThemes is defined and focusThemes is not empty %}
-        <section class="kpi-grid kpi-focus-grid" style="margin-top: 10px;">
-            {% for theme in focusThemes %}
-                {% set s = themeStats[theme.idT]|default({}) %}
-                <article class="kpi-card kpi-focus-card">
-                    <span>Focus #{{ loop.index }}: {{ theme.nom }}</span>
-                    <strong>{{ s.progress|default(0) }}%</strong>
-                    <small>{{ s.pending|default(0) }} en attente</small>
-                </article>
-            {% endfor %}
+    <main class="flex-1 max-w-[1400px] mx-auto w-full py-8">
+        
+        <!-- SECTION TITRE & ACTIONS -->
+        <section class="reveal mb-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+            <div class="max-w-2xl">
+                <h1 class="text-6xl font-[900] tracking-tight text-slate-900 mb-6 leading-[1.1]">
+                    Commandeur <br><span class="text-indigo-600">d'Intelligence</span>
+                </h1>
+                <p class="text-slate-400 font-medium text-xl leading-relaxed">
+                    Orchestration systémique et monitoring de la performance NEXA.
+                </p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+                <div class="conscience-notif-wrap">
+                    <button type="button" id="conscienceNotifBtn" class="conscience-notif-btn" aria-label="Notifications Conscience" aria-expanded="false" aria-controls="conscienceNotifPanel">
+                        <i class="fa-regular fa-bell"></i>
+                        <span id="conscienceNotifBadge" class="conscience-notif-badge {{ (pendingPopupCount|default(0)) > 0 ? '' : 'is-hidden' }}">{{ pendingPopupCount|default(0) }}</span>
+                    </button>
+                    <div id="conscienceNotifPanel" class="conscience-notif-panel" role="dialog" aria-label="Notifications">
+                        <div class="flex items-center justify-between">
+                            <strong class="text-sm text-slate-900">Notifications</strong>
+                            <button type="button" id="conscienceNotifRefresh" class="text-[11px] font-bold text-blue-600 hover:text-blue-700">Rafraichir</button>
+                        </div>
+                        <div id="consciencePendingCount" class="text-[11px] font-semibold text-slate-500 mt-2">
+                            Questions non repondues: {{ pendingPopupCount|default(0) }}
+                        </div>
+                        <div id="conscienceNotifList" class="conscience-notif-list">
+                            <div class="conscience-notif-item text-xs text-slate-500">Aucune notification pour le moment.</div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" id="favoriteViewBtn" class="px-5 py-2.5 bg-white border border-slate-100 rounded-xl text-xs font-bold text-slate-600 hover:bg-gray-50 transition-all shadow-sm">
+                    Voir favoris
+                </button>
+                <button type="button" class="px-5 py-2.5 bg-white border border-slate-100 rounded-xl text-xs font-bold text-slate-600 hover:bg-gray-50 transition-all shadow-sm open-feedback-btn">Feedback</button>
+                <a href="{{ path('app_creative_lab') }}" class="px-5 py-2.5 bg-white border border-slate-100 rounded-xl text-xs font-bold text-slate-600 hover:bg-gray-50 transition-all shadow-sm no-underline">Creative Lab</a>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('app_theme_new') }}" class="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all no-underline">+ Nouveau Thème</a>
+                {% endif %}
+            </div>
         </section>
-    {% endif %}
 
-    <section class="kpi-grid" style="margin-top: 10px;">
-        <article class="kpi-card" style="grid-column: 1/-1;">
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap: wrap;">
-                <div>
-                    <span style="font-weight: 800; display:block; margin-bottom:4px;">Interaction User/Admin</span>
-                    <small style="opacity:.8;">Donnez votre avis: etes-vous satisfait de vos themes? Quel theme vous aimez le plus?</small>
+        <!-- SEARCH BAR -->
+        <section class="reveal mb-16 max-w-4xl">
+            <form method="get" action="{{ path('app_conscience_index') }}" class="search-wrapper p-2 flex items-center gap-4">
+                <div class="pl-4 text-slate-300">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 </div>
-            </div>
-
-            <form method="post" action="{{ path('app_conscience_feedback_submit') }}" style="margin-top:12px; display:grid; gap:10px;">
-                <input type="hidden" name="_token" value="{{ csrf_token('conscience_feedback') }}">
-
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <div>
-                        <label for="satisfaction" style="font-weight:700; display:block; margin-bottom:4px;">Satisfaction globale (1-5)</label>
-                        <select id="satisfaction" name="satisfaction" required style="width:100%; padding:10px; border-radius:10px; border:1px solid #dbe2ef;">
-                            <option value="">Choisir...</option>
-                            <option value="5">5 - Tres satisfait</option>
-                            <option value="4">4 - Satisfait</option>
-                            <option value="3">3 - Moyen</option>
-                            <option value="2">2 - Peu satisfait</option>
-                            <option value="1">1 - Pas satisfait</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="favorite_theme_id" style="font-weight:700; display:block; margin-bottom:4px;">Theme prefere</label>
-                        <select id="favorite_theme_id" name="favorite_theme_id" style="width:100%; padding:10px; border-radius:10px; border:1px solid #dbe2ef;">
-                            <option value="">Selectionner un theme</option>
-                            {% for theme in themes %}
-                                <option value="{{ theme.idT }}">{{ theme.nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-
-                <div>
-                    <label for="feedback_comment" style="font-weight:700; display:block; margin-bottom:4px;">Commentaire (optionnel)</label>
-                    <textarea id="feedback_comment"
-                              name="comment"
-                              rows="3"
-                              placeholder="Ex: J'aime ce theme car..."
-                              style="width:100%; padding:10px; border-radius:10px; border:1px solid #dbe2ef;"></textarea>
-                </div>
-
-                <div>
-                    <button type="submit" class="btn primary">
-                        <i class="fa-solid fa-paper-plane"></i> Envoyer mon feedback
-                    </button>
-                </div>
-            </form>
-        </article>
-    </section>
-
-    <section class="kpi-grid" style="margin-top: 10px;">
-        <article class="kpi-card" style="grid-column: 1/-1;">
-            <span style="font-weight: 800; display:block; margin-bottom:6px;">Partie Themes: proposer un nouveau theme</span>
-            <small style="opacity:.8;">Partagez une idee creative: votre theme est cree et utilisable en temps reel.</small>
-
-            <form method="post" action="{{ path('app_conscience_theme_suggestion_submit') }}" style="margin-top:12px; display:grid; gap:10px;">
-                <input type="hidden" name="_token" value="{{ csrf_token('conscience_theme_suggestion') }}">
-
-                <div style="display:flex; flex-wrap:wrap; gap:8px;">
-                    <button type="button" class="btn ghost quick-theme-chip" data-theme-name="Relations & communication">Relations & communication</button>
-                    <button type="button" class="btn ghost quick-theme-chip" data-theme-name="Finance perso smart">Finance perso smart</button>
-                    <button type="button" class="btn ghost quick-theme-chip" data-theme-name="Focus et deep work">Focus et deep work</button>
-                    <button type="button" class="btn ghost quick-theme-chip" data-theme-name="Confiance en soi">Confiance en soi</button>
-                    <button type="button" class="btn ghost quick-theme-chip" data-theme-name="Energie & sommeil">Energie & sommeil</button>
-                </div>
-
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <input id="suggested_theme_name"
-                           name="suggested_theme_name"
-                           type="text"
-                           required
-                           placeholder="Ex: Creativite quotidienne"
-                           style="width:100%; padding:10px; border-radius:10px; border:1px solid #dbe2ef;">
-
-                    <select id="suggested_theme_vibe"
-                            name="suggested_theme_vibe"
-                            style="width:100%; padding:10px; border-radius:10px; border:1px solid #dbe2ef;">
-                        <option value="">Ambiance du theme</option>
-                        <option value="motivation">Motivation</option>
-                        <option value="calme">Calme</option>
-                        <option value="performance">Performance</option>
-                        <option value="bien_etre">Bien-etre</option>
-                        <option value="creativite">Creativite</option>
-                    </select>
-                </div>
-
-                <textarea id="suggested_theme_goal"
-                          name="suggested_theme_goal"
-                          rows="2"
-                          placeholder="Pourquoi ce theme serait utile pour vous?"
-                          style="width:100%; padding:10px; border-radius:10px; border:1px solid #dbe2ef;"></textarea>
-
-                <div>
-                    <button type="submit" class="btn primary">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> Creer et utiliser ce theme maintenant
-                    </button>
-                </div>
-            </form>
-        </article>
-    </section>
-
-    <section class="kpi-grid" style="margin-top: 10px;">
-        <article class="kpi-card conscience-chatbot-card" style="grid-column: 1/-1;">
-            <div class="conscience-chatbot-head">
-                <div>
-                    <span class="conscience-chatbot-title">Assistant Conscience</span>
-                    <small>Discutez avec le chatbot pour prioriser vos themes et obtenir des actions concretes.</small>
-                </div>
-            </div>
-
-            <div id="conscienceChatMessages" class="conscience-chat-messages"></div>
-
-            <div id="conscienceChatSuggestions" class="conscience-chat-suggestions">
-                <button type="button" class="btn ghost conscience-chat-chip">Quel theme dois-je traiter en premier ?</button>
-                <button type="button" class="btn ghost conscience-chat-chip">Donne-moi une action rapide aujourd hui</button>
-                <button type="button" class="btn ghost conscience-chat-chip">Comment ameliorer ma progression ?</button>
-            </div>
-
-            <form id="conscienceChatForm" class="conscience-chat-form">
-                <input type="text" id="conscienceChatInput" placeholder="Ecrivez votre question..." autocomplete="off">
-                <button type="submit" class="btn primary">
-                    <i class="fa-solid fa-paper-plane"></i> Envoyer
+                <input type="text" name="q" value="{{ search|default('') }}" placeholder="Exploration de la base de données..." class="flex-1 bg-transparent border-none focus:ring-0 text-slate-800 font-medium outline-none">
+                <select name="sort" class="bg-transparent border-none text-xs font-bold text-slate-500 mr-2 cursor-pointer focus:ring-0">
+                    <option value="smart" {{ (sort|default('smart')) == 'smart' ? 'selected' : '' }}>Analyse Smart</option>
+                    <option value="newest" {{ (sort|default('smart')) == 'newest' ? 'selected' : '' }}>Dernières Inscriptions</option>
+                    <option value="priority_desc" {{ (sort|default('smart')) == 'priority_desc' ? 'selected' : '' }}>Priorité Haute</option>
+                </select>
+                <button type="submit" class="px-6 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-black transition-all">
+                    Analyse
                 </button>
             </form>
-        </article>
-    </section>
+        </section>
 
-    <section class="themes-grid" id="themes-container">
-        {% include 'conscience/_themes_list.html.twig' with { themes: themes, themeStats: themeStats|default({}) } %}
-    </section>
-</div>
+        <!-- INDICATEURS DE RÉSONANCE -->
+        <section class="reveal mb-20">
+            <h2 class="text-xs font-black text-blue-600 uppercase tracking-[0.2em] mb-8">Indicateurs de Résonance</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="stat-card">
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-4">Thèmes Actifs</span>
+                    <div class="flex items-end justify-between">
+                        <span class="text-5xl font-extrabold text-slate-900">{{ themes|length }}</span>
+                        <span class="text-xs font-bold text-slate-400 mb-2">Instances globales</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-4">Monitoring</span>
+                    <div class="flex items-end justify-between">
+                        <span class="text-5xl font-extrabold text-slate-900">{{ totalActiveQuestions|default(0) }}</span>
+                        <span class="text-xs font-bold text-slate-400 mb-2">Points de capture</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-4">En Attente</span>
+                    <div class="flex items-end justify-between">
+                        <span class="text-5xl font-extrabold text-slate-900 text-red-500">{{ totalPending|default(0) }}</span>
+                        <span class="text-xs font-bold text-slate-400 mb-2">Requêtes d'interaction</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-4">Progression</span>
+                    <div class="flex items-end justify-between">
+                        <span class="text-5xl font-extrabold text-slate-900">{{ globalProgress|default(0) }}%</span>
+                        <div class="w-24 h-2 bg-gray-100 rounded-full mb-2.5 overflow-hidden">
+                            <div class="bg-blue-600 h-full" style="width: {{ globalProgress|default(0) }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const input = document.querySelector('.conscience-search-box input[name="q"]');
-    const sortSelect = document.querySelector('.conscience-filter-box select[name="sort"]');
-    const voiceBtn = document.getElementById('conscienceVoiceBtn');
-    const container = document.getElementById('themes-container');
+        <!-- FOCUS CARDS (Dynamic) -->
+        {% if focusThemes is defined and focusThemes is not empty %}
+            <section class="reveal grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
+                {% for theme in focusThemes|slice(0, 3) %}
+                    {% set s = themeStats[theme.idT]|default({}) %}
+                    <div onclick="window.location.href='{{ path('app_theme_answer', {id: theme.idT}) }}'" class="p-6 bg-indigo-50/50 border border-indigo-100/50 rounded-2xl flex justify-between items-center group cursor-pointer hover:bg-white transition-all">
+                        <div>
+                            <span class="text-[9px] font-black text-indigo-400 uppercase tracking-widest">Focus #{{ loop.index }}</span>
+                            <h4 class="text-sm font-bold text-indigo-900">{{ theme.nom }}</h4>
+                        </div>
+                        <span class="text-lg font-black text-indigo-900">{{ s.progress|default(0) }}%</span>
+                    </div>
+                {% endfor %}
+            </section>
+        {% endif %}
 
-    let timeout = null;
-    const buildUrl = () => {
-        const q = encodeURIComponent(input ? input.value : '');
-        const s = encodeURIComponent(sortSelect ? sortSelect.value : 'smart');
-        return `{{ path('app_conscience_index') }}?q=${q}&sort=${s}`;
-    };
+        <!-- REGISTRY BOXES -->
+        <section class="reveal grid grid-cols-1 md:grid-cols-2 gap-6 mb-24">
+            <div class="p-8 bg-slate-900 rounded-[32px] text-white flex justify-between items-center group shadow-xl shadow-slate-200">
+                <div class="max-w-xs">
+                    <h3 class="text-lg font-bold mb-2">Intelligence Feedback Registry</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">Log your analytical assessment and system performance feedback here.</p>
+                </div>
+                <button type="button" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-xl text-xs font-bold transition-all open-feedback-btn">Initialize Feedback</button>
+            </div>
+            <div class="p-8 bg-white border border-slate-100 rounded-[32px] text-slate-900 flex justify-between items-center group shadow-sm">
+                <div class="max-w-xs">
+                    <h3 class="text-lg font-bold mb-2">Proposal Engine</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">Define new monitoring themes to expand system consciousness mapping.</p>
+                </div>
+                <button type="button" class="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-900 rounded-xl text-xs font-bold transition-all open-theme-suggest-btn">Propose Module</button>
+            </div>
+        </section>
 
-    const refreshThemes = () => {
-        fetch(buildUrl(), {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(res => res.text())
-        .then(html => {
-            container.innerHTML = html;
-        });
-    };
+        <!-- ANALYSE PAR MODULE -->
+        <section class="reveal">
+            <h2 class="text-xs font-black text-purple-600 uppercase tracking-[0.2em] mb-12">Analyse par Module</h2>
+            
+            <div class="space-y-12" id="themes-container">
+                {% include 'conscience/_themes_list.html.twig' with { themes: themes, themeStats: themeStats|default({}), followingIds: followingIds|default([]) } %}
+            </div>
+        </section>
 
-    if (input && container) {
-        input.addEventListener('input', () => {
-            clearTimeout(timeout);
+    </main>
 
-            timeout = setTimeout(() => {
-                refreshThemes();
-            }, 250);
-        });
-    }
+    {# Floating Action Button - Chat #}
+    <button type="button" class="conscience-chat-fab" id="openChatbotFab" aria-label="Ouvrir l assistant Conscience">
+        <i class="fa-solid fa-robot"></i>
+    </button>
 
-    if (sortSelect && container) {
-        sortSelect.addEventListener('change', refreshThemes);
-    }
+    {# Toast Stack #}
+    <div id="conscienceToastStack" class="conscience-toast-stack" aria-live="polite" aria-atomic="false"></div>
 
-    if (voiceBtn && input && container) {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognition) {
-            voiceBtn.style.display = 'none';
-        } else {
-            const recognition = new SpeechRecognition();
-            recognition.lang = document.documentElement.lang === 'en' ? 'en-US' : 'fr-FR';
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
+    {# Modals #}
+    {# Chatbot Modal #}
+    <div class="conscience-modal-overlay" id="conscienceChatOverlay" aria-hidden="true" style="position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:900; display:none; backdrop-filter:blur(4px);"></div>
+    <div class="conscience-modal" id="conscienceChatModal" role="dialog" aria-modal="true" aria-labelledby="conscienceChatTitle" aria-hidden="true" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; z-index: 1000; padding: 0; display: none; width: 90%; max-width: 500px; height: 600px; flex-direction: column; overflow: hidden;">
+        <div class="p-6 bg-slate-900 text-white flex justify-between items-center">
+            <div>
+                <h2 id="conscienceChatTitle" class="text-xl font-black">Assistant Conscience</h2>
+                <p class="text-[10px] uppercase font-bold text-slate-400">Nexalytics Engine</p>
+            </div>
+            <button type="button" class="text-slate-400 hover:text-white" id="closeChatModal">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div id="conscienceChatMessages" class="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50 flex flex-col">
+            <!-- Messages load here -->
+        </div>
+        <div id="conscienceChatSuggestions" class="px-6 py-3 flex gap-2 flex-wrap bg-white border-t border-slate-100">
+            <button type="button" class="px-3 py-1.5 bg-slate-50 text-slate-500 rounded-lg text-[10px] font-bold hover:bg-slate-100 transition-all conscience-chat-chip">Priorités ?</button>
+            <button type="button" class="px-3 py-1.5 bg-slate-50 text-slate-500 rounded-lg text-[10px] font-bold hover:bg-slate-100 transition-all conscience-chat-chip">Action rapide ?</button>
+        </div>
+        <form id="conscienceChatForm" class="p-4 bg-white border-t border-slate-100 flex gap-2">
+            <input type="text" id="conscienceChatInput" class="flex-1 bg-slate-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500" placeholder="Questionnez Nexa..." autocomplete="off">
+            <button type="submit" class="w-12 h-12 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polyline points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+        </form>
+    </div>
 
-            voiceBtn.addEventListener('click', () => {
-                recognition.start();
-            });
+    {% include 'conscience/modals.html.twig' %}
 
-            recognition.addEventListener('result', (event) => {
-                const transcript = event.results?.[0]?.[0]?.transcript || '';
-                if (!transcript) return;
-                input.value = transcript;
-                refreshThemes();
-            });
-        }
-    }
-
-    const quickThemeBtns = document.querySelectorAll('.quick-theme-chip');
-    const suggestedThemeInput = document.getElementById('suggested_theme_name');
-    if (quickThemeBtns.length > 0 && suggestedThemeInput) {
-        quickThemeBtns.forEach((btn) => {
-            btn.addEventListener('click', () => {
-                const value = btn.getAttribute('data-theme-name') || '';
-                if (!value) return;
-                suggestedThemeInput.value = value;
-                suggestedThemeInput.focus();
-            });
-        });
-    }
-
-    const chatForm = document.getElementById('conscienceChatForm');
-    const chatInput = document.getElementById('conscienceChatInput');
-    const chatMessages = document.getElementById('conscienceChatMessages');
-    const chatSuggestions = document.getElementById('conscienceChatSuggestions');
-    const chatbotUrl = '{{ path('app_conscience_chatbot') }}';
-
-    const appendChatMessage = (role, text) => {
-        if (!chatMessages) return;
-        const message = document.createElement('div');
-        message.className = `conscience-chat-message ${role}`;
-        message.textContent = text;
-        chatMessages.appendChild(message);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    };
-
-    const renderSuggestions = (items) => {
-        if (!chatSuggestions) return;
-        if (!Array.isArray(items) || items.length === 0) return;
-
-        chatSuggestions.innerHTML = '';
-        items.slice(0, 3).forEach((item) => {
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'btn ghost conscience-chat-chip';
-            btn.textContent = item;
-            btn.addEventListener('click', () => {
-                if (!chatInput) return;
-                chatInput.value = item;
-                chatForm?.requestSubmit();
-            });
-            chatSuggestions.appendChild(btn);
-        });
-    };
-
-    const askChatbot = async (message) => {
-        appendChatMessage('user', message);
-
-        try {
-            const response = await fetch(chatbotUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ message })
-            });
-
-            if (!response.ok) {
-                throw new Error('chatbot_error');
-            }
-
-            const data = await response.json();
-            appendChatMessage('bot', data.reply || 'Je n ai pas compris. Reessayez.');
-            renderSuggestions(data.suggestions || []);
-        } catch (e) {
-            appendChatMessage('bot', 'Erreur reseau. Reessayez dans quelques secondes.');
-        }
-    };
-
-    if (chatForm && chatInput && chatMessages) {
-        appendChatMessage('bot', 'Bonjour. Je suis votre assistant Conscience. Posez-moi une question.');
-
-        chatForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const message = (chatInput.value || '').trim();
-            if (!message) return;
-            chatInput.value = '';
-            askChatbot(message);
-        });
-    }
-
-    if (chatSuggestions && chatInput) {
-        chatSuggestions.querySelectorAll('.conscience-chat-chip').forEach((btn) => {
-            btn.addEventListener('click', () => {
-                chatInput.value = btn.textContent || '';
-                chatForm?.requestSubmit();
-            });
-        });
-    }
-
-});
-</script>
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tl = gsap.timeline({ defaults: { ease: "expo.out", duration: 1.2 } });
+            tl.to(".reveal", {
+                opacity: 1,
+                y: 0,
+                stagger: 0.1,
+                duration: 1.4
+            });
+
+            gsap.to(".bg-orb", {
+                x: "random(-60, 60)",
+                y: "random(-60, 60)",
+                duration: 12,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut"
+            });
+
+            const input = document.querySelector('input[name="q"]');
+            const sortSelect = document.querySelector('select[name="sort"]');
+            const container = document.getElementById('themes-container');
+            const chatMessages = document.getElementById('conscienceChatMessages');
+            const chatForm = document.getElementById('conscienceChatForm');
+            const chatInput = document.getElementById('conscienceChatInput');
+            const toastStack = document.getElementById('conscienceToastStack');
+            const notifBtn = document.getElementById('conscienceNotifBtn');
+            const notifBadge = document.getElementById('conscienceNotifBadge');
+            const notifPanel = document.getElementById('conscienceNotifPanel');
+            const notifList = document.getElementById('conscienceNotifList');
+            const notifRefreshBtn = document.getElementById('conscienceNotifRefresh');
+            const pendingCountText = document.getElementById('consciencePendingCount');
+            const favoriteViewBtn = document.getElementById('favoriteViewBtn');
+
+            const chatbotUrl = "{{ path('app_conscience_chatbot') }}";
+            const notificationsUrl = "{{ path('app_conscience_notifications') }}";
+            const followUrlTemplate = "{{ path('app_conscience_theme_follow', { id: 'THEME_ID' }) }}";
+            const followCsrfToken = "{{ csrf_token('follow_theme') }}";
+            const seenNotificationIds = new Set();
+            let favoritesOnly = false;
+
+            const debounce = (fn, delay = 300) => {
+                let timerId = null;
+                return (...args) => {
+                    if (timerId !== null) {
+                        clearTimeout(timerId);
+                    }
+                    timerId = setTimeout(() => fn(...args), delay);
+                };
+            };
+
+            const pushToast = (message, type = 'info') => {
+                if (!toastStack || !message) return;
+                const toast = document.createElement('div');
+                toast.className = `conscience-toast ${type}`;
+                toast.textContent = message;
+                toastStack.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.remove();
+                }, 4000);
+            };
+
+            const setNotifBadge = (count) => {
+                if (!notifBadge) return;
+                const value = Number.isFinite(count) ? count : 0;
+                notifBadge.textContent = String(value);
+                notifBadge.classList.toggle('is-hidden', value <= 0);
+            };
+
+            const setPendingCount = (count) => {
+                const value = Number.isFinite(count) ? count : 0;
+                if (pendingCountText) {
+                    pendingCountText.textContent = `Questions non repondues: ${value}`;
+                }
+                setNotifBadge(value);
+            };
+
+            const renderNotifications = (items) => {
+                if (!notifList) return;
+                notifList.innerHTML = '';
+
+                if (!Array.isArray(items) || items.length === 0) {
+                    const empty = document.createElement('div');
+                    empty.className = 'conscience-notif-item text-xs text-slate-500';
+                    empty.textContent = 'Aucune nouvelle notification.';
+                    notifList.appendChild(empty);
+                    return;
+                }
+
+                items.forEach((item) => {
+                    const created = item.createdAt ? new Date(item.createdAt) : null;
+                    const when = created instanceof Date && !Number.isNaN(created.getTime())
+                        ? created.toLocaleString()
+                        : '';
+
+                    const row = document.createElement('article');
+                    row.className = 'conscience-notif-item';
+                    const typeEl = document.createElement('div');
+                    typeEl.className = 'text-[10px] font-black uppercase tracking-wide text-slate-400';
+                    typeEl.textContent = item.type || 'info';
+
+                    const msgEl = document.createElement('div');
+                    msgEl.className = 'text-xs font-semibold text-slate-700 mt-1';
+                    msgEl.textContent = item.message || '';
+
+                    const timeEl = document.createElement('div');
+                    timeEl.className = 'text-[11px] text-slate-400 mt-1';
+                    timeEl.textContent = when;
+
+                    row.append(typeEl, msgEl, timeEl);
+                    notifList.appendChild(row);
+                });
+            };
+
+            const loadNotifications = async ({ showToasts = false } = {}) => {
+                try {
+                    const response = await fetch(notificationsUrl, {
+                        method: 'GET',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('notification_fetch_failed');
+                    }
+
+                    const payload = await response.json();
+                    const items = Array.isArray(payload.notifications) ? payload.notifications : [];
+                    const pendingCount = Number(payload.pendingCount || 0);
+                    renderNotifications(items);
+                    setPendingCount(pendingCount);
+
+                    if (showToasts) {
+                        items.slice(0, 3).forEach((item) => {
+                            if (!seenNotificationIds.has(item.id)) {
+                                pushToast(item.message || 'Nouvelle notification Conscience', 'info');
+                            }
+                        });
+                    }
+
+                    items.forEach((item) => {
+                        if (item && item.id !== undefined && item.id !== null) {
+                            seenNotificationIds.add(item.id);
+                        }
+                    });
+                } catch (error) {
+                    pushToast('Impossible de charger les notifications.', 'error');
+                }
+            };
+
+            const closeNotifPanel = () => {
+                if (!notifPanel || !notifBtn) return;
+                notifPanel.classList.remove('is-open');
+                notifBtn.setAttribute('aria-expanded', 'false');
+            };
+
+            const positionNotifPanel = () => {
+                if (!notifPanel || !notifBtn) return;
+                const rect = notifBtn.getBoundingClientRect();
+                const margin = 12;
+                const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+                const panelWidth = Math.min(360, viewportWidth - (margin * 2));
+
+                let left = rect.right - panelWidth;
+                if (left < margin) {
+                    left = margin;
+                }
+                if (left + panelWidth > viewportWidth - margin) {
+                    left = viewportWidth - panelWidth - margin;
+                }
+
+                const top = Math.max(margin, rect.bottom + 10);
+                notifPanel.style.width = `${panelWidth}px`;
+                notifPanel.style.left = `${left}px`;
+                notifPanel.style.top = `${top}px`;
+                notifPanel.style.right = 'auto';
+            };
+
+            const openNotifPanel = async () => {
+                if (!notifPanel || !notifBtn) return;
+                positionNotifPanel();
+                notifPanel.classList.add('is-open');
+                notifBtn.setAttribute('aria-expanded', 'true');
+                await loadNotifications({ showToasts: false });
+            };
+
+            notifBtn?.addEventListener('click', async (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                if (notifPanel?.classList.contains('is-open')) {
+                    closeNotifPanel();
+                    return;
+                }
+                await openNotifPanel();
+            });
+
+            notifRefreshBtn?.addEventListener('click', async (event) => {
+                event.preventDefault();
+                await loadNotifications({ showToasts: true });
+            });
+
+            const applyFavoritesFilter = () => {
+                if (!container) return;
+                const cards = container.querySelectorAll('.module-card');
+                cards.forEach((card) => {
+                    const followButton = card.querySelector('[data-follow-btn]');
+                    const isFavorite = followButton && followButton.getAttribute('data-following') === '1';
+                    card.style.display = (!favoritesOnly || isFavorite) ? '' : 'none';
+                });
+            };
+
+            const syncFavoritesButton = () => {
+                if (!favoriteViewBtn) return;
+                favoriteViewBtn.textContent = favoritesOnly ? 'Voir tout' : 'Voir favoris';
+                favoriteViewBtn.classList.toggle('bg-indigo-600', favoritesOnly);
+                favoriteViewBtn.classList.toggle('text-white', favoritesOnly);
+                favoriteViewBtn.classList.toggle('border-indigo-600', favoritesOnly);
+                favoriteViewBtn.classList.toggle('hover:bg-indigo-700', favoritesOnly);
+                favoriteViewBtn.classList.toggle('text-slate-600', !favoritesOnly);
+            };
+
+            favoriteViewBtn?.addEventListener('click', (event) => {
+                event.preventDefault();
+                favoritesOnly = !favoritesOnly;
+                syncFavoritesButton();
+                applyFavoritesFilter();
+            });
+
+            const setFollowButtonState = (button, following) => {
+                if (!button) return;
+                const icon = button.querySelector('[data-follow-icon]');
+                const label = button.querySelector('[data-follow-label]');
+
+                button.dataset.following = following ? '1' : '0';
+                button.classList.toggle('is-following', following);
+                button.setAttribute('aria-pressed', following ? 'true' : 'false');
+
+                if (icon) {
+                    icon.className = following ? 'fa-solid fa-star' : 'fa-regular fa-star';
+                }
+                if (label) {
+                    label.textContent = following ? 'Favori' : 'Ajouter favori';
+                }
+            };
+
+            const refreshThemes = () => {
+                if (!input || !sortSelect || !container) return;
+                const q = encodeURIComponent(input.value || '');
+                const s = encodeURIComponent(sortSelect.value || 'smart');
+                const url = `{{ path('app_conscience_index') }}?q=${q}&sort=${s}`;
+
+                fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                    .then((res) => res.text())
+                    .then((html) => {
+                        container.innerHTML = html;
+                        gsap.from(".module-card", { opacity: 0, y: 10, stagger: 0.05, duration: 0.5 });
+                        applyFavoritesFilter();
+                    })
+                    .catch(() => {
+                        pushToast('Impossible de recharger les themes.', 'error');
+                    });
+            };
+
+            input?.addEventListener('input', debounce(refreshThemes, 300));
+            sortSelect?.addEventListener('change', refreshThemes);
+
+            document.addEventListener('click', async (event) => {
+                const followButton = event.target.closest('[data-follow-btn]');
+                if (followButton) {
+                    event.preventDefault();
+
+                    const themeId = followButton.getAttribute('data-theme-id');
+                    if (!themeId) return;
+
+                    followButton.classList.add('is-loading');
+                    try {
+                        const response = await fetch(followUrlTemplate.replace('THEME_ID', String(themeId)), {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: new URLSearchParams({ _token: followCsrfToken }).toString()
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('follow_toggle_failed');
+                        }
+
+                        const payload = await response.json();
+                        if (!payload || payload.ok !== true) {
+                            throw new Error('follow_toggle_failed');
+                        }
+
+                        setFollowButtonState(followButton, payload.following === true);
+                        applyFavoritesFilter();
+                        pushToast(payload.following ? 'Theme ajoute aux favoris.' : 'Theme retire des favoris.', 'success');
+                    } catch (error) {
+                        pushToast('Action favori impossible pour le moment.', 'error');
+                    } finally {
+                        followButton.classList.remove('is-loading');
+                    }
+                    return;
+                }
+
+                if (
+                    notifPanel &&
+                    notifBtn &&
+                    notifPanel.classList.contains('is-open') &&
+                    !notifPanel.contains(event.target) &&
+                    !notifBtn.contains(event.target)
+                ) {
+                    closeNotifPanel();
+                }
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closeNotifPanel();
+                }
+            });
+
+            window.addEventListener('resize', () => {
+                if (notifPanel?.classList.contains('is-open')) {
+                    positionNotifPanel();
+                }
+            });
+            window.addEventListener('scroll', () => {
+                if (notifPanel?.classList.contains('is-open')) {
+                    positionNotifPanel();
+                }
+            }, { passive: true });
+
+            setPendingCount({{ pendingPopupCount|default(0) }});
+            syncFavoritesButton();
+
+            const setupModal = (btnClass, modalId, overlayId) => {
+                const btns = document.querySelectorAll('.' + btnClass);
+                const modal = document.getElementById(modalId);
+                const overlay = document.getElementById(overlayId);
+                const closeBtn = modal?.querySelector('button[id^="close"], button[id^="cancel"]');
+
+                const open = () => {
+                    modal.style.display = 'flex';
+                    overlay.style.display = 'block';
+                    gsap.from(modal, { opacity: 0, scale: 0.9, duration: 0.4, ease: "back.out(1.7)" });
+                };
+                const close = () => {
+                    modal.style.display = 'none';
+                    overlay.style.display = 'none';
+                };
+
+                btns.forEach((b) => { b.onclick = open; });
+                if (closeBtn) closeBtn.onclick = close;
+                if (overlay) overlay.onclick = close;
+            };
+
+            setupModal('open-feedback-btn', 'conscienceFeedbackModal', 'conscienceFeedbackOverlay');
+            setupModal('open-theme-suggest-btn', 'conscienceSuggestModal', 'conscienceSuggestOverlay');
+            setupModal('conscience-chat-fab', 'conscienceChatModal', 'conscienceChatOverlay');
+
+            const appendMsg = (role, text) => {
+                if (!chatMessages) return;
+                const div = document.createElement('div');
+                div.className = `p-4 rounded-2xl max-w-[80%] ${role === 'user' ? 'bg-blue-600 text-white self-end' : 'bg-white text-slate-800 self-start shadow-sm border border-slate-100'}`;
+                div.textContent = text;
+                chatMessages.appendChild(div);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            };
+
+            chatForm?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const msg = chatInput?.value?.trim() || '';
+                if (!msg) return;
+                chatInput.value = '';
+                appendMsg('user', msg);
+
+                try {
+                    const res = await fetch(chatbotUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: msg })
+                    });
+                    const data = await res.json();
+                    appendMsg('bot', data.reply || 'Desole, je n ai pas compris.');
+                } catch (err) {
+                    appendMsg('bot', 'Erreur de connexion.');
+                }
+            });
+
+            if (chatMessages && chatMessages.children.length === 0) {
+                appendMsg('bot', 'Bonjour, je suis Nexa. Comment puis-je vous aider dans votre monitoring ?');
+            }
+        });
+    </script>
+{% endblock %}
+

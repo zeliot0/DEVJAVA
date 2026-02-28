@@ -8,6 +8,7 @@ use App\Repository\GoalRepository;
 use App\Repository\MoodClickRepository;
 use App\Repository\MotivationRepository;
 use App\Service\MotivationMessagesService;
+use App\Service\QuranAiService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,13 +34,16 @@ class MotivationController extends AbstractController
         MoodClickRepository $moodClickRepository,
         GoalRepository $goalRepository,
         Request $request,
-        MotivationMessagesService $messagesService
+        MotivationMessagesService $messagesService,
+        QuranAiService $quranAiService
     ): Response {
         $currentMood = $request->query->get('mood');
         $inspirationalMessage = null;
+        $quranicVerses = [];
 
         if ($currentMood) {
             $inspirationalMessage = $messagesService->getRandomMessage($currentMood);
+            $quranicVerses = $quranAiService->getVersesForMood($currentMood);
         }
 
         return $this->render('motivation/index.html.twig', [
@@ -51,6 +55,7 @@ class MotivationController extends AbstractController
             'inspirational_message' => $inspirationalMessage,
             'all_messages' => $messagesService->getAllMessages(),
             'mood_click_stats' => $moodClickRepository->getMoodClickStats(),
+            'quranic_verses' => $quranicVerses,
         ]);
     }
 
@@ -133,7 +138,8 @@ class MotivationController extends AbstractController
         MoodClickRepository $moodClickRepository,
         GoalRepository $goalRepository,
         Request $request,
-        MotivationMessagesService $messagesService
+        MotivationMessagesService $messagesService,
+        QuranAiService $quranAiService
     ): Response {
         if ($response = $this->denyAdminMotivationWriteAccess()) {
             return $response;
@@ -141,6 +147,7 @@ class MotivationController extends AbstractController
 
         $moodClickRepository->addClick($mood, $request->getClientIp());
         $inspirationalMessage = $messagesService->getRandomMessage($mood);
+        $quranicVerses = $quranAiService->getVersesForMood($mood);
 
         return $this->render('motivation/index.html.twig', [
             'motivations' => $motivationRepository->findByMood($mood),
@@ -151,6 +158,7 @@ class MotivationController extends AbstractController
             'inspirational_message' => $inspirationalMessage,
             'all_messages' => $messagesService->getAllMessages(),
             'mood_click_stats' => $moodClickRepository->getMoodClickStats(),
+            'quranic_verses' => $quranicVerses,
         ]);
     }
 

@@ -1,0 +1,465 @@
+/* Notion-like light theme for app pages using theme/base.html.twig */
+
+html[data-theme] body.has-global-bubbles {
+  --bg: #f7f6f3;
+  --surface: #ffffff;
+  --surface-rgb: 255, 255, 255;
+  --text: #1f1f1d;
+  --muted: #6f6e69;
+  --border: rgba(55, 53, 47, 0.14);
+  --gradient: linear-gradient(135deg, #2383e2, #1f76d2);
+  --shadow: 0 1px 2px rgba(15, 23, 42, 0.08), 0 12px 30px rgba(15, 23, 42, 0.05);
+
+  --mi-ink: #1f1f1d;
+  --mi-muted: #6f6e69;
+  --mi-border: rgba(55, 53, 47, 0.14);
+  --mi-surface-1: #ffffff;
+  --mi-surface-2: #fcfcfb;
+  --mi-surface-3: #f3f2ef;
+  --mi-chip: #f2f1ee;
+  --mi-shadow: 0 1px 2px rgba(15, 23, 42, 0.08), 0 12px 30px rgba(15, 23, 42, 0.05);
+  --mi-shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.08), 0 8px 20px rgba(15, 23, 42, 0.04);
+  --mi-accent: #2383e2;
+  --mi-accent-2: #1f76d2;
+  --nav-height: 72px;
+  --banner-height: 0px;
+
+  background: #f7f6f3 !important;
+  color: #1f1f1d !important;
+}
+
+html[data-theme] body.has-global-bubbles::before,
+html[data-theme] body.has-global-bubbles::after {
+  content: none !important;
+  display: none !important;
+}
+
+html[data-theme] body.has-global-bubbles .global-bubbles-bg {
+  display: none !important;
+}
+
+html[data-theme] body.has-global-bubbles main {
+  background: transparent !important;
+  color: #1f1f1d !important;
+}
+
+html[data-theme] body.has-global-bubbles .navbar-custom {
+  top: 0 !important;
+  left: 0 !important;
+  transform: none !important;
+  width: 100% !important;
+  border-radius: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  border: 1px solid rgba(55, 53, 47, 0.14) !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 0 rgba(55, 53, 47, 0.08) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html[data-theme] body.has-global-bubbles .logo-new {
+  background: none !important;
+  -webkit-text-fill-color: #1f1f1d !important;
+  color: #1f1f1d !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.01em !important;
+}
+
+html[data-theme] body.has-global-bubbles .desktop-nav {
+  justify-content: center !important;
+}
+
+html[data-theme] body.has-global-bubbles .nav-pill-new {
+  border: 0 !important;
+  background: transparent !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+html[data-theme] body.has-global-bubbles .nav-pill-new::before {
+  content: none !important;
+}
+
+html[data-theme] body.has-global-bubbles .nav-pill-new a {
+  color: #4f4e49 !important;
+  border-radius: 8px !important;
+  min-width: 0 !important;
+  min-height: 38px !important;
+  padding: 0 12px !important;
+  font-weight: 800 !important;
+}
+
+html[data-theme] body.has-global-bubbles .nav-pill-new a:hover {
+  background: #f3f2ef !important;
+  border-color: rgba(55, 53, 47, 0.14) !important;
+  color: #1f1f1d !important;
+}
+
+html[data-theme] body.has-global-bubbles .nav-pill-new a.active {
+  color: #1f1f1d !important;
+  background: #ededea !important;
+  border-color: rgba(55, 53, 47, 0.16) !important;
+  box-shadow: none !important;
+}
+
+html[data-theme] body.has-global-bubbles .header-actions-new {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html[data-theme] body.has-global-bubbles .lang-btn-new,
+html[data-theme] body.has-global-bubbles .icon-btn,
+html[data-theme] body.has-global-bubbles .user-quick-nav,
+html[data-theme] body.has-global-bubbles .goals-popover-menu,
+html[data-theme] body.has-global-bubbles .user-menu-dropdown-nav,
+html[data-theme] body.has-global-bubbles .drawer-new,
+html[data-theme] body.has-global-bubbles .drawer-user-card,
+html[data-theme] body.has-global-bubbles .lang-menu-new {
+  border-color: rgba(55, 53, 47, 0.14) !important;
+  background: #ffffff !important;
+  color: #1f1f1d !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08), 0 8px 20px rgba(15, 23, 42, 0.04) !important;
+}
+
+html[data-theme] body.has-global-bubbles .uq-meta small,
+html[data-theme] body.has-global-bubbles .drawer-user-card .uq-meta small {
+  color: #6f6e69 !important;
+}
+
+html[data-theme] body.has-global-bubbles .btn,
+html[data-theme] body.has-global-bubbles .goals-modern-btn-ghost,
+html[data-theme] body.has-global-bubbles .goals-modern-btn-reset,
+html[data-theme] body.has-global-bubbles .nexa-btn-action,
+html[data-theme] body.has-global-bubbles .nexa-btn-icon {
+  border: 1px solid rgba(55, 53, 47, 0.16) !important;
+  background: #ffffff !important;
+  color: #1f1f1d !important;
+  box-shadow: none !important;
+}
+
+html[data-theme] body.has-global-bubbles .btn.primary,
+html[data-theme] body.has-global-bubbles .goals-modern-btn-primary,
+html[data-theme] body.has-global-bubbles .milestones-add-btn {
+  border-color: #1f76d2 !important;
+  background: linear-gradient(135deg, #2383e2, #1f76d2) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+html[data-theme] body.has-global-bubbles .page-header,
+html[data-theme] body.has-global-bubbles .search-bar,
+html[data-theme] body.has-global-bubbles .pack-card,
+html[data-theme] body.has-global-bubbles .form-card,
+html[data-theme] body.has-global-bubbles .warning,
+html[data-theme] body.has-global-bubbles .produits-kpi,
+html[data-theme] body.has-global-bubbles .produits-card-modern,
+html[data-theme] body.has-global-bubbles .produits-search-modern,
+html[data-theme] body.has-global-bubbles .produits-header-modern,
+html[data-theme] body.has-global-bubbles .produits-empty,
+html[data-theme] body.has-global-bubbles .goals-modern-header,
+html[data-theme] body.has-global-bubbles .goals-modern-toolbar,
+html[data-theme] body.has-global-bubbles .goals-modern-kpi,
+html[data-theme] body.has-global-bubbles .goals-modern-table-wrap,
+html[data-theme] body.has-global-bubbles .motivation-container .pack-card,
+html[data-theme] body.has-global-bubbles .motivation-container .search-bar,
+html[data-theme] body.has-global-bubbles .milestones-modern-card,
+html[data-theme] body.has-global-bubbles .kpi-card,
+html[data-theme] body.has-global-bubbles .suite-card,
+html[data-theme] body.has-global-bubbles .suite-panel,
+html[data-theme] body.has-global-bubbles .topbar.topbar-pro,
+html[data-theme] body.has-global-bubbles .kpi.kpi-pro,
+html[data-theme] body.has-global-bubbles .col.col-pro,
+html[data-theme] body.has-global-bubbles .task,
+html[data-theme] body.has-global-bubbles .actions-menu {
+  border: 1px solid rgba(55, 53, 47, 0.14) !important;
+  background: #ffffff !important;
+  color: #1f1f1d !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08), 0 8px 20px rgba(15, 23, 42, 0.04) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html[data-theme] body.has-global-bubbles .produits-page-modern::before,
+html[data-theme] body.has-global-bubbles .stock-pages .produits-card-modern::before {
+  content: none !important;
+  display: none !important;
+}
+
+html[data-theme] body.has-global-bubbles h1,
+html[data-theme] body.has-global-bubbles h2,
+html[data-theme] body.has-global-bubbles h3,
+html[data-theme] body.has-global-bubbles .kpi-value,
+html[data-theme] body.has-global-bubbles .item-title,
+html[data-theme] body.has-global-bubbles .task-title,
+html[data-theme] body.has-global-bubbles .produits-item-text h3,
+html[data-theme] body.has-global-bubbles .produits-kpi strong {
+  color: #1f1f1d !important;
+}
+
+html[data-theme] body.has-global-bubbles p,
+html[data-theme] body.has-global-bubbles small,
+html[data-theme] body.has-global-bubbles label,
+html[data-theme] body.has-global-bubbles .item-sub,
+html[data-theme] body.has-global-bubbles .kpi-title,
+html[data-theme] body.has-global-bubbles .toolbar-block-title,
+html[data-theme] body.has-global-bubbles .produits-kicker,
+html[data-theme] body.has-global-bubbles .produits-kpi span,
+html[data-theme] body.has-global-bubbles .produits-kpi small,
+html[data-theme] body.has-global-bubbles .produits-health,
+html[data-theme] body.has-global-bubbles .produits-toolbar-title span,
+html[data-theme] body.has-global-bubbles .produits-filter-field label {
+  color: #6f6e69 !important;
+}
+
+html[data-theme] body.has-global-bubbles input,
+html[data-theme] body.has-global-bubbles select,
+html[data-theme] body.has-global-bubbles textarea,
+html[data-theme] body.has-global-bubbles .field,
+html[data-theme] body.has-global-bubbles .produits-search-input,
+html[data-theme] body.has-global-bubbles .produits-filter-field select,
+html[data-theme] body.has-global-bubbles .toolbar-integrated .field.field-pro,
+html[data-theme] body.has-global-bubbles .field input,
+html[data-theme] body.has-global-bubbles .field select {
+  border: 1px solid rgba(55, 53, 47, 0.18) !important;
+  background: #ffffff !important;
+  color: #1f1f1d !important;
+  box-shadow: none !important;
+}
+
+html[data-theme] body.has-global-bubbles .produits-search-input input {
+  border: 0 !important;
+  background: transparent !important;
+}
+
+html[data-theme] body.has-global-bubbles .nexa-badge,
+html[data-theme] body.has-global-bubbles .pack-pill,
+html[data-theme] body.has-global-bubbles .chip {
+  border: 1px solid rgba(55, 53, 47, 0.16) !important;
+  background: #f3f2ef !important;
+  color: #4f4e49 !important;
+  box-shadow: none !important;
+}
+
+html[data-theme] body.has-global-bubbles .search-bar .btn:hover,
+html[data-theme] body.has-global-bubbles .btn:hover,
+html[data-theme] body.has-global-bubbles .icon-btn:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Task board skin */
+html[data-theme] body.task-page-theme #appLayout,
+html[data-theme] body.task-page-theme #appLayout .layout.layout-pro,
+html[data-theme] body.task-page-theme #appLayout .main.main-pro,
+html[data-theme] body.task-page-theme #appLayout .content-grid,
+html[data-theme] body.task-page-theme #appLayout .center {
+  background: transparent !important;
+  color: #1f1f1d !important;
+}
+
+html[data-theme] body.task-page-theme #appLayout .topbar.topbar-pro,
+html[data-theme] body.task-page-theme #appLayout .kpi.kpi-pro,
+html[data-theme] body.task-page-theme #appLayout .col.col-pro,
+html[data-theme] body.task-page-theme #appLayout .task,
+html[data-theme] body.task-page-theme #appLayout .actions-menu,
+html[data-theme] body.task-page-theme #appLayout .analytics-modal .modal-content,
+html[data-theme] body.task-page-theme #appLayout .calendar-modal .calendar-content {
+  border: 1px solid rgba(55, 53, 47, 0.14) !important;
+  background: #ffffff !important;
+  color: #1f1f1d !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08), 0 8px 20px rgba(15, 23, 42, 0.04) !important;
+}
+
+html[data-theme] body.task-page-theme #appLayout .toolbar-integrated .field.field-pro,
+html[data-theme] body.task-page-theme #appLayout .topbar .btn.subtle.icon-only,
+html[data-theme] body.task-page-theme #appLayout .main-actions-btn,
+html[data-theme] body.task-page-theme #appLayout .task .icon-btn,
+html[data-theme] body.task-page-theme #appLayout .col-count,
+html[data-theme] body.task-page-theme #appLayout .actions-menu .btn-modern {
+  border: 1px solid rgba(55, 53, 47, 0.16) !important;
+  background: #ffffff !important;
+  color: #1f1f1d !important;
+  box-shadow: none !important;
+}
+
+html[data-theme] body.task-page-theme #appLayout .toolbar-integrated .field.field-pro input,
+html[data-theme] body.task-page-theme #appLayout .toolbar-integrated .field.field-pro select,
+html[data-theme] body.task-page-theme #appLayout .task-desc,
+html[data-theme] body.task-page-theme #appLayout .chip {
+  color: #6f6e69 !important;
+}
+
+html[data-theme] body.task-page-theme #appLayout .topbar .btn.primary,
+html[data-theme] body.task-page-theme #appLayout #newBtn,
+html[data-theme] body.task-page-theme #appLayout #newCatBtn {
+  background: linear-gradient(135deg, #2383e2, #1f76d2) !important;
+  border: 1px solid #1f76d2 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+/* Admin shell (left rail + panel) */
+html[data-theme] body.has-global-bubbles .adm-sidebar .side-rail {
+  border: 1px solid rgba(55, 53, 47, 0.14) !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08), 0 8px 20px rgba(15, 23, 42, 0.04) !important;
+}
+
+html[data-theme] body.has-global-bubbles .adm-sidebar .rail-brand,
+html[data-theme] body.has-global-bubbles .adm-sidebar .rail-item {
+  border-color: rgba(55, 53, 47, 0.16) !important;
+  background: #ffffff !important;
+  color: #4f4e49 !important;
+  box-shadow: none !important;
+}
+
+html[data-theme] body.has-global-bubbles .adm-sidebar .rail-item.active {
+  border-color: rgba(55, 53, 47, 0.2) !important;
+  background: #ededea !important;
+  color: #1f1f1d !important;
+}
+
+html[data-theme] body.has-global-bubbles .adm-sidebar .rail-item.active::before {
+  background: #2383e2 !important;
+  box-shadow: none !important;
+}
+
+html[data-theme] body.has-global-bubbles .adm-sidebar .side-panel,
+html[data-theme] body.has-global-bubbles .adm-sidebar .panel-group,
+html[data-theme] body.has-global-bubbles .adm-sidebar .panel-profile,
+html[data-theme] body.has-global-bubbles .adm-sidebar .panel-item,
+html[data-theme] body.has-global-bubbles .adm-sidebar .panel-btn {
+  border-color: rgba(55, 53, 47, 0.14) !important;
+  background: #ffffff !important;
+  color: #1f1f1d !important;
+  box-shadow: none !important;
+}
+
+html[data-theme] body.has-global-bubbles .adm-sidebar .panel-item.active {
+  border-color: rgba(55, 53, 47, 0.2) !important;
+  background: #ededea !important;
+  color: #1f1f1d !important;
+}
+
+html[data-theme] body.has-global-bubbles .adm-sidebar .panel-section,
+html[data-theme] body.has-global-bubbles .adm-sidebar .panel-subtitle,
+html[data-theme] body.has-global-bubbles .adm-sidebar .panel-role {
+  color: #6f6e69 !important;
+}
+
+/* Admin dashboard (dealstack) */
+html[data-theme] body.has-global-bubbles .dealstack-dashboard {
+  background: #f7f6f3 !important;
+  color: #1f1f1d !important;
+}
+
+html[data-theme] body.has-global-bubbles .dealstack-side,
+html[data-theme] body.has-global-bubbles .dealstack-main,
+html[data-theme] body.has-global-bubbles .ds-topbar,
+html[data-theme] body.has-global-bubbles .ds-company,
+html[data-theme] body.has-global-bubbles .ds-kpi-card,
+html[data-theme] body.has-global-bubbles .ds-chart-card,
+html[data-theme] body.has-global-bubbles .ds-list-card,
+html[data-theme] body.has-global-bubbles .ds-inline-shell,
+html[data-theme] body.has-global-bubbles .ds-inline-head {
+  border: 1px solid rgba(55, 53, 47, 0.14) !important;
+  background: #ffffff !important;
+  color: #1f1f1d !important;
+  box-shadow: none !important;
+}
+
+html[data-theme] body.has-global-bubbles .ds-brand,
+html[data-theme] body.has-global-bubbles .ds-inline-title,
+html[data-theme] body.has-global-bubbles .ds-kpi-value,
+html[data-theme] body.has-global-bubbles .ds-list-title,
+html[data-theme] body.has-global-bubbles .ds-company h2,
+html[data-theme] body.has-global-bubbles .ds-side-stat strong {
+  color: #1f1f1d !important;
+}
+
+html[data-theme] body.has-global-bubbles .ds-menu-label,
+html[data-theme] body.has-global-bubbles .ds-side-stat small,
+html[data-theme] body.has-global-bubbles .ds-side-stat span,
+html[data-theme] body.has-global-bubbles .ds-inline-url,
+html[data-theme] body.has-global-bubbles .ds-kpi-label,
+html[data-theme] body.has-global-bubbles .ds-kpi-sub {
+  color: #6f6e69 !important;
+}
+
+html[data-theme] body.has-global-bubbles .ds-menu-item,
+html[data-theme] body.has-global-bubbles .ds-icon-btn,
+html[data-theme] body.has-global-bubbles .ds-side-stat-btn,
+html[data-theme] body.has-global-bubbles .ds-inline-btn,
+html[data-theme] body.has-global-bubbles .ds-search {
+  border-color: rgba(55, 53, 47, 0.16) !important;
+  background: #ffffff !important;
+  color: #1f1f1d !important;
+  box-shadow: none !important;
+}
+
+html[data-theme] body.has-global-bubbles .ds-menu-item.active {
+  background: #ededea !important;
+  color: #1f1f1d !important;
+  border-color: rgba(55, 53, 47, 0.2) !important;
+  box-shadow: none !important;
+}
+
+html[data-theme] body.has-global-bubbles .ds-chip,
+html[data-theme] body.has-global-bubbles .ds-pill {
+  border: 1px solid rgba(31, 118, 210, 0.2) !important;
+  background: rgba(35, 131, 226, 0.09) !important;
+  color: #1f76d2 !important;
+}
+
+html[data-theme] body.has-global-bubbles .ds-search input {
+  color: #1f1f1d !important;
+}
+
+html[data-theme] body.has-global-bubbles .ds-search input::placeholder {
+  color: #8a8983 !important;
+}
+
+/* Generic table feel */
+html[data-theme] body.has-global-bubbles table,
+html[data-theme] body.has-global-bubbles .adm-table td,
+html[data-theme] body.has-global-bubbles .goals-modern-table thead th,
+html[data-theme] body.has-global-bubbles .goals-modern-table tbody td {
+  background: #ffffff !important;
+  color: #1f1f1d !important;
+  border-color: rgba(55, 53, 47, 0.14) !important;
+}
+
+/* Landing/home */
+html[data-theme] body.has-global-bubbles .welcome-hero,
+html[data-theme] body.has-global-bubbles .overview-section {
+  background: transparent !important;
+}
+
+html[data-theme] body.has-global-bubbles .welcome-title,
+html[data-theme] body.has-global-bubbles .overview-title {
+  color: #1f1f1d !important;
+}
+
+html[data-theme] body.has-global-bubbles .welcome-subtitle,
+html[data-theme] body.has-global-bubbles .overview-desc {
+  color: #6f6e69 !important;
+}
+
+html[data-theme] body.has-global-bubbles .overview-card {
+  border: 1px solid rgba(55, 53, 47, 0.14) !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08), 0 8px 20px rgba(15, 23, 42, 0.04) !important;
+}
+
+/* Mobile drawer follows the same style */
+html[data-theme] body.has-global-bubbles .drawer-new,
+html[data-theme] body.has-global-bubbles .drawer-nav-new a,
+html[data-theme] body.has-global-bubbles .drawer-goals-subnav a,
+html[data-theme] body.has-global-bubbles .drawer-user-card {
+  border-color: rgba(55, 53, 47, 0.14) !important;
+  background: #ffffff !important;
+  color: #1f1f1d !important;
+}

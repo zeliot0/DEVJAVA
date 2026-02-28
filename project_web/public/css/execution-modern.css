@@ -1,0 +1,117 @@
+/* Execution Modern Style - Conscience Aesthetic */
+
+:root {
+    --exe-green: #10b981;
+    --exe-red: #ef4444;
+    --exe-blue: #3b82f6;
+    --exe-bg: #f8fafc;
+    --notion-text: #1a1b23;
+    --notion-text-muted: #6b7280;
+    --notion-border: rgba(0, 0, 0, 0.05);
+}
+
+.exe-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 20px 100px;
+}
+
+.exe-header {
+    margin-bottom: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.exe-title {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--notion-text);
+    margin: 0;
+}
+
+.exe-table-wrap {
+    background: white;
+    border: 1px solid var(--notion-border);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+}
+
+.exe-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.exe-table th {
+    text-align: left;
+    padding: 16px 24px;
+    background: #f9fafb;
+    border-bottom: 1px solid var(--notion-border);
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--notion-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.exe-table td {
+    padding: 20px 24px;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 14px;
+    color: var(--notion-text);
+}
+
+.status-pill {
+    display: inline-flex;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-success {
+    background: #dcfce7;
+    color: #065f46;
+}
+
+.status-failed {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status-running {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.exe-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--exe-blue);
+}
+
+/* Detail View */
+.exe-detail-card {
+    background: white;
+    border: 1px solid var(--notion-border);
+    border-radius: 24px;
+    padding: 48px;
+    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.05);
+}
+
+.exe-log-box {
+    background: #1e1e2e;
+    color: #c0caf5;
+    padding: 32px;
+    border-radius: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-top: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    overflow-x: auto;
+}

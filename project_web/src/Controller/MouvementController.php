@@ -6,6 +6,7 @@ use App\Entity\Mouvement;
 use App\Form\MouvementType;
 use App\Repository\MouvementRepository;
 use App\Repository\ProduitRepository;
+use App\Service\LowStockAlertService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -132,7 +133,7 @@ final class MouvementController extends AbstractController
     }
 
     #[Route('/new', name: 'app_mouvement_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, ProduitRepository $produitRepository, MouvementRepository $mouvementRepository, LowStockAlertService $lowStockAlertService): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
             $this->addFlash('warning', 'Mode admin: consultation uniquement pour les mouvements.');
@@ -167,8 +168,49 @@ final class MouvementController extends AbstractController
                 } else {
                     $produit->setQuantiteStock($stockApres);
 
+                    $existing = $mouvementRepository->findOneBy(
+                        ['produit' => $produit],
+                        ['date_mouvement' => 'DESC', 'id_mo' => 'DESC']
+                    );
+
+                    if ($existing) {
+                        $existingType = (string) $existing->getTypeM();
+                        $newType = (string) $mouvement->getTypeM();
+                        $existingQuantite = (int) $existing->getQuantite();
+
+                        $quantiteFinale = ($existingType === $newType)
+                            ? ($existingQuantite + $quantite)
+                            : $quantite;
+
+                        $existing
+                            ->setTypeM($newType)
+                            ->setQuantite($quantiteFinale)
+                            ->setDateMouvement($mouvement->getDateMouvement() ?: new \DateTime())
+                            ->setMotif((string) $mouvement->getMotif())
+                            ->setProduit($produit);
+
+                        $entityManager->flush();
+
+                        $alertResult = $lowStockAlertService->notifyIfCrossedThreshold($produit, $stockActuel);
+                        if ($alertResult === true) {
+                            $this->addFlash('warning', 'Alerte stock: email envoye (stock < 5).');
+                        } elseif ($alertResult === false) {
+                            $this->addFlash('error', 'Alerte stock: envoi email echoue. Verifie MAILER_DSN dans .env.local (remplace CHANGE_ME).');
+                        }
+
+                        $this->addFlash('success', 'Mouvement mis à jour. Stock mis à jour.');
+                        return $this->redirectToRoute('app_mouvement_index');
+                    }
+
                     $entityManager->persist($mouvement);
                     $entityManager->flush();
+
+                    $alertResult = $lowStockAlertService->notifyIfCrossedThreshold($produit, $stockActuel);
+                    if ($alertResult === true) {
+                        $this->addFlash('warning', 'Alerte stock: email envoye (stock < 5).');
+                    } elseif ($alertResult === false) {
+                        $this->addFlash('error', 'Alerte stock: envoi email echoue. Verifie MAILER_DSN dans .env.local (remplace CHANGE_ME).');
+                    }
 
                     $this->addFlash('success', 'Mouvement créé. Stock mis à jour.');
                     return $this->redirectToRoute('app_mouvement_index');
@@ -197,7 +239,7 @@ final class MouvementController extends AbstractController
     }
 
     #[Route('/{id_mo<\\d+>}/edit', name: 'app_mouvement_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Mouvement $mouvement, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Mouvement $mouvement, EntityManagerInterface $entityManager, LowStockAlertService $lowStockAlertService): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
             $this->addFlash('warning', 'Mode admin: consultation uniquement pour les mouvements.');
@@ -236,6 +278,13 @@ final class MouvementController extends AbstractController
                     $oldProduit->setQuantiteStock($stockFinal);
                     $entityManager->flush();
 
+                    $alertResult = $lowStockAlertService->notifyIfCrossedThreshold($oldProduit, $stockActuel);
+                    if ($alertResult === true) {
+                        $this->addFlash('warning', 'Alerte stock: email envoye (stock < 5).');
+                    } elseif ($alertResult === false) {
+                        $this->addFlash('error', 'Alerte stock: envoi email echoue. Verifie MAILER_DSN dans .env.local (remplace CHANGE_ME).');
+                    }
+
                     $this->addFlash('success', 'Mouvement mis à jour. Stock ajusté.');
                     return $this->redirectToRoute('app_mouvement_index');
                 }
@@ -255,6 +304,16 @@ final class MouvementController extends AbstractController
                     $newProduit->setQuantiteStock($newStockFinal);
                     $entityManager->flush();
 
+                    $alertOld = $lowStockAlertService->notifyIfCrossedThreshold($oldProduit, $oldStockActuel);
+                    $alertNew = $lowStockAlertService->notifyIfCrossedThreshold($newProduit, $newStockActuel);
+
+                    if ($alertOld === true || $alertNew === true) {
+                        $this->addFlash('warning', 'Alerte stock: email envoye (stock < 5).');
+                    }
+                    if ($alertOld === false || $alertNew === false) {
+                        $this->addFlash('error', 'Alerte stock: envoi email echoue. Verifie MAILER_DSN dans .env.local (remplace CHANGE_ME).');
+                    }
+
                     $this->addFlash('success', 'Mouvement mis à jour. Stock ajusté.');
                     return $this->redirectToRoute('app_mouvement_index');
                 }
@@ -269,7 +328,7 @@ final class MouvementController extends AbstractController
     }
 
     #[Route('/{id_mo<\\d+>}', name: 'app_mouvement_delete', methods: ['POST'])]
-    public function delete(Request $request, Mouvement $mouvement, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Mouvement $mouvement, EntityManagerInterface $entityManager, LowStockAlertService $lowStockAlertService): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
             $this->addFlash('warning', 'Mode admin: consultation uniquement pour les mouvements.');
@@ -297,7 +356,18 @@ final class MouvementController extends AbstractController
             $entityManager->remove($mouvement);
             $entityManager->flush();
 
+            if ($produit) {
+                $alertResult = $lowStockAlertService->notifyIfCrossedThreshold($produit, $stockActuel);
+                if ($alertResult === true) {
+                    $this->addFlash('warning', 'Alerte stock: email envoye (stock < 5).');
+                } elseif ($alertResult === false) {
+                    $this->addFlash('error', 'Alerte stock: envoi email echoue. Verifie MAILER_DSN dans .env.local (remplace CHANGE_ME).');
+                }
+            }
+
             $this->addFlash('success', 'Mouvement supprimé. Stock ajusté.');
+        } else {
+            $this->addFlash('error', 'Jeton CSRF invalide.');
         }
 
         return $this->redirectToRoute('app_mouvement_index');

@@ -1,0 +1,336 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block title %}Nexa AI - Vortex Temporel{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --ai-bg: #ffffff;
+            --ai-accent: #6366f1;
+            --ai-accent-purple: #a855f7;
+            --ai-text-main: #0a0a0a;
+            --ai-text-muted: #737373;
+            --ai-border: rgba(0, 0, 0, 0.04);
+        }
+
+        /* Orbes de fond */
+        .bg-orb {
+            position: fixed;
+            width: 800px;
+            height: 800px;
+            border-radius: 50%;
+            filter: blur(150px);
+            z-index: -1;
+            opacity: 0.04;
+            pointer-events: none;
+        }
+
+        /* Vortex Cards (Bento) */
+        .vortex-card {
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 40px;
+            border: 1px solid var(--ai-border);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.02);
+            transition: all 0.5s cubic-bezier(0.2, 0, 0, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .vortex-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--ai-accent);
+            box-shadow: 0 30px 60px rgba(99, 102, 241, 0.06);
+        }
+
+        /* Message Card Inside Vortex */
+        .msg-inner-card {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .msg-inner-card:hover {
+            background: #ffffff;
+            border-color: var(--ai-accent);
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.02);
+        }
+
+        /* Empty State Illustration */
+        .empty-illustration {
+            width: 64px;
+            height: 64px;
+            background: #f8fafc;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            color: #cbd5e1;
+            transition: all 0.3s ease;
+        }
+
+        .vortex-card:hover .empty-illustration {
+            background: #f1f5ff;
+            color: var(--ai-accent);
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        /* Boutons Spéciaux */
+        .btn-future {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+            transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .btn-future:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-past {
+            background: white;
+            border: 1px solid var(--ai-border);
+            color: var(--ai-text-muted);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
+        }
+
+        .btn-past:hover {
+            background: #fafafa;
+            color: var(--ai-text-main);
+            border-color: #e2e8f0;
+        }
+
+        /* Badges */
+        .tm-badge {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .badge-future { background: #eef2ff; color: #4f46e5; }
+        .badge-past { background: #fdf2f8; color: #db2777; }
+        .badge-ai { background: #f0fdf4; color: #166534; }
+
+        /* Breadcrumb Detail */
+        .breadcrumb-label {
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--ai-accent);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        /* Animations */
+        .reveal { opacity: 0; transform: translateY(20px); }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="bg-orb top-[-100px] left-[-100px] bg-indigo-400"></div>
+    <div class="bg-orb bottom-[-100px] right-[-100px] bg-purple-400"></div>
+
+    <main class="flex-1 px-4 md:px-24 py-16 max-w-[1200px] mx-auto w-full">
+        {% for message in app.flashes('time_message_success') %}
+            <div class="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm font-semibold text-emerald-700">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('time_message_error') %}
+            <div class="mb-6 rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm font-semibold text-rose-700">
+                {{ message }}
+            </div>
+        {% endfor %}
+        
+        <!-- SECTION TITRE & ACTIONS -->
+        <section class="reveal mb-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-10">
+            <div class="max-w-2xl">
+                <span class="breadcrumb-label mb-4 block">Conscience & Chronos</span>
+                <div class="flex items-center gap-5 mb-6">
+                    <div id="vortex-icon" class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>
+                    </div>
+                    <h1 class="text-6xl font-[900] tracking-tight text-slate-900 leading-[1.1]">
+                        Vortex <span class="text-indigo-600">Temporel</span>
+                    </h1>
+                </div>
+                <p class="text-slate-400 font-medium text-xl leading-relaxed">
+                    L'intersection entre vos incarnations passées et vos potentiels futurs. 
+                </p>
+            </div>
+            
+            <div class="flex flex-wrap gap-4">
+                {% if is_granted('ROLE_ADMIN') %}
+                    <div class="rounded-2xl border border-amber-200 bg-amber-50 px-6 py-4 text-sm font-semibold text-amber-700">
+                        Mode admin: lecture seule (visualisation des messages uniquement).
+                    </div>
+                {% else %}
+                    <a href="{{ path('app_time_message_new', {'type': 'past'}) }}" class="btn-past flex items-center gap-3 px-8 py-3.5 rounded-2xl text-sm font-bold no-underline">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+                        Echo Passé
+                    </a>
+                    <a href="{{ path('app_time_message_new', {'type': 'future'}) }}" class="btn-future flex items-center gap-3 px-8 py-3.5 rounded-2xl text-white text-sm font-bold shadow-xl no-underline">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                        Capsule Future
+                    </a>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- GRID DE DONNÉES TEMPORELLES -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
+            
+            <!-- Flux Entrants -->
+            <div class="reveal vortex-card group">
+                <div class="empty-illustration">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><rect width="20" height="14" x="2" y="5" rx="2"/></svg>
+                </div>
+                <div class="flex justify-between items-start mb-10">
+                    <div>
+                        <h3 class="text-3xl font-extrabold text-slate-900 mb-2">Flux Entrants</h3>
+                        <p class="text-slate-400 text-sm font-medium">Réception des signaux de résonance.</p>
+                    </div>
+                    <span class="text-6xl font-black text-slate-100 group-hover:text-indigo-100 transition-colors">{{ delivered|length }}</span>
+                </div>
+                
+                <div class="flex-1">
+                    {% if delivered|length > 0 %}
+                        <div class="space-y-4">
+                            {% for message in delivered %}
+                                <div class="msg-inner-card group/msg">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <div class="flex gap-2">
+                                            <span class="tm-badge {{ message.messageTypeG == 'future' ? 'badge-future' : 'badge-past' }}">
+                                                {{ message.messageTypeG == 'future' ? 'Futur' : 'Passé' }}
+                                            </span>
+                                            {% if aiResponses[message.idTimeMessage] is defined %}
+                                                <span class="tm-badge badge-ai"><i class="fas fa-robot"></i> Résonance</span>
+                                            {% endif %}
+                                        </div>
+                                        <span class="text-[10px] font-bold text-slate-300">{{ message.createdAtMsg|date('d M Y') }}</span>
+                                    </div>
+                                    <h4 class="text-lg font-bold text-slate-900 mb-2">{{ message.titleMsg }}</h4>
+                                    <p class="text-sm text-slate-400 leading-relaxed mb-6 line-clamp-2">{{ message.contentMsg }}</p>
+                                    <a href="{{ path('app_time_message_show', {'id': message.idTimeMessage}) }}" class="text-xs font-black text-indigo-600 hover:text-indigo-800 uppercase tracking-widest no-underline flex items-center gap-2">
+                                        Déployer la capsule
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="pt-8 border-t border-gray-50">
+                            <p class="text-slate-400 font-bold text-sm bg-gray-50 px-5 py-8 rounded-[24px] text-center border border-dashed border-gray-200">
+                                Aucune résonance temporelle détectée pour le moment.
+                            </p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Stase Temporelle -->
+            <div class="reveal vortex-card group">
+                <div class="empty-illustration">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg>
+                </div>
+                <div class="flex justify-between items-start mb-10">
+                    <div>
+                        <h3 class="text-3xl font-extrabold text-slate-900 mb-2">En Stase Temporelle</h3>
+                        <p class="text-slate-400 text-sm font-medium">Messages en attente de synchronisation.</p>
+                    </div>
+                    <span class="text-6xl font-black text-slate-100 group-hover:text-purple-100 transition-colors">{{ upcoming|length }}</span>
+                </div>
+
+                <div class="flex-1">
+                    {% if upcoming|length > 0 %}
+                        <div class="space-y-4">
+                            {% for message in upcoming %}
+                                <div class="msg-inner-card" style="border-style: dashed;">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <span class="tm-badge {{ message.messageTypeG == 'future' ? 'badge-future' : 'badge-past' }}" style="opacity: 0.7;">
+                                            Cible : {{ message.messageTypeG == 'future' ? 'Futur' : 'Passé' }}
+                                        </span>
+                                        <div class="text-[10px] font-black text-indigo-500 uppercase">
+                                            LIVRAISON : {{ message.deliveryDateMsg|date('d M Y') }}
+                                        </div>
+                                    </div>
+                                    <h4 class="text-lg font-bold text-slate-900 mb-2 opacity-80">{{ message.titleMsg }}</h4>
+                                    <p class="text-sm text-slate-400 leading-relaxed mb-6 line-clamp-2 italic">{{ message.contentMsg }}</p>
+                                    <a href="{{ path('app_time_message_show', {'id': message.idTimeMessage}) }}" class="text-xs font-black text-slate-400 hover:text-indigo-600 uppercase tracking-widest no-underline flex items-center gap-2">
+                                        Spécifications
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="pt-8 border-t border-gray-50">
+                            <p class="text-slate-400 font-bold text-sm bg-gray-50 px-5 py-8 rounded-[24px] text-center border border-dashed border-gray-200">
+                                Vos messages attendent le moment propice pour se matérialiser.
+                            </p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tl = gsap.timeline({ defaults: { ease: "expo.out", duration: 1.2 } });
+
+            // Séquence de révélation
+            tl.to(".reveal", {
+                opacity: 1,
+                y: 0,
+                stagger: 0.1,
+                duration: 1.4
+            });
+
+            // Flottement de l'icône vortex
+            gsap.to("#vortex-icon", {
+                rotate: 360,
+                duration: 25,
+                repeat: -1,
+                ease: "none"
+            });
+
+            // Mouvement des orbes
+            gsap.to(".bg-orb", {
+                x: "random(-60, 60)",
+                y: "random(-60, 60)",
+                duration: 15,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut"
+            });
+
+            // Micro-interactions
+            document.querySelectorAll('.vortex-card, .msg-inner-card, button, a.btn-past, a.btn-future').forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    gsap.to(el, { scale: 1.005, duration: 0.3 });
+                });
+                el.addEventListener('mouseleave', () => {
+                    gsap.to(el, { scale: 1, duration: 0.3 });
+                });
+            });
+        });
+    </script>
+{% endblock %}

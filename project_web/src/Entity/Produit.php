@@ -41,6 +41,9 @@ class Produit
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo_p = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $email_p = null;
+
     /**
      * @var Collection<int, Mouvement>
      */
@@ -149,6 +152,18 @@ class Produit
     public function setPhotoP(?string $photo_p): static
     {
         $this->photo_p = $photo_p;
+
+        return $this;
+    }
+
+    public function getEmailP(): ?string
+    {
+        return $this->email_p;
+    }
+
+    public function setEmailP(?string $email_p): static
+    {
+        $this->email_p = $email_p;
 
         return $this;
     }

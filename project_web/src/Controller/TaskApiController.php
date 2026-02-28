@@ -5,7 +5,10 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Repository\CategoryRepository;
 use App\Repository\TaskRepository;
+use App\Service\TaskRealtimePublisher;
 use Doctrine\ORM\EntityManagerInterface;
+use Pagerfanta\Adapter\CallbackAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,17 +49,33 @@ class TaskApiController extends AbstractController
                 ->setParameter('q', '%' . strtolower($q) . '%');
         }
 
-        $total = (int) (clone $qb)
-            ->select('COUNT(t.id)')
-            ->getQuery()
-            ->getSingleScalarResult();
+        $adapter = new CallbackAdapter(
+            static function () use ($qb): int {
+                return (int) (clone $qb)
+                    ->select('COUNT(t.id)')
+                    ->getQuery()
+                    ->getSingleScalarResult();
+            },
+            static function (int $offset, int $length) use ($qb): iterable {
+                return (clone $qb)
+                    ->orderBy('t.updateAt', 'DESC')
+                    ->setFirstResult($offset)
+                    ->setMaxResults($length)
+                    ->getQuery()
+                    ->getResult();
+            }
+        );
+        $pager = new Pagerfanta($adapter);
+        $pager->setMaxPerPage($limit);
 
-        $tasks = $qb
-            ->orderBy('t.updateAt', 'DESC')
-            ->setFirstResult(($page - 1) * $limit)
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
+        try {
+            $pager->setCurrentPage($page);
+        } catch (\Throwable) {
+            $page = max(1, $pager->getNbPages());
+            $pager->setCurrentPage($page);
+        }
+
+        $tasks = iterator_to_array($pager->getCurrentPageResults());
 
         $data = array_map(fn(Task $t) => $this->toArray($t), $tasks);
         if (!$withMeta) {
@@ -66,10 +85,12 @@ class TaskApiController extends AbstractController
         return $this->json([
             'data' => $data,
             'meta' => [
-                'page' => $page,
-                'limit' => $limit,
-                'total' => $total,
-                'totalPages' => (int) ceil($total / $limit),
+                'page' => $pager->getCurrentPage(),
+                'limit' => $pager->getMaxPerPage(),
+                'total' => $pager->getNbResults(),
+                'totalPages' => $pager->getNbPages(),
+                'hasNextPage' => $pager->hasNextPage(),
+                'hasPreviousPage' => $pager->hasPreviousPage(),
             ],
         ]);
     }
@@ -85,7 +106,8 @@ class TaskApiController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         CategoryRepository $catRepo,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        TaskRealtimePublisher $taskRealtimePublisher
     ): JsonResponse {
         $d = json_decode($request->getContent(), true) ?? [];
 
@@ -113,8 +135,10 @@ class TaskApiController extends AbstractController
 
         $em->persist($task);
         $em->flush();
+        $serialized = $this->toArray($task);
+        $taskRealtimePublisher->publish('task.created', ['task' => $serialized]);
 
-        return $this->json($this->toArray($task), 201);
+        return $this->json($serialized, 201);
     }
 
     #[Route('/api/tasks/{id}', name: 'api_tasks_update', methods: ['PATCH','PUT'], requirements: ['id' => '\d+'])]
@@ -123,7 +147,8 @@ class TaskApiController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         CategoryRepository $catRepo,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        TaskRealtimePublisher $taskRealtimePublisher
     ): JsonResponse {
         $d = json_decode($request->getContent(), true) ?? [];
 
@@ -146,14 +171,21 @@ class TaskApiController extends AbstractController
         }
 
         $em->flush();
-        return $this->json($this->toArray($task));
+        $serialized = $this->toArray($task);
+        $taskRealtimePublisher->publish('task.updated', ['task' => $serialized]);
+
+        return $this->json($serialized);
     }
 
     #[Route('/api/tasks/{id}', name: 'api_tasks_delete', methods: ['DELETE'], requirements: ['id' => '\d+'])]
-    public function delete(Task $task, EntityManagerInterface $em): JsonResponse
+    public function delete(Task $task, EntityManagerInterface $em, TaskRealtimePublisher $taskRealtimePublisher): JsonResponse
     {
+        $deletedId = $task->getId();
         $em->remove($task);
         $em->flush();
+
+        $taskRealtimePublisher->publish('task.deleted', ['id' => $deletedId]);
+
         return $this->json(['ok' => true]);
     }
     private function hydrate(Task $t, array $d, CategoryRepository $catRepo): array

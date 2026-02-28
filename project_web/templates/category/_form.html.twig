@@ -1,4 +1,63 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_start(form, { attr: { novalidate: 'novalidate', class: 'conscience-modern-form' } }) }}
+
+<div class="form-container-inner">
+    <div class="form-grid">
+        <div class="form-section-card">
+            <div class="section-badge highlight">MORPHOLOGIE DU DOMAINE</div>
+            
+            <div class="pg-field">
+                {{ form_label(form.name, 'Nom de la Catégorie', {'label_attr': {'class': 'pg-label'}}) }}
+                {{ form_widget(form.name, {'attr': {'class': 'pg-input', 'placeholder': 'Ex: Développement, Santé...'}}) }}
+                {{ form_errors(form.name) }}
+            </div>
+
+            <div class="pg-field">
+                {{ form_label(form.description, 'Énoncé Descriptif', {'label_attr': {'class': 'pg-label'}}) }}
+                {{ form_widget(form.description, {'attr': {'class': 'pg-textarea', 'placeholder': 'Définissez la portée de ce domaine...'}}) }}
+                {{ form_errors(form.description) }}
+            </div>
+        </div>
+
+        <div class="form-section-card">
+            <div class="section-badge info">ATTRIBUTS VISUELS ET LIMITES</div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="pg-field">
+                    {{ form_label(form.color, 'Code Couleur (Hex)', {'label_attr': {'class': 'pg-label'}}) }}
+                    {{ form_widget(form.color, {'attr': {'class': 'pg-input', 'type': 'color'}}) }}
+                    {{ form_errors(form.color) }}
+                </div>
+                <div class="pg-field">
+                    {{ form_label(form.icon, 'Classe Icône FontAwesome', {'label_attr': {'class': 'pg-label'}}) }}
+                    {{ form_widget(form.icon, {'attr': {'class': 'pg-input', 'placeholder': 'Ex: fa-solid fa-code'}}) }}
+                    {{ form_errors(form.icon) }}
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="pg-field">
+                    {{ form_label(form.position, 'Ordre de Séquence', {'label_attr': {'class': 'pg-label'}}) }}
+                    {{ form_widget(form.position, {'attr': {'class': 'pg-input'}}) }}
+                    {{ form_errors(form.position) }}
+                </div>
+                <div class="pg-field">
+                    {{ form_label(form.taskLimit, 'Capacité de Tâches', {'label_attr': {'class': 'pg-label'}}) }}
+                    {{ form_widget(form.taskLimit, {'attr': {'class': 'pg-input'}}) }}
+                    {{ form_errors(form.taskLimit) }}
+                </div>
+            </div>
+
+            <div class="pg-field" style="display: flex; align-items: center; gap: 12px; margin-top: 10px;">
+                {{ form_widget(form.isActive) }}
+                {{ form_label(form.isActive, 'Catégorie Opérationnelle (Active)', {'label_attr': {'class': 'pg-label', 'style': 'margin-bottom: 0;'}}) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="form-persistence-bar">
+        <a href="{{ path('app_category_index') }}" class="btn">Annuler</a>
+        <button type="submit" class="btn primary">{{ button_label|default('Sauvegarder la structure') }}</button>
+    </div>
+</div>
+
 {{ form_end(form) }}

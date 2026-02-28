@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% set body_class = 'conscience-page' %}
+
+{% block title %}NOUVELLE CONNEXION — NEXA Intelligence{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/phoenix-network-modern.css?v=' ~ 'now'|date('U')) }}">
+{% endblock %}
+
+{% block body %}
+<div class="net-page">
+    <header class="net-header" style="text-align: left; margin-bottom: 48px;">
+        <h1 class="net-title">Initialisation de Canal</h1>
+        <p style="font-size: 16px; color: var(--notion-text-muted);">Configurez un nouveau vecteur de communication dans le réseau.</p>
+    </header>
+
+    {{ include('phoenix_network/_form.html.twig', {'button_label': 'Lancer la Synchronisation'}) }}
+</div>
+{% endblock %}

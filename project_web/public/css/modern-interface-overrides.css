@@ -1,0 +1,451 @@
+/* Shared modern interface skin for all app modules. */
+
+body.has-global-bubbles {
+  --mi-ink: #e7eefc;
+  --mi-muted: #9fb2d8;
+  --mi-border: rgba(159, 122, 234, 0.28);
+  --mi-surface-1: linear-gradient(165deg, rgba(7, 18, 48, 0.86), rgba(11, 28, 66, 0.78));
+  --mi-surface-2: linear-gradient(165deg, rgba(10, 24, 58, 0.82), rgba(8, 21, 50, 0.74));
+  --mi-surface-3: linear-gradient(160deg, rgba(17, 35, 78, 0.72), rgba(10, 26, 60, 0.7));
+  --mi-chip: rgba(255, 255, 255, 0.09);
+  --mi-shadow: 0 16px 34px rgba(2, 6, 23, 0.44);
+  --mi-shadow-soft: 0 12px 24px rgba(2, 6, 23, 0.32);
+  --mi-accent: #6366f1;
+  --mi-accent-2: #8b5cf6;
+}
+
+[data-theme] body.has-global-bubbles::before,
+[data-theme] body.has-global-bubbles::after {
+  content: "" !important;
+  display: block !important;
+}
+
+[data-theme] body.has-global-bubbles .global-bubbles-bg {
+  display: block !important;
+}
+
+[data-theme="light"] body.has-global-bubbles {
+  --mi-ink: #eaf1ff;
+  --mi-muted: #abc1e8;
+}
+
+/* Global navbar refinement */
+body.has-global-bubbles .navbar-custom {
+  border-color: rgba(148, 163, 184, 0.3) !important;
+  background: linear-gradient(145deg, rgba(7, 18, 48, 0.8), rgba(12, 27, 62, 0.76)) !important;
+  box-shadow: 0 18px 36px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.11) !important;
+}
+
+body.has-global-bubbles .nav-pill-new {
+  border-color: rgba(148, 163, 184, 0.33) !important;
+  background: rgba(26, 43, 78, 0.62) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+}
+
+body.has-global-bubbles .nav-pill-new a {
+  color: #d9e2f3 !important;
+}
+
+body.has-global-bubbles .nav-pill-new a:hover {
+  color: #f8fbff !important;
+  background: rgba(148, 163, 184, 0.22) !important;
+  border-color: rgba(148, 163, 184, 0.38) !important;
+}
+
+body.has-global-bubbles .header-actions-new,
+body.has-global-bubbles .lang-btn-new,
+body.has-global-bubbles .icon-btn,
+body.has-global-bubbles .user-quick-nav {
+  border-color: rgba(148, 163, 184, 0.3) !important;
+  background: rgba(15, 30, 63, 0.84) !important;
+  color: #e8eefc !important;
+}
+
+body.has-global-bubbles .uq-meta small {
+  color: #a9b7d6 !important;
+}
+
+/* Task board */
+body.task-page-theme.has-global-bubbles {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+body.task-page-theme.has-global-bubbles::before {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: -5 !important;
+  pointer-events: none !important;
+  background:
+    radial-gradient(960px 540px at 50% 35%, rgba(252, 211, 77, 0.28), rgba(252, 211, 77, 0) 62%),
+    radial-gradient(820px 520px at 62% 66%, rgba(236, 72, 153, 0.24), rgba(236, 72, 153, 0) 66%),
+    radial-gradient(840px 560px at 18% 22%, rgba(34, 211, 238, 0.2), rgba(34, 211, 238, 0) 64%),
+    radial-gradient(860px 540px at 84% 14%, rgba(99, 102, 241, 0.22), rgba(99, 102, 241, 0) 60%),
+    linear-gradient(140deg, #05081f 0%, #0b1437 46%, #060920 100%) !important;
+}
+
+body.task-page-theme.has-global-bubbles::after {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: -4 !important;
+  pointer-events: none !important;
+  background:
+    radial-gradient(1200px 640px at 50% 45%, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 72%),
+    radial-gradient(1100px 500px at 50% 108%, rgba(251, 146, 60, 0.1), rgba(251, 146, 60, 0) 70%) !important;
+}
+
+body.task-page-theme.has-global-bubbles .global-bubbles-bg {
+  display: block !important;
+  z-index: -3 !important;
+}
+
+body.task-page-theme.has-global-bubbles #appLayout,
+body.task-page-theme.has-global-bubbles #appLayout .layout.layout-pro,
+body.task-page-theme.has-global-bubbles #appLayout .main.main-pro,
+body.task-page-theme.has-global-bubbles #appLayout .content-grid,
+body.task-page-theme.has-global-bubbles #appLayout .center {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+body.task-page-theme.has-global-bubbles #appLayout .main.main-pro::before {
+  content: none !important;
+  display: none !important;
+}
+
+body.task-page-theme #appLayout .topbar.topbar-pro,
+body.task-page-theme #appLayout .kpi.kpi-pro,
+body.task-page-theme #appLayout .col.col-pro,
+body.task-page-theme #appLayout .task,
+body.task-page-theme #appLayout .actions-menu {
+  border: 1px solid var(--mi-border) !important;
+  background: var(--mi-surface-1) !important;
+  box-shadow: var(--mi-shadow) !important;
+  backdrop-filter: blur(16px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+}
+
+body.task-page-theme #appLayout .topbar.topbar-pro,
+body.task-page-theme #appLayout .kpi.kpi-pro {
+  border-radius: 22px !important;
+}
+
+body.task-page-theme #appLayout .col.col-pro {
+  border-radius: 20px !important;
+}
+
+body.task-page-theme #appLayout .task {
+  border-radius: 18px !important;
+}
+
+body.task-page-theme #appLayout .col-header.col-header-pro {
+  background: var(--mi-surface-3) !important;
+  border-bottom: 1px dashed rgba(148, 163, 184, 0.32) !important;
+}
+
+body.task-page-theme #appLayout .toolbar-block-title,
+body.task-page-theme #appLayout .kpi-title,
+body.task-page-theme #appLayout .task-desc,
+body.task-page-theme #appLayout .chip {
+  color: var(--mi-muted) !important;
+}
+
+body.task-page-theme #appLayout .kpi-value,
+body.task-page-theme #appLayout .col-title,
+body.task-page-theme #appLayout .task-title,
+body.task-page-theme #appLayout .task,
+body.task-page-theme #appLayout .topbar.topbar-pro {
+  color: var(--mi-ink) !important;
+}
+
+body.task-page-theme #appLayout .toolbar-integrated .field.field-pro,
+body.task-page-theme #appLayout .topbar .btn.subtle.icon-only,
+body.task-page-theme #appLayout .main-actions-btn,
+body.task-page-theme #appLayout .task .icon-btn,
+body.task-page-theme #appLayout .col-count {
+  border: 1px solid rgba(148, 163, 184, 0.36) !important;
+  background: rgba(15, 29, 62, 0.86) !important;
+  color: #dce6fb !important;
+  box-shadow: none !important;
+}
+
+body.task-page-theme #appLayout .field input,
+body.task-page-theme #appLayout .field select,
+body.task-page-theme #appLayout .actions-menu .btn-modern {
+  color: #e4ecfb !important;
+}
+
+body.task-page-theme #appLayout .field input::placeholder {
+  color: rgba(159, 178, 216, 0.75) !important;
+}
+
+body.task-page-theme #appLayout .topbar .btn.primary,
+body.task-page-theme #appLayout #newBtn,
+body.task-page-theme #appLayout #newCatBtn {
+  background: linear-gradient(135deg, var(--mi-accent), var(--mi-accent-2)) !important;
+  border: 1px solid rgba(196, 181, 253, 0.46) !important;
+  box-shadow: 0 14px 28px rgba(99, 102, 241, 0.34) !important;
+  color: #f8fbff !important;
+}
+
+body.task-page-theme #appLayout .actions-menu .btn-modern {
+  border: 1px solid rgba(148, 163, 184, 0.34) !important;
+  background: rgba(12, 26, 56, 0.84) !important;
+}
+
+/* Conscience */
+body.conscience-page .conscience-modern-page .page-header,
+body.conscience-page .conscience-modern-page .search-bar.conscience-toolbar,
+body.conscience-page .conscience-modern-page .conscience-search-box,
+body.conscience-page .conscience-modern-page .conscience-filter-box,
+body.conscience-page .conscience-modern-page .kpi-card,
+body.conscience-page .conscience-modern-page #themes-container .theme-card.conscience-theme-card,
+body.conscience-page .conscience-modern-page #themes-container .conscience-card-bottom {
+  border: 1px solid var(--mi-border) !important;
+  background: var(--mi-surface-1) !important;
+  color: var(--mi-ink) !important;
+  box-shadow: var(--mi-shadow-soft) !important;
+}
+
+body.conscience-page .conscience-modern-page .page-header h1,
+body.conscience-page .conscience-modern-page #themes-container .conscience-theme-info h3,
+body.conscience-page .conscience-modern-page .kpi-card strong {
+  color: #e9f0ff !important;
+}
+
+body.conscience-page .conscience-modern-page .page-header p,
+body.conscience-page .conscience-modern-page #themes-container .conscience-theme-text,
+body.conscience-page .conscience-modern-page #themes-container .conscience-theme-info span,
+body.conscience-page .conscience-modern-page .kpi-card span {
+  color: var(--mi-muted) !important;
+}
+
+body.conscience-page .conscience-modern-page #themes-container .conscience-meta-pill,
+body.conscience-page .conscience-modern-page #themes-container .conscience-action {
+  border: 1px solid rgba(148, 163, 184, 0.34) !important;
+  background: rgba(12, 26, 56, 0.84) !important;
+  color: #dce7fb !important;
+}
+
+/* Goals + Motivation + Milestones */
+body.goals-page-theme .goals-modern-header,
+body.goals-page-theme .goals-modern-toolbar,
+body.goals-page-theme .goals-modern-kpi,
+body.goals-page-theme .goals-modern-table-wrap,
+body.goals-page-theme .goals-modern-field,
+body.goals-page-theme .motivation-container .page-header,
+body.goals-page-theme .motivation-container .search-bar,
+body.goals-page-theme .motivation-container .pack-card,
+body.goals-page-theme .motivation-container .motivation-stats-container,
+body.milestones-page-theme .page-header,
+body.milestones-page-theme .nexa-milestone-progress,
+body.milestones-page-theme .milestones-modern-card,
+body.milestones-page-theme .milestones-modern-empty {
+  border: 1px solid var(--mi-border) !important;
+  background: var(--mi-surface-1) !important;
+  color: var(--mi-ink) !important;
+  box-shadow: var(--mi-shadow-soft) !important;
+}
+
+body.goals-page-theme .goals-modern-header h1,
+body.goals-page-theme .goals-modern-title-wrap strong,
+body.goals-page-theme .goals-modern-kpi strong,
+body.goals-page-theme .goals-modern-table td,
+body.milestones-page-theme .nexa-milestone-title,
+body.milestones-page-theme .nexa-milestone-progress-title {
+  color: #e9f0ff !important;
+}
+
+body.goals-page-theme .goals-modern-header p,
+body.goals-page-theme .goals-modern-title-wrap small,
+body.goals-page-theme .goals-modern-kpi span,
+body.goals-page-theme .goals-modern-sort label,
+body.milestones-page-theme .page-header p,
+body.milestones-page-theme .milestones-modern-description,
+body.milestones-page-theme .nexa-meta-item {
+  color: var(--mi-muted) !important;
+}
+
+body.goals-page-theme .goals-modern-table thead th,
+body.goals-page-theme .goals-modern-table tbody td {
+  background: rgba(10, 23, 54, 0.84) !important;
+  border-bottom-color: rgba(148, 163, 184, 0.22) !important;
+}
+
+body.goals-page-theme .goals-modern-pill,
+body.goals-page-theme .goals-modern-mini,
+body.goals-page-theme .goals-modern-icon,
+body.milestones-page-theme .nexa-meta-item,
+body.milestones-page-theme .nexa-btn-action,
+body.goals-page-theme .goals-modern-btn-ghost,
+body.goals-page-theme .goals-modern-btn-reset {
+  border: 1px solid rgba(148, 163, 184, 0.34) !important;
+  background: rgba(12, 26, 56, 0.84) !important;
+  color: #dce7fb !important;
+}
+
+body.goals-page-theme .goals-modern-btn-primary,
+body.milestones-page-theme .milestones-add-btn,
+body.goals-page-theme .motivation-container .btn.primary {
+  background: linear-gradient(135deg, var(--mi-accent), var(--mi-accent-2)) !important;
+  border: 1px solid rgba(196, 181, 253, 0.46) !important;
+  color: #f8fbff !important;
+  box-shadow: 0 14px 28px rgba(99, 102, 241, 0.34) !important;
+}
+
+/* Stock / Produit */
+body.stock-pages .produits-header-modern,
+body.stock-pages .produits-kpi,
+body.stock-pages .produits-search-modern,
+body.stock-pages .produits-card-modern {
+  border: 1px solid var(--mi-border) !important;
+  background: var(--mi-surface-1) !important;
+  color: var(--mi-ink) !important;
+  box-shadow: var(--mi-shadow-soft) !important;
+}
+
+body.stock-pages .produits-header-modern h1,
+body.stock-pages .produits-kpi strong,
+body.stock-pages .produits-item-text h3 {
+  color: #e9f0ff !important;
+}
+
+body.stock-pages .produits-header-modern p,
+body.stock-pages .produits-kicker,
+body.stock-pages .produits-kpi span,
+body.stock-pages .produits-kpi small,
+body.stock-pages .produits-item-text span,
+body.stock-pages .produits-health,
+body.stock-pages .produits-toolbar-title span,
+body.stock-pages .produits-filter-field label {
+  color: var(--mi-muted) !important;
+}
+
+body.stock-pages .produits-toolbar-title strong,
+body.stock-pages .produits-toolbar-count {
+  color: #e9f0ff !important;
+}
+
+body.stock-pages .produits-search-input,
+body.stock-pages .produits-filter-field select,
+body.stock-pages .produits-toolbar-count,
+body.stock-pages .produits-card-modern .nexa-badge,
+body.stock-pages .produits-card-modern .nexa-btn-icon {
+  border: 1px solid rgba(148, 163, 184, 0.34) !important;
+  background: rgba(12, 26, 56, 0.84) !important;
+  color: #dce7fb !important;
+}
+
+body.stock-pages .produits-search-input input {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #dce7fb !important;
+}
+
+/* Task productivity suite pages */
+body.task-page-theme .suite-header,
+body.task-page-theme .suite-card,
+body.task-page-theme .suite-panel,
+body.task-page-theme .suite-list li,
+body.task-page-theme .ai-output-toggle,
+body.task-page-theme pre {
+  border: 1px solid var(--mi-border) !important;
+  background: var(--mi-surface-2) !important;
+  color: var(--mi-ink) !important;
+  box-shadow: var(--mi-shadow-soft) !important;
+}
+
+body.task-page-theme .suite-nav a,
+body.task-page-theme .suite-back,
+body.task-page-theme .suite-btn,
+body.task-page-theme .suite-panel input,
+body.task-page-theme .suite-panel select,
+body.task-page-theme .suite-panel textarea {
+  border: 1px solid rgba(148, 163, 184, 0.34) !important;
+  background: rgba(12, 26, 56, 0.84) !important;
+  color: #dce7fb !important;
+}
+
+body.task-page-theme .suite-nav a.active,
+body.task-page-theme .suite-btn {
+  background: linear-gradient(135deg, var(--mi-accent), var(--mi-accent-2)) !important;
+  color: #f8fbff !important;
+  border-color: rgba(196, 181, 253, 0.46) !important;
+}
+
+body.task-page-theme .suite-card p,
+body.task-page-theme .suite-panel h2,
+body.task-page-theme .suite-card h3,
+body.task-page-theme .timer-value {
+  color: #e9f0ff !important;
+}
+
+body.task-page-theme .suite-panel label,
+body.task-page-theme .muted,
+body.task-page-theme .suite-list li span {
+  color: var(--mi-muted) !important;
+}
+
+/* Conscience dark mode lock (beats legacy high-specificity rules). */
+html[data-theme="dark"] body.conscience-page .conscience-modern-page > .search-bar.conscience-toolbar,
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .conscience-search-box,
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .conscience-filter-box,
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .conscience-toggles,
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .conscience-notif-btn,
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .conscience-notif-panel,
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .kpi-overview-grid .kpi-stat-card,
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .kpi-overview-grid .kpi-stat-card:nth-child(1),
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .kpi-overview-grid .kpi-stat-card:nth-child(2),
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .kpi-overview-grid .kpi-stat-card:nth-child(3),
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .kpi-overview-grid .kpi-stat-card:nth-child(4),
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .kpi-focus-grid .kpi-focus-card {
+  border: 1px solid rgba(148, 163, 184, 0.32) !important;
+  background: linear-gradient(165deg, rgba(7, 18, 48, 0.9), rgba(11, 27, 62, 0.84)) !important;
+  color: #e9f0ff !important;
+  box-shadow: 0 14px 28px rgba(2, 6, 23, 0.4) !important;
+  backdrop-filter: blur(14px) saturate(130%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(130%) !important;
+}
+
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .conscience-search-box input,
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .conscience-filter-box select,
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .conscience-filter-box label,
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .toggle-label,
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .kpi-overview-grid .kpi-stat-card span,
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .kpi-focus-grid .kpi-focus-card span,
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .kpi-focus-grid .kpi-focus-card small {
+  color: #9fb2d8 !important;
+}
+
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .conscience-search-box input::placeholder {
+  color: rgba(159, 178, 216, 0.78) !important;
+}
+
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .kpi-overview-grid .kpi-stat-card strong,
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .kpi-focus-grid .kpi-focus-card strong {
+  color: #e9f0ff !important;
+}
+
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .conscience-voice-btn,
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .toggle-track,
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .conscience-notif-btn,
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .conscience-notif-panel .btn,
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .conscience-notif-panel .btn.primary {
+  border: 1px solid rgba(148, 163, 184, 0.36) !important;
+  background: rgba(13, 29, 62, 0.9) !important;
+  color: #dce7fb !important;
+}
+
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .toggle-track::after {
+  background: #9fb2d8 !important;
+}
+
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .toggle input:checked + .toggle-track {
+  border-color: rgba(196, 181, 253, 0.5) !important;
+  background: rgba(99, 102, 241, 0.3) !important;
+}
+
+html[data-theme="dark"] body.conscience-page .conscience-modern-page .toggle input:checked + .toggle-track::after {
+  background: #dce7fb !important;
+}

@@ -1,29 +1,336 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="light">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}NEXA App{% endblock %}</title>
-
-    <link rel="stylesheet" href="{{ asset('css/side.css') }}">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <title>{% block title %}NEXA Workspace{% endblock %}</title>
+    
+    <link rel="stylesheet" href="{{ asset('css/notion-core.css?v=' ~ 'now'|date('U')) }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
 
     {% block stylesheets %}{% endblock %}
+
+    <!-- DALTONISM SVG FILTERS -->
+    <svg style="display:none">
+        <defs>
+            <filter id="protanopia"><feColorMatrix values="0.567,0.433,0,0,0 0.558,0.442,0,0,0 0,0.242,0.758,0,0 0,0,0,1,0"/></filter>
+            <filter id="deuteranopia"><feColorMatrix values="0.625,0.375,0,0,0 0.7,0.3,0,0,0 0,0.3,0.7,0,0 0,0,0,1,0"/></filter>
+            <filter id="tritanopia"><feColorMatrix values="0.95,0.05,0,0,0 0,0.433,0.567,0,0 0,0.475,0.525,0,0 0,0,0,1,0"/></filter>
+        </defs>
+    </svg>
 </head>
 
-<body>
-<div class="layout">
-
+<body class="notion-app">
+    
+    {% if app.request.query.get('embed') != '1' %}
     {% block sidebar %}
         {% include 'layout/sidebar.html.twig' %}
     {% endblock %}
+    {% endif %}
 
-    <main class="main">
-        {% block body %}{% endblock %}
+    <main class="notion-main">
+        {% if app.request.query.get('embed') != '1' %}
+        <header class="notion-header" style="position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; padding: 0 24px; height: 56px; align-items: center;">
+            <div class="notion-breadcrumb" style="display: flex; align-items: center; gap: 12px;">
+                <div class="notion-icon-button" id="sidebarToggle" title="Basculer la barre latérale">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <div style="font-size: 14px; font-weight: 600; color: #1a1a1a;">NEXA</div>
+                <span style="color: #ccc;">/</span>
+                <div style="font-size: 14px; color: #666;">{% block breadcrumb_current %}{{ app.request.attributes.get('_route')|replace({'app_': '', '_index': ''})|capitalize }}{% endblock %}</div>
+            </div>
+
+            <!-- GLOBAL ACCESSIBILITY MISSION CONTROL -->
+            <div class="global-accessibility-bar" style="display: flex; align-items: center; gap: 8px; padding: 4px; background: #f4f4f5; border-radius: 12px; border: 1px solid #e4e4e7;">
+                <button onclick="window.nexaSpeakPage()" id="btnGlobalVoice" title="Lire la page" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer; transition: 0.2s;">
+                    <i class="fa-solid fa-volume-high"></i>
+                </button>
+                <button onclick="window.nexaVoiceNav()" id="btnVoiceNav" title="Navigation Vocale (Commandes)" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer; transition: 0.2s;">
+                    <i class="fa-solid fa-microphone-lines"></i>
+                </button>
+                <div style="width: 1px; height: 16px; background: #e4e4e7;"></div>
+                <button onclick="window.nexaChangeFont(1)" title="Agrandir le texte" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer;">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+                <button onclick="window.nexaChangeFont(-1)" title="Réduire le texte" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer;">
+                    <i class="fa-solid fa-minus"></i>
+                </button>
+                <div style="width: 1px; height: 16px; background: #e4e4e7;"></div>
+                <button onclick="window.nexaToggleDyslexia()" id="btnDyslexia" title="Police Dyslexie" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer;">
+                    <i class="fa-solid fa-font"></i>
+                </button>
+                <button onclick="window.nexaToggleReadingGuide()" id="btnGuide" title="Guide de lecture (Ligne)" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer;">
+                    <i class="fa-solid fa-grip-lines"></i>
+                </button>
+                <button onclick="window.nexaToggleAura()" id="btnAura" title="Masque de lecture (Aura)" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer;">
+                    <i class="fa-solid fa-mask"></i>
+                </button>
+                <button onclick="window.nexaToggleLinks()" id="btnLinks" title="Souligner les éléments cliquables" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer;">
+                    <i class="fa-solid fa-link"></i>
+                </button>
+                <button onclick="window.nexaToggleMagnifier()" id="btnLoupe" title="Loupe interactive" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer;">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+                <div style="width: 1px; height: 16px; background: #e4e4e7;"></div>
+                <button onclick="window.nexaToggleDaltonism()" id="btnDalton" title="Filtres Daltonisme" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer;">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+                <button onclick="window.nexaToggleSaturation()" id="btnSat" title="Saturation Boost" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer;">
+                    <i class="fa-solid fa-palette"></i>
+                </button>
+                <button onclick="window.nexaToggleCursor()" id="btnCursor" title="Curseur Géant" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: #71717a; cursor: pointer;">
+                    <i class="fa-solid fa-arrow-pointer"></i>
+                </button>
+                <div style="width: 1px; height: 16px; background: #e4e4e7;"></div>
+                <button onclick="window.nexaToggleContrast()" id="btnContrast" title="Cycles de contrastes" style="width: 32px; height: 32px; border-radius: 8px; border: none; background: #1a1a1a; color: #fff; cursor: pointer;">
+                    <i class="fa-solid fa-circle-half-stroke"></i>
+                </button>
+            </div>
+            
+            <div class="notion-header-actions" style="display: flex; gap: 8px;">
+                <div class="notion-icon-button"><i class="fa-solid fa-share-nodes"></i></div>
+                <div class="notion-icon-button"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                <div class="notion-icon-button"><i class="fa-solid fa-ellipsis-h"></i></div>
+            </div>
+        </header>
+        {% endif %}
+
+        <div class="notion-content" id="nexaGlobalContent" style="transition: font-size 0.2s ease; {% if app.request.query.get('embed') == '1' %}padding: 0; max-width: none; margin: 0;{% endif %}">
+            {% block body %}{% endblock %}
+        </div>
     </main>
 
-</div>
+    <script>
+        // GLOBAL ACCESSIBILITY ENGINE
+        window.nexaFontSize = 16;
+        window.nexaVoiceActive = false;
+        window.nexaDyslexia = false;
+        window.nexaGuide = false;
+        window.nexaAura = false;
+        window.nexaLinks = false;
+        window.nexaLoupe = false;
+        window.nexaBigCursor = false;
+        window.nexaSaturation = false;
+        window.nexaDaltonMode = 0; // 0:None, 1:Protan, 2:Deuter, 3:Tritan
+        window.nexaContrastLevel = 0;
 
-{% block javascripts %}{% endblock %}
+        window.nexaToggleDaltonism = () => {
+            window.nexaDaltonMode = (window.nexaDaltonMode + 1) % 4;
+            const btn = document.getElementById('btnDalton');
+            const b = document.body;
+            b.style.filter = b.style.filter.replace(/url\(#.*?\)/g, "").trim();
+            if (window.nexaDaltonMode === 1) b.style.filter += " url(#protanopia)";
+            else if (window.nexaDaltonMode === 2) b.style.filter += " url(#deuteranopia)";
+            else if (window.nexaDaltonMode === 3) b.style.filter += " url(#tritanopia)";
+            if (btn) {
+                btn.style.background = window.nexaDaltonMode > 0 ? '#3b82f6' : 'transparent';
+                btn.style.color = window.nexaDaltonMode > 0 ? '#fff' : '#71717a';
+            }
+        };
+
+        window.nexaToggleSaturation = () => {
+            window.nexaSaturation = !window.nexaSaturation;
+            const b = document.body;
+            b.style.filter = b.style.filter.replace(/saturate\(.*?\)/g, "").trim();
+            if (window.nexaSaturation) b.style.filter += " saturate(2.5)";
+            const btn = document.getElementById('btnSat');
+            if (btn) {
+                btn.style.background = window.nexaSaturation ? '#3b82f6' : 'transparent';
+                btn.style.color = window.nexaSaturation ? '#fff' : '#71717a';
+            }
+        };
+
+        window.nexaToggleCursor = () => {
+            window.nexaBigCursor = !window.nexaBigCursor;
+            if (window.nexaBigCursor) {
+                const style = document.createElement('style');
+                style.id = 'nexaCursorStyle';
+                style.innerHTML = "* { cursor: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' stroke='%23fff' stroke-width='2' d='M7 2l12 11.2l-5.8 0.5l3.3 5.3l-2.2 1.4L11 15.1l-4 3.5V2z'/%3E%3C/svg%3E\"), auto !important; }";
+                document.head.appendChild(style);
+            } else {
+                const s = document.getElementById('nexaCursorStyle');
+                if (s) s.remove();
+            }
+            const btn = document.getElementById('btnCursor');
+            if (btn) {
+                btn.style.background = window.nexaBigCursor ? '#3b82f6' : 'transparent';
+                btn.style.color = window.nexaBigCursor ? '#fff' : '#71717a';
+            }
+        };
+
+        window.nexaToggleAura = () => {
+            window.nexaAura = !window.nexaAura;
+            let auraTop = document.getElementById('nexaAuraTop');
+            let auraBot = document.getElementById('nexaAuraBot');
+            const btn = document.getElementById('btnAura');
+            if (btn) {
+                btn.style.background = window.nexaAura ? '#3b82f6' : 'transparent';
+                btn.style.color = window.nexaAura ? '#fff' : '#71717a';
+            }
+
+            if (window.nexaAura) {
+                if (!auraTop) {
+                    auraTop = document.createElement('div'); auraTop.id = 'nexaAuraTop';
+                    auraBot = document.createElement('div'); auraBot.id = 'nexaAuraBot';
+                    const css = "position:fixed; left:0; width:100%; background:rgba(0,0,0,0.8); z-index:9998; pointer-events:none;";
+                    auraTop.style.cssText = css + " top:0; height:calc(50vh - 60px);";
+                    auraBot.style.cssText = css + " bottom:0; height:calc(50vh - 60px);";
+                    document.body.appendChild(auraTop);
+                    document.body.appendChild(auraBot);
+                    document.addEventListener('mousemove', (e) => {
+                        if (window.nexaAura) {
+                            auraTop.style.height = (e.clientY - 60) + 'px';
+                            auraBot.style.height = (window.innerHeight - e.clientY - 60) + 'px';
+                        }
+                    });
+                }
+                auraTop.style.display = auraBot.style.display = 'block';
+            } else if (auraTop) {
+                auraTop.style.display = auraBot.style.display = 'none';
+            }
+        };
+
+        window.nexaToggleContrast = () => {
+            window.nexaContrastLevel = (window.nexaContrastLevel + 1) % 4;
+            const btn = document.getElementById('btnContrast');
+            const b = document.body;
+            b.style.filter = "none"; b.style.backgroundColor = ""; b.style.color = "";
+            if (window.nexaContrastLevel === 1) b.style.filter = "contrast(1.5) brightness(1.1)";
+            else if (window.nexaContrastLevel === 2) b.style.filter = "grayscale(1)";
+            else if (window.nexaContrastLevel === 3) {
+                b.style.backgroundColor = "#000"; b.style.color = "#fff";
+                b.style.filter = "invert(1) hue-rotate(180deg)";
+            }
+        };
+
+        window.nexaChangeFont = (delta) => {
+            window.nexaFontSize = Math.max(12, Math.min(48, window.nexaFontSize + (delta * 2)));
+            const content = document.getElementById('nexaGlobalContent');
+            if (content) content.style.fontSize = window.nexaFontSize + 'px';
+            localStorage.setItem('nexa_font_size', window.nexaFontSize);
+        };
+
+        window.nexaToggleDyslexia = () => {
+            window.nexaDyslexia = !window.nexaDyslexia;
+            const btn = document.getElementById('btnDyslexia');
+            if (btn) {
+                btn.style.background = window.nexaDyslexia ? '#3b82f6' : 'transparent';
+                btn.style.color = window.nexaDyslexia ? '#fff' : '#71717a';
+            }
+            document.body.style.fontFamily = window.nexaDyslexia ? "'OpenDyslexic', 'Comic Sans MS', sans-serif" : "";
+        };
+
+        window.nexaToggleReadingGuide = () => {
+            window.nexaGuide = !window.nexaGuide;
+            let guide = document.getElementById('nexaReadingGuide');
+            const btn = document.getElementById('btnGuide');
+            if (btn) {
+                btn.style.background = window.nexaGuide ? '#3b82f6' : 'transparent';
+                btn.style.color = window.nexaGuide ? '#fff' : '#71717a';
+            }
+
+            if (window.nexaGuide) {
+                if (!guide) {
+                    guide = document.createElement('div');
+                    guide.id = 'nexaReadingGuide';
+                    guide.style.cssText = "position:fixed; height:4px; width:100%; background:rgba(59,130,246,0.5); z-index:10000; pointer-events:none; box-shadow:0 0 15px rgba(59,130,246,0.8); display:none;";
+                    document.body.appendChild(guide);
+                    document.addEventListener('mousemove', (e) => {
+                        if (window.nexaGuide) guide.style.top = e.clientY + 'px';
+                    });
+                }
+                guide.style.display = 'block';
+            } else if (guide) {
+                guide.style.display = 'none';
+            }
+        };
+
+        window.nexaToggleContrast = () => {
+            document.body.classList.toggle('nexa-high-contrast');
+            const isContrast = document.body.classList.contains('nexa-high-contrast');
+            document.body.style.filter = isContrast ? 'contrast(1.2) brightness(1.1)' : 'none';
+            document.body.style.backgroundColor = isContrast ? '#000' : '';
+            localStorage.setItem('nexa_contrast', isContrast);
+        };
+
+        window.nexaSpeakPage = () => {
+            window.nexaVoiceActive = !window.nexaVoiceActive;
+            const btn = document.getElementById('btnGlobalVoice');
+            if (btn) {
+                btn.style.background = window.nexaVoiceActive ? '#3b82f6' : 'transparent';
+                btn.style.color = window.nexaVoiceActive ? '#fff' : '#71717a';
+            }
+            if (window.nexaVoiceActive) {
+                const content = document.getElementById('nexaGlobalContent');
+                const textToRead = content ? content.innerText : "";
+                const utterance = new SpeechSynthesisUtterance(textToRead);
+                utterance.lang = 'fr-FR';
+                utterance.onend = () => {
+                    window.nexaVoiceActive = false;
+                    if (btn) { btn.style.background = 'transparent'; btn.style.color = '#71717a'; }
+                };
+                window.speechSynthesis.speak(utterance);
+            } else {
+                window.speechSynthesis.cancel();
+            }
+        };
+
+        window.nexaVoiceNav = () => {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) { alert("Désolé, votre navigateur ne supporte pas la navigation vocale."); return; }
+            
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'fr-FR';
+            const btn = document.getElementById('btnVoiceNav');
+            btn.style.background = '#ef4444';
+            btn.style.color = '#fff';
+
+            recognition.onresult = (event) => {
+                const command = event.results[0][0].transcript.toLowerCase();
+                console.log("Voice Command:", command);
+                
+                if (command.includes('tâche') || command.includes('task')) window.location.href = '/task/';
+                else if (command.includes('objectif') || command.includes('goal')) window.location.href = '/goal/';
+                else if (command.includes('assistant') || command.includes('hub') || command.includes('ia')) window.location.href = '/ai/hub';
+                else if (command.includes('produit') || command.includes('stock')) window.location.href = '/produit/';
+                else if (command.includes('motivation')) window.location.href = '/motivation/';
+                else if (command.includes('accueil') || command.includes('home')) window.location.href = '/';
+                
+                btn.style.background = 'transparent';
+                btn.style.color = '#71717a';
+            };
+
+            recognition.onerror = () => {
+                btn.style.background = 'transparent';
+                btn.style.color = '#71717a';
+            };
+
+            recognition.start();
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedSize = localStorage.getItem('nexa_font_size');
+            if (savedSize) window.nexaChangeFont(0);
+            
+            const sidebar = document.getElementById('notionSidebar');
+            const toggle = document.getElementById('sidebarToggle');
+            if (toggle && sidebar) {
+                toggle.addEventListener('click', () => sidebar.classList.toggle('collapsed'));
+            }
+        });
+    </script>
+    {% block javascripts %}{% endblock %}
 </body>
 </html>

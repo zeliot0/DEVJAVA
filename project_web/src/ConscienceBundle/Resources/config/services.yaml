@@ -1,0 +1,9 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    # Centralized Conscience module services.
+    App\Service\ConsciencePendingService: ~
+    App\Service\ConscienceNotificationService: ~
+    App\Command\ConscienceDailyReminderCommand: ~

@@ -1,32 +1,35 @@
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap");
 
 .stock-pages .product-stats-modern-page {
-  --stats-bg: #f6eee3;
-  --stats-bg-2: #efdac4;
-  --stats-paper: #fff9f0;
-  --stats-paper-2: #fff3e2;
-  --stats-ink: #1c1917;
-  --stats-muted: #6b5a4a;
-  --stats-accent: #0f766e;
-  --stats-accent-2: #f97316;
-  --stats-line: rgba(120, 113, 108, 0.28);
-  --stats-shadow: 0 20px 48px rgba(68, 56, 43, 0.22);
+  --stats-bg-1: #fff4e8;
+  --stats-bg-2: #fce7f3;
+  --stats-bg-3: #e0f2fe;
+  --stats-surface: rgba(255, 255, 255, 0.9);
+  --stats-card: #fffdf8;
+  --stats-text: #132033;
+  --stats-muted: #64748b;
+  --stats-border: rgba(30, 41, 59, 0.12);
+  --stats-shadow: 0 22px 46px rgba(15, 23, 42, 0.12);
+  --stats-primary: #f97316;
+  --stats-primary-2: #ea580c;
+  --stats-secondary: #0284c7;
   position: relative;
   isolation: isolate;
-  padding-bottom: 8px;
-  font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+  padding: 6px 0 26px;
+  font-family: "Outfit", sans-serif;
 }
 
 .stock-pages .product-stats-modern-page::before {
   content: "";
   position: absolute;
-  inset: -44px -30px -20px;
+  inset: -34px -24px -20px;
+  border-radius: 36px;
   z-index: 0;
-  border-radius: 38px;
   background:
-    radial-gradient(circle at 4% 8%, rgba(249, 115, 22, 0.25), transparent 32%),
-    radial-gradient(circle at 88% 14%, rgba(15, 118, 110, 0.26), transparent 36%),
-    linear-gradient(130deg, var(--stats-bg), var(--stats-bg-2));
+    radial-gradient(580px 360px at 5% 8%, rgba(249, 115, 22, 0.24), transparent 62%),
+    radial-gradient(620px 380px at 95% 10%, rgba(6, 182, 212, 0.2), transparent 64%),
+    radial-gradient(520px 340px at 50% 95%, rgba(236, 72, 153, 0.16), transparent 68%),
+    linear-gradient(145deg, var(--stats-bg-1), var(--stats-bg-2) 52%, var(--stats-bg-3));
   pointer-events: none;
 }
 
@@ -36,66 +39,80 @@
 }
 
 .stock-pages .product-stats-modern-page .page-header {
-  border: 2px solid var(--stats-line) !important;
-  border-radius: 28px !important;
-  padding: 26px 30px !important;
-  background: linear-gradient(155deg, var(--stats-paper), var(--stats-paper-2)) !important;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  border: 1px solid var(--stats-border) !important;
+  border-radius: 26px !important;
+  background: var(--stats-surface) !important;
+  backdrop-filter: blur(10px);
+  padding: 24px 28px !important;
   box-shadow: var(--stats-shadow) !important;
-  animation: stats-fade-up 0.55s ease both;
+  animation: stats-rise 0.45s ease both;
 }
 
 .stock-pages .product-stats-modern-page .page-header h1 {
   margin: 0;
-  color: var(--stats-ink) !important;
-  font-size: clamp(2rem, 3.4vw, 3.05rem) !important;
-  letter-spacing: -0.02em !important;
+  font-size: clamp(1.85rem, 3.3vw, 3rem) !important;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  color: var(--stats-text) !important;
   text-transform: uppercase;
 }
 
 .stock-pages .product-stats-modern-page .page-header p {
-  margin-top: 4px;
-  color: var(--stats-muted) !important;
-  font-size: 0.95rem;
+  margin: 7px 0 0;
+  font-size: 0.9rem;
+  font-weight: 600;
   letter-spacing: 0.08em;
+  color: var(--stats-muted) !important;
   text-transform: uppercase;
 }
 
 .stock-pages .product-stats-modern-page .stats-actions {
-  display: flex;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   flex-wrap: wrap;
-  gap: 12px;
 }
 
 .stock-pages .product-stats-modern-page .page-header .btn {
-  border: 2px solid rgba(28, 25, 23, 0.28) !important;
-  border-radius: 14px !important;
-  background: #fff8ee !important;
-  color: var(--stats-ink) !important;
+  min-height: 42px;
+  border-radius: 999px !important;
+  border: 1px solid var(--stats-border) !important;
+  background: #ffffff !important;
+  color: var(--stats-text) !important;
   font-weight: 700 !important;
+  font-size: 0.95rem;
   letter-spacing: 0.01em;
-  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  padding: 0 20px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .stock-pages .product-stats-modern-page .page-header .btn:hover {
-  transform: translateY(-2px);
-  border-color: rgba(15, 118, 110, 0.42) !important;
-  box-shadow: 0 12px 22px rgba(15, 118, 110, 0.16) !important;
+  transform: translateY(-1px);
+  border-color: rgba(2, 132, 199, 0.35) !important;
+  box-shadow: 0 8px 18px rgba(2, 132, 199, 0.2) !important;
 }
 
 .stock-pages .product-stats-modern-page .page-header .btn.primary {
-  border-color: rgba(15, 118, 110, 0.55) !important;
-  background: linear-gradient(135deg, #0f766e, #0891b2) !important;
-  color: #ecfeff !important;
-  box-shadow: 0 16px 28px rgba(8, 145, 178, 0.3) !important;
+  border-color: transparent !important;
+  background: linear-gradient(130deg, var(--stats-primary), var(--stats-primary-2)) !important;
+  color: #fff9f3 !important;
+  box-shadow: 0 14px 28px rgba(234, 88, 12, 0.28) !important;
 }
 
 .stock-pages .product-stats-modern-page .form-card {
-  border: 2px solid var(--stats-line) !important;
+  border: 1px solid var(--stats-border) !important;
   border-radius: 30px !important;
-  padding: clamp(18px, 2.4vw, 28px) !important;
-  background: linear-gradient(140deg, #fff7ec, #fff4e8 64%, #fff9f2) !important;
+  background: var(--stats-surface) !important;
+  padding: clamp(16px, 2.5vw, 30px) !important;
   box-shadow: var(--stats-shadow) !important;
-  animation: stats-fade-up 0.7s ease both;
+  animation: stats-rise 0.6s ease both;
 }
 
 .stock-pages .product-stats-modern-page .form-section,
@@ -107,104 +124,139 @@
 .stock-pages .product-stats-modern-page .form-section + .form-section {
   margin-top: 20px;
   padding-top: 16px;
-  border-top: 2px dashed rgba(120, 113, 108, 0.3) !important;
+  border-top: 1px dashed rgba(100, 116, 139, 0.4) !important;
+}
+
+.stock-pages .product-stats-modern-page .form-grid-2 {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
 }
 
 .stock-pages .product-stats-modern-page .info-box {
-  border: 2px solid rgba(120, 113, 108, 0.3) !important;
-  border-radius: 22px !important;
-  padding: 18px !important;
-  background: linear-gradient(145deg, #fffefa, #fff6e8) !important;
-  box-shadow: 0 12px 22px rgba(120, 113, 108, 0.12) !important;
+  position: relative;
+  border-radius: 20px !important;
+  border: 1px solid rgba(2, 132, 199, 0.2) !important;
+  background: var(--stats-card) !important;
+  padding: 16px !important;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08) !important;
+  overflow: hidden;
+}
+
+.stock-pages .product-stats-modern-page .info-box::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: linear-gradient(180deg, #0ea5e9, #f97316);
 }
 
 .stock-pages .product-stats-modern-page .info-label {
+  display: block;
   color: var(--stats-muted) !important;
-  font-size: 0.86rem !important;
+  font-size: 0.84rem !important;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .stock-pages .product-stats-modern-page .info-value {
-  color: var(--stats-ink) !important;
-  font-size: clamp(2.15rem, 3.2vw, 2.85rem) !important;
+  display: block;
+  margin-top: 6px;
+  color: var(--stats-text) !important;
+  font-size: clamp(2rem, 3vw, 2.8rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.03em;
   line-height: 1;
 }
 
 .stock-pages .product-stats-modern-page .stats-chart-title {
   margin: 0;
-  color: var(--stats-ink) !important;
-  font-size: clamp(1.5rem, 2.6vw, 2rem) !important;
-  letter-spacing: -0.01em;
+  color: var(--stats-text) !important;
+  font-size: clamp(1.45rem, 2.4vw, 2rem) !important;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
 .stock-pages .product-stats-modern-page .histo {
   margin-top: 14px;
-  gap: 14px !important;
+  display: grid;
+  gap: 12px !important;
 }
 
 .stock-pages .product-stats-modern-page .histo-row {
-  grid-template-columns: minmax(110px, 220px) 1fr auto !important;
-  gap: 14px !important;
-  align-items: center !important;
-  padding: 12px 14px !important;
-  border: 2px solid rgba(120, 113, 108, 0.24);
+  display: grid;
+  grid-template-columns: minmax(90px, 220px) 1fr auto !important;
+  align-items: center;
+  gap: 12px !important;
   border-radius: 16px;
-  background: rgba(255, 250, 241, 0.82);
-  animation: stats-fade-up 0.8s ease both;
+  border: 1px solid rgba(2, 132, 199, 0.18);
+  background: var(--stats-card);
+  padding: 12px 14px !important;
 }
 
 .stock-pages .product-stats-modern-page .histo-label {
-  color: var(--stats-ink) !important;
-  font-size: clamp(1.2rem, 2.1vw, 1.7rem) !important;
+  color: var(--stats-text) !important;
+  font-size: clamp(1.05rem, 2vw, 1.6rem) !important;
   font-weight: 700 !important;
   overflow-wrap: anywhere;
 }
 
 .stock-pages .product-stats-modern-page .histo-track {
-  height: 18px !important;
+  position: relative;
+  height: 16px !important;
   border-radius: 999px !important;
-  border: 2px solid rgba(120, 113, 108, 0.22) !important;
-  background:
-    linear-gradient(90deg, rgba(15, 118, 110, 0.08) 0, rgba(15, 118, 110, 0.08) 1px, transparent 1px, transparent 12px),
-    linear-gradient(90deg, #ece7dc, #e7dfd3) !important;
-  background-size: 12px 100%, 100% 100% !important;
+  background: linear-gradient(90deg, #e2e8f0, #d7e0ec) !important;
+  border: 1px solid rgba(2, 132, 199, 0.2) !important;
   overflow: hidden;
 }
 
 .stock-pages .product-stats-modern-page .histo-fill {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--stats-accent-2), #f59e0b 34%, var(--stats-accent) 100%) !important;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.36), 0 0 16px rgba(15, 118, 110, 0.26);
-  animation: stats-bar-grow 1.1s cubic-bezier(0.2, 0.95, 0.25, 1) both;
+  background: linear-gradient(90deg, #0ea5e9, #22c55e) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.38), 0 0 12px rgba(14, 165, 233, 0.26);
   transform-origin: left center;
+  animation: stats-bar-grow 1s cubic-bezier(0.2, 0.95, 0.25, 1) both;
+}
+
+.stock-pages .product-stats-modern-page .histo-row:nth-child(2n) .histo-fill {
+  background: linear-gradient(90deg, #8b5cf6, #06b6d4) !important;
+}
+
+.stock-pages .product-stats-modern-page .histo-row:nth-child(3n) .histo-fill {
+  background: linear-gradient(90deg, #f97316, #f59e0b) !important;
 }
 
 .stock-pages .product-stats-modern-page .histo-value {
-  color: var(--stats-ink) !important;
-  font-size: clamp(1.1rem, 2vw, 1.7rem) !important;
-  font-weight: 700 !important;
+  min-width: 96px;
+  text-align: right;
+  color: var(--stats-text) !important;
+  font-size: clamp(1rem, 1.9vw, 1.5rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.01em;
 }
 
 .stock-pages .product-stats-modern-page .stats-chart-help {
   margin-top: 10px;
   color: var(--stats-muted);
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  font-size: 0.84rem;
+  font-size: 0.86rem;
+  font-weight: 600;
 }
 
 .stock-pages .product-stats-modern-page .warning {
-  border: 2px dashed rgba(120, 113, 108, 0.44) !important;
-  background: rgba(255, 244, 230, 0.88) !important;
-  color: #7c2d12 !important;
+  border: 1px dashed rgba(239, 68, 68, 0.45) !important;
+  border-radius: 14px;
+  background: rgba(255, 241, 242, 0.9) !important;
+  color: #9f1239 !important;
+  padding: 14px;
+  font-weight: 700;
 }
 
-@keyframes stats-fade-up {
+@keyframes stats-rise {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -221,9 +273,9 @@
   }
 }
 
-@media (max-width: 920px) {
+@media (max-width: 940px) {
   .stock-pages .product-stats-modern-page .page-header {
-    padding: 20px 18px !important;
+    flex-direction: column;
   }
 
   .stock-pages .product-stats-modern-page .stats-actions {
@@ -231,15 +283,18 @@
   }
 
   .stock-pages .product-stats-modern-page .page-header .btn {
-    flex: 1 1 160px;
-    justify-content: center;
+    flex: 1 1 150px;
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 760px) {
   .stock-pages .product-stats-modern-page::before {
-    inset: -28px -12px -10px;
+    inset: -24px -10px -10px;
     border-radius: 24px;
+  }
+
+  .stock-pages .product-stats-modern-page .form-grid-2 {
+    grid-template-columns: 1fr;
   }
 
   .stock-pages .product-stats-modern-page .histo-row {
@@ -247,44 +302,38 @@
     gap: 8px !important;
   }
 
-  .stock-pages .product-stats-modern-page .histo-track {
-    order: 3;
-  }
-
   .stock-pages .product-stats-modern-page .histo-value {
-    justify-self: start;
+    text-align: left;
+    min-width: 0;
   }
 }
 
 html[data-theme="dark"] .stock-pages .product-stats-modern-page {
-  --stats-bg: #0f1720;
-  --stats-bg-2: #1b2430;
-  --stats-paper: #18212d;
-  --stats-paper-2: #1f2a37;
-  --stats-ink: #e8ecf1;
-  --stats-muted: #a6b4c2;
-  --stats-line: rgba(148, 163, 184, 0.28);
-  --stats-shadow: 0 24px 44px rgba(2, 8, 20, 0.45);
+  --stats-bg-1: #081226;
+  --stats-bg-2: #13223f;
+  --stats-bg-3: #1a2f52;
+  --stats-surface: rgba(11, 21, 40, 0.82);
+  --stats-card: rgba(16, 30, 54, 0.9);
+  --stats-text: #e8f1ff;
+  --stats-muted: #9fb2d3;
+  --stats-border: rgba(113, 145, 197, 0.28);
+  --stats-shadow: 0 24px 46px rgba(2, 8, 22, 0.45);
 }
 
 html[data-theme="dark"] .stock-pages .product-stats-modern-page .page-header .btn {
-  background: #222d3a !important;
-  color: #f1f5f9 !important;
+  background: rgba(20, 36, 66, 0.92) !important;
+  color: #f0f6ff !important;
 }
 
-html[data-theme="dark"] .stock-pages .product-stats-modern-page .form-card,
-html[data-theme="dark"] .stock-pages .product-stats-modern-page .info-box,
-html[data-theme="dark"] .stock-pages .product-stats-modern-page .histo-row {
-  background: linear-gradient(150deg, rgba(30, 41, 59, 0.86), rgba(30, 41, 59, 0.62)) !important;
+html[data-theme="dark"] .stock-pages .product-stats-modern-page .page-header .btn.primary {
+  background: linear-gradient(130deg, #f97316, #ec4899) !important;
 }
 
 html[data-theme="dark"] .stock-pages .product-stats-modern-page .histo-track {
-  background:
-    linear-gradient(90deg, rgba(56, 189, 248, 0.09) 0, rgba(56, 189, 248, 0.09) 1px, transparent 1px, transparent 12px),
-    linear-gradient(90deg, rgba(71, 85, 105, 0.72), rgba(51, 65, 85, 0.68)) !important;
+  background: linear-gradient(90deg, rgba(75, 95, 128, 0.82), rgba(62, 82, 114, 0.86)) !important;
 }
 
 html[data-theme="dark"] .stock-pages .product-stats-modern-page .warning {
-  background: rgba(127, 29, 29, 0.24) !important;
-  color: #fecaca !important;
+  background: rgba(159, 18, 57, 0.22) !important;
+  color: #fecdd3 !important;
 }

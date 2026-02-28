@@ -1,165 +1,270 @@
-{% extends 'theme/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Mouvements - NEXA{% endblock %}
+{% block title %}Nexa AI - Flux Opérationnels{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/mouvement-modern-pro-cards.css?v=20260214a') }}">
+    <style>
+        :root {
+            --ai-bg: #ffffff;
+            --ai-accent: #0066ff;
+            --ai-success: #10b981;
+            --ai-danger: #ef4444;
+            --ai-text-main: #0a0a0a;
+            --ai-text-muted: #737373;
+            --ai-border: rgba(0, 0, 0, 0.04);
+        }
+
+        /* Orbes de fond */
+        .bg-orb {
+            position: fixed;
+            width: 800px;
+            height: 800px;
+            border-radius: 50%;
+            filter: blur(150px);
+            z-index: -1;
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        /* Cartes Bento Stats */
+        .stat-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 24px;
+            border: 1px solid var(--ai-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+            transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Flux Row */
+        .flux-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--ai-border);
+            border-radius: 20px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 12px;
+        }
+
+        .flux-card:hover {
+            background: #ffffff;
+            transform: scale(1.005);
+            border-color: var(--ai-accent);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.03);
+        }
+
+        .flux-badge {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-entree { background: #dcfce7; color: #166534; }
+        .badge-sortie { background: #fef2f2; color: #991b1b; }
+
+        /* Filter Bar */
+        .filter-bar {
+            background: #ffffff;
+            border: 1px solid var(--ai-border);
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        }
+
+        /* Animations */
+        .reveal { opacity: 0; transform: translateY(20px); }
+    </style>
 {% endblock %}
 
 {% block body %}
+    {% set totalEntree = 0 %}
+    {% set totalSortie = 0 %}
+    {% for m in mouvements %}
+        {% if m.typeM == 'ENTREE' %}{% set totalEntree = totalEntree + m.quantite %}{% else %}{% set totalSortie = totalSortie + m.quantite %}{% endif %}
+    {% endfor %}
 
-{% set currentSort = app.request.get('sort') %}
-{% set currentDir = (app.request.get('dir') ?: 'DESC')|upper %}
-{% set queryParams = app.request.query.all %}
+    <div class="bg-orb top-[-100px] left-[-100px] bg-emerald-400"></div>
+    <div class="bg-orb bottom-[-100px] right-[-100px] bg-red-400"></div>
 
-<div class="mouvements-page-modern">
-    <div class="page-header">
-        <div>
-            <h1>Historique des mouvements</h1>
-            <p>
-                Entrees et sorties de stock{% if is_granted('ROLE_ADMIN') %} (admin){% endif %}
-                {% if produitFilter %}
-                    • Produit : <strong>{{ produitFilter.nomP }}</strong>
-                {% endif %}
-            </p>
-        </div>
-
-        <div style="display:flex; gap:12px; align-items:center">
-            {% if produitFilter %}
-                <a href="{{ path('app_mouvement_index') }}" class="btn">
-                    Tous les mouvements
-                </a>
-            {% endif %}
-
-            <div style="display:flex; flex-direction:column; gap:10px">
-                <a href="{{ path('app_produit_index') }}" class="btn">
-                    <i class="fa-solid fa-box"></i>
-                    Produits
+    <main class="flex-1 max-w-[1400px] mx-auto w-full py-16 px-4">
+        
+        <!-- SECTION TITRE -->
+        <section class="reveal mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+            <div class="max-w-2xl">
+                <h1 class="text-6xl font-[900] tracking-tight text-slate-900 mb-6 leading-[1.1]">
+                    Flux <span class="text-emerald-600">Opérationnels</span>
+                </h1>
+                <p class="text-slate-400 font-medium text-xl leading-relaxed">
+                    Rapport d'activité temps-réel sur les vecteurs logistiques et déploiements.
+                </p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+                <a href="{{ path('app_produit_index') }}" class="px-5 py-2.5 bg-white border border-slate-100 rounded-xl text-xs font-bold text-slate-600 hover:bg-gray-50 transition-all shadow-sm no-underline">
+                    ← Catalogue
                 </a>
                 {% if not is_granted('ROLE_ADMIN') %}
-                    <a href="{{ path('app_mouvement_stats') }}" class="btn">
-                        Stats
-                    </a>
-                    <a href="{{ path('app_mouvement_pdf', queryParams) }}" class="btn">
-                        PDF
-                    </a>
-                    <a href="{{ produitFilter ? path('app_mouvement_new', {'id_p': produitFilter.idP}) : path('app_mouvement_new') }}" class="btn primary">
-                        + Nouveau mouvement
-                    </a>
+                    <a href="{{ path('app_mouvement_new') }}" class="px-5 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 no-underline">Initialiser Flux</a>
                 {% endif %}
             </div>
-        </div>
-    </div>
+        </section>
 
-    <form method="get" class="search-bar">
-        {% if produitFilter %}
-            <input type="hidden" name="id_p" value="{{ produitFilter.idP }}">
-        {% endif %}
-        <div class="search-input">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" name="q" placeholder="Rechercher un mouvement (type, motif, produit)..." value="{{ q }}">
-        </div>
-        <div class="search-select">
-            <i class="fa-solid fa-arrow-up-a-z"></i>
-            <select name="sort">
-                <option value="" {{ currentSort is empty ? 'selected' : '' }}>Tri: Date</option>
-                <option value="nom" {{ currentSort == 'nom' ? 'selected' : '' }}>Nom produit</option>
-                <option value="type" {{ currentSort == 'type' ? 'selected' : '' }}>Type</option>
-                <option value="quantite" {{ currentSort == 'quantite' ? 'selected' : '' }}>Quantite</option>
-                <option value="date" {{ currentSort == 'date' ? 'selected' : '' }}>Date</option>
-            </select>
-        </div>
-        <div class="search-select">
-            <i class="fa-solid fa-sort"></i>
-            <select name="dir">
-                <option value="DESC" {{ currentDir == 'DESC' ? 'selected' : '' }}>DESC</option>
-                <option value="ASC" {{ currentDir == 'ASC' ? 'selected' : '' }}>ASC</option>
-            </select>
-        </div>
-        <button class="btn primary" type="submit">Rechercher</button>
-        {% if q or currentSort %}
-            {% if produitFilter %}
-                <a class="btn" href="{{ path('app_mouvement_index', {'id_p': produitFilter.idP}) }}">
-                    <i class="fa-solid fa-rotate-left"></i>
-                    Reset
-                </a>
-            {% else %}
-                <a class="btn" href="{{ path('app_mouvement_index') }}">
-                    <i class="fa-solid fa-rotate-left"></i>
-                    Reset
-                </a>
-            {% endif %}
-        {% endif %}
-    </form>
-
-    <div class="pack-grid">
-        {% for mouvement in mouvements %}
-            <article class="pack-card">
-                <div class="pack-head">
-                    <a class="item-media" href="{{ path('app_mouvement_show', {'id_mo': mouvement.idMo}) }}">
-                        <div class="thumb">
-                            {% if mouvement.produit and mouvement.produit.photoP %}
-                                <img src="{{ asset('uploads/produits/' ~ mouvement.produit.photoP) }}" alt="{{ mouvement.produit.nomP }}">
-                            {% elseif mouvement.produit %}
-                                <span class="thumb-placeholder">{{ mouvement.produit.nomP|slice(0, 1)|upper }}</span>
-                            {% else %}
-                                <span class="thumb-placeholder">-</span>
-                            {% endif %}
-                        </div>
-                        <div class="item-text">
-                            <div class="item-title">{{ mouvement.produit ? mouvement.produit.nomP : '-' }}</div>
-                            <div class="item-sub">#{{ mouvement.idMo }}</div>
-                        </div>
-                    </a>
-
-                    <div class="pack-pill {{ mouvement.typeM == 'ENTREE' ? 'success' : 'danger' }}">
-                        {{ mouvement.typeM }}
+        <!-- INDICATEURS DE FLUX -->
+        <section class="reveal mb-16">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="stat-card">
+                    <span class="text-[10px] font-black text-emerald-500 uppercase tracking-widest block mb-4">Flux Entrant</span>
+                    <div class="flex items-end justify-between">
+                        <span class="text-5xl font-extrabold text-slate-900">+{{ totalEntree }}</span>
+                        <span class="text-xs font-bold text-slate-400 mb-2">Acquisitions</span>
                     </div>
                 </div>
-
-                <div class="pack-metric">
-                    {{ mouvement.quantite }}
-                    <small>Quantite</small>
+                <div class="stat-card">
+                    <span class="text-[10px] font-black text-red-500 uppercase tracking-widest block mb-4">Flux Sortant</span>
+                    <div class="flex items-end justify-between">
+                        <span class="text-5xl font-extrabold text-slate-900">-{{ totalSortie }}</span>
+                        <span class="text-xs font-bold text-slate-400 mb-2">Déploiements</span>
+                    </div>
                 </div>
+                <div class="stat-card">
+                    <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest block mb-4">Delta Systémique</span>
+                    <div class="flex items-end justify-between">
+                        <span class="text-5xl font-extrabold text-slate-900">{{ totalEntree - totalSortie }}</span>
+                        <span class="text-xs font-bold text-slate-400 mb-2">Équilibre net</span>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-                <ul class="pack-list">
-                    <li>
-                        <i class="fa-solid fa-circle-check"></i>
-                        <span><strong>Date :</strong> {{ mouvement.dateMouvement ? mouvement.dateMouvement|date('d/m/Y') : '-' }}</span>
-                    </li>
-                    <li>
-                        <i class="fa-solid fa-circle-check"></i>
-                        <span><strong>Motif :</strong> {{ mouvement.motif ?: '-' }}</span>
-                    </li>
-                    <li>
-                        <i class="fa-solid fa-circle-check"></i>
-                        <span><strong>Categorie :</strong> {{ mouvement.produit ? mouvement.produit.categorieP : '-' }}</span>
-                    </li>
-                </ul>
+        <!-- FILTRES -->
+        <section class="reveal mb-8">
+            <form method="get" class="flex flex-col md:flex-row gap-4">
+                <div class="filter-bar flex-1 p-2 flex items-center gap-3">
+                    <div class="pl-3 text-slate-300">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    </div>
+                    <input type="text" name="q" value="{{ q|default('') }}" placeholder="Filtrer les flux..." class="flex-1 bg-transparent border-none focus:ring-0 text-sm font-semibold text-slate-800 outline-none">
+                </div>
+                 <div class="filter-bar px-4 py-2 flex items-center gap-4">
+                    <select name="sort" onchange="this.form.submit()" class="bg-transparent border-none focus:ring-0 text-sm font-bold text-slate-800 cursor-pointer outline-none">
+                        <option value="date" {{ app.request.get('sort') == 'date' ? 'selected' : '' }}>Chrono</option>
+                        <option value="quantite" {{ app.request.get('sort') == 'quantite' ? 'selected' : '' }}>Amplitude</option>
+                    </select>
+                </div>
+            </form>
+        </section>
 
-                {% if not is_granted('ROLE_ADMIN') %}
-                    <div class="pack-actions">
-                        <form method="post"
-                              action="{{ path('app_mouvement_delete', {'id_mo': mouvement.idMo}) }}"
-                              onsubmit="return confirm('Supprimer ce mouvement ?');">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ mouvement.idMo) }}">
-                            <button class="btn danger" type="submit">
-                                <i class="fa-regular fa-trash-can"></i>
-                                Supprimer
-                            </button>
-                        </form>
-                        <a href="{{ path('app_mouvement_edit', {'id_mo': mouvement.idMo}) }}" class="btn primary">
-                            <i class="fa-regular fa-pen-to-square"></i>
-                            Modifier
+        <!-- LISTE DES FLUX -->
+        <section class="mb-24">
+            <div class="reveal flex items-center gap-4 mb-8">
+                <div class="w-1.5 h-6 bg-slate-900 rounded-full"></div>
+                <h2 class="text-xs font-black text-slate-900 uppercase tracking-[0.2em]">Historique des Fluctuation Matricielle</h2>
+                <div class="flex-1 h-[1px] bg-slate-100"></div>
+            </div>
+
+            {% for mouvement in mouvements %}
+                <div class="reveal flux-card group">
+                    <div class="w-20 text-center">
+                        <span class="text-[10px] font-black text-slate-300 uppercase block leading-none mb-1">{{ mouvement.dateMouvement ? mouvement.dateMouvement|date('M') : 'N/A' }}</span>
+                        <span class="text-2xl font-black text-slate-900">{{ mouvement.dateMouvement ? mouvement.dateMouvement|date('d') : '?' }}</span>
+                    </div>
+
+                    <div class="flex-1">
+                        {% if mouvement.produit %}
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center overflow-hidden">
+                                     {% if mouvement.produit.photoP %}
+                                        <img src="{{ (mouvement.produit.photoP starts with 'http') ? mouvement.produit.photoP : asset('uploads/produits/' ~ mouvement.produit.photoP) }}" class="w-full h-full object-cover">
+                                    {% else %}
+                                        <i class="fa-solid fa-box text-slate-300"></i>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-slate-900">{{ mouvement.produit.nomP }}</h3>
+                                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-tighter">{{ mouvement.produit.categorieP ?: 'N/C' }}</span>
+                                </div>
+                            </div>
+                        {% else %}
+                             <span class="text-sm font-bold text-red-500">PRODUIT ABSENT</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="hidden md:block w-40 text-center">
+                        <span class="flux-badge {{ mouvement.typeM == 'ENTREE' ? 'badge-entree' : 'badge-sortie' }}">
+                            {{ mouvement.typeM == 'ENTREE' ? 'Acquisition' : 'Déploiement' }}
+                        </span>
+                    </div>
+
+                    <div class="w-32 text-center">
+                        <span class="text-2xl font-black {{ mouvement.typeM == 'ENTREE' ? 'text-emerald-500' : 'text-slate-900' }}">
+                            {{ mouvement.typeM == 'ENTREE' ? '+' : '-' }}{{ mouvement.quantite }}
+                        </span>
+                        <span class="text-[10px] font-black text-slate-300 uppercase block">{{ mouvement.produit ? mouvement.produit.uniteP : '' }}</span>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <a href="{{ path('app_mouvement_show', {id_mo: mouvement.idMo}) }}" class="w-12 h-12 bg-white border border-slate-100 text-slate-400 rounded-xl hover:bg-slate-900 hover:text-white transition-all flex items-center justify-center group-hover:border-slate-900 no-underline">
+                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                         </a>
                     </div>
-                {% endif %}
-            </article>
-        {% else %}
-            <div class="warning">Aucun mouvement trouve</div>
-        {% endfor %}
-    </div>
-</div>
+                </div>
+            {% else %}
+                <div class="reveal text-center py-20 bg-slate-50 rounded-[32px] border border-dashed border-slate-200">
+                    <span class="text-6xl mb-6 block">🌪️</span>
+                    <h3 class="text-2xl font-black text-slate-900 mb-2">Aucune détection</h3>
+                    <p class="text-slate-400 font-medium">Aucun flux opérationnel n'a été enregistré dans les archives systémiques.</p>
+                </div>
+            {% endfor %}
+        </section>
 
+    </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tl = gsap.timeline({ defaults: { ease: "expo.out", duration: 1.2 } });
+
+            // Séquence de révélation
+            tl.to(".reveal", {
+                opacity: 1,
+                y: 0,
+                stagger: 0.1,
+                duration: 1.4
+            });
+
+            // Mouvement des orbes
+            gsap.to(".bg-orb", {
+                x: "random(-60, 60)",
+                y: "random(-60, 60)",
+                duration: 12,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut"
+            });
+
+            // Micro-interactions
+            document.querySelectorAll('.stat-card, .flux-card, button, a.btn').forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    gsap.to(el, { scale: 1.01, duration: 0.3 });
+                });
+                el.addEventListener('mouseleave', () => {
+                    gsap.to(el, { scale: 1, duration: 0.3 });
+                });
+            });
+        });
+    </script>
 {% endblock %}

@@ -79,9 +79,10 @@ class Milestones
         return $this->title;
     }
 
-    public function setTitle(string $title): static       
+    public function setTitle(string $title): static
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -93,6 +94,7 @@ class Milestones
     public function setDescription(string $description): static
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -104,6 +106,7 @@ class Milestones
     public function setDueDate(\DateTimeImmutable $dueDate): static
     {
         $this->dueDate = $dueDate;
+
         return $this;
     }
 
@@ -115,6 +118,7 @@ class Milestones
     public function setCompletedDate(?\DateTimeImmutable $completedDate): static
     {
         $this->completedDate = $completedDate;
+
         return $this;
     }
 
@@ -123,9 +127,10 @@ class Milestones
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static     
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -155,6 +160,7 @@ class Milestones
     public function setGoalGoa(?Goal $goalGoa): static
     {
         $this->goalGoa = $goalGoa;
+
         return $this;
     }
 }

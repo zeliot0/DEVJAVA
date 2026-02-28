@@ -1,130 +1,91 @@
-{% extends 'theme/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Questions - {{ theme.nom }}{% endblock %}
+{% set body_class = 'conscience-page' %}
+
+{% block title %}DICTIONNAIRE INDICATEURS — {{ theme.nom }} — NEXA Intelligence{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/conscience-modern-proo.css?v=' ~ 'now'|date('U')) }}">
+{% endblock %}
 
 {% block body %}
-<div class="wrap">
+<div class="conscience-modern-page">
 
-  <section class="page-header">
-    <div class="page-title">
-      <a href="{{ path('app_theme_index') }}" class="btn ghost">
-        Retour aux themes
-      </a>
+    <header class="conscience-page-header">
+        <div>
+            <div style="font-size: 11px; font-weight: 800; color: var(--notion-text-muted); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 8px;">Architecture de Données</div>
+            <h1 style="font-family: 'Space Grotesk', sans-serif;">Indicateurs : {{ theme.nom }}</h1>
+            <p>Définition des vecteurs de monitoring et des métriques de succès du module.</p>
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 24px;">
+            <a href="{{ path('app_theme_show', { id: theme.idT }) }}" class="btn">
+                <i class="fas fa-arrow-left"></i> Spécifications
+            </a>
+            <a href="{{ path('app_question_new', { id: theme.idT }) }}" class="btn primary">
+                <i class="fas fa-plus"></i> Ajouter un Indicateur
+            </a>
+        </div>
+    </header>
 
-      <h1>
-        Questions
-        <span style="opacity:.5;font-weight:600">- {{ theme.nom }}</span>
-      </h1>
+    <div class="section-title" style="margin-bottom: 24px; font-size: 11px; font-weight: 800; color: var(--nexa-indigo); text-transform: uppercase; letter-spacing: 0.2em;">REGISTRE ANALYTIQUE ({{ questions|length }})</div>
 
-      <div class="meta-row">
-        <span class="badge {{ theme.actif ? 'active' : 'inactive' }}">
-          {{ theme.actif ? 'Actif' : 'Inactif' }}
-        </span>
+    <div class="admin-questions-list" style="display: grid; gap: 16px;">
+        {% if questions is empty %}
+            <div style="text-align: center; padding: 80px; background: white; border-radius: 24px; border: 2px dashed #e5e7eb;">
+                <i class="fa-solid fa-clipboard-question" style="font-size: 48px; color: #d1d5db; margin-bottom: 24px;"></i>
+                <h3 style="font-size: 18px; font-weight: 700; color: #1a1b23;">Matrice Vide</h3>
+                <p style="color: #9ca3af; margin-bottom: 32px;">Configurez les points de capture pour initialiser le monitoring.</p>
+                <a href="{{ path('app_question_new', { id: theme.idT }) }}" class="btn primary">Ouvrir le premier canal</a>
+            </div>
+        {% else %}
+            {% for question in questions %}
+                <article class="question-admin-card" style="background: white; border: 1px solid var(--notion-border); border-radius: 20px; padding: 32px; box-shadow: var(--card-shadow); transition: all 0.3s; position: relative; overflow: hidden;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 32px;">
+                        <div style="flex: 1;">
+                            <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
+                                <span style="padding: 4px 10px; border-radius: 6px; background: {{ question.actif ? '#dcfce7' : '#f3f4f6' }}; color: {{ question.actif ? '#166534' : '#6b7280' }}; font-size: 10px; font-weight: 800; text-transform: uppercase;">
+                                    {{ question.actif ? 'OPÉRATIONNEL' : 'STBY' }}
+                                </span>
+                                <span style="padding: 4px 10px; border-radius: 6px; background: #eff6ff; color: #3b82f6; font-size: 10px; font-weight: 800; text-transform: uppercase;">
+                                    {{ question.frequence }}
+                                </span>
+                                <span style="padding: 4px 10px; border-radius: 6px; background: #f5f3ff; color: #7c3aed; font-size: 10px; font-weight: 800; text-transform: uppercase;">
+                                    {{ question.type }}
+                                </span>
+                            </div>
+                            
+                            <h3 style="font-size: 18px; font-weight: 700; color: #1a1b23; line-height: 1.5; margin-bottom: 20px;">{{ question.texte }}</h3>
+                            
+                            <div style="display: flex; gap: 24px; font-size: 12px; color: #6b7280; font-weight: 600;">
+                                {% if question.unite %}
+                                    <div style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-ruler-horizontal"></i> Unité: <span style="color: #1a1b23;">{{ question.unite }}</span></div>
+                                {% endif %}
+                                {% if question.valeurIdeale %}
+                                    <div style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-bullseye"></i> Cible: <span style="color: {{ theme.couleur ?: '#6366f1' }};">{{ question.valeurIdeale }}</span></div>
+                                {% endif %}
+                                {% if question.niveau %}
+                                    <div style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-layer-group"></i> Sévérité: <span style="text-transform: capitalize; color: #1a1b23;">{{ question.niveau }}</span></div>
+                                {% endif %}
+                            </div>
+                        </div>
 
-        <span class="priority-chip">
-          <i class="fa-solid fa-flag"></i>
-          <em>P{{ theme.priorite ?? 2 }}</em>
-          <small class="priority-stars" aria-label="Priorite {{ theme.priorite ?? 2 }} sur 5">
-            {% for i in 1..5 %}
-              <i class="fa-star {{ i <= (theme.priorite ?? 2) ? 'fa-solid' : 'fa-regular' }}"></i>
+                        <div style="display: flex; gap: 8px;">
+                            <a href="{{ path('app_question_edit', { id: question.id }) }}" class="btn" style="width: 40px; height: 40px; justify-content: center; padding: 0;">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+                            <form method="post" action="{{ path('app_question_delete', { id: question.id }) }}" style="display:inline;" onsubmit="return confirm('Confirmer la suppression de cet indicateur ?')">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ question.id) }}">
+                                <button class="btn" style="width: 40px; height: 40px; justify-content: center; padding: 0; color: #ef4444; border-color: #fee2e2; background: #fef2f2;">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
             {% endfor %}
-          </small>
-        </span>
-      </div>
-
-      {% if theme.descriptionQ %}
-        <p class="description_q">{{ theme.descriptionQ }}</p>
-      {% endif %}
+        {% endif %}
     </div>
-
-    <div class="actions">
-      <a href="{{ path('app_question_new', { id: theme.idT }) }}" class="btn primary">
-        Ajouter une question
-      </a>
-
-      <a href="{{ path('app_theme_answer', { id: theme.idT }) }}" class="btn secondary">
-        Voir cote utilisateur
-      </a>
-    </div>
-  </section>
-
-  <section class="questions-grid">
-
-    {% if questions is empty %}
-      <div class="empty-state">
-        <i class="fa-regular fa-circle-question"></i>
-        <h3>Aucune question</h3>
-        <p>Ce theme ne contient encore aucune question.</p>
-      </div>
-    {% else %}
-
-      <div class="questions-grid">
-        {% for question in questions %}
-          <div class="question-card">
-
-            <div class="question-header">
-              <span class="status {{ question.actif ? 'active' : 'inactive' }}">
-                {{ question.actif ? 'Active' : 'Inactive' }}
-              </span>
-
-              <div class="meta">
-                <span>
-                  <i class="fa-solid fa-tag"></i>
-                  {{ question.type }}
-                </span>
-
-                <span>
-                  <i class="fa-solid fa-clock"></i>
-                  {{ question.frequence }}
-                </span>
-              </div>
-            </div>
-
-            <div class="question-body">
-              <p>{{ question.texte }}</p>
-            </div>
-
-            <div class="question-footer">
-              <div class="extra">
-                {% if question.unite %}
-                  <span>
-                    <i class="fa-solid fa-ruler"></i>
-                    {{ question.unite }}
-                  </span>
-                {% endif %}
-
-                {% if question.valeurIdeale %}
-                  <span>
-                    {{ question.valeurIdeale }}
-                  </span>
-                {% endif %}
-              </div>
-
-              <div class="actions">
-                <a href="{{ path('app_question_edit', { id: question.id }) }}" class="btn small">
-                  Modifier
-                </a>
-
-                <form method="post"
-                      action="{{ path('app_question_delete', { id: question.id }) }}"
-                      onsubmit="return confirm('Supprimer cette question ?')">
-                  <input type="hidden"
-                         name="_token"
-                         value="{{ csrf_token('delete' ~ question.id) }}">
-                  <button class="btn danger small">
-                    Supprimer
-                  </button>
-                </form>
-              </div>
-            </div>
-
-          </div>
-        {% endfor %}
-      </div>
-
-    {% endif %}
-  </section>
 
 </div>
 {% endblock %}
-
