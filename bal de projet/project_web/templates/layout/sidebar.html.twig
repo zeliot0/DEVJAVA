@@ -1,0 +1,74 @@
+<aside class="sidebar">
+
+  <!-- HEADER -->
+  <div class="sb-head">
+    <div class="sb-brand">
+      <div class="sb-logo">
+        <i class="fa-solid fa-bolt"></i>
+      </div>
+      <div class="sb-txt">
+        <div class="sb-title">NEXA</div>
+        <div class="sb-sub">
+          <span class="dot-online"></span> Online
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MENU DYNAMIQUE -->
+  {% block sidebar_menu %}{% endblock %}
+
+  <!-- ESPACE -->
+  <div class="sb-sep"></div>
+<div class="sb-section">Application</div>
+
+<nav class="sb-nav">
+
+  <a href="#" class="sb-item active">
+    <i class="fa-solid fa-house"></i>
+    <span>Accueil</span>
+  </a>
+
+  <a href="#" class="sb-item">
+    <i class="fa-solid fa-list-check"></i>
+    <span>Tâches</span>
+  </a>
+
+  <a href="#" class="sb-item">
+    <i class="fa-solid fa-box"></i>
+    <span>Packages</span>
+  </a>
+
+  <a href="#" class="sb-item">
+    <i class="fa-solid fa-brain"></i>
+    <span>Conscience</span>
+  </a>
+
+  <a href="#" class="sb-item">
+    <i class="fa-solid fa-bullseye"></i>
+    <span>Goals</span>
+  </a>
+
+</nav>
+  <!-- PROFIL -->
+  <div class="sb-profile">
+    <div class="sb-prof-top">
+      <div class="sb-avatar">
+        {{ app.user.nom|first|upper }}
+      </div>
+      <div class="sb-prof-txt">
+        <div class="sb-prof-name">{{ app.user.nom }}</div>
+        <div class="sb-prof-role">
+          {{ is_granted('ROLE_ADMIN') ? 'Admin' : 'User' }}
+        </div>
+      </div>
+    </div>
+
+    <a href="{{ path('app_logout') }}" class="sb-logout">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      <span>Log out</span>
+    </a>
+  </div>
+
+
+</aside>

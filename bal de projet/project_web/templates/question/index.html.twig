@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<title>Question index</title>
+
+{% block body %}
+    <h1>Question index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Texte</th>
+                <th>Type</th>
+                <th>TypeReponse</th>
+                <th>Unite</th>
+                <th>ValeurIdeale</th>
+                <th>Niveau</th>
+                <th>Frequence</th>
+                <th>Ordre</th>
+                <th>GenereTache</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for question in questions %}
+            <tr>
+                <td>{{ question.id }}</td>
+                <td>{{ question.texte }}</td>
+                <td>{{ question.type }}</td>
+                <td>{{ question.typeReponse }}</td>
+                <td>{{ question.unite }}</td>
+                <td>{{ question.valeurIdeale }}</td>
+                <td>{{ question.niveau }}</td>
+                <td>{{ question.frequence }}</td>
+                <td>{{ question.ordre }}</td>
+                <td>{{ question.genereTache ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_question_edit', {'id': question.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="11">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+  
+{% endblock %}

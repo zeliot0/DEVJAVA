@@ -1,0 +1,37 @@
+{% extends 'theme/base.html.twig' %}
+
+{% block title %}Modifier Mouvement{% endblock %}
+
+{% block body %}
+{% set __referer = app.request.headers.get('referer')|default('') %}
+{% set __host = app.request.schemeAndHttpHost|default('') %}
+{% set backUrl = (__referer and __host and (__referer starts with __host)) ? __referer : null %}
+
+<div class="page-header">
+    <div>
+        <h1>Modifier le mouvement</h1>
+        <p>Mise à jour des informations</p>
+    </div>
+
+    <a href="{{ backUrl ?: path('app_mouvement_index') }}" class="btn">
+        <i class="fa-solid fa-arrow-left"></i>
+        Retour
+    </a>
+</div>
+
+<div class="form-shell">
+    <div class="form-card">
+
+        {{ include('mouvement/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+
+        {% if not is_granted('ROLE_ADMIN') %}
+            <div class="form-actions">
+                {{ include('mouvement/_delete_form.html.twig') }}
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}
+

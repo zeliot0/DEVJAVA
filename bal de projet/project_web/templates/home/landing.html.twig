@@ -1,0 +1,210 @@
+﻿{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - NEXA{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/nexa-nav.css?v=20260213a') }}">
+    <style>
+        /* Fix scoped to Bienvenue page: enforce user profile pill style */
+        .header-actions-new > .user-quick-nav {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            height: 52px !important;
+            min-width: 190px !important;
+            padding: 6px 12px !important;
+            border-radius: 16px !important;
+            border: 1px solid var(--border) !important;
+            background: rgba(var(--surface-rgb), 0.5) !important;
+            color: var(--text) !important;
+            text-decoration: none !important;
+            line-height: 1 !important;
+            margin: 0 !important;
+        }
+        .header-actions-new > .user-quick-nav .uq-meta {
+            display: flex !important;
+            flex-direction: column !important;
+            line-height: 1.1 !important;
+        }
+        .header-actions-new > .user-quick-nav .uq-avatar {
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 50% !important;
+            background: var(--gradient) !important;
+            color: #fff !important;
+            display: grid !important;
+            place-items: center !important;
+            font-weight: 900 !important;
+            box-shadow: 0 8px 20px rgba(91, 92, 240, 0.28) !important;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    {% set currentRoute = app.request.attributes.get('_route')|default('') %}
+    <div class="backdrop-new" id="backdropNav" aria-hidden="true"></div>
+
+    <header class="navbar-custom" id="topbarNav">
+        <a href="{{ path('app_landing') }}" class="logo-new">NEXA</a>
+
+        <nav class="desktop-nav" aria-label="Main Navigation">
+            <div class="nav-pill-new">
+                <a href="{{ path('app_task_index') }}" id="nav_1" class="{{ currentRoute == 'app_landing' or currentRoute starts with 'app_task_' ? 'active' : '' }}">TASKS</a>
+                <a href="{{ path('app_conscience_index') }}" id="nav_2" class="{{ currentRoute in ['app_conscience_index', 'user_theme_index', 'app_theme_answer', 'app_theme_rapport', 'app_theme_rapport_pdf', 'app_user_answer'] ? 'active' : '' }}">CONSCIENCE</a>
+                <a href="{{ path('app_goal_index') }}" id="nav_3" class="{{ currentRoute starts with 'app_goal_' or currentRoute starts with 'app_motivation_' or currentRoute starts with 'app_milestones_' or currentRoute starts with 'app_theme_' or currentRoute starts with 'app_question_' ? 'active' : '' }}">GOALS</a>
+                <a href="{{ path('app_produit_index') }}" id="nav_4" class="{{ currentRoute starts with 'app_produit_' or currentRoute starts with 'app_mouvement_' ? 'active' : '' }}">PRODUIT</a>
+            </div>
+        </nav>
+        <div class="goals-popover-menu" id="goalsPopoverNav" hidden>
+            <a href="{{ path('app_goal_index') }}"><i class="fa-solid fa-bullseye"></i> Objectifs</a>
+            <a href="{{ path('app_milestones_index') }}"><i class="fa-solid fa-flag"></i> Jalons</a>
+            <a href="{{ path('app_motivation_index') }}"><i class="fa-solid fa-heart"></i> Motivation</a>
+        </div>
+
+        <div class="header-actions-new">
+            <form class="search-new" id="searchFormNav" autocomplete="off">
+                <i class="fa-solid fa-magnifying-glass" style="opacity:0.6"></i>
+                <input id="searchInputNav" type="search" placeholder="Search..." />
+                <button class="search-btn-new" type="submit"><i class="fa-solid fa-arrow-right"></i></button>
+            </form>
+
+            <div class="lang-switch-new">
+                <button class="lang-btn-new" id="langBtnNav" type="button">
+                    <i class="fa-solid fa-globe"></i>
+                    <span id="currentLangNav">FR</span>
+                </button>
+                <div class="lang-menu-new" id="langMenuNav">
+                    <div data-lang="fr">FR</div>
+                    <div data-lang="en">EN</div>
+                    <div data-lang="ar">AR</div>
+                </div>
+            </div>
+
+            <button class="icon-btn" id="themeToggleNav" type="button"><i class="fa-solid fa-moon"></i></button>
+            <div class="user-menu-nav">
+                <button type="button" class="user-quick-nav user-menu-trigger-nav" id="userMenuTriggerNav" aria-expanded="false" aria-controls="userMenuDropdownNav">
+                    <span class="uq-meta">
+                        <strong>{{ app.user.nom|capitalize }}</strong>
+                        <small>Plan Starter</small>
+                    </span>
+                    <span class="uq-avatar">{{ app.user.nom|first|upper }}</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="user-menu-dropdown-nav" id="userMenuDropdownNav" hidden>
+                    <a href="{{ path('app_profile') }}"><i class="fa-regular fa-user"></i> Mon profil</a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('admin_dashboard') }}"><i class="fa-solid fa-shield-halved"></i> Dashboard</a>
+                    {% endif %}
+                    <a href="{{ path('app_logout') }}" class="danger"><i class="fa-solid fa-right-from-bracket"></i> Deconnexion</a>
+                </div>
+            </div>
+            <button class="icon-btn burger-new" id="menuBtnNav" type="button"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </header>
+
+    <div class="solidarity-banner" id="bannerNav">
+        <div class="solidarity-track" id="bannerTrackNav">
+            <div class="solidarity-item">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg" alt="Palestine">
+                <span id="bannerTextNav"><strong>Stand for Freedom</strong> • Justice • Dignity • Humanity</span>
+            </div>
+            <div class="solidarity-item" aria-hidden="true">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg" alt="">
+                <span id="bannerTextCloneNav"><strong>Stand for Freedom</strong> • Justice • Dignity • Humanity</span>
+            </div>
+            <div class="solidarity-item" aria-hidden="true">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg" alt="">
+                <span><strong>Stand for Freedom</strong> • Justice • Dignity • Humanity</span>
+            </div>
+        </div>
+    </div>
+
+    <aside class="drawer-new" id="drawerNav">
+        <div class="drawer-top-new">
+            <div class="drawer-title-new" id="drawerTitleNav">NEXA</div>
+            <button class="icon-btn" id="closeDrawerNav" type="button"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <form class="search-new" id="searchFormMobileNav" style="display:flex; min-width:unset">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="searchInputMobileNav" type="search" placeholder="Search..." />
+        </form>
+
+        <nav class="drawer-nav-new">
+            <a href="{{ path('app_task_index') }}" id="mnav_1">TASKS</a>
+            <a href="{{ path('app_conscience_index') }}" id="mnav_2">CONSCIENCE</a>
+            <a href="{{ path('app_goal_index') }}" id="mnav_3">GOALS</a>
+            <div class="drawer-goals-subnav">
+                <a href="{{ path('app_goal_index') }}" class="{{ currentRoute starts with 'app_goal_' ? 'active' : '' }}">
+                    <i class="fa-solid fa-bullseye"></i> Objectifs
+                </a>
+                <a href="{{ path('app_milestones_index') }}" class="{{ currentRoute starts with 'app_milestones_' ? 'active' : '' }}">
+                    <i class="fa-solid fa-flag"></i> Jalons
+                </a>
+                <a href="{{ path('app_motivation_index') }}" class="{{ currentRoute starts with 'app_motivation_' ? 'active' : '' }}">
+                    <i class="fa-solid fa-heart"></i> Motivation
+                </a>
+            </div>
+            <a href="{{ path('app_produit_index') }}" id="mnav_4">PRODUIT</a>
+        </nav>
+
+        <a href="{{ path('app_profile') }}" class="cta-new" style="margin-top:auto; text-align:center;">Mon profil</a>
+    </aside>
+
+    <div class="toast-new" id="toastNav"></div>
+
+    <section class="welcome-hero">
+        <div class="welcome-content">
+            <h1 class="welcome-title">
+                Bienvenue {{ app.user.nom|default(app.user.email|split('@')[0])|capitalize }}
+            </h1>
+            <p class="welcome-subtitle">
+                Votre espace de travail intelligent pour maitriser votre quotidien
+            </p>
+        </div>
+    </section>
+
+    <section class="overview-section">
+        <div class="overview-grid">
+            <div class="overview-card primary">
+                <div class="overview-header">
+                    <div class="overview-icon"><i class="fas fa-list-check"></i></div>
+                    <div class="overview-badge">8 actives</div>
+                </div>
+                <h3 class="overview-title">Taches du jour</h3>
+                <p class="overview-desc">3 priorite haute · 5 en cours</p>
+            </div>
+
+            <div class="overview-card">
+                <div class="overview-header">
+                    <div class="overview-icon accent"><i class="fas fa-brain"></i></div>
+                    <div class="overview-badge success">Actif</div>
+                </div>
+                <h3 class="overview-title">Conscience</h3>
+                <p class="overview-desc">Priorisation intelligente activee</p>
+            </div>
+
+            <div class="overview-card">
+                <div class="overview-header">
+                    <div class="overview-icon goals"><i class="fas fa-bullseye"></i></div>
+                    <div class="overview-badge warning">2/5</div>
+                </div>
+                <h3 class="overview-title">Objectifs</h3>
+                <p class="overview-desc">Progression de la semaine</p>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('assets/nexa-nav.js?v=20260213a') }}"></script>
+    <script src="{{ asset('js/home.js') }}"></script>
+{% endblock %}
+
+
+
+

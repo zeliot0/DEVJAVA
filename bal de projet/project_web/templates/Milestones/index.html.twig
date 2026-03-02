@@ -1,0 +1,90 @@
+﻿{# templates/Milestones/index.html.twig #}
+{% extends 'theme/base.html.twig' %}
+
+{% block title %}Jalons{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/milestones-index-modern.css?v=20260214b') }}">
+{% endblock %}
+
+{% block body %}
+<div class="nexa-milestones-container milestones-page-modern">
+    <div class="page-header">
+        <div>
+            <h1>Jalons</h1>
+            <p>Suivez vos jalons et étapes importantes</p>
+        </div>
+        <div class="page-actions">
+            {% if not is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_milestones_new') }}" class="btn primary milestones-add-btn">
+                    <i class="fas fa-plus-circle"></i> Ajouter un jalon
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="nexa-milestone-progress">
+        <div class="nexa-milestone-progress-header">
+            <h4 class="nexa-milestone-progress-title">Vos jalons</h4>
+            <span class="nexa-milestone-progress-count">{{ milestones|length }} jalon(s)</span>
+        </div>
+    </div>
+
+    <div class="nexa-milestones-list">
+        {% for milestone in milestones %}
+        <div class="nexa-milestone-card milestones-modern-card">
+            <div class="nexa-milestone-header">
+                <h3 class="nexa-milestone-title">{{ milestone.title }}</h3>
+                <span class="nexa-badge">{{ milestone.getStatus()|upper }}</span>
+            </div>
+            
+            <p class="milestones-modern-description">
+                {{ milestone.description|default('—') }}
+            </p>
+            
+            <div class="milestones-modern-meta">
+                <div class="nexa-meta-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>{{ milestone.dueDate ? milestone.dueDate|date('d/m/Y') : '—' }}</span>
+                </div>
+                {% if milestone.goalGoa %}
+                <div class="nexa-meta-item">
+                    <i class="fas fa-bullseye"></i>
+                    <span>{{ milestone.goalGoa.titleGoa|slice(0, 26) }}{{ milestone.goalGoa.titleGoa|length > 26 ? '...' : '' }}</span>
+                </div>
+                {% endif %}
+                {% if milestone.completedDate %}
+                <div class="nexa-meta-item">
+                    <i class="fas fa-check-circle is-success"></i>
+                    <span>{{ milestone.completedDate|date('d/m/Y') }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="nexa-table-actions milestones-modern-actions">
+                <a href="{{ path('app_milestones_show', {'id': milestone.id}) }}" class="nexa-btn-action nexa-btn-view" title="Voir">
+                    <i class="fas fa-eye"></i>
+                </a>
+                {% if not is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_milestones_edit', {'id': milestone.id}) }}" class="nexa-btn-action nexa-btn-edit" title="Modifier">
+                    <i class="fas fa-pen"></i>
+                </a>
+                <form method="post" action="{{ path('app_milestones_delete', {'id': milestone.id}) }}" onsubmit="return confirm('Supprimer ce jalon ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ milestone.id) }}">
+                    <button type="submit" class="nexa-btn-action nexa-btn-delete" title="Supprimer">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <div class="nexa-milestones-empty milestones-modern-empty">
+            <p>Aucun jalon trouvé.</p>
+            <a href="{{ path('app_milestones_new') }}" class="btn primary milestones-add-btn">Ajouter un jalon</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

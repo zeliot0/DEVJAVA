@@ -1,0 +1,52 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block admin_page_title %}Mon profil{% endblock %}
+{% block admin_page_hint %}Modifier vos informations personnelles{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/profile-form-modern.css?v=20260214a') }}">
+{% endblock %}
+
+{% block admin_content %}
+    <div class="panel profile-modern-panel">
+        <div class="panel-title">
+            <i class="fa-solid fa-user-pen"></i>
+            Informations du compte
+        </div>
+
+        <form method="post" action="{{ path('app_profile') }}" class="profile-modern-form">
+            <input type="hidden" name="_token" value="{{ csrf_token('profile_update') }}">
+
+            <label for="nom" class="profile-modern-label">Nom</label>
+            <input id="nom" name="nom" type="text" value="{{ user.nom }}" required
+                   class="profile-modern-input">
+
+            <label for="email" class="profile-modern-label">Email</label>
+            <input id="email" name="email" type="email" value="{{ user.email }}" required
+                   class="profile-modern-input">
+
+            <hr class="profile-modern-divider">
+
+            <div class="profile-modern-subtitle">Changer le mot de passe (optionnel)</div>
+            <input name="current_password" type="password" placeholder="Mot de passe actuel"
+                   class="profile-modern-input">
+            <input name="new_password" type="password" placeholder="Nouveau mot de passe"
+                   class="profile-modern-input">
+            <input name="confirm_password" type="password" placeholder="Confirmer le nouveau mot de passe"
+                   class="profile-modern-input">
+
+            <div class="profile-modern-actions">
+                <button type="submit" class="btn-adm active profile-modern-btn-primary">
+                    <i class="fa-solid fa-floppy-disk"></i> Enregistrer
+                </button>
+                <a href="{{ path('admin_dashboard') }}" class="btn-adm profile-modern-btn-secondary">
+                    <i class="fa-solid fa-arrow-left"></i> Retour dashboard
+                </a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

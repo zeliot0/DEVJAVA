@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <title>Rapport – {{ theme.nom }}</title>
+
+    <style>
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 12px;
+            color: #222;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .theme {
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 15px;
+            page-break-inside: avoid;
+        }
+
+        .question {
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .answer {
+            margin-bottom: 6px;
+        }
+
+        .objective {
+            font-size: 11px;
+            color: #444;
+            margin-bottom: 6px;
+        }
+
+        .success {
+            color: #0a7d2f;
+            font-weight: bold;
+        }
+
+        .warning {
+            color: #c0392b;
+            font-weight: bold;
+        }
+
+        .neutral {
+            color: #555;
+        }
+
+        .date {
+            font-size: 10px;
+            color: #888;
+            margin-top: 6px;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 10px;
+            color: #aaa;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <h1>📊 Rapport</h1>
+    <div class="theme">
+        Thème : <strong>{{ theme.nom }}</strong>
+    </div>
+
+    <hr style="margin-bottom: 25px;">
+
+    <!-- CONTENT -->
+    {% if details is empty %}
+        <p>Aucune réponse enregistrée.</p>
+    {% else %}
+
+        {% for item in details %}
+            <div class="card">
+
+                <!-- QUESTION -->
+                <div class="question">
+                    {{ item.question }}
+                </div>
+
+                <!-- RÉPONSE -->
+                <div class="answer">
+                    👉 <strong>Votre réponse :</strong>
+                    {% if item.type == 'boolean' %}
+                        {{ item.value == '1' ? 'Oui' : 'Non' }}
+                    {% else %}
+                        {{ item.value }}
+                        {% if item.unite %}
+                            {{ item.unite }}
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                <!-- OBJECTIF -->
+                {% if item.type == 'number' and item.ideal is not null %}
+                    <div class="objective">
+                        🎯 <strong>Objectif :</strong>
+                        {{ item.ideal }}
+                        {% if item.unite %}
+                            {{ item.unite }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <!-- ÉVALUATION -->
+                {% if item.ok is same as(true) %}
+                    <div class="success">
+                        {{ item.advice }}
+                    </div>
+                {% elseif item.ok is same as(false) %}
+                    <div class="warning">
+                        {{ item.advice }}
+                    </div>
+                {% else %}
+                    <div class="neutral">
+                        {{ item.advice }}
+                    </div>
+                {% endif %}
+
+                <!-- DATE -->
+                <div class="date">
+                    Répondu le {{ item.date|date('d/m/Y à H:i') }}
+                </div>
+
+            </div>
+        {% endfor %}
+
+    {% endif %}
+
+    <!-- FOOTER -->
+    <div class="footer">
+        Généré le {{ "now"|date("d/m/Y à H:i") }}
+    </div>
+
+</body>
+</html>

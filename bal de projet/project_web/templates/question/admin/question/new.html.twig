@@ -1,0 +1,210 @@
+{% extends 'theme/base.html.twig' %}
+
+{% block title %}Ajouter une question - NEXA{% endblock %}
+
+{% block body %}
+<div class="form-page">
+  <div class="page-header">
+    <div>
+      <a href="{{ path('app_questions_by_theme', { id: theme.idT }) }}" class="back-link">
+        Retour aux questions
+      </a>
+      <h1>Ajouter une question</h1>
+      <p class="muted">Theme : <strong>{{ theme.nom }}</strong></p>
+      <p class="form-intro">
+        Construis une question utile, mesurable et facile a repondre.
+      </p>
+      <div class="hero-badges">
+        <span><i class="fa-solid fa-bolt"></i> Rapide</span>
+        <span><i class="fa-solid fa-chart-line"></i> Mesurable</span>
+        <span><i class="fa-solid fa-wand-magic-sparkles"></i> Moderne</span>
+      </div>
+    </div>
+  </div>
+
+  {{ form_start(form, { attr: { novalidate: 'novalidate' } }) }}
+
+  <div class="question-create-layout">
+    <section class="question-create-main form-card modern-main-card">
+      {% if form.vars.submitted and not form.vars.valid %}
+        <div class="form-errors-box">
+          <strong>Le formulaire contient des erreurs. Corrige les champs indiques.</strong>
+        </div>
+      {% endif %}
+
+      <div class="form-section">
+        <div class="section-title-row">
+          <h3><i class="fa-solid fa-pen-nib"></i> Contenu de la question</h3>
+          <span class="section-chip">Etape 1</span>
+        </div>
+        <label class="field-label">Texte de la question *</label>
+        {{ form_widget(form.texte, {
+          attr: {
+            class: 'field js-track',
+            placeholder: 'Ex: As-tu bu suffisamment d eau aujourd hui ?'
+          }
+        }) }}
+        <p class="form-help">Conseil: une seule idee par question.</p>
+        {{ form_errors(form.texte) }}
+      </div>
+
+      <div class="form-section grid-2">
+        <div>
+          <label class="field-label">Type de question *</label>
+          {{ form_widget(form.type, { attr: { class: 'field js-track js-question-type' } }) }}
+          <p class="form-help">{{ form.type.vars.help }}</p>
+          {{ form_errors(form.type) }}
+        </div>
+        <div>
+          <label class="field-label">Type de reponse *</label>
+          {{ form_widget(form.typeReponse, { attr: { class: 'field js-track js-response-type' } }) }}
+          <p class="form-help">{{ form.typeReponse.vars.help }}</p>
+          {{ form_errors(form.typeReponse) }}
+        </div>
+      </div>
+
+      <div class="form-section grid-2 js-numeric-block">
+        <div>
+          <label class="field-label">Unite</label>
+          {{ form_widget(form.unite, {
+            attr: {
+              class: 'field js-track',
+              placeholder: 'Ex: litres, heures, minutes'
+            }
+          }) }}
+          <p class="form-help">{{ form.unite.vars.help }}</p>
+          {{ form_errors(form.unite) }}
+        </div>
+        <div>
+          <label class="field-label">Valeur ideale</label>
+          {{ form_widget(form.valeurIdeale, {
+            attr: {
+              class: 'field js-track',
+              placeholder: 'Ex: 2'
+            }
+          }) }}
+          <p class="form-help">{{ form.valeurIdeale.vars.help }}</p>
+          {{ form_errors(form.valeurIdeale) }}
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="section-title-row">
+          <h3><i class="fa-solid fa-sliders"></i> Pilotage</h3>
+          <span class="section-chip">Etape 2</span>
+        </div>
+        <label class="field-label">Niveau d importance</label>
+        <div class="stars-radio js-track-group">
+          {{ form_widget(form.niveau) }}
+        </div>
+        <p class="form-help">{{ form.niveau.vars.help }}</p>
+        {{ form_errors(form.niveau) }}
+      </div>
+
+      <div class="form-section">
+        <label class="field-label">Frequence *</label>
+        {{ form_widget(form.frequence, { attr: { class: 'field js-track' } }) }}
+        <p class="form-help">{{ form.frequence.vars.help }}</p>
+        {{ form_errors(form.frequence) }}
+      </div>
+
+      <div class="form-section switch-stack">
+        <div class="section-title-row">
+          <h3><i class="fa-solid fa-robot"></i> Automatisation</h3>
+          <span class="section-chip">Etape 3</span>
+        </div>
+
+        <label class="switch-label">
+          {{ form_widget(form.genereTache, { attr: { class: 'js-track' } }) }}
+          Generer une tache automatiquement
+        </label>
+        <p class="form-help">{{ form.genereTache.vars.help }}</p>
+
+        <label class="switch-label">
+          {{ form_widget(form.actif, { attr: { class: 'js-track' } }) }}
+          Question active
+        </label>
+        <p class="form-help">{{ form.actif.vars.help }}</p>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn primary" type="submit">Enregistrer la question</button>
+        <a href="{{ path('app_questions_by_theme', { id: theme.idT }) }}" class="btn">Annuler</a>
+      </div>
+    </section>
+
+    <aside class="question-create-side">
+      <div class="form-card side-card modern-side-card">
+        <h3>Qualite</h3>
+        <ul class="quality-list">
+          <li>Question claire et directe</li>
+          <li>Reponse adaptee au besoin</li>
+          <li>Frequence pertinente</li>
+          <li>Importance coherente</li>
+        </ul>
+      </div>
+
+      <div class="form-card side-card modern-side-card">
+        <h3>Progression</h3>
+        <div class="progress-line">
+          <div class="progress-line-fill" id="formProgress"></div>
+        </div>
+        <p class="form-help"><span id="formProgressText">0%</span> des champs renseignes.</p>
+      </div>
+
+      <div class="form-card side-card conditional-hint modern-side-card" id="responseHint">
+        <strong>Suggestion</strong>
+        <p>Pour une reponse numerique, renseigne aussi une unite et une valeur ideale.</p>
+      </div>
+    </aside>
+  </div>
+
+  {{ form_end(form) }}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const responseType = document.querySelector('.js-response-type');
+      const numericBlock = document.querySelector('.js-numeric-block');
+      const hint = document.getElementById('responseHint');
+      const progressFill = document.getElementById('formProgress');
+      const progressText = document.getElementById('formProgressText');
+      const tracked = Array.from(document.querySelectorAll('.js-track'));
+      if (!responseType || !numericBlock || !hint || !progressFill || !progressText) return;
+
+      function isFilled(el) {
+        if (el.type === 'checkbox' || el.type === 'radio') return el.checked;
+        return (el.value || '').toString().trim() !== '';
+      }
+
+      function refreshProgress() {
+        const total = tracked.length || 1;
+        const done = tracked.filter(isFilled).length;
+        const percent = Math.round((done / total) * 100);
+        progressFill.style.width = percent + '%';
+        progressText.textContent = percent + '%';
+      }
+
+      function refreshResponseUI() {
+        const isNumber = responseType.value === 'number';
+        numericBlock.style.opacity = isNumber ? '1' : '0.58';
+        hint.querySelector('p').textContent = isNumber
+          ? 'Bonne pratique: precise unite + valeur ideale pour des rapports pertinents.'
+          : 'Pour ce type de reponse, Unite et Valeur ideale sont optionnelles.';
+      }
+
+      document.addEventListener('input', refreshProgress);
+      document.addEventListener('change', function () {
+        refreshProgress();
+        refreshResponseUI();
+      });
+
+      refreshProgress();
+      refreshResponseUI();
+    });
+  </script>
+{% endblock %}
+

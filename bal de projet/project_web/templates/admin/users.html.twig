@@ -1,0 +1,167 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block admin_page_title %}Gestion Utilisateurs{% endblock %}
+{% block admin_page_hint %}Membres et hierarchie du systeme NEXA{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .users-toolbar {
+        display: grid;
+        grid-template-columns: minmax(280px, 1fr) minmax(220px, 280px) auto;
+        gap: 12px;
+        align-items: center;
+        margin: 0 0 18px;
+    }
+
+    .users-search,
+    .users-sort {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 46px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: rgba(var(--surface-rgb), 0.55);
+        padding: 0 14px;
+    }
+
+    .users-search i,
+    .users-sort i { color: var(--accent); opacity: 0.95; }
+
+    .users-search input,
+    .users-sort select {
+        width: 100%;
+        border: 0;
+        outline: none;
+        background: transparent;
+        color: var(--text);
+        font-size: 0.95rem;
+        font-weight: 700;
+    }
+
+    .users-search input::placeholder { color: var(--muted); }
+
+    .users-sort select { cursor: pointer; }
+
+    .users-search:focus-within,
+    .users-sort:focus-within {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(159, 122, 234, 0.16);
+    }
+
+    .users-reset {
+        justify-content: center;
+        min-height: 46px;
+    }
+
+    .adm-table th,
+    .adm-table td {
+        padding: 12px 18px !important;
+    }
+
+    .adm-table .td-user { border-radius: 18px 0 0 18px; }
+    .adm-table .td-action { border-radius: 0 18px 18px 0; text-align: right; }
+    .adm-table .td-id { color: var(--muted); font-family: monospace; }
+    .user-line { display: flex; align-items: center; gap: 14px; }
+    .user-mail { font-weight: 850; font-size: 0.95rem; }
+    .role-list { display: flex; gap: 8px; flex-wrap: wrap; }
+    .users-result-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(var(--surface-rgb), 0.5);
+        font-size: 0.83rem;
+        font-weight: 800;
+        color: var(--muted);
+    }
+
+    @media (max-width: 980px) {
+        .users-toolbar {
+            grid-template-columns: 1fr;
+        }
+
+        .users-reset {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block admin_content %}
+    <div class="panel">
+        <div class="panel-title"><i class="fa-solid fa-users-gear" style="color: var(--primary);"></i> Annuaire des Comptes</div>
+        <form method="get" action="{{ path(app.request.get('_route')) }}" class="users-toolbar">
+            <div class="users-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" name="q" value="{{ search|default('') }}" placeholder="Rechercher par nom ou email...">
+            </div>
+            <div class="users-sort">
+                <i class="fa-solid fa-arrow-down-wide-short"></i>
+                <select name="sort">
+                    <option value="newest" {{ (sort|default('newest')) == 'newest' ? 'selected' : '' }}>🆕 Plus récents</option>
+                    <option value="admin_first" {{ (sort|default('newest')) == 'admin_first' ? 'selected' : '' }}>🛡️ Admin d'abord</option>
+                    <option value="name_asc" {{ (sort|default('newest')) == 'name_asc' ? 'selected' : '' }}>👤 Nom (A-Z)</option>
+                    <option value="email_asc" {{ (sort|default('newest')) == 'email_asc' ? 'selected' : '' }}>✉️ Email (A-Z)</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-adm active users-reset">
+                <i class="fa-solid fa-filter"></i> Appliquer
+            </button>
+        </form>
+        {% if (search|default('')) is not empty %}
+            <div class="users-result-chip">
+                <i class="fa-solid fa-filter"></i>
+                Resultat pour "{{ search }}" ({{ users|length }})
+            </div>
+        {% endif %}
+        <div class="table-wrap">
+            <table class="adm-table" style="width: 100%;">
+                <thead>
+                    <tr style="text-align: left; color: var(--muted); font-size: 0.8rem; text-transform: uppercase;">
+                        <th>Utilisateur</th>
+                        <th>Identifiant</th>
+                        <th>Permissions</th>
+                        <th style="text-align: right;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                        <tr>
+                            <td class="td-user">
+                                <div class="user-line">
+                                    <div class="brand-badge" style="width: 38px; height: 38px; font-size: 0.9rem; background: rgba(var(--surface-rgb), 0.1); color: var(--primary); border: 1px solid var(--border); box-shadow: none;">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                    <div class="user-mail">{{ u.email }}</div>
+                                </div>
+                            </td>
+                            <td class="td-id">#USR-{{ u.id }}</td>
+                            <td>
+                                <div class="role-list">
+                                    {% for role in u.roles %}
+                                        <span class="badge" style="background: rgba(var(--surface-rgb), 0.2); color: var(--primary); border: 1px solid var(--border); font-size: 0.65rem;">
+                                            {{ role|replace({'ROLE_': ''}) }}
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td class="td-action">
+                                <a href="{{ path('app_user_show', {id: u.id}) }}" class="btn-adm">
+                                    <i class="fa-solid fa-eye"></i> Voir
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: var(--muted); padding: 40px;">Aucun membre enregistre.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

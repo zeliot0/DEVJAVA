@@ -1,0 +1,154 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}NEXA | Authentification{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('css/loginnn.css') }}">
+{% endblock %}
+
+{% block body %}
+<header class="main-header">
+  <div class="logo">NEXA</div>
+
+  <div class="nav-center">
+    <div class="nav-slogan">Organisez. Priorisez. Avancez.</div>
+    <div class="nav-sub">NEXA vous accompagne chaque jour.</div>
+  </div>
+
+  <div class="header-actions">
+    <button class="theme-toggle" id="themeToggle" type="button">
+      <i class="fas fa-moon"></i>
+    </button>
+
+    <a href="{{ path('app_public_home') }}" class="cta-secondary">
+      &larr; Retour a l'accueil
+    </a>
+  </div>
+</header>
+
+<div class="nexa-illustrations">
+  <svg class="illus agenda" viewBox="0 0 200 200">
+    <rect x="20" y="40" width="160" height="120" rx="18"/>
+    <line x1="20" y1="70" x2="180" y2="70"/>
+    <circle cx="60" cy="95" r="6"/>
+    <circle cx="100" cy="95" r="6"/>
+    <circle cx="140" cy="95" r="6"/>
+  </svg>
+
+  <svg class="illus checklist" viewBox="0 0 200 200">
+    <rect x="30" y="30" width="140" height="140" rx="20"/>
+    <polyline points="60,80 75,95 105,65"/>
+    <polyline points="60,120 75,135 105,105"/>
+  </svg>
+
+  <svg class="illus clock" viewBox="0 0 200 200">
+    <circle cx="100" cy="100" r="70"/>
+    <circle cx="100" cy="100" r="8"/>
+    <line x1="100" y1="100" x2="100" y2="55"/>
+    <line x1="100" y1="100" x2="135" y2="115"/>
+  </svg>
+
+  <svg class="illus bell" viewBox="0 0 200 200">
+    <path d="M100,50 C80,50 65,65 65,85 L65,115 C65,125 55,130 55,140 L145,140 C145,130 135,125 135,115 L135,85 C135,65 120,50 100,50"/>
+    <path d="M85,140 Q85,160 100,160 Q115,160 115,140"/>
+    <circle cx="100" cy="45" r="8"/>
+  </svg>
+</div>
+
+<div class="login-page">
+  <div class="container {% if error is not defined or not error %}right-panel-active{% endif %}" id="container">
+
+    <div class="form-container sign-up-container">
+      <form method="post" action="{{ path('app_register') }}">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('register') }}">
+
+        <h1>Creer un compte</h1>
+        <span>Rejoignez l'univers NEXA</span>
+
+        {% if errors.csrf is defined %}
+          <small class="error-text">{{ errors.csrf }}</small>
+        {% endif %}
+
+        <input type="text" name="nom" placeholder="Nom complet" value="{{ old_nom|default('') }}" required>
+        {% if errors.nom is defined %}
+          <small class="error-text">{{ errors.nom }}</small>
+        {% endif %}
+
+        <input type="email" name="email" placeholder="Email" value="{{ old_email|default('') }}" required>
+        {% if errors.email is defined %}
+          <small class="error-text">{{ errors.email }}</small>
+        {% endif %}
+
+        <div class="password-wrapper">
+          <input type="password" name="password" id="register-password" placeholder="Mot de passe" required>
+          <span class="toggle-password" id="toggleRegisterPassword">Afficher</span>
+        </div>
+
+        {% if errors.password is defined %}
+          <small class="error-text">{{ errors.password }}</small>
+        {% endif %}
+
+        <button type="submit">S'inscrire</button>
+        <button type="button" class="switch-link" id="goSignIn">J'ai deja un compte</button>
+      </form>
+    </div>
+
+    <div class="form-container sign-in-container">
+      <form method="post" action="{{ path('app_login') }}">
+        <h1>Connexion</h1>
+
+        {% for message in app.flashes('success') %}
+          <div class="success">{{ message }}</div>
+        {% endfor %}
+
+        <span>Accedez a votre espace</span>
+
+        {% if error is defined and error %}
+          <div class="error">
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+          </div>
+        {% endif %}
+
+        <input type="email" name="email" value="{{ last_username|default('') }}" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Mot de passe" required>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        <button type="submit">Se connecter</button>
+        <button type="button" class="switch-link" id="goSignUp">Creer un compte</button>
+      </form>
+    </div>
+
+    <div class="overlay-container">
+      <div class="overlay">
+        <div class="overlay-panel overlay-left">
+          <h1 class="overlay-title">
+            Bon retour <img src="{{ asset('images/logo-n.png') }}" alt="NEXA">
+          </h1>
+          <p>Votre organisation commence ici</p>
+          <button class="ghost" id="signIn" type="button">Connexion</button>
+        </div>
+
+        <div class="overlay-panel overlay-right">
+          <h1 class="overlay-title">
+            Bienvenue <img src="{{ asset('images/logo-n.png') }}" alt="NEXA">
+          </h1>
+          <p>NEXA organise votre quotidien</p>
+          <button class="ghost" id="signUp" type="button">Inscription</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+  window.addEventListener('pageshow', function (event) {
+    if (event.persisted) {
+      window.location.reload();
+    }
+  });
+</script>
+<script src="{{ asset('js/loginn.js') }}"></script>
+{% endblock %}

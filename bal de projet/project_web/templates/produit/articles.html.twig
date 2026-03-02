@@ -1,0 +1,167 @@
+{% extends 'theme/base.html.twig' %}
+
+{% block title %}Articles des produits - NEXA{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/product-articles.css?v=20260218e') }}">
+{% endblock %}
+
+{% block body %}
+{% set currentCat = selectedCat %}
+{% set baseParams = {'limit': limit} %}
+{% if targetProduit %}
+    {% set baseParams = baseParams|merge({'id_p': targetProduit.idP}) %}
+{% endif %}
+{% set __referer = app.request.headers.get('referer')|default('') %}
+{% set __host = app.request.schemeAndHttpHost|default('') %}
+{% set backUrl = (__referer and __host and (__referer starts with __host)) ? __referer : null %}
+{% set fallbackBackUrl = targetProduit ? path('app_produit_show', {'id_p': targetProduit.idP}) : path('app_produit_index') %}
+
+<div class="page-header">
+    <div>
+        <h1>{{ targetProduit ? 'Choisir une image' : 'Articles des produits' }}</h1>
+        <p>
+            {% if targetProduit %}
+                Produit : <strong>{{ targetProduit.nomP }}</strong> • #{{ targetProduit.idP }}
+            {% else %}
+                Une selection d'articles pour la maison : cuisine, salle de bain, salon...
+            {% endif %}
+            {% if imageProvider and not isFallback %}
+                <span style="margin-left:10px; color:#6b7280">Source images : {{ imageProvider }}</span>
+            {% endif %}
+        </p>
+    </div>
+
+    <div style="display:flex; gap:10px; align-items:center">
+        <a href="{{ backUrl ?: fallbackBackUrl }}" class="btn">
+            <i class="fa-solid fa-arrow-left"></i>
+            Retour
+        </a>
+    </div>
+</div>
+
+<div class="articles-toolbar" aria-label="Filtrer les articles">
+    <a href="{{ path('app_produit_articles', baseParams) }}" class="btn {{ currentCat ? '' : 'primary' }}">
+        <i class="fa-solid fa-layer-group"></i>
+        Tous
+    </a>
+    {% for label, meta in categories %}
+        <a href="{{ path('app_produit_articles', baseParams|merge({'cat': label})) }}" class="btn {{ currentCat == label ? 'primary' : '' }}">
+            <i class="fa-solid {{ meta.icon }}"></i>
+            {{ label }}
+        </a>
+    {% endfor %}
+</div>
+
+{% if isFallback %}
+    <div class="warning articles-warning">
+        {% if error %}{{ error }} - {% endif %}
+        Aucun resultat (Google/Openverse/Wikimedia). Affichage demo.
+    </div>
+{% elseif error %}
+    <div class="warning articles-warning">{{ error }}</div>
+{% endif %}
+
+<div class="pack-grid articles-grid">
+    {% for item in items %}
+        {% set cat = item.category ?? '' %}
+        {% set catMeta = cat ? (categories[cat] ?? null) : null %}
+        {% set pillClass = catMeta ? (catMeta.pillClass ?? '') : '' %}
+        {% set thumb = item.thumbnailUrl ?: item.imageUrl %}
+        {% set thumbIsRemote = thumb and (thumb starts with 'http://' or thumb starts with 'https://') %}
+        {% set thumbSrc = thumb ? (thumbIsRemote ? thumb : asset(thumb)) : '' %}
+        {% set full = item.imageUrl ?: '' %}
+        {% set fullIsRemote = full and (full starts with 'http://' or full starts with 'https://') %}
+        {% set fullSrc = full ? (fullIsRemote ? full : asset(full)) : '' %}
+        {% set retrySrc = (fullSrc and thumbSrc and fullSrc != thumbSrc) ? fullSrc : '' %}
+        {% set href = item.contextUrl ?: item.imageUrl %}
+        {% set heroFallback = asset(catMeta ? (catMeta.fallbackImage ?? 'images/articles/maison.svg') : 'images/articles/maison.svg') %}
+
+        <article class="pack-card article-card">
+            <div class="article-hero">
+                {% if thumb %}
+                    <img src="{{ thumbSrc }}" {% if retrySrc %}data-full="{{ retrySrc }}"{% endif %} alt="{{ item.title }}" loading="lazy" referrerpolicy="no-referrer" onerror="if(!this.dataset.tried && this.dataset.full){this.dataset.tried='1';this.src=this.dataset.full;}else{this.onerror=null;this.src='{{ heroFallback }}';}">
+                {% else %}
+                    <div class="article-hero-placeholder">{{ item.title|slice(0, 1)|upper }}</div>
+                {% endif %}
+            </div>
+
+            <div class="pack-head article-head">
+                <div class="item-text">
+                    {% if href %}
+                        <a class="article-title-link" href="{{ href }}" target="_blank" rel="noopener noreferrer">
+                            <div class="item-title">{{ item.title }}</div>
+                        </a>
+                    {% else %}
+                        <div class="item-title">{{ item.title }}</div>
+                    {% endif %}
+
+                    <div class="item-sub">{{ item.displayLink ?: (cat ?: 'Article') }}</div>
+                </div>
+
+                {% if cat %}
+                    <div class="pack-pill {{ pillClass }}">{{ cat }}</div>
+                {% endif %}
+            </div>
+
+            {% if item.snippet %}
+                <div class="article-desc">{{ item.snippet }}</div>
+            {% endif %}
+
+            <div class="pack-actions">
+                {% if targetProduit and thumbIsRemote %}
+                    <form method="post" action="{{ path('app_produit_photo_url', {'id_p': targetProduit.idP}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('photo' ~ targetProduit.idP) }}">
+                        <input type="hidden" name="url" value="{{ thumb }}">
+                        <button class="btn primary" type="submit" title="Utiliser cette image pour le produit">
+                            <i class="fa-solid fa-check"></i>
+                            Utiliser
+                        </button>
+                    </form>
+                {% endif %}
+                {% if item.contextUrl %}
+                    <a href="{{ item.contextUrl }}" class="btn" target="_blank" rel="noopener noreferrer">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        Source
+                    </a>
+                {% endif %}
+                {% if item.imageUrl %}
+                    <a href="{{ item.imageUrl }}" class="btn primary" target="_blank" rel="noopener noreferrer">
+                        <i class="fa-regular fa-image"></i>
+                        Image
+                    </a>
+                {% endif %}
+            </div>
+        </article>
+    {% else %}
+        <div class="warning">Aucun article a afficher.</div>
+    {% endfor %}
+</div>
+
+{% set defaultLimit = targetProduit ? 40 : (currentCat ? 60 : 80) %}
+{% set nextLimit = limit + 20 %}
+{% set lessParams = baseParams|merge({'limit': defaultLimit}) %}
+{% set moreParams = baseParams|merge({'limit': nextLimit}) %}
+{% if currentCat %}
+    {% set lessParams = lessParams|merge({'cat': currentCat}) %}
+    {% set moreParams = moreParams|merge({'cat': currentCat}) %}
+{% endif %}
+
+<div class="articles-more">
+    {% if limit > defaultLimit %}
+        <a class="btn" href="{{ path('app_produit_articles', lessParams) }}">
+            <i class="fa-solid fa-minus"></i>
+            Afficher moins
+        </a>
+    {% endif %}
+
+    {% if nextLimit <= 100 %}
+        <a class="btn primary" href="{{ path('app_produit_articles', moreParams) }}">
+            <i class="fa-solid fa-plus"></i>
+            Afficher plus
+        </a>
+    {% endif %}
+</div>
+
+{% endblock %}

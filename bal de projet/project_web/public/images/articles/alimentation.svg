@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Alimentation">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#14b8a6"/>
+      <stop offset="1" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="512" height="512" rx="110" fill="url(#g)"/>
+  <g opacity="0.16">
+    <circle cx="120" cy="120" r="110" fill="#fff"/>
+    <circle cx="420" cy="410" r="140" fill="#fff"/>
+  </g>
+
+  <g fill="none" stroke="#fff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M256 188 C210 150 160 182 160 248 C160 336 224 392 256 418 C288 392 352 336 352 248 C352 182 302 150 256 188 Z"/>
+    <path d="M256 186 C252 160 260 138 278 124 C296 110 316 110 332 120"/>
+    <path d="M300 146 C314 128 336 118 356 120"/>
+    <path d="M228 146 C214 128 192 118 172 120"/>
+  </g>
+</svg>
+

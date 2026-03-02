@@ -1,0 +1,31 @@
+{% extends 'theme/base.html.twig' %}
+
+{% block title %}Nouveau Mouvement — NEXA{% endblock %}
+
+{% block body %}
+{% set __referer = app.request.headers.get('referer')|default('') %}
+{% set __host = app.request.schemeAndHttpHost|default('') %}
+{% set backUrl = (__referer and __host and (__referer starts with __host)) ? __referer : null %}
+
+<div class="page-header">
+    <div>
+        <h1>Nouveau mouvement</h1>
+        <p>Ajouter une entrée ou sortie de stock</p>
+    </div>
+
+    <a href="{{ backUrl ?: path('app_mouvement_index') }}" class="btn">
+        <i class="fa-solid fa-arrow-left"></i>
+        Retour
+    </a>
+</div>
+
+<div class="form-shell">
+    <div class="form-card">
+
+        {{ include('mouvement/_form.html.twig', {'button_label': 'Créer'}) }}
+
+    </div>
+</div>
+
+{% endblock %}
+

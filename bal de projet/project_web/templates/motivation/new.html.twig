@@ -1,0 +1,67 @@
+﻿{% extends 'theme/base.html.twig' %}
+
+{% block title %}{{ motivation.id ? 'Modifier' : 'Nouvelle' }} Motivation - GOALS{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/motivation-form-modern.css?v=20260214a') }}">
+{% endblock %}
+
+{% block body %}
+<div class="motivation-form-page">
+    <div class="motivation-form-container">
+        <header class="motivation-form-header">
+            <div class="motivation-kicker">Workspace goals</div>
+            <h1>
+                <i class="bi bi-emoji-smile"></i>
+                {{ motivation.id ? 'Modifier la motivation' : 'Nouvelle motivation' }}
+            </h1>
+            <p>Créez un message inspirant adapté à votre humeur du moment.</p>
+        </header>
+
+        {{ form_start(form, {'attr': {'class': 'motivation-form'}}) }}
+            <section class="motivation-form-section">
+                <h2 class="motivation-section-title">
+                    <i class="bi bi-pencil-square"></i> Informations de la motivation
+                </h2>
+
+                <div class="row g-3">
+                    <div class="col-lg-7">
+                        {{ form_label(form.title, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Restez positif !'}}) }}
+                    </div>
+                    <div class="col-lg-5">
+                        {{ form_label(form.mood, 'Humeur', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.mood, {'attr': {'class': 'form-select'}}) }}
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 5, 'placeholder': 'Ex: Chaque petit pas compte...'}}) }}
+                    <div class="nexa-form-help">Écrivez un message encourageant et motivant.</div>
+                </div>
+
+                <div class="mt-3">
+                    {{ form_label(form.image, 'URL de l\'image (optionnel)', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.image, {'attr': {'class': 'form-control', 'placeholder': 'https://example.com/image.jpg'}}) }}
+                    <div class="nexa-form-help">URL d'une image inspirante (optionnel).</div>
+                </div>
+            </section>
+
+            <div class="motivation-form-actions">
+                <a href="{{ path('app_motivation_index') }}" class="goals-btn goals-btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Annuler
+                </a>
+                <button type="submit" class="goals-btn goals-btn-primary">
+                    <i class="bi bi-save"></i> {{ motivation.id ? 'Mettre à jour' : 'Créer la motivation' }}
+                </button>
+            </div>
+        {{ form_end(form) }}
+        </div>
+</div>
+{% endblock %}
+

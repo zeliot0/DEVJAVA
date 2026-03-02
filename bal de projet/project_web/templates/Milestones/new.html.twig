@@ -1,0 +1,224 @@
+﻿{% extends 'theme/base.html.twig' %}
+
+{% block title %}Nouveau Jalon{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/milestones-form-modern.css?v=20260214b') }}">
+{% endblock %}
+
+{% block body %}
+<div class="nexa-container milestones-form-page">
+    <div class="nexa-form-container">
+        <div class="nexa-form-header">
+            <h1><i class="bi bi-flag"></i> Créer un nouveau jalon</h1>
+            <p class="nexa-form-subtitle">Définissez une étape importante pour votre objectif</p>
+        </div>
+
+        {{ form_start(form, {'attr': {'id': 'milestone-form', 'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+        
+        <div class="milestone-form-section">
+            <h2 class="form-section-title"><i class="bi bi-card-heading"></i> Informations du jalon</h2>
+            
+            <div class="nexa-form-group required">
+                {{ form_label(form.title, null, {'label_attr': {'class': 'form-label'}}) }}
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-fonts"></i></span>
+                    {{ form_widget(form.title, {
+                        'attr': {
+                            'class': 'form-control',
+                            'placeholder': 'Ex: Première étape, Révision intermédiaire...',
+                            'minlength': '3',
+                            'maxlength': '100',
+                            'required': 'required',
+                            'data-counter': 'title-counter'
+                        }
+                    }) }}
+                </div>
+                <div class="nexa-char-counter" id="title-counter">0/100</div>
+                {{ form_errors(form.title) }}
+                <div class="nexa-form-help">Minimum 3 caractères, maximum 100 caractères</div>
+            </div>
+
+            <div class="nexa-form-group required">
+                {{ form_label(form.description, null, {'label_attr': {'class': 'form-label'}}) }}
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-text-paragraph"></i></span>
+                    {{ form_widget(form.description, {
+                        'attr': {
+                            'class': 'form-control textarea',
+                            'rows': '4',
+                            'placeholder': 'Décrivez ce jalon en détail...',
+                            'minlength': '10',
+                            'maxlength': '255',
+                            'required': 'required',
+                            'data-counter': 'description-counter'
+                        }
+                    }) }}
+                </div>
+                <div class="nexa-char-counter" id="description-counter">0/255</div>
+                {{ form_errors(form.description) }}
+                <div class="nexa-form-help">Minimum 10 caractères, maximum 255 caractères</div>
+            </div>
+        </div>
+
+        <div class="milestone-form-section">
+            <h2 class="form-section-title"><i class="bi bi-calendar-range"></i> Dates</h2>
+            
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="nexa-form-group required">
+                        {{ form_label(form.dueDate, null, {'label_attr': {'class': 'form-label'}}) }}
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-calendar-check"></i></span>
+                            {{ form_widget(form.dueDate, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'required': 'required',
+                                    'min': "now"|date('Y-m-d')
+                                }
+                            }) }}
+                        </div>
+                        {{ form_errors(form.dueDate) }}
+                        <div class="nexa-form-help">Date à laquelle ce jalon doit être atteint</div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="nexa-form-group">
+                        {{ form_label(form.completedDate, null, {'label_attr': {'class': 'form-label'}}) }}
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-calendar-plus"></i></span>
+                            {{ form_widget(form.completedDate, {
+                                'attr': {
+                                    'class': 'form-control'
+                                }
+                            }) }}
+                        </div>
+                        {{ form_errors(form.completedDate) }}
+                        <div class="nexa-form-help">Date à laquelle ce jalon a été atteint (optionnel)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="milestone-form-section">
+            <h2 class="form-section-title"><i class="bi bi-bullseye"></i> Association</h2>
+            
+            <div class="nexa-form-group required">
+                {{ form_label(form.goalGoa, null, {'label_attr': {'class': 'form-label'}}) }}
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-link"></i></span>
+                    {{ form_widget(form.goalGoa, {
+                        'attr': {
+                            'class': 'form-control nexa-form-select',
+                            'required': 'required'
+                        }
+                    }) }}
+                </div>
+                {{ form_errors(form.goalGoa) }}
+                <div class="nexa-form-help">Sélectionnez l'objectif auquel ce jalon appartient</div>
+            </div>
+        </div>
+
+        <div class="nexa-form-actions milestones-form-actions">
+            <a href="{{ path('app_milestones_index') }}" class="btn btn-outline-secondary me-2 goals-btn goals-btn-secondary">
+                <i class="bi bi-x-circle"></i> Annuler
+            </a>
+            <button type="submit" class="btn btn-success goals-btn goals-btn-primary">
+                <i class="bi bi-check-circle"></i> Créer le jalon
+            </button>
+        </div>
+        {{ form_end(form) }}
+        
+        <div class="form-loading" id="form-loading">
+            <div class="spinner"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Compteurs de caractères
+        const titleInput = document.querySelector('[name*="title"]');
+        const titleCounter = document.getElementById('title-counter');
+        const descInput = document.querySelector('[name*="description"]');
+        const descCounter = document.getElementById('description-counter');
+        
+        function updateCounter(input, counter, limit) {
+            if (input && counter) {
+                const length = input.value.length;
+                counter.textContent = `${length}/${limit}`;
+                counter.classList.remove('near-limit', 'over-limit');
+                
+                if (length > limit * 0.9) {
+                    counter.classList.add('near-limit');
+                }
+                if (length > limit) {
+                    counter.classList.add('over-limit');
+                }
+                
+                // Initialiser
+                updateCounter(input, counter, limit);
+                input.addEventListener('input', function() {
+                    updateCounter(this, counter, limit);
+                });
+            }
+        }
+        
+        updateCounter(titleInput, titleCounter, 100);
+        updateCounter(descInput, descCounter, 255);
+        
+        // Validation du formulaire
+        const form = document.getElementById('milestone-form');
+        const loading = document.getElementById('form-loading');
+        
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            } else {
+                loading.classList.add('active');
+            }
+            form.classList.add('was-validated');
+        });
+        
+        // Validation des dates
+        const dueDate = document.querySelector('[name*="dueDate"]');
+        const completedDate = document.querySelector('[name*="completedDate"]');
+        
+        if (dueDate && completedDate) {
+            dueDate.addEventListener('change', function() {
+                if (completedDate.value && new Date(this.value) > new Date(completedDate.value)) {
+                    completedDate.value = '';
+                }
+            });
+            
+            completedDate.addEventListener('change', function() {
+                if (dueDate.value && new Date(this.value) < new Date(dueDate.value)) {
+                    this.setCustomValidity('La date de complétion doit être après la date d\'échéance');
+                } else {
+                    this.setCustomValidity('');
+                }
+            });
+        }
+        
+        // Validation en temps réel
+        const inputs = form.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.checkValidity()) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                } else {
+                    this.classList.remove('is-valid');
+                    this.classList.add('is-invalid');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
+

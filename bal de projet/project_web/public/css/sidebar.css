@@ -1,0 +1,218 @@
+/* ===============================
+   SIDEBAR – SUNSAMA STYLE (FINAL)
+================================ */
+
+.sidebar{
+  width:292px;
+  height:100vh;
+  position:sticky;
+  top:0;
+  padding:18px 14px;
+  background:
+    radial-gradient(900px 260px at 20% 0%, rgba(159,122,234,.18), transparent 55%),
+    radial-gradient(900px 260px at 85% 18%, rgba(91,92,240,.16), transparent 60%),
+    rgba(var(--surface-rgb), .95);
+  border-right:1px solid var(--border);
+  backdrop-filter:blur(18px);
+  transition:all .35s ease;
+  z-index:60;
+}
+
+/* ===== HEADER ===== */
+.sb-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding-bottom:14px;
+}
+
+.sb-brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.sb-logo{
+  width:46px;
+  height:46px;
+  border-radius:16px;
+  background:var(--gradient);
+  display:grid;
+  place-items:center;
+  color:#fff;
+  box-shadow:0 18px 45px rgba(91,92,240,.35);
+}
+
+.sb-title{
+  font-weight:950;
+  font-size:1.05rem;
+}
+
+.sb-sub{
+  font-size:.8rem;
+  font-weight:700;
+  color:var(--muted);
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.dot-online{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--good);
+  box-shadow:0 0 10px rgba(16,185,129,.45);
+}
+
+/* collapse btn */
+.sb-collapse{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:rgba(var(--surface-rgb),.6);
+  cursor:pointer;
+  transition:.25s;
+}
+.sb-collapse:hover{transform:translateY(-1px)}
+
+/* ===== SECTIONS ===== */
+.sb-section{
+  margin:14px 6px 8px;
+  font-size:.7rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-weight:900;
+  color:var(--muted);
+}
+
+/* ===== NAV ===== */
+.sb-nav{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.sb-item{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:12px 14px;
+  border-radius:16px;
+  font-weight:900;
+  text-decoration:none;
+  color:var(--text);
+  border:1px solid transparent;
+  transition:.25s;
+}
+
+.sb-item i{
+  width:20px;
+  text-align:center;
+  color:var(--muted);
+}
+
+.sb-item:hover{
+  background:rgba(124,58,237,.08);
+}
+
+.sb-item.active{
+  background:rgba(124,58,237,.14);
+  border-color:rgba(124,58,237,.25);
+}
+
+.sb-badge{
+  margin-left:auto;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:.75rem;
+  font-weight:900;
+  background:rgba(124,58,237,.15);
+  color:#4f46e5;
+}
+
+/* ===== SEPARATOR ===== */
+.sb-sep{
+  height:1px;
+  background:var(--border);
+  margin:10px 6px;
+}
+
+/* ===== PROFILE ===== */
+.sb-profile{
+  margin-top:auto;
+  padding:14px;
+  border-radius:20px;
+  border:1px solid var(--border);
+  background:rgba(var(--surface-rgb),.75);
+}
+
+.sb-prof-top{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+
+.sb-avatar{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  background:rgba(124,58,237,.15);
+  display:grid;
+  place-items:center;
+  font-weight:950;
+}
+
+.sb-prof-name{font-weight:950}
+.sb-prof-role{
+  font-size:.8rem;
+  color:var(--muted);
+  font-weight:700;
+}
+
+/* logout */
+.sb-logout{
+  margin-top:12px;
+  width:100%;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid rgba(239,68,ry68,.25);
+  background:rgba(239,68,68,.08);
+  font-weight:900;
+  cursor:pointer;
+}
+
+/* ===== COLLAPSED ===== */
+.sidebar.collapsed{
+  width:82px;
+}
+
+.sidebar.collapsed .sb-title,
+.sidebar.collapsed .sb-sub,
+.sidebar.collapsed .sb-section,
+.sidebar.collapsed .sb-item span,
+.sidebar.collapsed .sb-badge,
+.sidebar.collapsed .sb-prof-role,
+.sidebar.collapsed .sb-logout span{
+  display:none;
+}
+
+.sidebar.collapsed .sb-item{
+  justify-content:center;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width:600px){
+  .sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    transform:translateX(-110%);
+  }
+  .sidebar.open{
+    transform:translateX(0);
+  }
+}
+

@@ -1,0 +1,766 @@
+﻿<!DOCTYPE html>
+<html lang="fr" data-theme="dark" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+
+    <title>{% block title %}NEXA{% endblock %}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+    <link rel="stylesheet" href="{{ asset('css/base.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/nexaa.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/ui-refine.css?v=20260213af') }}">
+    <link rel="stylesheet" href="{{ asset('css/stock-pages.css?v=20260215a') }}">
+    <link rel="stylesheet" href="{{ asset('css/premium-refine.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/global-bubbles-bg.css?v=20260214a') }}">
+    {% set __route = app.request.attributes.get('_route')|default('') %}
+    {% if __route starts with 'app_goal_' or __route starts with 'app_motivation_' or __route starts with 'app_milestones_' %}
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    {% endif %}
+    <link rel="stylesheet" href="{{ asset('assets/nexa-nav.css?v=20260214b') }}">
+    {% block stylesheets %}{% endblock %}
+    <link rel="stylesheet" href="{{ asset('css/page-white-bg-overrides.css?v=20260214d') }}">
+</head>
+
+{% set currentRoute = app.request.attributes.get('_route')|default('') %}
+{% set isStockRoute = currentRoute starts with 'app_produit_' or currentRoute starts with 'app_mouvement_' or currentRoute starts with 'admin_produit_' or currentRoute starts with 'admin_mouvement_' %}
+{% set isConscienceRoute = currentRoute in ['app_conscience_index', 'user_theme_index', 'app_theme_answer', 'app_theme_rapport', 'app_theme_rapport_pdf', 'app_user_answer'] or currentRoute starts with 'app_question_' %}
+{% set isGoalsRoute = currentRoute starts with 'app_goal_' or currentRoute starts with 'app_motivation_' or currentRoute starts with 'app_milestones_' %}
+{% set isMilestonesRoute = currentRoute starts with 'app_milestones_' %}
+{% set isTaskRoute = currentRoute starts with 'app_task_' %}
+{% set currentUserName = app.user and app.user.nom ? app.user.nom|capitalize : 'Utilisateur' %}
+{% set currentUserEmail = app.user and app.user.email ? app.user.email : '' %}
+{% set currentUserInitial = app.user and app.user.nom ? app.user.nom|first|upper : 'U' %}
+
+<body class="has-global-bubbles {{ isStockRoute ? 'stock-pages ' : '' }}{{ isConscienceRoute ? 'conscience-page ' : '' }}{{ isGoalsRoute ? 'goals-page-theme ' : '' }}{{ isMilestonesRoute ? 'milestones-page-theme ' : '' }}{{ isTaskRoute ? 'task-page-theme' : '' }}">
+
+{{ include('_global_bubbles_bg.html.twig') }}
+
+<div class="backdrop-new" id="backdropNav" aria-hidden="true"></div>
+
+<header class="navbar-custom" id="topbarNav">
+    <a href="{{ path('app_landing') }}" class="logo-new">NEXA</a>
+
+    <nav class="desktop-nav" aria-label="Main Navigation">
+        <div class="nav-pill-new">
+            <a href="{{ path('app_task_index') }}" id="nav_1" class="{{ currentRoute starts with 'app_task_' ? 'active' : '' }}">TASKS</a>
+            <a href="{{ path('app_conscience_index') }}" id="nav_2" class="{{ currentRoute in ['app_conscience_index', 'user_theme_index', 'app_theme_answer', 'app_theme_rapport', 'app_theme_rapport_pdf', 'app_user_answer'] ? 'active' : '' }}">CONSCIENCE</a>
+            <a href="{{ path('app_goal_index') }}" id="nav_3" class="{{ currentRoute starts with 'app_goal_' or currentRoute starts with 'app_motivation_' or currentRoute starts with 'app_milestones_' or currentRoute starts with 'app_theme_' or currentRoute starts with 'app_question_' ? 'active' : '' }}">GOALS</a>
+            <a href="{{ path('app_produit_index') }}" id="nav_4" class="{{ currentRoute starts with 'app_produit_' or currentRoute starts with 'app_mouvement_' ? 'active' : '' }}">PRODUIT</a>
+        </div>
+    </nav>
+    <div class="goals-popover-menu" id="goalsPopoverNav" hidden>
+        <a href="{{ path('app_goal_index') }}"><i class="fa-solid fa-bullseye"></i> Objectifs</a>
+        <a href="{{ path('app_milestones_index') }}"><i class="fa-solid fa-flag"></i> Jalons</a>
+        <a href="{{ path('app_motivation_index') }}"><i class="fa-solid fa-heart"></i> Motivation</a>
+    </div>
+
+    <div class="header-actions-new">
+        <div class="lang-switch-new">
+            <button class="lang-btn-new" id="langBtnNav" type="button">
+                <i class="fa-solid fa-globe"></i>
+                <span id="currentLangNav">FR</span>
+            </button>
+            <div class="lang-menu-new" id="langMenuNav">
+                <div data-lang="fr">FR</div>
+                <div data-lang="en">EN</div>
+                <div data-lang="ar">AR</div>
+            </div>
+        </div>
+
+        <button class="icon-btn" id="themeToggleNav" type="button"><i class="fa-solid fa-moon"></i></button>
+        <button class="icon-btn burger-new" id="menuBtnNav" type="button"><i class="fa-solid fa-bars"></i></button>
+        <div class="user-menu-nav">
+            <button type="button" class="user-quick-nav user-menu-trigger-nav" id="userMenuTriggerNav" aria-expanded="false" aria-controls="userMenuDropdownNav">
+                <span class="uq-meta">
+                    <strong>{{ currentUserName }}</strong>
+                    <small>Plan Starter</small>
+                </span>
+                <span class="uq-avatar">{{ currentUserInitial }}</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="user-menu-dropdown-nav" id="userMenuDropdownNav" hidden>
+                <a href="{{ path('app_profile') }}"><i class="fa-regular fa-user"></i> Mon profil</a>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('admin_dashboard') }}"><i class="fa-solid fa-shield-halved"></i> Dashboard</a>
+                {% endif %}
+                <a href="{{ path('app_logout') }}" class="danger"><i class="fa-solid fa-right-from-bracket"></i> Deconnexion</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<aside class="drawer-new" id="drawerNav">
+    <div class="drawer-top-new">
+        <div class="drawer-title-new" id="drawerTitleNav">NEXA</div>
+        <button class="icon-btn" id="closeDrawerNav" type="button"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <nav class="drawer-nav-new">
+        <a href="{{ path('app_task_index') }}" id="mnav_1">TASKS</a>
+        <a href="{{ path('app_conscience_index') }}" id="mnav_2">CONSCIENCE</a>
+        <a href="{{ path('app_goal_index') }}" id="mnav_3">GOALS</a>
+        <div class="drawer-goals-subnav">
+            <a href="{{ path('app_goal_index') }}" class="{{ currentRoute starts with 'app_goal_' ? 'active' : '' }}">
+                <i class="fa-solid fa-bullseye"></i> Objectifs
+            </a>
+            <a href="{{ path('app_milestones_index') }}" class="{{ currentRoute starts with 'app_milestones_' ? 'active' : '' }}">
+                <i class="fa-solid fa-flag"></i> Jalons
+            </a>
+            <a href="{{ path('app_motivation_index') }}" class="{{ currentRoute starts with 'app_motivation_' ? 'active' : '' }}">
+                <i class="fa-solid fa-heart"></i> Motivation
+            </a>
+        </div>
+        <a href="{{ path('app_produit_index') }}" id="mnav_4">PRODUIT</a>
+    </nav>
+
+    <a href="{{ path('app_profile') }}" class="drawer-user-card">
+        <span class="uq-avatar">{{ currentUserInitial }}</span>
+        <span class="uq-meta">
+            <strong>{{ currentUserName }}</strong>
+            <small>{{ currentUserEmail }}</small>
+        </span>
+    </a>
+</aside>
+
+<div class="toast-new" id="toastNav"></div>
+
+{% if isStockRoute %}
+    <div class="stock-flash-stack" id="stockFlashStack" aria-live="polite" aria-atomic="true">
+        {% for message in app.flashes('success') %}
+            <div class="stock-flash stock-flash-success" role="alert">
+                <span class="stock-flash-icon" aria-hidden="true">
+                    <i class="fa-solid fa-circle-check"></i>
+                </span>
+                <div class="stock-flash-message"><strong>Succès :</strong> {{ message }}</div>
+                <button type="button" class="stock-flash-close" aria-label="Fermer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('error') %}
+            <div class="stock-flash stock-flash-error" role="alert">
+                <span class="stock-flash-icon" aria-hidden="true">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </span>
+                <div class="stock-flash-message"><strong>Erreur :</strong> {{ message }}</div>
+                <button type="button" class="stock-flash-close" aria-label="Fermer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('warning') %}
+            <div class="stock-flash stock-flash-warning" role="alert">
+                <span class="stock-flash-icon" aria-hidden="true">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </span>
+                <div class="stock-flash-message"><strong>Attention :</strong> {{ message }}</div>
+                <button type="button" class="stock-flash-close" aria-label="Fermer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('info') %}
+            <div class="stock-flash stock-flash-info" role="alert">
+                <span class="stock-flash-icon" aria-hidden="true">
+                    <i class="fa-solid fa-circle-info"></i>
+                </span>
+                <div class="stock-flash-message"><strong>Info :</strong> {{ message }}</div>
+                <button type="button" class="stock-flash-close" aria-label="Fermer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<main style="padding-top: calc(var(--nav-height) + 10px);">
+    {% block body %}{% endblock %}
+</main>
+
+{% if isStockRoute %}
+    <style>
+        .nexa-chatbot {
+            position: fixed;
+            right: 18px;
+            bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+            z-index: 9999;
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        }
+
+        .nexa-chatbot__fab {
+            width: 58px;
+            height: 58px;
+            border-radius: 999px;
+            border: 0;
+            cursor: pointer;
+            background: linear-gradient(135deg, #7c3aed, #2563eb);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 14px 30px rgba(0, 0, 0, .18);
+        }
+
+        .nexa-chatbot__fab i { font-size: 20px; }
+
+        .nexa-chatbot.is-open .nexa-chatbot__fab {
+            display: none;
+        }
+
+        .nexa-chatbot__backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, .35);
+            backdrop-filter: blur(6px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .18s ease;
+        }
+
+        .nexa-chatbot.is-open .nexa-chatbot__backdrop {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .nexa-chatbot__panel {
+            position: absolute;
+            right: 0;
+            bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+            width: min(380px, calc(100vw - 32px));
+            height: min(520px, calc(100vh - 140px));
+            background: rgba(255, 255, 255, .96);
+            border: 1px solid rgba(15, 23, 42, .10);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 26px 60px rgba(0, 0, 0, .18);
+            display: flex;
+            flex-direction: column;
+            transform: translateY(14px) scale(.985);
+            opacity: 0;
+            pointer-events: none;
+            filter: saturate(1.02);
+            transition: transform .18s ease, opacity .18s ease;
+        }
+
+        .nexa-chatbot.is-open .nexa-chatbot__panel {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .nexa-chatbot__header {
+            padding: 12px 14px;
+            background: linear-gradient(135deg, #111827, #0f172a);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .nexa-chatbot__title small {
+            display: block;
+            opacity: .75;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .nexa-chatbot__close {
+            border: 0;
+            background: rgba(255, 255, 255, .10);
+            color: #fff;
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nexa-chatbot__messages {
+            flex: 1;
+            padding: 12px;
+            overflow: auto;
+            background: linear-gradient(180deg, #f8fafc, #ffffff);
+        }
+
+        .nexa-chatbot__messages::-webkit-scrollbar { width: 10px; }
+        .nexa-chatbot__messages::-webkit-scrollbar-thumb { background: rgba(15, 23, 42, .16); border-radius: 999px; border: 2px solid rgba(255,255,255,.7); }
+
+        .nexa-chatbot__msg { display: flex; margin: 10px 0; }
+        .nexa-chatbot__msg.is-user { justify-content: flex-end; }
+        .nexa-chatbot__bubble {
+            max-width: 84%;
+            padding: 10px 12px;
+            border-radius: 16px;
+            line-height: 1.35;
+            font-size: 14px;
+            white-space: pre-wrap;
+            border: 1px solid rgba(15, 23, 42, .08);
+            box-shadow: 0 10px 22px rgba(15, 23, 42, .06);
+        }
+
+        .nexa-chatbot__msg.is-user .nexa-chatbot__bubble {
+            background: linear-gradient(135deg, #7c3aed, #2563eb);
+            color: #fff;
+            border-color: rgba(255, 255, 255, .12);
+        }
+
+        .nexa-chatbot__msg.is-bot .nexa-chatbot__bubble {
+            background: #fff;
+            color: #0f172a;
+        }
+
+        .nexa-chatbot__cards {
+            margin-top: 10px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .nexa-chatbot__card {
+            display: grid;
+            grid-template-columns: 46px 1fr;
+            gap: 10px;
+            align-items: center;
+            padding: 10px;
+            border-radius: 14px;
+            border: 1px solid rgba(15, 23, 42, .10);
+            background: rgba(248, 250, 252, .9);
+        }
+
+        .nexa-chatbot__card img {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1px solid rgba(15, 23, 42, .10);
+            background: #fff;
+        }
+
+        .nexa-chatbot__card strong { display: block; font-size: 13px; color: #0f172a; }
+        .nexa-chatbot__card small { display: block; font-size: 12px; opacity: .72; margin-top: 1px; }
+
+        .nexa-chatbot__card-actions { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+        .nexa-chatbot__link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(15, 23, 42, .10);
+            background: #fff;
+            color: #0f172a;
+            text-decoration: none;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .nexa-chatbot__link.primary {
+            background: rgba(124, 58, 237, .10);
+            border-color: rgba(124, 58, 237, .25);
+        }
+
+        .nexa-chatbot__suggestions {
+            padding: 10px 12px;
+            border-top: 1px solid rgba(15, 23, 42, .08);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: #fff;
+        }
+
+        .nexa-chatbot__chip {
+            border: 1px solid rgba(15, 23, 42, .10);
+            background: rgba(248, 250, 252, .95);
+            color: #0f172a;
+            border-radius: 999px;
+            padding: 8px 10px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .nexa-chatbot__form {
+            border-top: 1px solid rgba(15, 23, 42, .08);
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: #fff;
+        }
+
+        .nexa-chatbot__input {
+            flex: 1;
+            border: 1px solid rgba(15, 23, 42, .12);
+            border-radius: 999px;
+            padding: 11px 12px;
+            outline: none;
+            font-size: 14px;
+            background: #fff;
+        }
+
+        .nexa-chatbot__input:focus {
+            border-color: rgba(124, 58, 237, .55);
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, .12);
+        }
+
+        .nexa-chatbot__send {
+            width: 42px;
+            height: 42px;
+            border-radius: 999px;
+            border: 0;
+            cursor: pointer;
+            background: rgba(124, 58, 237, .10);
+            color: #4c1d95;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 520px) {
+            .nexa-chatbot { right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
+            .nexa-chatbot__panel {
+                right: 0;
+                left: auto;
+                bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+                width: calc(100vw - 24px);
+                height: calc(100dvh - 140px);
+                border-radius: 18px;
+            }
+        }
+    </style>
+
+    <div class="nexa-chatbot" id="nexaChatbot"
+         data-endpoint="{{ path('app_produit_chatbot_message') }}"
+         data-selected-id="{{ app.request.get('id_p')|default('') }}">
+        <div class="nexa-chatbot__backdrop" id="nexaChatbotBackdrop" hidden></div>
+        <button class="nexa-chatbot__fab" id="nexaChatbotFab" type="button" aria-controls="nexaChatbotPanel" aria-expanded="false" title="Assistant Produits">
+            <i class="fa-solid fa-comment-dots"></i>
+        </button>
+
+        <section class="nexa-chatbot__panel" id="nexaChatbotPanel" aria-label="Assistant Produits" hidden>
+            <header class="nexa-chatbot__header">
+                <div class="nexa-chatbot__title">
+                    <strong>Assistant Produits</strong>
+                    <small>Stock | Emplacement | Expiration | Images</small>
+                </div>
+                <button class="nexa-chatbot__close" id="nexaChatbotClose" type="button" aria-label="Fermer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </header>
+
+            <div class="nexa-chatbot__messages" id="nexaChatbotMessages" role="log" aria-live="polite"></div>
+            <div class="nexa-chatbot__suggestions" id="nexaChatbotSuggestions" aria-label="Suggestions"></div>
+
+            <form class="nexa-chatbot__form" id="nexaChatbotForm" autocomplete="off">
+                <input class="nexa-chatbot__input" id="nexaChatbotInput" type="text" placeholder="Ecris ici... (ex: bas stock, produit 12)" maxlength="200">
+                <button class="nexa-chatbot__send" type="submit" aria-label="Envoyer">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </section>
+    </div>
+{% endif %}
+
+<script src="{{ asset('js/board.js') }}"></script>
+<script src="{{ asset('js/global-bubbles-bg.js?v=20260214a') }}"></script>
+<script src="{{ asset('assets/nexa-nav.js?v=20260213a') }}"></script>
+
+{% block javascripts %}{% endblock %}
+
+{% if isStockRoute %}
+    <script>
+        (function () {
+            const stack = document.getElementById('stockFlashStack');
+            if (!stack) return;
+
+            const flashes = Array.from(stack.querySelectorAll('.stock-flash'));
+            if (!flashes.length) return;
+
+            const autoHideMs = 4200;
+            const exitMs = 220;
+
+            flashes.forEach((flash) => {
+                let removed = false;
+                const closeBtn = flash.querySelector('.stock-flash-close');
+
+                const remove = () => {
+                    if (removed) return;
+                    removed = true;
+                    flash.classList.add('is-hiding');
+                    window.setTimeout(() => flash.remove(), exitMs);
+                };
+
+                closeBtn?.addEventListener('click', remove);
+                window.setTimeout(remove, autoHideMs);
+            });
+        })();
+    </script>
+
+    <script>
+        (function () {
+            const root = document.getElementById('nexaChatbot');
+            if (!root) return;
+
+            const endpoint = root.dataset.endpoint || '';
+            const fab = document.getElementById('nexaChatbotFab');
+            const panel = document.getElementById('nexaChatbotPanel');
+            const closeBtn = document.getElementById('nexaChatbotClose');
+            const backdrop = document.getElementById('nexaChatbotBackdrop');
+            const messagesEl = document.getElementById('nexaChatbotMessages');
+            const suggestionsEl = document.getElementById('nexaChatbotSuggestions');
+            const form = document.getElementById('nexaChatbotForm');
+            const input = document.getElementById('nexaChatbotInput');
+
+            if (!endpoint || !fab || !panel || !backdrop || !messagesEl || !suggestionsEl || !form || !input) return;
+
+            const storageKey = 'nexa_chatbot_v1';
+            const state = { messages: [], context: {} };
+
+            const selectedId = parseInt(root.dataset.selectedId || '', 10);
+            if (!Number.isNaN(selectedId) && selectedId > 0) {
+                state.context.selectedProductId = selectedId;
+            }
+
+            const saveState = () => {
+                try {
+                    const payload = {
+                        messages: state.messages.slice(-40),
+                        context: state.context || {},
+                    };
+                    sessionStorage.setItem(storageKey, JSON.stringify(payload));
+                } catch (_) {}
+            };
+
+            const loadState = () => {
+                try {
+                    const raw = sessionStorage.getItem(storageKey);
+                    if (!raw) return;
+                    const parsed = JSON.parse(raw);
+                    if (parsed && Array.isArray(parsed.messages)) state.messages = parsed.messages;
+                    if (parsed && parsed.context && typeof parsed.context === 'object') state.context = parsed.context;
+                } catch (_) {}
+            };
+
+            const scrollToBottom = () => {
+                messagesEl.scrollTop = messagesEl.scrollHeight;
+            };
+
+            const setSuggestions = (suggestions) => {
+                suggestionsEl.innerHTML = '';
+                if (!Array.isArray(suggestions) || suggestions.length === 0) return;
+
+                suggestions.slice(0, 10).forEach((text) => {
+                    const t = String(text || '').trim();
+                    if (!t) return;
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'nexa-chatbot__chip';
+                    btn.textContent = t;
+                    btn.addEventListener('click', () => send(t));
+                    suggestionsEl.appendChild(btn);
+                });
+            };
+
+            const renderProducts = (container, products) => {
+                if (!Array.isArray(products) || products.length === 0) return;
+
+                const cards = document.createElement('div');
+                cards.className = 'nexa-chatbot__cards';
+
+                products.slice(0, 6).forEach((p) => {
+                    const id = Number(p?.id || 0);
+                    const name = String(p?.name || '').trim();
+                    if (!id || !name) return;
+
+                    const card = document.createElement('div');
+                    card.className = 'nexa-chatbot__card';
+
+                    const img = document.createElement('img');
+                    img.alt = name;
+                    img.loading = 'lazy';
+                    img.referrerPolicy = 'no-referrer';
+                    img.src = p?.photoUrl ? String(p.photoUrl) : '{{ asset('images/articles/maison.svg') }}';
+                    img.onerror = () => { img.onerror = null; img.src = '{{ asset('images/articles/maison.svg') }}'; };
+
+                    const meta = document.createElement('div');
+                    const title = document.createElement('strong');
+                    title.textContent = `#${id} - ${name}`;
+                    const sub = document.createElement('small');
+                    const category = String(p?.category || '').trim();
+                    const stock = Number(p?.stock ?? 0);
+                    const unit = String(p?.unit || '').trim();
+                    sub.textContent = `${category || 'Produit'} | ${stock} ${unit}`;
+
+                    const actions = document.createElement('div');
+                    actions.className = 'nexa-chatbot__card-actions';
+
+                    const view = document.createElement('a');
+                    view.className = 'nexa-chatbot__link primary';
+                    view.href = String(p?.url || '#');
+                    view.textContent = 'Voir';
+
+                    const image = document.createElement('a');
+                    image.className = 'nexa-chatbot__link';
+                    image.href = String(p?.articlesUrl || '#');
+                    image.textContent = 'Image';
+
+                    actions.appendChild(view);
+                    actions.appendChild(image);
+
+                    meta.appendChild(title);
+                    meta.appendChild(sub);
+                    meta.appendChild(actions);
+
+                    card.appendChild(img);
+                    card.appendChild(meta);
+                    cards.appendChild(card);
+                });
+
+                container.appendChild(cards);
+            };
+
+            const appendMessage = (role, text, products, persist = true) => {
+                const row = document.createElement('div');
+                row.className = 'nexa-chatbot__msg ' + (role === 'user' ? 'is-user' : 'is-bot');
+
+                const bubble = document.createElement('div');
+                bubble.className = 'nexa-chatbot__bubble';
+                bubble.textContent = String(text || '');
+                renderProducts(bubble, products);
+
+                row.appendChild(bubble);
+                messagesEl.appendChild(row);
+                scrollToBottom();
+
+                if (persist && (role === 'user' || role === 'bot')) {
+                    state.messages.push({ role, text: String(text || ''), products: Array.isArray(products) ? products.slice(0, 6) : [] });
+                    saveState();
+                }
+
+                return row;
+            };
+
+            const openPanel = () => {
+                if (!panel.hidden) return;
+                backdrop.hidden = false;
+                panel.hidden = false;
+                window.requestAnimationFrame(() => root.classList.add('is-open'));
+                fab.setAttribute('aria-expanded', 'true');
+                window.setTimeout(() => {
+                    scrollToBottom();
+                    input.focus();
+                }, 0);
+            };
+
+            const closePanel = () => {
+                root.classList.remove('is-open');
+                fab.setAttribute('aria-expanded', 'false');
+                window.setTimeout(() => {
+                    panel.hidden = true;
+                    backdrop.hidden = true;
+                }, 190);
+            };
+
+            const togglePanel = () => {
+                if (panel.hidden) openPanel();
+                else closePanel();
+            };
+
+            const send = async (text) => {
+                const message = String(text || '').trim();
+                if (!message) return;
+
+                appendMessage('user', message);
+                input.value = '';
+
+                const typingRow = appendMessage('bot', '...', [], false);
+
+                try {
+                    const res = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        body: JSON.stringify({
+                            message,
+                            context: state.context || {},
+                        }),
+                    });
+
+                    const data = await res.json().catch(() => null);
+                    typingRow.remove();
+
+                    if (!res.ok || !data) {
+                        appendMessage('bot', 'Erreur serveur. Reessaie.');
+                        return;
+                    }
+
+                    if (data.contextUpdate && typeof data.contextUpdate === 'object') {
+                        state.context = { ...(state.context || {}), ...data.contextUpdate };
+                        saveState();
+                    }
+
+                    appendMessage('bot', data.reply || 'OK', data.products || []);
+                    setSuggestions(data.suggestions || []);
+                } catch (e) {
+                    typingRow.remove();
+                    appendMessage('bot', 'Connexion echouee. Verifie le serveur puis reessaie.');
+                }
+            };
+
+            fab.addEventListener('click', togglePanel);
+            closeBtn?.addEventListener('click', closePanel);
+            backdrop.addEventListener('click', closePanel);
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !panel.hidden) closePanel();
+            });
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                send(input.value);
+            });
+
+            loadState();
+
+            const pageSelectedId = parseInt(root.dataset.selectedId || '', 10);
+            if (!Number.isNaN(pageSelectedId) && pageSelectedId > 0) {
+                state.context = { ...(state.context || {}), selectedProductId: pageSelectedId };
+                saveState();
+            }
+
+            if (Array.isArray(state.messages) && state.messages.length > 0) {
+                const replay = state.messages.slice(0);
+                state.messages = [];
+                replay.forEach((m) => {
+                    appendMessage(m.role === 'user' ? 'user' : 'bot', m.text || '', m.products || [], true);
+                });
+                setSuggestions(['Liste produits', 'Bas stock', 'Categories']);
+            } else {
+                appendMessage('bot', 'Salut ! Pose-moi une question sur tes produits.');
+                setSuggestions(['Liste produits', 'Bas stock', 'Categories', 'Aide']);
+            }
+        })();
+    </script>
+{% endif %}
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+

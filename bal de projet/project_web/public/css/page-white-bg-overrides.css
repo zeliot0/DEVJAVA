@@ -1,0 +1,77 @@
+html[data-theme="light"] body.task-page-theme,
+html[data-theme="light"] body.conscience-page,
+html[data-theme="light"] body.goals-page-theme {
+  background: #ffffff !important;
+  background-image: none !important;
+}
+
+html[data-theme="light"] body.task-page-theme .layout.layout-pro#appLayout {
+  background: #ffffff !important;
+  background-image: none !important;
+}
+
+html[data-theme="light"] body.task-page-theme .main.main-pro,
+html[data-theme="light"] body.task-page-theme .content-grid,
+html[data-theme="light"] body.task-page-theme .center {
+  background: #ffffff !important;
+  background-image: none !important;
+}
+
+html[data-theme="light"] body.task-page-theme,
+html[data-theme="light"] body.task-page-theme #appLayout,
+html[data-theme="light"] body.task-page-theme .layout.layout-pro,
+html[data-theme="light"] body.task-page-theme .main.main-pro,
+html[data-theme="light"] body.conscience-page,
+html[data-theme="light"] body.conscience-page #appLayout,
+html[data-theme="light"] body.goals-page-theme,
+html[data-theme="light"] body.goals-page-theme #appLayout {
+  background: #ffffff !important;
+  background-image: none !important;
+}
+
+html[data-theme="light"] body.task-page-theme .layout.layout-pro#appLayout::before,
+html[data-theme="light"] body.task-page-theme .layout.layout-pro#appLayout::after {
+  background: none !important;
+  animation: none !important;
+}
+
+html[data-theme="light"] body.task-page-theme .global-bubbles-bg,
+html[data-theme="light"] body.conscience-page .global-bubbles-bg,
+html[data-theme="light"] body.goals-page-theme .global-bubbles-bg {
+  display: none !important;
+}
+
+html[data-theme="light"] body.task-page-theme::before,
+html[data-theme="light"] body.task-page-theme::after,
+html[data-theme="light"] body.conscience-page::before,
+html[data-theme="light"] body.conscience-page::after,
+html[data-theme="light"] body.goals-page-theme::before,
+html[data-theme="light"] body.goals-page-theme::after {
+  background: none !important;
+}
+
+html[data-theme="dark"] body.task-page-theme .task {
+  color: #e7eefc !important;
+}
+
+html[data-theme="dark"] body.task-page-theme .task-title,
+html[data-theme="dark"] body.task-page-theme .task h1,
+html[data-theme="dark"] body.task-page-theme .task h2,
+html[data-theme="dark"] body.task-page-theme .task h3,
+html[data-theme="dark"] body.task-page-theme .task h4 {
+  color: #f8fbff !important;
+}
+
+html[data-theme="dark"] body.task-page-theme .task-desc,
+html[data-theme="dark"] body.task-page-theme .task p,
+html[data-theme="dark"] body.task-page-theme .task small {
+  color: #c7d3ea !important;
+}
+
+/* Dark mode: remove inner rectangular background behind task board */
+html[data-theme="dark"] body.task-page-theme .main.main-pro,
+html[data-theme="dark"] body.task-page-theme .content-grid,
+html[data-theme="dark"] body.task-page-theme .center {
+  background: transparent !important;
+  background-image: none !important;
+}

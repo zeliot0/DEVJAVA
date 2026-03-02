@@ -1,0 +1,92 @@
+{% extends 'theme/base.html.twig' %}
+
+{% block title %}Répondre à la question{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/question.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="page">
+
+    <a href="{{ path('app_questions_by_theme', { id: question.theme.idT }) }}"
+       class="back-link">
+        ← Retour aux thèmes
+    </a>
+
+    <h1>{{ question.texte }}</h1>
+
+    <p class="muted">
+        Type : {{ question.typeReponse }} • Fréquence : {{ question.frequence }}
+    </p>
+
+    <div class="form-card">
+
+        {{ form_start(form, {
+            action: path('app_user_answer', { id: question.id }),
+            method: 'POST'
+        }) }}
+
+        {# ===== BOOLEAN ===== #}
+        {% if question.typeReponse == 'boolean' %}
+            <div class="form-group">
+                <label>Votre réponse</label>
+
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio"
+                               name="{{ form.valeur.vars.full_name }}"
+                               value="1"
+                               required>
+                        Oui
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio"
+                               name="{{ form.valeur.vars.full_name }}"
+                               value="0">
+                        Non
+                    </label>
+                </div>
+            </div>
+
+        {# ===== NUMBER ===== #}
+        {% elseif question.typeReponse == 'number' %}
+            {{ form_row(form.valeur, {
+                label: 'Votre réponse',
+                attr: {
+                    placeholder: question.unite
+                        ? 'Valeur (' ~ question.unite ~ ')'
+                        : 'Valeur'
+                }
+            }) }}
+
+        {# ===== TEXT ===== #}
+        {% elseif question.typeReponse == 'text' %}
+            <div class="form-group">
+                <label>Votre réponse</label>
+                <textarea
+                    name="{{ form.humeur.vars.full_name }}"
+                    class="text-answer"
+                    rows="4"
+                    placeholder="Écrivez votre réponse ici..."
+                    required
+                ></textarea>
+            </div>
+        {% endif %}
+
+        {# ===== DATE (cachée ou visible حسب تحب) ===== #}
+        {{ form_row(form.date) }}
+
+        <button type="submit" class="btn primary">
+            <i class="fas fa-check"></i>
+            Enregistrer ma réponse
+        </button>
+
+        {{ form_end(form) }}
+
+    </div>
+</div>
+{% endblock %}
+

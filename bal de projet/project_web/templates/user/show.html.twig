@@ -1,0 +1,52 @@
+{% extends 'base-sid.html.twig' %}
+
+{% block title %}Détails utilisateur{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="admin-page">
+
+  <header class="admin-header">
+    <div class="header-content">
+      <h1>
+        <span class="gradient-text">Détails</span>
+        <span class="brand">Utilisateur</span>
+      </h1>
+      <p>Informations complètes de l’utilisateur</p>
+    </div>
+  </header>
+
+  <div class="details-container">
+
+    <div class="details-card-box">
+
+      <div class="details-avatar-big">
+        {{ user.nom|first|upper }}
+      </div>
+
+      <h3 class="details-name">{{ user.nom }}</h3>
+      <p class="details-email">{{ user.email }}</p>
+
+      <div class="details-roles">
+        {% for role in user.roles %}
+          {% if role == 'ROLE_ADMIN' %}
+            <span class="badge admin">ADMIN</span>
+          {% else %}
+            <span class="badge user">USER</span>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <a href="{{ path('app_user_list') }}" class="btn-back">
+        ← Retour à la liste
+      </a>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
