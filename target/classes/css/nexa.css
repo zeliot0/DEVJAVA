@@ -1,0 +1,216 @@
+.root {
+    -fx-font-family: "Segoe UI", "Arial";
+    -fx-font-size: 13px;
+    -fx-background-color: linear-gradient(to bottom, #f6f7fb, #eef1f8);
+}
+
+.root-pane {
+    -fx-background-color: transparent;
+}
+
+.topbar {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e7e9f2;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 16 24;
+}
+
+.top-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1c2130;
+}
+
+.top-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #7f8798;
+}
+
+.stat-card,
+.panel {
+    -fx-background-color: rgba(255, 255, 255, 0.96);
+    -fx-background-radius: 18px;
+    -fx-border-radius: 18px;
+    -fx-border-color: #e5e8f1;
+    -fx-effect: dropshadow(gaussian, rgba(40, 47, 89, 0.08), 18, 0.2, 0, 6);
+}
+
+.stat-card {
+    -fx-padding: 20;
+}
+
+.stat-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #8e96a8;
+}
+
+.stat-value {
+    -fx-font-size: 30px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1d2333;
+}
+
+.panel {
+    -fx-padding: 20;
+}
+
+.panel-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #20263a;
+}
+
+.panel-sub {
+    -fx-font-size: 12px;
+    -fx-text-fill: #8a92a6;
+}
+
+.field-lbl {
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #717b91;
+}
+
+.nexa-field,
+.nexa-combo,
+.nexa-date,
+.color-picker {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #dfe3ee;
+    -fx-padding: 10 12;
+}
+
+.text-area.nexa-field {
+    -fx-padding: 0;
+}
+
+.text-area.nexa-field .content {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 10px;
+}
+
+.nexa-field:focused,
+.nexa-combo:focused,
+.nexa-date:focused,
+.color-picker:focused {
+    -fx-border-color: #6c63ff;
+}
+
+.button {
+    -fx-cursor: hand;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-danger,
+.btn-outline {
+    -fx-font-weight: 700;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-padding: 10 16;
+}
+
+.btn-primary {
+    -fx-background-color: linear-gradient(to right, #6c63ff, #8b5cf6);
+    -fx-text-fill: #ffffff;
+}
+
+.btn-secondary,
+.btn-outline {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #dfe3ee;
+    -fx-text-fill: #394256;
+}
+
+.btn-danger {
+    -fx-background-color: #fff1f3;
+    -fx-border-color: #ffc7d0;
+    -fx-text-fill: #d13a59;
+}
+
+.nexa-table {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.nexa-table .column-header-background {
+    -fx-background-color: #f5f7fc;
+    -fx-background-radius: 12px 12px 0 0;
+}
+
+.nexa-table .column-header,
+.nexa-table .filler {
+    -fx-size: 42px;
+    -fx-border-color: transparent transparent #ebedf5 transparent;
+    -fx-background-color: transparent;
+}
+
+.nexa-table .column-header .label {
+    -fx-text-fill: #7b8498;
+    -fx-font-weight: 700;
+}
+
+.nexa-table .table-row-cell {
+    -fx-cell-size: 44px;
+    -fx-background-color: #ffffff;
+    -fx-border-color: transparent transparent #f0f2f8 transparent;
+}
+
+.nexa-table .table-row-cell:selected {
+    -fx-background-color: #edeaff;
+}
+
+.nexa-table .table-cell {
+    -fx-text-fill: #273046;
+}
+
+.form-scroll,
+.form-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.combo-box, .color-picker, .date-picker {
+    -fx-background-radius: 9px;
+    -fx-border-radius: 9px;
+}
+
+.text-area {
+    -fx-background-color: white;
+    -fx-border-color: #e8eaf0;
+    -fx-border-radius: 9px;
+    -fx-background-radius: 9px;
+}
+
+.text-area .content {
+    -fx-background-color: white;
+    -fx-background-radius: 9px;
+}
+
+.check-box {
+    -fx-text-fill: #3d4557;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+
+.check-box .box {
+    -fx-background-color: white;
+    -fx-border-color: #d0d3e0;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #6c63ff;
+    -fx-border-color: #6c63ff;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: white;
+}
+
+.separator .line {
+    -fx-border-color: #eef0f5;
+}
